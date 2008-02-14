@@ -240,17 +240,17 @@
       <id>continuum</id>
      <distributionManagement>
        <repository>
-        <id>utgb.dav</id>
+        <id>utgb.local</id>
         <name>UTGB Maven Repository</name>
         <url>file:///home/web/maven.utgenome.org/repository/artifact</url>
        </repository>
        <snapshotRepository>
-        <id>utgb.dav</id>
+        <id>utgb.local</id>
         <name>UTGB Maven Snapshot Repository</name>
         <url>file:///home/web/maven.utgenome.org/repository/snapshot</url>
        </snapshotRepository>
        <site>
-         <id>utgb.dav</id>
+         <id>utgb.local</id>
          <url>file:///home/web/maven.utgenome.org/repository/site/utgb</url>
        </site>
       </distributionManagement>
