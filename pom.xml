@@ -5,7 +5,7 @@
   <artifactId>utgb-parent</artifactId>
   <name>UTGB Project</name>
   <version>1.0-SNAPSHOT</version>
-  <description>The Parent POM (Common Settings) for University of Tokyo Genome Browser (UTGB) Projects</description>
+  <description>The University of Tokyo Genome Browser (UTGB) Projects</description>
   <packaging>pom</packaging>
   
   <inceptionYear>2007</inceptionYear>
@@ -15,6 +15,12 @@
 
   <modules>
     <module>utgb-core</module>
+    <module>utgb-shell</module>
+    <module>utgb-gallery</module>
+    <module>utgb-human</module>
+    <module>utgb-medaka</module>
+    <module>utgb-master</module>
+    <module>utgb-mmdb</module>
   </modules>
 
 
@@ -59,6 +65,7 @@
 
   <organization>
     <name>utgenome.org</name>
+    <url>http://utgenome.org</url>
   </organization>
 
   <developers>
