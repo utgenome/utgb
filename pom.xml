@@ -227,6 +227,7 @@
       <id>utgb.dav</id>
       <name>UTGB Maven Snapshot Repository</name>
       <url>dav:http://maven.utgenome.org/repository/snapshot</url>
+      <uniqueVersion>false</uniqueVersion>
     </snapshotRepository>
     <site>
       <id>utgb.dav</id>
@@ -248,6 +249,7 @@
         <id>utgb.local</id>
         <name>UTGB Maven Snapshot Repository</name>
         <url>file:///home/web/maven.utgenome.org/repository/snapshot</url>
+       <uniqueVersion>false</uniqueVersion>
        </snapshotRepository>
        <site>
          <id>utgb.local</id>
