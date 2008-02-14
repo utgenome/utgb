@@ -226,4 +226,28 @@
       <url>dav:http://maven.utgenome.org/repository/site/utgb</url>
     </site>
   </distributionManagement>
+
+
+  <profiles>
+    <profile>
+      <id>continuum</id>
+     <distributionManagement>
+       <repository>
+        <id>utgb.dav</id>
+        <name>UTGB Maven Repository</name>
+        <url>file:///home/web/maven.utgenome.org/repository/artifact</url>
+       </repository>
+       <snapshotRepository>
+        <id>utgb.dav</id>
+        <name>UTGB Maven Snapshot Repository</name>
+        <url>file:///home/web/maven.utgenome.org/repository/snapshot</url>
+       </snapshotRepository>
+       <site>
+         <id>utgb.dav</id>
+         <url>file:///home/web/maven.utgenome.org/repository/site/utgb</url>
+       </site>
+      </distributionManagement>
+    </profile>
+  </profiles>
+
 </project>
