@@ -21,6 +21,7 @@
     <module>utgb-medaka</module>
     <module>utgb-master</module>
     <module>utgb-mmdb</module>
+    <module>utgb-util</module>
   </modules>
 
 
