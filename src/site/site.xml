@@ -1,0 +1,15 @@
+<project name="UTGB: ${project.name}">
+  <bannerLeft>
+    <name>UTGB</name>
+    <src>http://utgenome.org/UTGBMedaka/image/logo_small.gif</src>
+    <href>http://maven.utgenome.org/repository/site/utgb</href>
+  </bannerLeft>
+  <body>
+    <menu name="UTGB Menu" inherit="top">
+      <item name="Top Page" href="http://maven.utgenome.org/repository/site/utgb"/>
+    </menu>
+    <menu ref="parents"/>
+    <menu ref="reports"/>
+    <menu ref="modules"/>
+  </body>
+</project>
