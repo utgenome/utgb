@@ -7,8 +7,9 @@
   <body>
     <menu name="UTGB Menu" inherit="top">
       <item name="Top Page" href="http://maven.utgenome.org/repository/site/utgb"/>
+      <item name="Welcome" href="index.html"/>
     </menu>
-    <menu ref="parents"/>
+    <menu ref="parent"/>
     <menu ref="reports"/>
     <menu ref="modules"/>
   </body>
