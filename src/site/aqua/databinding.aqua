@@ -1,0 +1,64 @@
+@title("Smart Data Binding in UTGB")
+
+= Smart Data Binding in UTGB
+
+UTGB has an support to map data from !XML/JSON/Relational data format to Java class objects, and vice verca. This conversion is automatically done once you write appropriate Java class definitions. 
+
+== An Quick Example
+
+Supporse you have the following XML data (saved as "gene.xml"), which describes a gene object:
+<code>
+<gene id="1">
+   <name>gene1</name>
+   <chr>chr1</chr>
+   <start>1000</start>
+   <end>4000</end>
+</gene>
+</code>
+
+And you write a corresponding Java class definition as follows:
+<code>
+class Gene 
+{
+  int id;
+  String name;
+  String chr;
+  int start;
+  int end;
+  
+  // public default constructor
+  public Gene() {}
+  
+  // setter definitions
+  public void setId(int id) { this.id = id; }
+  public void setName(String name) { this.name = name; }
+  public void setChr(String chr) { this.chr = chr; }
+  public void setStart(int start) { this.start = start; }
+  public void setEnd(int end) { this.end = end; }
+ 
+  // getter definitions
+  public int getId() { return id; }
+  public Stirng getName() { return name; }
+  public String getChr() { return chr; }
+  public int getStart() { return start; }
+  public int getEnd() { return end; }
+}
+</code>
+
+
+To create an instance of the Gene object from the XML file ("gene.xml"), you have to use BeanUtil.createBeanFromXML(target class, input reader) mehtod:
+<code>
+BufferedReader xmlReader = new BufferedReader(new FileReader("gene.xml"));
+Gene gene = BeanUtil.createBeanFromXML(Gene.class, xmlReader);
+
+// gene.getId() == 1
+// gene.getName() == "gene1"
+// gene.getChr() == "chr1"
+// gene.getStart() == 1000
+// gene.getEnd() == 4000
+</code>
+
+UTGB automatically converts string data appeared in the XML file into appropriate data tipe (integer, String, etc. ) by seeing setter methods in the class definition. 
+
+
+
