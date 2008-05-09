@@ -77,8 +77,8 @@
       <url>http://www.xerial.org</url>
       <organization>University of Tokyo</organization>
       <roles>
-        <role>architect</role>
-        <role>developer</role>
+        <role>Architect</role>
+        <role>Developer</role>
       </roles>
       <timezone>+9</timezone>
     </developer>
@@ -87,7 +87,7 @@
       <name>Shin Sasaki</name>
       <organization>University of Tokyo</organization>
       <roles>
-        <role>developer</role>
+        <role>Developer</role>
       </roles>
       <timezone>+9</timezone>
     </developer>
@@ -96,16 +96,16 @@
       <name>Budrul Ahsan</name>
       <organization>University of Tokyo</organization>
       <roles>
-        <role>developer</role>
+        <role>Developer</role>
       </roles>
       <timezone>+9</timezone>
     </developer>
     <developer>
-      <id>sasaatu</id>
+      <id>sasaki</id>
       <name>Atsushi Sasaki</name>
       <organization>University of Tokyo</organization>
       <roles>
-        <role>developer</role>
+        <role>Developer</role>
       </roles>
       <timezone>+9</timezone>
     </developer>
@@ -114,12 +114,29 @@
       <name>Reginaldo Kuroshu</name>
       <organization>University of Tokyo</organization>
       <roles>
-        <role>developer</role>
+        <role>Developer</role>
       </roles>
       <timezone>+9</timezone>
     </developer>
   </developers>
-
+  <contributors>
+    <contributor>
+      <name>Shinichi Morishita</name>
+      <organization>University of Tokyo</organization>
+      <roles>
+	<role>Project Manager</role>
+      </roles>
+      <timezone>+9</timezone>
+    </contributor>
+    <contributor>
+      <name>Jun Yoshimura</name>
+      <organization>University of Tokyo</organization>
+      <roles>
+	<role>Technician</role>
+      </roles>
+      <timezone>+9</timezone>
+    </contributor>
+  </contributors>
 
   <build>
     <resources>
