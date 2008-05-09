@@ -7,7 +7,7 @@
   <bannerLeft>
     <name>UTGB</name>
     <src>images/utgb-title-small.gif</src>
-    <href>http://utgenome.org/</href>
+    <href>http://utgenome.org/index.html</href>
   </bannerLeft>
 
   <skin>
@@ -18,7 +18,7 @@
 
   <body>
   <links>
-     <item name="UTGB Project" href="http://utgenome.org/"/>
+     <item name="UTGB Project" href="http://utgenome.org/index.html"/>
       <item name="UTGB
  Trac" href="http://trac.utgenome.org/project/UTGB"/>
       <item name="Download" href="http://maven.utgenome.org/repository/artifact/org/utgenome"/>
@@ -27,7 +27,7 @@
 
     <menu name="Parent Project" ref="parent"/>
     <menu name="UTGB Menu">
-      <item name="Top Page" href="index.html"/>
+      <item name="About ${project.name}" href="index.html"/>
      </menu>
     <menu ref="reports"/>
     <menu ref="modules"/>
