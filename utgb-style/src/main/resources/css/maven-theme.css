@@ -1,0 +1,278 @@
+
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+body {
+  background-color: #fff;
+  font-family: Verdana, Helvetica, Arial, sans-serif;
+  margin-left: auto;
+  margin-right: auto;
+  background-repeat: repeat-y;
+  font-size: 13px;
+  padding: 0px;
+}
+td, select, input, li{
+  font-family: Verdana, Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  color:#333333;
+}
+code{
+  font-size: 12px;
+}
+a {
+  text-decoration: none;
+}
+
+:link, :visited {
+ text-decoration: none;
+ color: #0a7fba;
+ border-bottom: 1px dotted #bbb;
+}
+:link:hover, :visited:hover {
+ background-color: #eee;
+ color: #558;
+}
+
+
+#legend li.externalLink {
+  background: url(../images/external.png) left top no-repeat;
+  padding-left: 18px;
+}
+a.externalLink, a.externalLink:link, a.externalLink:visited, a.externalLink:active, a.externalLink:hover {
+  background: url(../images/external.png) right center no-repeat;
+  padding-right: 18px;
+}
+#legend li.newWindow {
+  background: url(../images/newwindow.png) left top no-repeat;
+  padding-left: 18px;
+}
+a.newWindow, a.newWindow:link, a.newWindow:visited, a.newWindow:active, a.newWindow:hover {
+  background: url(../images/newwindow.png) right center no-repeat;
+  padding-right: 18px;
+}
+h2 {
+  color: white;
+  background-image: url(../images/border2.png);
+  background-repeat: no-repeat;
+  border-top: 0;
+  border-left: 0;   
+  border-right: 2px solid #3399CC;
+  border-bottom: 2px solid #3399CC;
+  background-color: #B2ECFD;
+  padding-top: 2px;
+  padding-left: 5px;
+  width: 99%;
+}
+
+h3
+{
+  color: #3366AA;
+  background-image: url(../images/banner_w.png);
+  background-repeat: no-repeat;
+  background-color: #F0FFFF;
+  border-bottom: 2px solid #AADDFF;
+  border-left: 2px solid #99CCFF;
+  border-top: 1px solid #EEEEFF;
+  border-right: 1px solid #EEEEFF;
+  padding: 2px;
+  padding-left: 5px;
+  width: 98%;
+}
+
+h4
+{
+  color: #2255AA;
+  margin: 2px;
+  padding: 2px;
+  padding-left: 10px;
+}
+
+
+p {
+  line-height: 1.3em;
+  font-size: 13px;
+  color: #000;
+}
+#breadcrumbs {
+  height: 13px;
+  background-image: url(../images/breadcrumbs.jpg);
+  padding: 5px 10px 14px 20px;
+}
+
+* html #breadcrumbs {
+  padding-bottom: 10px;
+}
+#leftColumn {
+  margin: 10px 0 10px 0;
+  border-top-color: #ccc;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-right-color: #ccc;
+  border-right-style: solid;
+  border-right-width: 1px;
+  border-bottom-color: #ccc;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  padding-right: 5px;
+  padding-left: 5px;
+  overflow: hidden;                
+}
+
+
+#navcolumn h5 {
+  font-size: 13px;
+  border-bottom: 1px solid #aaaaaa;
+  padding-top: 2px;
+  padding-left: 9px;
+  color: #49635a;
+  background-image: url(../images/h5.jpg);
+  background-repeat: no-repeat;
+  background-position: left bottom;
+
+}
+
+#navcolumn li {
+  font-size: 12px;                  
+}
+
+
+table.bodyTable th {
+  color: white;
+  background-color: #3399CC;
+  text-align: left;
+  font-weight: bold;
+}
+
+table.bodyTable th, table.bodyTable td {
+  font-size: 12px;
+}
+
+table.bodyTable tr.a {
+  background-color: #D0D0D0;
+}
+
+table.bodyTable tr.b {
+  background-color: #F0F0F0;
+}
+
+.source {
+  border: 1px solid #999;
+  overflow:auto
+}
+dt {
+  padding: 4px 4px 4px 24px;
+  color: #333333;
+  background-color: #ccc;
+  font-weight: bold;
+  font-size: 14px;
+  background-image: url(../images/h3.jpg);
+  background-repeat: no-repeat;
+  background-position: left bottom;
+}
+.subsectionTitle {
+  font-size: 13px;
+  font-weight: bold;
+  color: #666;
+
+}
+
+table {
+  font-size: 12px;
+}
+
+.xright
+{ 
+  font-size: 13px;
+}
+
+.xright a
+{ 
+  border-bottom: 0;
+}
+
+.xright a:link, .xright a:visited, .xright a:active {
+  color: #369;
+}
+.xright a:hover {
+  color: #FFF;
+  background: #6cF;                  
+}
+
+
+#banner {
+  height: 58px;
+/*  background: url(../images/banner.jpg);*/
+}
+#navcolumn ul {
+  margin: 5px 0 15px -0em;
+}
+#navcolumn ul a {
+  color: #333333;
+}
+#navcolumn ul a:hover {
+  color: red;
+}
+#intro {
+  border: solid #ccc 1px;
+  margin: 6px 0px 0px 0px;
+  padding: 10px 40px 10px 40px;
+}
+.subsection {
+  margin-left: 3px;
+  color: #333333;
+}
+
+.subsection p {
+  font-size: 12px;
+}
+#footer {
+  padding: 10px;
+  margin: 20px 0px 20px 0px;
+  border-top: solid #ccc 1px; 
+  color: #333333;
+}
+
+.errormark, .warningmark, .donemark, .infomark {
+  background: url(../images/icon_error_sml.gif) no-repeat;
+}
+
+.warningmark {
+  background-image: url(../images/icon_warning_sml.gif);
+}
+
+.donemark {
+  background-image: url(../images/icon_success_sml.gif);
+}
+
+.infomark {
+  background-image: url(../images/icon_info_sml.gif);
+}
+
+.section {
+  padding: 0px;
+}
+
+
+.source {
+  border: 1px solid #ccc;
+  background-color: #FFFFE8;        
+  width: 95%;
+  padding 0;
+  margin-right: 10px;
+}
