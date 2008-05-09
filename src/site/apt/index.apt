@@ -4,16 +4,17 @@
  Taro L. Saito (University of Tokyo)
  ---
  
-Welcome to UTGB
+Welcome to the UTGB Project Page
 
   This is a project page of the University of Tokyo Genome Browser (UTGB). The UTGB is a viewer and development toolkit for biological databases. 
 
 * Mailing List
 
+ Please post bug reports or feature requests to the public discussion forum:
+
  * {{{http://groups.google.com/group/utgb-users?hl=en}UTGB Users Public Discussion Group}}
 
-
-* Browsers 
+* Browser Demo
 
  * {{{http://utgenome.org/UTGBMedaka}UTGB Medaka Genome Browser (the latest beta version)}}
 
