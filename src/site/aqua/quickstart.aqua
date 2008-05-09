@@ -129,19 +129,18 @@ A web action receives a set of URL query parameters in the form of String.  For 
 public class HelloWorld extends WebTrackBase
 {
     private static final long    serialVersionUID    = 1L;
-     private static Logger _logger = Logger.getLogger(HelloWorld.class);
+    private static Logger _logger = Logger.getLogger(HelloWorld.class);
+   
+    private String name = "World";
+    private int year = 2007;
+    public HelloWorld()
+    {}
     
-     private String name = "World";
-     private int year = 2007;
-
-     public HelloWorld()
-     {}
-    
-     public void handle(HttpServletRequest request, HttpServletResponse response)
-       throws ServletException, IOException
-     {
-         response.getWriter().println("Happy new year! " + name + ":" + year);
-     }
+    public void handle(HttpServletRequest request, HttpServletResponse response)
+    throws ServletException, IOException
+    {
+        response.getWriter().println("Happy new year! " + name + ":" + year);
+    }
 
      // setters for year and name parameters 
      public void setYear(int year) { this.year = year; }
