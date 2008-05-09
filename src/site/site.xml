@@ -24,17 +24,12 @@
       <item name="Download" href="http://maven.utgenome.org/repository/artifact/org/utgenome"/>
       <item name="UTGB Public Discussion Forum" href="http://groups.google.com/group/utgb-users?hl=en"/>
   </links>
-    <menu ref="parent"/>
-    <menu name="UTGB Menu" inherit="top">
-      <item name="Top Page" href="http://utgenome.org/index.html"/>
-      <item name="UTGB Shell Quick Start" href="http://utgenome.org/quickstart.html"/>
-      <item name="UTGB Features" href="http://utgenome.org/feature.html"/>
-    </menu>
-    <menu name="Project Menu" inherit="top">
+
+    <menu name="Parent Project" ref="parent"/>
+    <menu name="UTGB Menu">
       <item name="Top Page" href="index.html"/>
-      <item name="Public Discussion Forum" href="http://groups.google.com/group/utgb-users?hl=en"/> 
-      <item name="Issue Management" href="http://trac.utgenome.org/project/UTGB"/>
-      <item name="Download" href="http://maven.utgenome.org/repository/artifact/org/utgenome"/>
+      <item name="UTGB Shell Quick Start" href="quickstart.html"/>
+      <item name="UTGB Features" href="feature.html"/>
      </menu>
     <menu ref="reports"/>
     <menu ref="modules"/>
