@@ -28,8 +28,6 @@
     <menu name="Parent Project" ref="parent"/>
     <menu name="UTGB Menu">
       <item name="Top Page" href="index.html"/>
-      <item name="UTGB Shell Quick Start" href="quickstart.html"/>
-      <item name="UTGB Features" href="feature.html"/>
      </menu>
     <menu ref="reports"/>
     <menu ref="modules"/>

@@ -1,0 +1,55 @@
+@title("Introduction")
+ 
+=Welcome to the UTGB Project Page
+
+  This is a project page of the {b|University of Tokyo Genome Browser (UTGB)}. The UTGB is a collection of projects that includes web-based track viewer, development toolkit for biological databases, etc.
+
+clip/browser-half.gif
+
+== Mailing List
+
+Future releases of UTGB will be announced in the following mailing list. Join now, and please post questions, additional feature requests, or bug reports to the mailing list:
+* [http://groups.google.com/group/utgb-users?hl=en UTGB Users Public Discussion Group]
+
+== Documentations
+
+* [quickstart.html UTGB Shell Quick Start Guide]
+** UTGB Shell is a web-based database browser development toolkit
+* [feature.html UTGB Features]
+
+== Browser Demo
+
+* [http://utgenome.org/UTGBMedaka UTGB Medaka Genome Browser] (the latest beta version)
+
+* [http://medaka.utgenome.org/ Previous version of UTGB Medaka Genome Browser]
+
+== UTGB Components
+===UTGB Core
+* Core library of the UTGB, which includes:
+** {b|Portable Web Server (Embedded Tomcat)}
+** {b|Embedded [http://www.sqlite.org SQLite] database}
+** {b|Smart Data Binding} !XML/JSON/Relational DB data to Java Class Object Binding Utility (!BeanUtil)
+** {b|Client-side Graphical User Interface} for genome tracks implemented with GWT (Google Web Toolkit).
+** etc.
+
+===UTGB Shell
+* Server-side track & Client-side browser interface development toolkit
+* see [quickstart.html UTGB Shell Quick Start Guide]
+
+===UTGB Widgets
+* UTGB's User Interface Package
+
+=== UTGB MMDB
+* UTGB Multimodal Database Query Package
+
+
+
+== Resources
+
+* [http://trac.utgenome.org/project/UTGB Issue Tracker]
+
+* [http://www.utgenome.org/wiki Previous version of the UTGB specification wiki] (In Japanese)
+
+* [http://groups.google.com/group/utgb?hl=en UTGB Developers Discussion Group] (restricted)
+
+

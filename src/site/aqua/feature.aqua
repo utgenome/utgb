@@ -1,2 +1,38 @@
+@title("UTGB Features")
+[index.html Top Page]
+
 = UTGB Features
+
+The {i|University of Tokyo Genome Browser} ({b|UTGB}) is a web-based genome database browser, which provides various genome information, including assembly sequences, genes, clones, homologus genome sequences to other species, etc.
+
+The distinctive features of [index.html UTGB] are as follows:
+
+* {b|Highly-sophisticated web interface} with {i|drag} & {i|drop} and {i|resize} supports of database tracks.
+** In UTGB,  we aggressivly incorporated the latest web application technologies, including [http://code.google.com/webtoolkit Google Web Tooklits] (GWT), to enhance the user experience. Traditional web applications have to redraw the entire page in order to move or resize some components within the displayed page, which requires frustrating page reloading. But in UTGB, drag & drop and resize operations can be performed quite smoothly, since we can relocate components (such as tracks) in a page locally by using JavaScript? engine. This method requires no page reloading. The modern web browsers (e.g., IE, Firefox, Safari, etc.) are already equipped with JavaScript? engine, so you can use the UTGB immediately. 
+
+* {b|Quick responce via AJAX} (Asynchronous !JavaScript + XML) technology. AJAX is a kind of back-ground internet connection, which utilizes the idle network resources while you are viewing a page. For example, our keyword search engine, which can quickly show your interested sequence positions from the input keywords (e.g., gene names, clones, EnsembleID, GO:Id, etc.), first submits your keywords to the database server, and waits the search results from the server in a background process. You can still continue the browsing, since there is no page move. After the search results are achieved, the UTGB dynamically displays the search results on the browser. 
+
+* {b|Customizable views:} Your configuration, such as a set of displayed tracks, track frame sizes, etc. can be saved as a file on your PC, and you can restore the browser state from the saved file. 
+
+==Browser Interface
+
+ The UTGB's interface has several tracks that can be used to browse genome sequences, genes, SNPs, etc. For the details of the individual tracks, see [http://trac.utgenome.org/project/UTGB/wiki/UTGBMedaka/Track UTGBMedaka/Track]
+
+clip/browser.gif
+
+== Track Frame
+
+===Icons
+
+*http://utgenome.org/UTGBMedaka/image/icon/icon_01.gif	{b|Configuration button}
+**Opens the configuration panel for the track
+
+*http://utgenome.org/UTGBMedaka/image/icon/icon_05.gif / http://utgenome.org/UTGBMedaka/image/icon/icon_06.gif {b|Adjusts the height of the track}
+**Resizes the track frame height according to the track image size
+
+*http://utgenome.org/UTGBMedaka/image/icon/icon_02.gif / http://utgenome.org/UTGBMedaka/image/icon/icon_03.gif	{b|!Minimize/Restore track button}
+**!Minimizes/Restore the height of the track frame
+
+*http://utgenome.org/UTGBMedaka/image/icon/icon_04.gif	{b|Close Button}
+** Closes unnecessary tracks
 
