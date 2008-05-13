@@ -16,7 +16,7 @@ Supporse you have the following XML data (saved as "gene.xml"), which describes 
 </gene>
 </code>
 
-And you write a corresponding Java class definition as follows:
+In order to parse this XML data, you have to write a corresponding Java class definition as follows:
 <code>
 class Gene 
 {
@@ -58,7 +58,5 @@ Gene gene = BeanUtil.createBeanFromXML(Gene.class, xmlReader);
 // gene.getEnd() == 4000
 </code>
 
-UTGB automatically converts string data appeared in the XML file into appropriate data tipe (integer, String, etc. ) by seeing setter methods in the class definition. 
-
-
+UTGB automatically converts string data appeared in the XML file into appropriate data type (integer, String, etc. ) by seeing setter methods in the class definition. 
 
