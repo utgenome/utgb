@@ -18,12 +18,12 @@
     <module>utgb-gallery</module>
     <module>utgb-widget</module>
     <module>utgb-human</module>
-    <module>utgb-medaka</module>
     <module>utgb-master</module>
     <module>utgb-mmdb</module>
     <module>utgb-util</module>
     <module>utgb-widget</module>
     <module>utgb-style</module>
+    <module>browser</module>
   </modules>
 
 
