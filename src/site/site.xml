@@ -19,17 +19,25 @@
   <body>
   <links>
      <item name="UTGB Project" href="http://utgenome.org/index.html"/>
+     <item name="UTGB Web Browsers" href="http://utgenome.org/browser/"/>
       <item name="UTGB
  Trac" href="http://trac.utgenome.org/project/UTGB"/>
       <item name="Download" href="http://maven.utgenome.org/repository/artifact/org/utgenome"/>
       <item name="UTGB Public Discussion Forum" href="http://groups.google.com/group/utgb-users?hl=en"/>
   </links>
 
-    <menu name="Parent Project" ref="parent"/>
-    <menu name="UTGB Menu">
-      <item name="About ${project.name}" href="index.html"/>
-     </menu>
-    <menu ref="reports"/>
-    <menu ref="modules"/>
+  <menu name="UTGB Project" ref="parent"/>
+
+  <menu name="Web Browsers">
+    <item name="UTGB Browsers" href="http://utgenome.org/browser/"/>
+    <item name="UTGB Medaka" href="http://utgenome.org/browser/utgb-medaka"/>
+  </menu>
+
+
+  <menu name="UTGB Menu">
+    <item name="About ${project.name}" href="index.html"/>
+   </menu>
+  <menu ref="reports"/>
+  <menu ref="modules" name="Program Modules"/>
   </body>
 </project>
