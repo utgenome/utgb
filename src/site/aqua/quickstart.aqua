@@ -8,19 +8,19 @@ In order to use UTGB, you need a JDK (Java Development Kit) version 1.5 or highe
  
 === Windows 
 
-* Download the latest version of UTGB shell archive utgb-shell-(version)-bin.zip from http://maven.utgenome.org/repository/artifact/org/utgenome/utgb-shell/, unpack it to anywhere you like, e.g., C:\utgb\utgb-shell-1.0
+* Download the latest version of UTGB shell archive utgb-shell-(version)-package.zip from http://maven.utgenome.org/repository/release/utgb-shell/, unpack it to anywhere you like, e.g., C:\utgb\utgb-shell-1.1.0
 * You need to set two environment variables. Press Win + Pause (or open Control Panel - System - Settings)  to open Environment Variable panel. 
-* Append C:\utgb\utgb-shell-1.0\bin to the PATH variable as follows:
-** PATH = C:\utgb\utgb-shell-1.0\bin;%PATH%  
+* Append C:\utgb\utgb-shell-1.1.0\bin to the PATH variable as follows:
+** PATH = C:\utgb\utgb-shell-1.1.0\bin;%PATH%  
 * Set the JAVA_HOME variable to your JDK (1.5 or higher) installation. For example,** JAVA_HOME = C:\Program Files\Java\jdk1.6.0_03 
 
 === Mac OS X & Linux
 
-* Download the UTGB Shell archive in the same way described in the Windows section.  In this example, we use $HOME/local/utgb-shell-1.0-SNAPSHOT, where $HOME is your home directory, e.g. !/Users/leo (in Mac OS X), !/home/leo (in Linux).
+* Download the UTGB Shell archive in the same way described in the Windows section.  In this example, we use $HOME/local/utgb-shell-1.1.0, where $HOME is your home directory, e.g. !/Users/leo (in Mac OS X), !/home/leo (in Linux).
 * Install JDK. We assume your JDK is installed in !/usr/java/jdk1.6.0_03.
 * Set the following environment variables in one of your .profile, .bash_profile, .zprofile, etc: 
 {{
- export UTGB_HOME=$HOME/local/utgb-shell-1.0
+ export UTGB_HOME=$HOME/local/utgb-shell-1.1.0
  export PATH=$UTGB_HOME/bin:$PATH
  export JAVA_HOME=/usr/java/jdk1.6.0_03
 }}
@@ -30,7 +30,7 @@ In order to use UTGB, you need a JDK (Java Development Kit) version 1.5 or highe
 
 {{
 leo@leopardcat~/../workspace> utgb    
-UTGB Shell: version (1.0) (Revision: 1339)
+UTGB Shell: version (1.1.0) (Revision: 1755)
 type --help for a list of the available sub commands.
 }}
 
@@ -39,7 +39,7 @@ type --help for a list of the available sub commands.
 UTGB command has several sub commands. To see a list of all sub commands, type {b|utgb --help}.
 
 {{
-UTGB Shell: version (1.0) (Revision: 1339)
+UTGB Shell: version (1.1.0) (Revision: 1339)
 usage: utgb <subcommand> [option] [args]
 Type utgb <subcommand> --help for a help on a specific subcommand.
 
@@ -235,3 +235,42 @@ In the debug dialog of the Eclipse, you will find {i|(your-app-name)-server} ite
 [clip/debug-dialog.gif]
 
 While you are coding the web application, Eclipse automatically reloads your change to the source codes, so interactive editing of your web application becomes possible with Eclipse.
+
+
+== Generating A GWT Interface
+Use {b|utgb gwt} command:
+{{
+myapp> utgb gwt
+myapp> utgb compile
+}}
+
+After the compilation of GWT codes (it usually takes a minute or more), you can see the GWT interface of the genome browser. First, launch the local web server, 
+{{
+myapp> utgb server
+}}
+then, open the page, http://localhost:8989/myapp/UTGBEntry.html 
+
+[clip/utgbentry.gif]
+
+You can modify the track contents by editing src/main/webapp/view/default-view.xml file. The format used in this XML file is the same with XML data that can be obtained from the {b|save view} button of the UTGB browsers. 
+
+
+To use another type of views, add a view parameter to the above URL, as follows:
+http://localhost:8989/myapp/UTGBEntry.html?view=anotherview.xml
+
+This URL loads !src/main/webapp/view/anotherview.xml file, then shows the track contents described in the view XML file.
+
+/*
+To change the default parameter values such as species, revision, target etc. you can also use query parameters of the URL:
+http://localhost:8989/myapp/UTGBEntry.html?species=medaka&revision=version1.0&target=scaffold1
+This URL shows a browser page of medaka, version1.0, scaffold1. 
+
+[clip/utgbentry-m.gif]
+*/
+
+
+
+
+
+
+
