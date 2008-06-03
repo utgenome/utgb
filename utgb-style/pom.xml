@@ -6,7 +6,7 @@
 
   <groupId>org.utgenome</groupId>
   <artifactId>utgb-style</artifactId>
-  <version>1.2-SNAPSHOT</version>
+  <version>1.2</version>
   <description>UTGBl Project Styles</description>
   <packaging>jar</packaging>
   <name>UTGB Style</name>
