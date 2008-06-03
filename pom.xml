@@ -31,8 +31,8 @@
   </issueManagement>
 
  <ciManagement>
-    <system>continuum</system>
-    <url>http://maven.utgenome.org/continuum</url>
+    <system>hudson</system>
+    <url>http://maven.utgenome.org/hudson</url>
   </ciManagement>
 
   <mailingLists>
