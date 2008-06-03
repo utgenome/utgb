@@ -2,18 +2,14 @@
  
 =Welcome to the UTGB Project Page
 
-  This is a project page of the {b|University of Tokyo Genome Browser (UTGB)}. The UTGB is a collection of projects that includes web-based track viewer, development toolkit for biological databases, etc.
+This is a project page of the {b|University of Tokyo Genome Browser (UTGB)}. The UTGB project includes web-based track viewer, development toolkit for biological databases, etc.
 
 clip/browser-half.gif
 
-== Mailing List
-
-Future releases of UTGB will be announced in the following mailing list. Join now, and please post questions, additional feature requests, or bug reports to the mailing list:
-* [http://groups.google.com/group/utgb-users?hl=en UTGB Users Public Discussion Group]
 
 == Documentations
 
-* [quickstart.html UTGB Shell Quick Start Guide]
+* [utgb-shell/quickstart.html UTGB Shell Quick Start Guide]
 ** UTGB Shell is a web-based database browser development toolkit
 
 * [feature.html UTGB Features]
@@ -26,8 +22,13 @@ Future releases of UTGB will be announced in the following mailing list. Join no
 
 * [http://medaka.utgenome.org/ Previous version of UTGB Medaka Genome Browser]
 
+== Mailing List & Public Discussion Forum
+
+Future releases of UTGB will be announced in the following mailing list. Join now, and please post questions, additional feature requests, or bug reports to the mailing list:
+* [http://groups.google.com/group/utgb-users?hl=en UTGB Users Public Discussion Group]
+
 == UTGB Components
-===UTGB Core
+===[./utgb-core UTGB Core]
 * Core library of the UTGB, which includes:
 ** {b|Portable Web Server (Embedded Tomcat)}
 ** {b|Embedded [http://www.sqlite.org SQLite] database}
@@ -35,14 +36,14 @@ Future releases of UTGB will be announced in the following mailing list. Join no
 ** {b|Client-side Graphical User Interface} for genome tracks implemented with GWT (Google Web Toolkit).
 ** etc.
 
-===UTGB Shell
+===[./utgb-shell UTGB Shell]
 * Server-side track & Client-side browser interface development toolkit
-* see [quickstart.html UTGB Shell Quick Start Guide]
+* see [utgb-shell/quickstart.html UTGB Shell Quick Start Guide]
 
-===UTGB Widgets
+===[./utgb-widget UTGB Widgets]
 * UTGB's User Interface Package
 
-=== UTGB MMDB
+=== [./utgb-mmdb UTGB MMDB]
 * UTGB Multimodal Database Query Package
 
 

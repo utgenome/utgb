@@ -21,7 +21,6 @@
     <module>utgb-mmdb</module>
     <module>utgb-util</module>
     <module>utgb-style</module>
-    <module>browser</module>
     <module>utgb-keyword</module>
   </modules>
 
