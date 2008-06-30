@@ -4,7 +4,7 @@
   <groupId>org.utgenome</groupId>
   <artifactId>utgb-parent</artifactId>
   <name>UTGB Project</name>
-  <version>1.3-SNAPSHOT</version>
+  <version>1.3</version>
   <description>The University of Tokyo Genome Browser (UTGB) Projects</description>
   <packaging>pom</packaging>
   
@@ -260,6 +260,18 @@
         <enabled>true</enabled>
       </snapshots>
     </repository>
+    <!-- Apache Snapshot Repository -->
+    <repository>
+      <id>apache.org</id>
+      <name>Maven Snapshots</name>
+      <url>http://people.apache.org/repo/m2-snapshot-repository</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
 
     <!-- UTGB Repository -->
     <repository>
@@ -284,6 +296,18 @@
       <id>xerial</id>
       <name>Xerial Artifact Repository</name>
       <url>http://www.xerial.org/maven/repository/artifact</url>
+    </pluginRepository>
+    <!-- Apache Snapshot Repository -->
+    <pluginRepository>
+      <id>apache.org</id>
+      <name>Maven Plugin Snapshots</name>
+      <url>http://people.apache.org/repo/m2-snapshot-repository</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
     </pluginRepository>
   </pluginRepositories>
 
