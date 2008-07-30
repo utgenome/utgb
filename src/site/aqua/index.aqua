@@ -9,7 +9,7 @@ clip/browser-half.gif
 
 == UTGB Toolkit Documentations
 
-* [utgb-shell UTGB Shell Manual]
+* [./utgb-shell/ UTGB Shell Manual]
 ** UTGB Shell is a command line toolkit for the genome browser development
 
 * [feature.html UTGB Features]
