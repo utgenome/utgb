@@ -7,18 +7,21 @@ This is a project page of the {b|University of Tokyo Genome Browser (UTGB)}. The
 clip/browser-half.gif
 
 
-== Documentations
+== UTGB Toolkit Documentations
 
-* [utgb-shell/quickstart.html UTGB Shell Quick Start Guide]
-** UTGB Shell is a web-based database browser development toolkit
+* [utgb-shell UTGB Shell Manual]
+** UTGB Shell is a command line toolkit for the genome browser development
 
 * [feature.html UTGB Features]
 
 * [databinding.html Smart Data Binding in UTGB]
 
-== Browser Demo
+== Genome Browser Demo
 
-* [http://utgenome.org/UTGBMedaka UTGB Medaka Genome Browser] (the latest beta version)
+* [http://utgenome.org/UTGBMedaka UTGB Medaka Genome Browser] 
+* [http://utgenome.org/repeatscape Repeatscape]
+* [http://utgenome.org/utgb-drosophila MachiBase for Drosophila Genome]
+
 
 * [http://medaka.utgenome.org/ Previous version of UTGB Medaka Genome Browser]
 
