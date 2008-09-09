@@ -317,7 +317,7 @@
 <link href="$relativePath/css/prettify.css" type="text/css" rel="stylesheet" />
 <script type="text/javascript" src="$relativePath/script/prettify.js"></script>
   </head>
-  <body class="composite" onload="prettyPrint()">
+  <body class="composite" onload="if (/*@cc_on!@*/true){prettyPrint();}">
     <div id="banner">
       #banner( $decoration.bannerLeft "bannerLeft" )
       #banner( $decoration.bannerRight "bannerRight" )
