@@ -33,8 +33,8 @@
   <menu name="Web Browsers">
     <item name="UTGB Browsers" href="browser.html"/>
     <item name="UTGB Medaka" href="http://utgenome.org/utgb-medaka"/>
-    <item name="UTGB Drosophila" href="http://utgenome.org/utgb-drosophila"/>
-    <item name="Repeatscape" href="http://utgenome.org/repeatscape"/>
+    <item name="Machibase (Drosopihla)" href="http://machibase.gi.k.u-tokyo.ac.jp"/>
+    <item name="Repeatscape" href="http://repeatscape.utgenome.org/"/>
   </menu>
 
   <menu name="UTGB Menu">

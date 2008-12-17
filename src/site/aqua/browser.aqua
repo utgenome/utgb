@@ -3,16 +3,16 @@
 == UTGB Medaka 
 
 [logo/utgb-medaka-logo.gif] UTGB {i|Medaka} genome resources
-* Web Browser http://utgenome.org/UTGBMedaka
+* Web browser http://utgenome.org/UTGBMedaka
 * Project Page http://utgenome.org/utgb-medaka
 
-== UTGB Drosophila
+==  MachiBase for Drosophila Genome (UTGB Drosophila)
 * Genome browser for {i|Drosophila Melanogaster.}
-** http://utgenome.org/utgb-drosophila/
+* http://machibase.gi.k.u-tokyo.ac.jp/
 
 == Repeatscape
 * Duplicate pattern browser for short-tag sequences
-* http://utgenome.org/repeatscape
+* http://repeatscape.utgenome.org/ 
 
 = Browsers Under Development
 
