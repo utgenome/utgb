@@ -21,30 +21,35 @@
      <item name="Top Page" href="index.html"/>
      <item name="Genome Browsers" href="browser.html"/>
      <item name="Download" href="download.html"/>
+     <item name="Publications" href="publication.html"/>
      <item name="UTGB Trac (Issue Manager)" href="http://trac.utgenome.org/project/UTGB"/>
      <item name="Discussion Forum" href="http://groups.google.com/group/utgb-users?hl=en"/>
   </links>
 
 <!--  <menu name="UTGB Project" ref="parent"/> -->
-
-  <menu name="Menu">
-    <item name="About ${project.name}" href="index.html"/>
-    <item name="UTGB Browsers" href="browser.html"/>
+  <menu name="Main">
+    <item name="Welcome" href="index.html"/>
     <item name="UTGB Toolkit" href="toolkit"/>
+    <item name="Publications" href="publication.html"/>
+    <item name="Members" href="members.html"/>
+  </menu>
+
+  <menu name="Get UTGB Toolkit">
     <item name="Download" href="download.html"/>
+    <item name="Release Notes" href="releases.html"/>
   </menu>
 
   <menu name="Genome Browsers">
     <item name="List of Genome Browsers" href="browser.html"/>
     <item name="UTGB Medaka" href="medaka"/>
-    <item name="Machibase (Drosopihla)" href="http://machibase.gi.k.u-tokyo.ac.jp"/>
+    <item name="Machibase" href="http://machibase.gi.k.u-tokyo.ac.jp"/>
     <item name="Repeatscape" href="http://repeatscape.utgenome.org/"/>
   </menu>
 
   <menu name="For Developers" ref="reports"/>
 
   <menu name="Developer Manual">
-    <item name="Information" href="development.html"/>
+    <item name="Development Notes" href="development.html"/>
   </menu>
 
   <menu name="Related Sites">
