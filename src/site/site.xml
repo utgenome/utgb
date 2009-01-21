@@ -43,7 +43,7 @@
 
   <menu name="For Developers" ref="reports"/>
 
-  <menu name="Developer Manual"/>
+  <menu name="Developer Manual">
     <item name="Information" href="development.html"/>
   </menu>
 
