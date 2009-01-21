@@ -22,8 +22,8 @@
      <item name="Genome Browsers" href="browser.html"/>
      <item name="Download" href="download.html"/>
      <item name="Publications" href="publication.html"/>
-     <item name="UTGB Trac (Issue Manager)" href="http://trac.utgenome.org/project/UTGB"/>
      <item name="Discussion Forum" href="http://groups.google.com/group/utgb-users?hl=en"/>
+     <item name="Trac" href="http://trac.utgenome.org/project/UTGB"/>
   </links>
 
 <!--  <menu name="UTGB Project" ref="parent"/> -->
