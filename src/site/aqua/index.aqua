@@ -1,10 +1,10 @@
 @title("UTGB Project Page")
  
-= Welcome to UTGB Project Page
+= Welcome to the UTGB Project Page
 
 == Create Your Own Genome Browsers with UTGB Toolkit
 
-{b|UTGB (University of Tokyo Genome Browser) Toolkit} is an open-source software for developing personalized genome browsers. The {b|UTGB Toolkit} is designed to meet the follwoing requirements:
+{b|UTGB (University of Tokyo Genome Browser) Toolkit} is an open-source software for developing personalized genome browsers. The UTGB Toolkit is designed to meet the follwoing requirements:
 * {b|Easy installation}
 ** No need to install other web server programs, database management sysytems, etc.
 * {b|Guaranteed data privacy}

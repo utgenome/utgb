@@ -7,7 +7,7 @@
   <bannerLeft>
     <name>UTGB</name>
     <src>images/utgb-title-small.gif</src>
-    <href>http://utgenome.org/index.html</href>
+    <href>http://utgenome.org/</href>
   </bannerLeft>
 
   <skin>
@@ -20,6 +20,7 @@
   <links>
      <item name="Top Page" href="index.html"/>
      <item name="Genome Browsers" href="browser.html"/>
+     <item name="Documentations" href="toolkit"/>
      <item name="Download" href="download.html"/>
      <item name="Publications" href="publication.html"/>
      <item name="Discussion Forum" href="http://groups.google.com/group/utgb-users?hl=en"/>
@@ -28,8 +29,7 @@
 
 <!--  <menu name="UTGB Project" ref="parent"/> -->
   <menu name="Main">
-    <item name="Welcome" href="index.html"/>
-    <item name="UTGB Toolkit" href="toolkit"/>
+    <item name="Top Page" href="index.html"/>
     <item name="Publications" href="publication.html"/>
     <item name="Members" href="members.html"/>
   </menu>
@@ -38,19 +38,23 @@
     <item name="Download" href="download.html"/>
     <item name="Release Notes" href="releases.html"/>
   </menu>
+  
+  <menu name="Documentations">
+    <item name="UTGB Toolkit" href="toolkit"/>
+  </menu>
 
   <menu name="Genome Browsers">
-    <item name="List of Genome Browsers" href="browser.html"/>
+    <item name="Genome Browser List" href="browser.html"/>
     <item name="UTGB Medaka" href="medaka"/>
     <item name="Machibase" href="http://machibase.gi.k.u-tokyo.ac.jp"/>
     <item name="Repeatscape" href="http://repeatscape.utgenome.org/"/>
   </menu>
 
-  <menu name="For Developers" ref="reports"/>
-
   <menu name="Developer Manual">
-    <item name="Development Notes" href="development.html"/>
+    <item name="Development Note" href="development.html"/>
   </menu>
+
+  <menu name="For Developers" ref="reports"/>
 
   <menu name="Related Sites">
     <item name="Morishita Laboratory" href="http://mlab.cb.k.u-tokyo.ac.jp/en/"/>
