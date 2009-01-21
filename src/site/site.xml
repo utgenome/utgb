@@ -42,7 +42,6 @@
   </menu>
 
   <menu name="For Developers" ref="reports"/>
-  </menu>
 
   <menu name="Developer Manual"/>
     <item name="Information" href="development.html"/>
