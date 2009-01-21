@@ -18,31 +18,37 @@
 
   <body>
   <links>
-     <item name="UTGB Project" href="http://utgenome.org/index.html"/>
-     <item name="UTGB Web Browsers" href="http://utgenome.org/browser.html"/>
-     <item name="UTGB Trac"
-     href="http://trac.utgenome.org/project/UTGB"/>
-     <item name="Download"
-     href="http://maven.utgenome.org/repository/artifact/org/utgenome"/>
-     <item name="UTGB Public Discussion Forum"
-     href="http://groups.google.com/group/utgb-users?hl=en"/>
+     <item name="Top Page" href="index.html"/>
+     <item name="Genome Browsers" href="browser.html"/>
+     <item name="Download" href="download.html"/>
+     <item name="UTGB Trac (Issue Manager)" href="http://trac.utgenome.org/project/UTGB"/>
+     <item name="Discussion Forum" href="http://groups.google.com/group/utgb-users?hl=en"/>
   </links>
 
-  <menu name="UTGB Project" ref="parent"/>
+<!--  <menu name="UTGB Project" ref="parent"/> -->
 
-  <menu name="Web Browsers">
+  <menu name="Menu">
+    <item name="About ${project.name}" href="index.html"/>
     <item name="UTGB Browsers" href="browser.html"/>
+    <item name="UTGB Toolkit" href="toolkit"/>
+    <item name="Download" href="download.html"/>
+  </menu>
+
+  <menu name="Genome Browsers">
+    <item name="List of Genome Browsers" href="browser.html"/>
     <item name="UTGB Medaka" href="http://utgenome.org/utgb-medaka"/>
     <item name="Machibase (Drosopihla)" href="http://machibase.gi.k.u-tokyo.ac.jp"/>
     <item name="Repeatscape" href="http://repeatscape.utgenome.org/"/>
   </menu>
 
-  <menu name="UTGB Menu">
-    <item name="About ${project.name}" href="index.html"/>
-    <item name="UTGB Browsers" href="browser.html"/>
-    <item name="How to develop your own browser" href="utgb-shell/quickstart.html"/>
+  <menu name="For Developers" ref="reports"/>
+    <item name="Information" href="development.html"/>
   </menu>
-  <menu ref="reports"/>
-  <menu ref="modules" name="Program Modules"/>
+
+  <menu name="Developer Manual"/>
+    <item name="Information" href="development.html"/>
+  </menu>
+
+<!--  <menu ref="modules" name="Program Modules"/> -->
   </body>
 </project>

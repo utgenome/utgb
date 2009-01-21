@@ -1,18 +1,25 @@
-= UTGB Web Browsers
+= List of Public Genome Browsers
 
 == UTGB Medaka 
 
 [logo/utgb-medaka-logo.gif] UTGB {i|Medaka} genome resources
 * Web browser http://utgenome.org/UTGBMedaka
-* Project Page http://utgenome.org/utgb-medaka
 
-==  MachiBase for Drosophila Genome (UTGB Drosophila)
+clip/browser-half.gif
+
+* [http://medaka.utgenome.org/ Previous version of UTGB Medaka Genome Browser]
+
+==  !MachiBase for Drosophila Genome (UTGB Drosophila)
 * Genome browser for {i|Drosophila Melanogaster.}
 * http://machibase.gi.k.u-tokyo.ac.jp/
+
+clip/machibase.png 
 
 == Repeatscape
 * Duplicate pattern browser for short-tag sequences
 * http://repeatscape.utgenome.org/ 
+
+clip/repeatscape.png
 
 = Browsers Under Development
 

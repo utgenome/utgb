@@ -1,0 +1,71 @@
+@title("Build UTGB Shell from Source")
+
+[index.html Top Page]
+
+= Build UTGB Shell from Source
+
+== Setup
+In ordre to build the UTGB shell from the source codes, you need the following tools:
+* Java SDK (1.5 or higher)
+* Subversion 
+* [http://maven.apache.org Maven] (version 2.0.7 or higher)
+* GNU Make 
+
+=== Note
+* JAVA_HOME and PATH environment variables must be set as described in [quickstart.html here]. If you are an Windows user, you have to use cygwin (an UNIX emulator) to build UTGB shell.
+
+== Build
+First, obtain the entire source code from our Subversion repository:
+{{
+> svn checkout http://svn.utgenome.org/utgb/trunk/utgb/utgb-shell utgb-shell
+}}
+
+Then, do make:
+{{
+> cd utgb-shell
+> make
+}}
+
+To install the UTGB shell, you must be a super user, then {b|make install}.
+<code>
+utgb-shell# make install
+</code>
+
+== Installation to another folder
+
+To alter the installation folder, edit the INSTALL_DIR variable in the Makefile:
+<code>
+INSTALL_DIR = /usr/local
+</code>
+
+For example, with the following setting, the UTGB shell is installed as /home/leo/local/bin/utgb
+<code>
+INSTALL_DIR = /home/leo/local
+</code>
+
+== Confirm the UTGB shell installation
+
+Set up the PATH variable (see also [quickstart.html this document]) so that the installed utgb command can be found from the command line:
+<code>
+export PATH=/home/leo/local/bin:$PATH
+</code>
+
+Then, type {b|utgb}:
+<code>
+> utgb
+UTGB Shell: version 1.1.3-SNAPSHOT (Revision: 1776)
+type --help for a list of the available sub commands.
+</code>
+
+== Upgrade UTGB Shell
+
+To install the latest version of the UTGB shell, use {b|svn update}:
+<code>
+> svn update
+</code>
+
+Then, make clean, make, make install. 
+
+== What's Next?
+
+Enjoy track development with UTGB! [quickstart.html Quick Start Guide]

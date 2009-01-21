@@ -1,28 +1,41 @@
 @title("Welcome")
  
-=Welcome to the UTGB Project Page
+= UTGB Toolkit 
 
-This is a project page of the {b|University of Tokyo Genome Browser (UTGB)}. The UTGB project includes web-based track viewer, development toolkit for biological databases, etc.
-
-clip/browser-half.gif
+== Faster Analysis using Personalized Genome Browsers
 
 
-== UTGB Toolkit Documentations
+{b|UTGB (University of Tokyo Genome Browser)} Toolkit is an open-source software for developing personalized genome browsers. The UTGB Toolkit is designed to meet three major requirements for personalization of genome browsers:
+* Easy installation of the system with minimum efforts
+* Guaranteed data privacy
+* Rapid interactive design of web interfaces tailored to individual needs.
 
-* [./utgb-shell/ UTGB Shell Manual]
-** UTGB Shell is a command line toolkit for the genome browser development
 
+The UTGB Toolkit is licensed under an open source license, and the software is freely available at http://utgenome.org/
+
+/*
+The advent of high-throughput DNA sequencers has increased the pace of collecting enormous amounts of genomic information. 
+
+yielding {b|billions of nucleotides} on a weekly basis. This advance represents an improvement of two orders of magnitude over traditional Sanger sequencers in terms of the number of nucleotides per unit time, allowing even small groups of researchers to obtain huge volumes of genomic data over fairly short period. Consequently, a pressing need exists for the development of personalized genome browsers for analyzing these immense amounts of private data. 
+== Why personalized genome browsers are needed? 
+
+*/
+
+== Learn More 
 * [feature.html UTGB Features]
+** Learn the features UTGB Toolkit offers, and how you can quickly develop personalized genome browsers.
 
 
-== Genome Browser Demo
+== Getting Started
 
-* [http://utgenome.org/UTGBMedaka UTGB Medaka Genome Browser] 
-* [http://repeatscape.utgenome.org/ Repeatscape]
-* [http://machibase.gi.k.u-tokyo.ac.jp/ MachiBase for Drosophila Genome]
+* [./toolkit/ UTGB Toolkit Manual]
+** How to develop your own genome browser with UTGB Toolkit
 
+== Puglic Genome Browsers developed by using UTGB Toolkit
 
-* [http://medaka.utgenome.org/ Previous version of UTGB Medaka Genome Browser]
+* [browser.html List of Public Genome Browsers]
+
+clip/browser-half.gif clip/machibase.png clip/repeatscape.png
 
 == Mailing List & Public Discussion Forum
 
@@ -31,33 +44,5 @@ Future releases of UTGB will be announced in the following mailing list. Join no
 * [http://groups.google.com/group/utgb-users?hl=en UTGB Users Public Discussion Group]
 * [http://groups.google.com/group/utgb-users-jp UTGB Users JP] (for Japanese people)
 
-== UTGB Components
-===[./utgb-core UTGB Core]
-* Core library of the UTGB, which includes:
-** {b|Portable Web Server (Embedded Tomcat)}
-** {b|Embedded [http://www.sqlite.org SQLite] database}
-** {b|Smart Data Binding} !XML/JSON/Relational DB data to Java Class Object Binding Utility (!BeanUtil)
-** {b|Client-side Graphical User Interface} for genome tracks implemented with GWT (Google Web Toolkit).
-** etc.
-
-===[./utgb-shell UTGB Shell]
-* Server-side track & Client-side browser interface development toolkit
-* see [utgb-shell/quickstart.html UTGB Shell Quick Start Guide]
-
-===[./utgb-widget UTGB Widgets]
-* UTGB's User Interface Package
-
-=== [./utgb-mmdb UTGB MMDB]
-* UTGB Multimodal Database Query Package
-
-
-
-== Resources
-
-* [http://trac.utgenome.org/project/UTGB Issue Tracker]
-
-* [http://www.utgenome.org/wiki Previous version of the UTGB specification wiki] (In Japanese)
-
-* [http://groups.google.com/group/utgb?hl=en UTGB Developers Discussion Group] (restricted)
 
 

@@ -1,0 +1,25 @@
+= Information for UTGB Developers
+== Mailing List
+* [http://groups.google.com/group/utgb UTGB Developers] (only for UTGB developers)
+
+== Resources
+* [http://trac.utgenome.org/project/UTGB Issue Tracker]
+* [http://www.utgenome.org/wiki Previous version of the UTGB specification wiki] (In Japanese)
+* [http://groups.google.com/group/utgb?hl=en UTGB Developers Discussion Group] (restricted)
+
+
+== UTGB Components
+===[./utgb-core UTGB Core]
+* Core library of the UTGB, which includes:
+** {b|Portable Web Server (Embedded Tomcat)}
+** {b|Embedded [http://www.sqlite.org SQLite] database}
+** {b|Smart Data Binding} !XML/JSON/Relational DB data to Java Class Object Binding Utility (!BeanUtil)
+** {b|Client-side Graphical User Interface} for genome tracks implemented with GWT (Google Web Toolkit).
+** etc.
+
+===[./utgb-shell UTGB Shell]
+* Server-side track & Client-side browser interface development toolkit
+* see [utgb-shell/quickstart.html UTGB Shell Quick Start Guide]
+
+===[./utgb-widget UTGB Widgets]
+* UTGB's User Interface Packag
