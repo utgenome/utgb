@@ -1,0 +1,57 @@
+= FAQ
+
+(The following FAQs are written for the previous version of UTGB Medaka browser, and now obsolete)
+
+== Display 
+
+===Q: When I try to start the ALPS online mapping, I get the message "Running alignment" .
+A: Please send an out-of-service report to webmaster AT utgenome.org
+
+===Q: When I mapped an EST sequence on medaka genome using ALPS online mapping system, it was separated into two scaffolds. 
+A: EST information is not utilized to assemble shotgun sequences. It is possible to separate one EST into two scaffolds.
+
+===Q: A Red vertical line sometimes appear. What the red line means?
+A: When you point a mouse on the blue bars at the top and the button of the tracks, red line appears. Anchor one position by double click and double click again on another position, then you can zoom up to the pinched region.
+
+== Track information and Operation 
+
+===Q: When I tried to map my gene using ALPS, no corresponding sequence was found. What happened?
+A: The small scaffolds, which are less than 2 kb, are not on the UTGB medaka. You may try to blast against shotgun read at NIG genome sequence center (http://dolphin.lab.nig.ac.jp/medaka/Åj. 
+
+===Q: Can I execute BLAST on UTGB medaka?
+A: It is impossible. Please use other sites listed below. NIG sequencing center http://dolphin.lab.nig.ac.jp/medaka/ ensembl http://www.ensembl.org/Oryzias_latipes/index.html
+
+===Q: Why are some annotation track missing from the latest version?
+A: Sorry, under construction (see Table 1).
+
+===Q: Yesterday I was looking at a gene in a specific scaffold, and today the scaffold number has changed. What happened? 
+A: Check whether you are using the same assembly version that you were using yesterday. The scaffold numbers change between release versions.
+
+===Q: Is there an easy way to locate old scaffolds on the new release version?
+A: There is no translating coordinates between versions.
+
+===Q: What is the meaning of the scaffold number?
+A: The scaffolds are numbered from the longest one.
+
+===Q: How can I move to the next scaffold?
+A: Click the scaffold numbers, which are shown in the both ends of chromosome overview track.
+
+===Q: How can I obtain the position of the scaffold on the linkage group?
+A: In chromosome overview, yellow bar means a whole linkage group and blue bar means the scaffold that is displayed.
+
+===Q: What kind of program is used fro gene prediction?
+A: We use genscan program.
+
+===Q: How can I take a screen shot of a UTGB medaka track display for publication?
+A: To save a Genome Browser tracks image to a file, click the PNG link in the top menu on the tracks page. The image of the currently displayed tracks will be displayed in PNG format, which can be printed or saved as a bitmap file.
+
+== Resources 
+
+===Q:	What is the origin for the assemble data?
+A:	The medaka genome project is a collaboration among Morishita lab. (Dept. Comp. Biol. Univ. Tokyo), Takeda lab. (Dept. Biol. Sci. Univ. Tokyo) and Kohara lab. (Cen. Gen. Res. Info. Natl. Inst. Genet.) and was started in February 2001.
+
+===Q:	What strain of medaka was used for the UTGB medaka?
+A:	Hd-rR. Strain genome is assembled. HNI strain is also used for comparing polymorphism between strains.
+
+===Q:	Are their any difference in genome data between UTGB and Ensembl?
+A:	 The ensembl genome sequencing and assembly for MEDAKA1 (October 2005) were provided from medaka genome project and its assembly version is the same as version 1.0 in UTGB. Both website also display their own analysis.

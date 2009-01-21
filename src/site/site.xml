@@ -36,7 +36,7 @@
 
   <menu name="Genome Browsers">
     <item name="List of Genome Browsers" href="browser.html"/>
-    <item name="UTGB Medaka" href="http://utgenome.org/utgb-medaka"/>
+    <item name="UTGB Medaka" href="medaka"/>
     <item name="Machibase (Drosopihla)" href="http://machibase.gi.k.u-tokyo.ac.jp"/>
     <item name="Repeatscape" href="http://repeatscape.utgenome.org/"/>
   </menu>
@@ -46,6 +46,12 @@
   <menu name="Developer Manual">
     <item name="Information" href="development.html"/>
   </menu>
+
+  <menu name="Related Sites">
+    <item name="Morishita Laboratory" href="http://mlab.cb.k.u-tokyo.ac.jp/en/"/>
+    <item name="Xerial Project" href="http://www.xerial.org/"/>
+  </menu>
+  
 
 <!--  <menu ref="modules" name="Program Modules"/> -->
   </body>
