@@ -4,7 +4,7 @@
   <groupId>org.utgenome</groupId>
   <artifactId>utgb-parent</artifactId>
   <name>UTGB Project</name>
-  <version>1.3.1</version>
+  <version>1.3.2-SNAPSHOT</version>
   <description>The University of Tokyo Genome Browser (UTGB) Projects</description>
   <packaging>pom</packaging>
   
@@ -15,10 +15,10 @@
   <modules>
     <module>utgb-core</module>
     <module>utgb-shell</module>
-    <module>utgb-gallery</module>
+<!--  <module>utgb-gallery</module> -->
     <module>utgb-widget</module>
     <module>utgb-master</module>
-    <module>utgb-mmdb</module>
+<!--    <module>utgb-mmdb</module> -->
     <module>utgb-util</module>
     <module>utgb-style</module>
     <module>utgb-keyword</module>
@@ -30,7 +30,7 @@
     <url>http://trac.utgenome.org/project/UTGB/</url>
   </issueManagement>
 
- <ciManagement>
+  <ciManagement>
     <system>hudson</system>
     <url>http://utgenome.org/hudson</url>
   </ciManagement>
@@ -186,11 +186,12 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
+	<version>2.0-beta-7</version>
         <dependencies>
           <dependency>
             <groupId>org.xerial.maven</groupId>
             <artifactId>doxia-aqua</artifactId>
-            <version>1.0.3</version>
+            <version>1.0.5</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -216,7 +217,7 @@
         <version>2.2</version>
         <configuration>
           <doctitle>UTGB Project API</doctitle>
-          <aggregate>false</aggregate>
+          <aggregate>true</aggregate>
           <locale>en_US</locale>
 <!--          <stylesheetfile>${basedir}/javadoc.css</stylesheetfile> -->
           <bottom><![CDATA[<a rel="license" href="http://creativecommons.org/licenses/by-sa/2.1/jp/"><img alt="Creative Commons License" border="0" src="http://creativecommons.org/images/public/somerights20.gif" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/2.1/jp/">Creative Commons Attribution-ShareAlike 2.1 Japan License</a>.<!--<rdf:RDF xmlns="http://web.resource.org/cc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"><Work rdf:about=""><dc:date>2005</dc:date><dc:rights><Agent><dc:title>utgenome org.</dc:title></Agent></dc:rights><license rdf:resource="http://creativecommons.org/licenses/by-sa/2.1/jp/" /></Work><License rdf:about="http://creativecommons.org/licenses/by-sa/2.1/jp/"><permits rdf:resource="http://web.resource.org/cc/Reproduction" /><permits rdf:resource="http://web.resource.org/cc/Distribution" /><requires rdf:resource="http://web.resource.org/cc/Notice" /><requires rdf:resource="http://web.resource.org/cc/Attribution" /><permits rdf:resource="http://web.resource.org/cc/DerivativeWorks" /><requires rdf:resource="http://web.resource.org/cc/ShareAlike" /></License></rdf:RDF>-->]]></bottom>
@@ -227,7 +228,7 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jxr-plugin</artifactId>
 	  <configuration>
-            <aggregate>false</aggregate>
+            <aggregate>true</aggregate>
           </configuration>
 	</plugin>
 
@@ -241,6 +242,9 @@
 	<plugin>
 	  <groupId>org.apache.maven.plugins</groupId>
 	  <artifactId>maven-surefire-report-plugin</artifactId>
+	  <configuration>
+            <aggregate>true</aggregate>
+          </configuration>
 	</plugin>
     </plugins>
   </reporting>
