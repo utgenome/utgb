@@ -67,37 +67,45 @@ a.newWindow, a.newWindow:link, a.newWindow:visited, a.newWindow:active, a.newWin
   padding-right: 18px;
 }
 h2 {
-  color: white;
+/*
+  color: #3399AA;
+
   background-image: url(../images/border2.png);
   background-repeat: no-repeat;
+  background-color: #B2ECFD;
+*/
+  color: white;
+/*  background-color: #006890; */
+  background-color: #0089ba;
   border-top: 0;
   border-left: 0;   
-  border-right: 2px solid #3399CC;
-  border-bottom: 2px solid #3399CC;
-  background-color: #B2ECFD;
+  border-right: 2px solid #F0F0FF;
+  border-bottom: 2px solid #F0F0FF;
   padding-top: 2px;
-  padding-left: 5px;
+  padding-bottom: 1px;
+  padding-left: 10px;
   width: 99%;
+  font-size: 19px;
 }
 
 h3
 {
-  color: #3366AA;
+  color: #3380AA;
   background-image: url(../images/banner_w.png);
   background-repeat: no-repeat;
   background-color: #F0FFFF;
   border-bottom: 2px solid #AADDFF;
-  border-left: 2px solid #99CCFF;
+  border-right: 2px solid #99CCFF;
   border-top: 1px solid #EEEEFF;
-  border-right: 1px solid #EEEEFF;
-  padding: 2px;
+  border-left: 1px solid #EEEEFF;
+  margin-left: 5px;
   padding-left: 5px;
   width: 98%;
 }
 
 h4
 {
-  color: #2255AA;
+  color: #006890;
   margin: 2px;
   padding: 2px;
   padding-left: 10px;
@@ -105,6 +113,7 @@ h4
 
 
 p {
+  padding-left: 10px;
   line-height: 1.3em;
   font-size: 14px;
   color: #000;
@@ -208,7 +217,13 @@ table {
 
 b 
 { 
-  color: #003880;
+/*  color: #ffa338;*/
+ color: #ed8f4e;
+}
+
+i
+{
+ color: #5c6aa6;
 }
 
 .xright a:link, .xright a:visited, .xright a:active {
