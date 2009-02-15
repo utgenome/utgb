@@ -23,7 +23,9 @@ The UTGB Toolkit includes the UTGB Shell, a command-line client for developing y
 === Miscellaneous
 * [build.html Build UTGB Shell from Source Codes]
 
-== REL (Relation) Data Format 
-REL is a simple text format for describing data. 
-* [rel-spec.html REL format specification]
+== Silk Data Format 
+Silk is an efficient text format for describing biological data. 
+* [silk.html Silk format specification]
+
+
 
