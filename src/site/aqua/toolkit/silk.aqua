@@ -7,7 +7,7 @@
 This document is written by Taro L. Saito.
 
 * Introduction
-** [#WhatIsSilk What is Silk]
+** [#WhatisSilk What is Silk?]
 ** [#SilkFeatures Silk Features]
 ** [#SilkDataModel Silk Data Model]
 ** [#WhatSilkisfor What Silk is for?]
@@ -114,27 +114,42 @@ White spaces around text values will be ignored.
 
 == Nested tree nodes
 
-Indentation before hyphen ('-') represents tree node depth. Only space (' ') characters are allowed before the indentation hyphen ('-'). Tab character ('\t') cannot be used for indentation.
+Indentation before hyphen ('-') represents tree node depth. Only space characters (' ') are allowed before the indentation hyphen ('-'). Tab character ('\t') cannot be used for indentations.
 
+{b|Silk}
 <code>
 - book
  - id: 1
  - title: Database Management Systems
  - isbn:0071230572
  - year:2002
+- book		
+ - id: 2
+ - title: Compilers: Second Edition
+ - isbn:0321547985
+ - year:2007
 </code>
 
 {b|JSON}
 <code>
-{
- "book":
+[
+ {"book":
   {
    "id":1, 
    "title":"Database Management Systems", 
    "isbn":"0071230572", 
    "year":2002
   }
-}
+ },
+ {"book":
+  {
+   "id":2, 
+   "title":"Compilers: Second Edition",
+   "isbn":"03215479785", 
+   "year":2007
+  }
+ }
+]
 </code>
 
 {b|XML}
@@ -145,20 +160,27 @@ Indentation before hyphen ('-') represents tree node depth. Only space (' ') cha
  <isbn>0071230572</isbn>
  <year>2002</year>
 </book>
+<book>
+ <id>2</id>
+ <title>Compilers: Second Edition</title>
+ <isbn>0321547985</isbn>
+ <year>2007</year>
+</book>
 </code>
 
 == Tab-separated data 
 
 The design concept of Silk format is to reduce redandancy of XML or text data format in describing large data set. If node description ends with a bar '|', following lines are splitted by tabs, and each text component separated by tabs is assigned a corresponding node name. The node name of each tab-separated data can be specified in the preceding child node descriptions:
 {b|Silk}
-<code>
+<pre>
 -book(id, title, isbn, year)|
 1	Database Management Systems	0071230572	2002
 2	Compilers: Second Edition	0321547985	2007
 
+
 # Tab-separated data region end when a new node is found
 -updated: 2009/02/16
-</code>
+</pre>
 
 {b|JSON}
 <code>
@@ -232,6 +254,29 @@ Multi-line text values in Silk are connected into a single string. Leading white
   "sequence":"ATGGATGGAGAGAATCACTCAGTGGTATCTGAGTTTTTGTTTCTGGGACTCACTCATTCATGGGAGATCCAGCTCCTCCTCCTAGTGTTTTCCTCTGTGCTCTATGTGGCAAGCATTACTGGAAACATCCTCATTGTGTTTTCTGTGACCACTGACCCTCACTTACACTCCCCCATGTACTTTCTACTGGCCAGTCTCTCCTTCATTGACTTAGGAGCCTGCTCTGTCACTTCTCCCAAGATGATTTATGACCTGTTCAGAAAGCGCAAAGTCATCTCCTTTGGAGGCTGCATCGCTCAAATCTTCTTCATCCACGTCGTTGGTGGTGTGGAGATGGTGCTGCTCATAGCCATGGCCTTTGACAGATATGTGGCCCTATGTAAGCCCCTCCACTATCTGACCATTATGAGCCCAAGAATGTGCCTTTCATTTCTGGCTGTTGCCTGGACCCTTGGTGTCAGTCACTCCCTGTTCCAACTGGCATTTCTTGTTAATTTAGCCTTCTGTGGCCCTAATGTGTTGGACAGCTTCTACTGTGACCTTCCTCGGCTTCTCAGACTAGCCTGTACCGACACCTACAGATTGCAGTTCATGGTCACTGTTAACAGTGGGTTTATCTGTGTGGGTACTTTCTTCATACTTCTAATCTCCTACGTCTTCATCCTGTTTACTGTTTGGAAACATTCCTCAGGTGGTTCATCCAAGGCCCTTTCCACTCTTTCAGCTCACAGCACAGTGGTCCTTTTGTTCTTTGGTCCACCCATGTTTGTGTATACACGGCCACACCCTAATTCACAGATGGACAAGTTTCTGGCTATTTTTGATGCAGTTCTCACTCCTTTTCTGAATCCAGTTGTCTATACATTCAGGAATAAGGAGATGAAGGCAGCAATAAAGAGAGTATGCAAACAGCTAGTGATTTACAAGAGGATCTCATAA"}}
 </code>
 
+== Import another file
+
+Silk format has a built-in support of import function. Import is useful to annotate existing data (e.g., tab-separated data) with Silk. The following examples loads tab-separated data from the file.
+
+<code>
+- book(id, title, isbn, year)|
+@import(book.tab) 
+</code>
+
+book.tab
+<pre>
+1	Database Management Systems	0071230572	2002
+2	Compilers: Second Edition	0321547985	2007
+</pre>
+
+The above data using two files are equivalent to the following Silk file:
+<pre>
+- book(id, title, isbn, year)|
+1	Database Management Systems	0071230572	2002
+2	Compilers: Second Edition	0321547985	2007
+</pre>
+
+
 
 == In-line JSON data (Array)
 
@@ -261,6 +306,8 @@ JSON data can be embedded as a text value. To use in-line json data, you have to
 </code>
 
 == In-line JSON data (Object)
+
+When you have to describe several parameter values for each node, but appearance of these parameters may varies, you can use in-line json object description. If the node name is '_' (underscore), each component in the in-line json data is treated as a child node.
 
 {b|Silk}
 <code>
@@ -293,6 +340,40 @@ JSON data can be embedded as a text value. To use in-line json data, you have to
 </code>
 
 
+It is okay to wrap in-line json data within a named node:
+
+{b|Silk}
+<code>
+-book(id, title, isbn, year, param[json])|
+1	Database Management Systems	0071230572	2002	{"star":5, "comment":"good book"}
+2	Compilers: Second Edition	0321547985	2007	{"tags":["read later", "textbook"]}
+</code>
+
+
+{b|JSON}
+<code>
+{
+ "book":[
+   {
+     "id":1, 
+     "title":"Database Management Systems", 
+     "isbn":"0071230572", 
+     "year":2002,
+     "param":{"star":5, "comment":"good book"}
+   },
+   {
+     "id":2, 
+     "title":"Compilers: Second Edition",
+     "isbn":"0321547985", 
+     "year":2007,
+     "param":{"tags":["read later", "textbook"]}
+   }
+ ]
+}
+</code>
+
+
+
 == Preamble
 
 Preamble beginning with '%' symbol specifies version or encoding of Silk format. This line should be placed in the first line of Silk files in order to change the behaviour of the Silk processor correctly according to the specified character encodings. Preamble description can be ommitted. 
@@ -310,7 +391,7 @@ Preamble beginning with '%' symbol specifies version or encoding of Silk format.
 
 
 = Silk Example
-<code>
+<pre>
 % silk(version:1.0)
 # single comment line
 
@@ -345,4 +426,4 @@ chr10	gene3	+	357521	358460
 chr3	gene4	+	357521	358460
 chr1	gene5	+	357521	358460
 
-</code>
+</pre>
