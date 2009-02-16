@@ -51,13 +51,14 @@ div.clear hr{
   padding: 3px 10px 3px 10px;
 }
 #leftColumn {
- width: 170px;
  float:left;
- overflow: auto;
+ width: 170px;
+ overflow: hidden;
 }
 #bodyColumn {
   margin-right: 1.5em;
-  margin-left: 197px;
+  margin-left: 198px; 
+  width: 80%;
 }
 #legend {
   padding: 8px 0 8px 0;

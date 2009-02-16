@@ -39,6 +39,7 @@
   
   <menu name="Documentations">
     <item name="UTGB Toolkit" href="toolkit"/>
+    <item name="Silk Format" href="toolkit/silk.html"/>
   </menu>
 
   <menu name="Genome Browsers">
