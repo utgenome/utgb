@@ -48,7 +48,7 @@ Data model that can be described with Silk format is a {b|forest}, that is, a li
 
 == What Silk is for?
 
-Silk format has no need to close tags or quotations. This feature is preferrable for data logging, which needs to incrementally append data to the end of a file. Silk is useful for accumulating program outputs, too. If you do not like verbose data descriptions of XML or JSON formats, Silk might satisfy your needs, because embedded tab-separated data description significantly reduces the data size compared to XML and JSON.
+Silk format has no need to close tags or quotations. This feature is suitable for data logging, which needs to incrementally append data to the end of a file. Silk is also useful for accumulating program outputs. If you do not like verbose data descriptions of XML or JSON formats, Silk might satisfy your needs, because embedded tab-separated data description significantly reduces the data size compared to XML and JSON.
 
 == What Silk is NOT for? 
 
@@ -80,7 +80,7 @@ Comment line is preceded by a sharp '#':
 </code>
 
 == Tree node with a text value
- A tree node begins with a slash '-' followed by a node name. A text value of the node can be followed after a colon ':'. If a colon and text value are not present, node value of the tree node will be set to null:
+ A tree node begins with a hyphen '-' followed by a node name. A text value of the node can be followed after a colon ':'. If a colon and text value are not present, node value of the tree node will be set to null:
 {b|Silk}
 <code>
 - title: hello world
@@ -114,7 +114,7 @@ White spaces around text values will be ignored.
 
 == Nested tree nodes
 
-Indentation before slash represents tree node depth. Only spaces (' ') are allowed before slash ('-'). Tab character ('\t') cannot be used for indentation.
+Indentation before hyphen ('-') represents tree node depth. Only space (' ') characters are allowed before the indentation hyphen ('-'). Tab character ('\t') cannot be used for indentation.
 
 <code>
 - book
@@ -239,7 +239,7 @@ Multi-line text values in Silk are connected into a single string. Leading white
 
 == Preamble
 
-Preamble beginning with '%' symbol specifies version or encoding of Silk format. This line should be placed in the first line of Silk file. Preamble description can be ommitted. 
+Preamble beginning with '%' symbol specifies version or encoding of Silk format. This line should be placed in the first line of Silk files in order to change the behaviour of the Silk processor correctly according to the specified character encodings. Preamble description can be ommitted. 
 
 === Version information
 <code>
