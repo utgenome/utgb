@@ -2,7 +2,7 @@
 
 [index.html UTGB Toolkit Index]
 
-= Silk Format Specification
+= Silk Text Format Specification
 
 This document is written by Taro L. Saito.
 
@@ -18,6 +18,7 @@ This document is written by Taro L. Saito.
 ** [#Treenodewithseveralchildnodeswithtextvalues Tree node with several child nodes with text values]
 ** [#Nestedtreendoes Nested tree nodes]
 ** [#Tabseparateddata Tab-separated data]
+** [#Multilinetextvalues Multi-line text values]
 
 
 == What is Silk? 
@@ -56,7 +57,7 @@ Silk is not a markup language such as HTML, so it doesn't suit to represent text
 <p>This paragraph contains <b>bold</b> and <i>italic</i> fonts.
 </code>
 
-This is because Silk's data model allows only one text value for each tree node. However, this limitation does not mean Silk cannot describe HTML data. If necessary, you can embed HTML data as a text value. Here is a example:
+This is because Silk's data model allows only one text value for each tree node. However, this limitation does not mean Silk cannot describe HTML data. If necessary, you can embed HTML data as a text value. Here is an example:
 <code>
 -p: This paragraph contains <b>bold</b> and <i>italic</i> fonts.
 </code>
@@ -136,6 +137,16 @@ Indentation before slash represents tree node depth. Only spaces (' ') are allow
 }
 </code>
 
+{b|XML}
+<code>
+<book>
+ <id>1</id>
+ <title>Database Management Systems</title>
+ <isbn>0071230572</isbn>
+ <year>2002</year>
+</book>
+</code>
+
 == Tab-separated data 
 
 The design concept of Silk format is to reduce redandancy of XML or text data format in describing large data set. If node description ends with a bar '|', following lines are splitted by tabs, and each text component separated by tabs is assigned a corresponding node name. The node name of each tab-separated data can be specified in the preceding child node descriptions:
@@ -144,6 +155,9 @@ The design concept of Silk format is to reduce redandancy of XML or text data fo
 -book(id, title, isbn, year)|
 1	"Database Management Systems"	0071230572	2002
 2	"Compilers: 2nd Edition"	0321547985	2007
+
+# Tab-separated data region end when a new node is found
+-updated: 2009/02/16
 </code>
 
 {b|JSON}
@@ -162,7 +176,8 @@ The design concept of Silk format is to reduce redandancy of XML or text data fo
      "isbn":0321547985, 
      "year":2007
    }
- ]
+ ],
+ "updated":"2009/02/16"
 }
 </code>
 
@@ -180,16 +195,63 @@ The design concept of Silk format is to reduce redandancy of XML or text data fo
  <isbn>0321547985</isbn>
  <year>2007</year>
 </book>
+<updated>2009/02/16</updated>
 </code>
+
+
+== Multi-line text values
+
+Large text values can be split into multiple lines. To describe muti-line text values, use "'>'" symbol instead of ':' (colon). The following examples shows a gene sequence of NM_001005277:
+
+{b|Silk}
+<code>
+-gene(name:NM_001005277)
+ -sequence>
+ATGGATGGAGAGAATCACTCAGTGGTATCTGAGTTTTTGTTTCTGGGACTCACTCATTCATGGGAGATCC
+AGCTCCTCCTCCTAGTGTTTTCCTCTGTGCTCTATGTGGCAAGCATTACTGGAAACATCCTCATTGTGTT
+TTCTGTGACCACTGACCCTCACTTACACTCCCCCATGTACTTTCTACTGGCCAGTCTCTCCTTCATTGAC
+TTAGGAGCCTGCTCTGTCACTTCTCCCAAGATGATTTATGACCTGTTCAGAAAGCGCAAAGTCATCTCCT
+TTGGAGGCTGCATCGCTCAAATCTTCTTCATCCACGTCGTTGGTGGTGTGGAGATGGTGCTGCTCATAGC
+CATGGCCTTTGACAGATATGTGGCCCTATGTAAGCCCCTCCACTATCTGACCATTATGAGCCCAAGAATG
+TGCCTTTCATTTCTGGCTGTTGCCTGGACCCTTGGTGTCAGTCACTCCCTGTTCCAACTGGCATTTCTTG
+TTAATTTAGCCTTCTGTGGCCCTAATGTGTTGGACAGCTTCTACTGTGACCTTCCTCGGCTTCTCAGACT
+AGCCTGTACCGACACCTACAGATTGCAGTTCATGGTCACTGTTAACAGTGGGTTTATCTGTGTGGGTACT
+TTCTTCATACTTCTAATCTCCTACGTCTTCATCCTGTTTACTGTTTGGAAACATTCCTCAGGTGGTTCAT
+CCAAGGCCCTTTCCACTCTTTCAGCTCACAGCACAGTGGTCCTTTTGTTCTTTGGTCCACCCATGTTTGT
+GTATACACGGCCACACCCTAATTCACAGATGGACAAGTTTCTGGCTATTTTTGATGCAGTTCTCACTCCT
+TTTCTGAATCCAGTTGTCTATACATTCAGGAATAAGGAGATGAAGGCAGCAATAAAGAGAGTATGCAAAC
+AGCTAGTGATTTACAAGAGGATCTCATAA
+</code>
+
+Multi-line text values in Silk are connected into a single string. Leading white spaces and following white space characters (including new line chracters "\r" and "\n") of each text line are trimmed down.
+
+{b|JSON}
+<code>
+{"gene":
+ {"name":"NM_001005277",
+  "sequence":"ATGGATGGAGAGAATCACTCAGTGGTATCTGAGTTTTTGTTTCTGGGACTCACTCATTCATGGGAGATCCAGCTCCTCCTCCTAGTGTTTTCCTCTGTGCTCTATGTGGCAAGCATTACTGGAAACATCCTCATTGTGTTTTCTGTGACCACTGACCCTCACTTACACTCCCCCATGTACTTTCTACTGGCCAGTCTCTCCTTCATTGACTTAGGAGCCTGCTCTGTCACTTCTCCCAAGATGATTTATGACCTGTTCAGAAAGCGCAAAGTCATCTCCTTTGGAGGCTGCATCGCTCAAATCTTCTTCATCCACGTCGTTGGTGGTGTGGAGATGGTGCTGCTCATAGCCATGGCCTTTGACAGATATGTGGCCCTATGTAAGCCCCTCCACTATCTGACCATTATGAGCCCAAGAATGTGCCTTTCATTTCTGGCTGTTGCCTGGACCCTTGGTGTCAGTCACTCCCTGTTCCAACTGGCATTTCTTGTTAATTTAGCCTTCTGTGGCCCTAATGTGTTGGACAGCTTCTACTGTGACCTTCCTCGGCTTCTCAGACTAGCCTGTACCGACACCTACAGATTGCAGTTCATGGTCACTGTTAACAGTGGGTTTATCTGTGTGGGTACTTTCTTCATACTTCTAATCTCCTACGTCTTCATCCTGTTTACTGTTTGGAAACATTCCTCAGGTGGTTCATCCAAGGCCCTTTCCACTCTTTCAGCTCACAGCACAGTGGTCCTTTTGTTCTTTGGTCCACCCATGTTTGTGTATACACGGCCACACCCTAATTCACAGATGGACAAGTTTCTGGCTATTTTTGATGCAGTTCTCACTCCTTTTCTGAATCCAGTTGTCTATACATTCAGGAATAAGGAGATGAAGGCAGCAATAAAGAGAGTATGCAAACAGCTAGTGATTTACAAGAGGATCTCATAA"}}
+</code>
+
+
+== In-line JSON data
 
 
 
 == Preamble
 
-Preamble specifies version of Silk format. 
+Preamble beginning with '%' symbol specifies version or encoding of Silk format. This line should be placed in the first line of Silk file. Preamble description can be ommitted. 
+
+=== Version information
 <code>
 % silk(version:1.0)
 </code>
+
+=== Encoding
+<code>
+% silk(version:1.0, encoding:utf-8)
+</code>
+
+
 
 = Silk Example
 <code>
@@ -198,30 +260,29 @@ Preamble specifies version of Silk format.
 
 # object data (object_name(attribute1[:value], ...))
 - track(name:"refseq gene")
+ - author: leo	     # author is a child node of the track node
+
 # specify coordinates 
-- coordinate(group:utgb, type:chromosome, species:human, revision:hg18)
-# chromosome 1 scope begin
- - coordinate.name:chr1
- - gene(name, strand, start, end, cds(start, end), exon(start, end))|
+- coordinate(group:utgb, name:chr1, species:human, revision:hg18)
+# gene data description with tab-seaprated data format
+ - gene(name, strand, start, end, cds(start, end), exon(start, end)*)|
 NM_001005277	+	357521	358460	[357521, 358460]	[[357521, 358460]]
 NM_001005224	+	357521	358460	[357521, 358460]	[[357521, 358460]]
 NM_001005221	+	357521	358460	[357521, 358460]	[[357521, 358460]]
 NM_001005277	-	610958	611897	[610958, 611897]	[[610958, 611897]]
 NM_001005224	-	610958	611897	[610958, 611897]	[[610958, 611897]]
 NM_001005221	-	610958	611897	[610958, 611897]	[[610958, 611897]]
-NM_152486	+	850983	869824	[851184, 869396]	[[850983, 851043],[851164, 851256],[855397, 855579]]
+NM_152486	+	850983	869824	[851184, 869396]	[[850983, 851043],[851164, 851256],[855397, 855579]] 
 
-# chromosome 1 scope end
-# chromosome 2 scope begin
-- coordinate.name:chr2
- - gene(name, strand, start, end, cds(start, end), exon(start, end))|
-NM_001005277	+	357521	358460	[357521, 358460]	[[357521, 358460]]
-
-# chromosome 2 scope end
+# indentation before tab-separated data can be used for readability
+- coordinate(group:utgb, name:chr2, species:human, revision:hg18)
+ - gene(name, strand, start, end, cds(start, end), exon(start, end)*)|
+   NM_001005277	+	357521	358460	[357521, 358460]	[[357521, 358460]]
+   NM_001005278	+	357521	358460	[357521, 358460]	[[357521, 358460]]
   
-# flexible relation description
-- coordinate(group:utgb, type:chromosome, species:human, revision:hg18)
- - gene(coordinate.name, name, strand, start, end)|
+# flexible structure organization 
+- coordinate(group:utgb, species:human, revision:hg18)
+ - gene(coordinate.name, name, strand, start, end)| # coordinate names is pulled down from the parent node
 chr1	gene1	+	357521	358460
 chr2	gene2	+	357521	358460
 chr10	gene3	+	357521	358460
