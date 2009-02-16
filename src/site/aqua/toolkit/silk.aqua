@@ -13,17 +13,24 @@ This document is written by Taro L. Saito.
 ** [#WhatSilkisfor What Silk is for?]
 ** [#WhatSilkisNOTfor What Silk is NOT for?]
 * Silk Data Descriptions
+** [#Preamble Preamble]
 ** [#Commentline Comment Line]
 ** [#Treenodewithatextvalue Tree node with a text value]
 ** [#Treenodewithseveralchildnodeswithtextvalues Tree node with several child nodes with text values]
 ** [#Nestedtreendoes Nested tree nodes]
 ** [#Tabseparateddata Tab-separated data]
 ** [#Multilinetextvalues Multi-line text values]
+** [#Importanotherfile Import another file]
+** [#InlineJSONdataArray In-line JSON array]
+** [#InlineJSONdataObject In-line JSON object]
+** [#CommaseparatedvaluesCSV Comma-separated values: CSV]
 
+* Silk Examples
+** 
 
 == What is Silk? 
 
-{b|Silk} is a human-friendly and space-efficient text format, desigined for describing tree-structured data. Silk is a replacement XML and JSON, which are well-known tree-structured data formats. Silk format does not use tags or brackets to organize tree-structures. Instead, indentation via spaces represents data hierarachies, which is far simpler than neately open and close maching tags (or brackets). Silk is {b|tree-compatible with XML and JSON}; if XML or JSON data have a data model in which each tree node has at most one text value, these XML or JSON data can be automatically translated into Silk format (For the precise definition of tree-compatibility, see [#TreeCompatible this documentation]). The reverse direction is much easier; Silk format can be easily converted into XML or JSON in stream fashion. Therefore, you can utilize existing XML or JSON processors to analyze your data writtin in Silk format. 
+{b|Silk} is a human-friendly and space-efficient text format, desigined for describing tree-structured data. Silk is a replacement XML and JSON, which are well-known tree-structured data formats. Silk format does not use tags or brackets to organize tree-structures. Instead, indentation via spaces represents data hierarachies, which is far simpler than neately opening and closing maching tags (or brackets). Silk is {b|tree-compatible with XML and JSON}; if XML or JSON data have a data model in which each tree node has at most one text value, these XML or JSON data can be automatically translated into Silk format (For the precise definition of tree-compatibility, see [#TreeCompatible this documentation]). The reverse direction is much easier; Silk format can be easily converted into XML or JSON in stream fashion. Therefore, you can utilize existing XML or JSON processors to analyze your data writtin in Silk format. 
 
 
 
@@ -44,7 +51,7 @@ Silk text format has the following features:
 
 Data model that can be described with Silk format is a {b|forest}, that is, a list of {b|trees} consisting of nodes. Each tree node can have several child nodes and a text value. 
 
-(illustration)
+(needs some illustration)
 
 == What Silk is for?
 
@@ -71,6 +78,21 @@ or you can use double quotation to embed arbitrary text.
 
 = Silk Data Descriptions
 
+== Preamble
+
+Preamble beginning with '%' symbol specifies version or encoding of Silk format. This line should be placed in the first line of Silk files in order to change the behaviour of the Silk processor correctly according to the specified character encodings. Preamble description can be ommitted. 
+
+=== Version information
+<code>
+% silk(version:1.0)
+</code>
+
+=== Encoding
+<code>
+% silk(version:1.0, encoding:utf-8)
+</code>
+
+
 == Comment line
 
 Comment line is preceded by a sharp '#':
@@ -80,7 +102,7 @@ Comment line is preceded by a sharp '#':
 </code>
 
 == Tree node with a text value
- A tree node begins with a hyphen '-' followed by a node name. A text value of the node can be followed after a colon ':'. If a colon and text value are not present, node value of the tree node will be set to null:
+ A tree node begins with a hyphen '-' followed by a node name. A text value of the node follows a colon ':'. If a colon and text value are not present, node value of the tree node will be set to null:
 {b|Silk}
 <code>
 - title: hello world
@@ -256,7 +278,7 @@ Multi-line text values in Silk are connected into a single string. Leading white
 
 == Import another file
 
-Silk format has a built-in support of import function. Import is useful to annotate existing data (e.g., tab-separated data) with Silk. The following examples loads tab-separated data from the file.
+Silk format has a built-in support of import function. Import is useful to annotate existing data (e.g., tab-separated data) with Silk. The following examples loads tab-separated data from another file, and annotates each tab-separated data with node names:
 
 <code>
 - book(id, title, isbn, year)|
@@ -277,6 +299,13 @@ The above data using two files are equivalent to the following Silk file:
 </pre>
 
 
+Binary files also can be imported as a node value:
+<code>
+- photo
+ - title: vacation
+ - image: @import(myphoto.jpg)	# import myphoto.jpg as a node value (encoded with base64)
+ - categories: holiday family
+</code>
 
 == In-line JSON data (Array)
 
@@ -372,25 +401,44 @@ It is okay to wrap in-line json data within a named node:
 }
 </code>
 
+== Comma-separated values (CSV)
 
-
-== Preamble
-
-Preamble beginning with '%' symbol specifies version or encoding of Silk format. This line should be placed in the first line of Silk files in order to change the behaviour of the Silk processor correctly according to the specified character encodings. Preamble description can be ommitted. 
-
-=== Version information
+{b|Silk} (single line, using json array)
 <code>
-% silk(version:1.0)
+-prime[json]: [2, 3, 5, 7, 11, 13, 17, 19, 23]
 </code>
 
-=== Encoding
+{b|Silk} (multi lines)
 <code>
-% silk(version:1.0, encoding:utf-8)
+-prime*
+ 2,  3,  5
+ 7, 11, 13
+17, 19, 23
 </code>
 
 
+{b|JSON}
+<code>
+{"prime":[2, 3, 5, 7, 11, 13, 17, 19, 23]}
+</code>
 
-= Silk Example
+{b|XML}
+<code>
+<prime>2</prime>
+<prime>3</prime>
+<prime>5</prime>
+<prime>7</prime>
+<prime>11</prime>
+<prime>13</prime>
+<prime>17</prime>
+<prime>19</prime>
+<prime>23</prime>
+</code>
+
+
+= Silk Examples
+/*
+
 <pre>
 % silk(version:1.0)
 # single comment line
@@ -427,3 +475,4 @@ chr3	gene4	+	357521	358460
 chr1	gene5	+	357521	358460
 
 </pre>
+*/
