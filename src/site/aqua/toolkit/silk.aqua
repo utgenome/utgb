@@ -22,7 +22,9 @@ This document is written by Taro L. Saito.
 
 == What is Silk? 
 
-{b|Silk} is a human-friendly and space-efficient text format, desigined for describing tree-structured data. Silk is a replacement of well-known tree-structured data format, such as XML, JSON. Silk is easier to describe tree-structured data, since there is no need to wrap data with tags for describing data hierarchies. Instead indentation via spaces represents data hierarachies. Silk is {b|tree-compatible with XML and JSON}; what can be described in XML or JSON can be automatically translated into Silk, and similarly Silk can be converted into XML or JSON. For the definition of tree-compatibility, see [#TreeCompatible this documentation].
+{b|Silk} is a human-friendly and space-efficient text format, desigined for describing tree-structured data. Silk is a replacement XML and JSON, which are well-known tree-structured data formats. Silk format does not use tags or brackets to organize tree-structures. Instead, indentation via spaces represents data hierarachies, which is far simpler than neately open and close maching tags (or brackets). Silk is {b|tree-compatible with XML and JSON}; if XML or JSON data have a data model in which each tree node has at most one text value, these XML or JSON data can be automatically translated into Silk format (For the precise definition of tree-compatibility, see [#TreeCompatible this documentation]). The reverse direction is much easier; Silk format can be easily converted into XML or JSON in stream fashion. Therefore, you can utilize existing XML or JSON processors to analyze your data writtin in Silk format. 
+
+
 
 == Silk Features
 Silk text format has the following features:
@@ -36,15 +38,16 @@ Silk text format has the following features:
 ** Several data files (e.g. another Silk file, tab-seaparted data, CSV, text or binary files, etc.) can be imported into a Silk file to compose a large data set.
 * {b|One-liner format}
 ** Silk data can be processed line-by-line, so it is very familiar with standard text-processing tools, such as grep, awk, Perl, Ruby, etc.
- 
 
 == Silk Data Model
 
-Data model that can be described with Silk format is a {b|forest}, that is, a list of {b|trees} consisting of nodes. Each tree node can have several child nodes. Each tree node in Silk can have a text value.
+Data model that can be described with Silk format is a {b|forest}, that is, a list of {b|trees} consisting of nodes. Each tree node can have several child nodes and a text value. 
+
+(illustration)
 
 == What Silk is for?
 
-Silk format has no need to close tags or quotations. This feature is prefarrable for data logging, which incrementally appends data to the end of a file, and also for accumulating program outputs. If you hate verbose data description of XML and JSON, Silk might satisfy your needs, because embedded tab-separated data description significantly reduces the data size compared to XML and JSON.
+Silk format has no need to close tags or quotations. This feature is preferrable for data logging, which needs to incrementally append data to the end of a file. Silk is useful for accumulating program outputs, too. If you do not like verbose data descriptions of XML or JSON formats, Silk might satisfy your needs, because embedded tab-separated data description significantly reduces the data size compared to XML and JSON.
 
 == What Silk is NOT for? 
 
@@ -53,11 +56,11 @@ Silk is not a markup language such as HTML, so it doesn't suit to represent text
 <p>This paragraph contains <b>bold</b> and <i>italic</i> fonts.
 </code>
 
-This is because Silk's data model allows only one text value for each tree node. However, this limitation does not mean Silk cannot describe HTML data. If necessary, you can embed HTML data as a text value in Silk. Here is some examples:
+This is because Silk's data model allows only one text value for each tree node. However, this limitation does not mean Silk cannot describe HTML data. If necessary, you can embed HTML data as a text value. Here is a example:
 <code>
 -p: This paragraph contains <b>bold</b> and <i>italic</i> fonts.
 </code>
-or
+or you can use double quotation to embed arbitrary text.
 <code>
 -p:"This paragraph contains <b>bold</b> and <i>italic</i> fonts."</code>
 
@@ -76,7 +79,7 @@ Comment line is preceded by a sharp '#':
 </code>
 
 == Tree node with a text value
-Tree nodes begin with a slash '-' followed by a node name. Text values can be followed after a comma ','. If comma and text value are not present, its node value will be set to null:
+ A tree node begins with a slash '-' followed by a node name. A text value of the node can be followed after a colon ':'. If a colon and text value are not present, node value of the tree node will be set to null:
 {b|Silk}
 <code>
 - title: hello world
@@ -135,12 +138,12 @@ Indentation before slash represents tree node depth. Only spaces (' ') are allow
 
 == Tab-separated data 
 
-The design concept of Silk format is to reduce redandancy of XML or text data format in describing large data set. If node description ends with a bar '|', following lines are splitted by tabs, and each text component is assigned a corresponding node name. Node name of each tab-separated data can be specified in the preceding child node descriptions:
+The design concept of Silk format is to reduce redandancy of XML or text data format in describing large data set. If node description ends with a bar '|', following lines are splitted by tabs, and each text component separated by tabs is assigned a corresponding node name. The node name of each tab-separated data can be specified in the preceding child node descriptions:
 {b|Silk}
 <code>
 -book(id, title, isbn, year)|
 1	"Database Management Systems"	0071230572	2002
-2	"Compilers Principles, Techniques & Tools"	0321547985	2007
+2	"Compilers: 2nd Edition"	0321547985	2007
 </code>
 
 {b|JSON}
@@ -155,7 +158,7 @@ The design concept of Silk format is to reduce redandancy of XML or text data fo
    },
    {
      "id":2, 
-     "title":"Compilers Principeles, Techniques & Tools",
+     "title":"Compilers: 2nd Edition",
      "isbn":0321547985, 
      "year":2007
    }
@@ -173,7 +176,7 @@ The design concept of Silk format is to reduce redandancy of XML or text data fo
 </book>
 <book>
  <id>2</id>
- <title>Compilers Principeles, Techniques &amp; Tools</title>
+ <title>Compilers: 2nd Edition</title>
  <isbn>0321547985</isbn>
  <year>2007</year>
 </book>
