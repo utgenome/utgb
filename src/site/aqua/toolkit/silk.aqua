@@ -10,8 +10,8 @@ This document is written by Taro L. Saito.
 ** [#WhatisSilk What is Silk?]
 ** [#SilkFeatures Silk Features]
 ** [#SilkDataModel Silk Data Model]
-** [#WhatSilkisfor What Silk is for?]
-** [#WhatSilkisNOTfor What Silk is NOT for?]
+** [#SituationswhereSilkisuseful Situations where Silk is useful]
+** [#SituationswhereSilkisnotuseful Situations where Silk is not useful]
 * Silk Data Descriptions
 ** [#Preamble Preamble]
 ** [#Commentline Comment Line]
@@ -53,11 +53,13 @@ Data model that can be described with Silk format is a {b|forest}, that is, a li
 
 (needs some illustration)
 
-== What Silk is for?
+== Situations where Silk is useful 
 
-Silk format has no need to close tags or quotations. This feature is suitable for data logging, which needs to incrementally append data to the end of a file. Silk is also useful for accumulating program outputs. If you do not like verbose data descriptions of XML or JSON formats, Silk is exactly designed for you. Embedded tab-separated data description support in Silk reduces the data size and increase the readability of the data compared to XML and JSON.
+Silk format has no need to close tags or quotations. This feature is suitable for data logging, which needs to incrementally append data to the end of a file. Silk is also useful for accumulating large program outputs. One of the design goals of Silk is to provide a compact representation of biological data. If you do not like verbose data descriptions of XML or JSON formats, Silk will match your needs. Under several years of experiences of processing XML and JSON format under our belt, we simplified these syntaxes by removing unnecessary symbols, such as tags or brackets. Embedded tab-separated data description in Silk significantly reduces the data size. 
 
-== What Silk is NOT for? 
+Silk also can be used to enhance existing tab-separated data or comma-separated value (CSV) files with node labels and structures. These flat files can be imported into a Silk file, and you can annotate each data with node labels, and also can organize them in a hierarchical data structure. 
+
+== Situations where Silk is not useful
 
 Silk is not a markup language such as HTML, so it doesn't suit to represent text decorations. For example, the following text data description, which mixes text values and tags cannot be desribed with Silk:
 <code>
