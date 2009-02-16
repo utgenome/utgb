@@ -153,6 +153,13 @@ Indentation before hyphen ('-') represents tree node depth. Only space character
  - year:2007
 </code>
 
+Alternatively, you can write the same data as follows:
+<code>
+- book(id:1, title: Database Management Systems, isbn:0071230572, year:2002)
+- book(id:2, title: Compilers: Second Edition, isbn:0321547985, year:2007)
+</code>
+
+
 {b|JSON}
 <code>
 [
@@ -193,13 +200,13 @@ Indentation before hyphen ('-') represents tree node depth. Only space character
 
 == Tab-separated data 
 
-The design concept of Silk format is to reduce redandancy of XML or text data format in describing large data set. If node description ends with a bar '|', following lines are splitted by tabs, and each text component separated by tabs is assigned a corresponding node name. The node name of each tab-separated data can be specified in the preceding child node descriptions:
+The design concept of Silk format is to reduce the redandancy of XML or JSON data format in describing large data set. If node description ends with a bar '|', following lines are splitted by tabs, and each text component separated by tabs is assigned a corresponding node name. The node name of each tab-separated data can be specified in the preceding child node descriptions:
 {b|Silk}
 <pre>
+# A book node schema with 4 parameters. 
 -book(id, title, isbn, year)|
 1	Database Management Systems	0071230572	2002
 2	Compilers: Second Edition	0321547985	2007
-
 
 # Tab-separated data region ends when a new node is found
 -updated: 2009/02/16
