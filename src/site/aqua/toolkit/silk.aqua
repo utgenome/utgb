@@ -55,9 +55,11 @@ Data model that can be described with Silk format is a {b|forest}, that is, a li
 
 == Situations where Silk is useful 
 
-Silk format has no need to close tags or quotations. This feature is suitable for data logging, which needs to incrementally append data to the end of a file. Silk is also useful for accumulating large program outputs. One of the design goals of Silk is to provide a compact representation of biological data. If you do not like verbose data descriptions of XML or JSON formats, Silk will match your needs. Under several years of experiences of processing XML and JSON format under our belt, we simplified these syntaxes by removing unnecessary symbols, such as tags or brackets. Embedded tab-separated data description in Silk significantly reduces the data size. 
+Silk format has no need to wrap data with tags or quotations. This feature is suitable for data logging, which needs to incrementally append data to the end of a file. Silk is also useful for accumulating large program outputs. One of the design goals of Silk is to provide a compact representation of biological data. If you do not like verbose data descriptions of XML or JSON formats, Silk will match your needs. 
 
-Silk also can be used to enhance existing tab-separated data or comma-separated value (CSV) files with node labels and structures. These flat files can be imported into a Silk file, and you can annotate each data with node labels, and also can organize them in a hierarchical data structure. 
+In the UTGB Toolkit, we use Silk as a starndard data description format for describing biological data, several configuration files, etc. Several years of experiences of processing XML and JSON format under our belt, we studied these syntaxes can be simplified by removing unnecessary notations, such as tags or brackets. Silk is the result of these syntax optimizations. For example, in most cases, double quotation mark to indicate string data is unnecessary. This plain-style text data description increaes the editablity and readability of the Silk file format. In addition, Silk's embedded tab-separated data description significantly reduces the data size. 
+
+Silk can be used to enhance existing tab-separated data or comma-separated value (CSV) files with node labels and structures. These flat files can be imported into a Silk file, and you can annotate each data with node labels, and also can organize them in a hierarchical data structure. 
 
 == Situations where Silk is not useful
 
@@ -82,9 +84,11 @@ or you can use double quotation to embed arbitrary text.
 
 == Preamble
 
-Preamble beginning with '%' symbol specifies version or encoding of Silk text file. This line should be placed in the first line of Silk files in order to correctly change the behaviour of the Silk processor according to the specified character encoding. Preamble description can be ommitted, and the default encoding is utf-8.
+Preamble line beginning with '%' symbol specifies version or encoding of Silk text files. Preamble line must be placed in the first line of Silk files in order to correctly change the behaviour of a Silk processor according to the specified version or character encoding. Preamble description can be ommitted, and in this case Silk uses utf-8 as the default encoding.
 
 === Version information
+Current Silk format version is 1.0:
+
 <code>
 % silk(version:1.0)
 </code>
@@ -94,16 +98,18 @@ Preamble beginning with '%' symbol specifies version or encoding of Silk text fi
 % silk(version:1.0, encoding:utf-8)
 </code>
 
+* Supported encodings (To be written)
+
 == Comment line
 
-Comment line is preceded by a sharp '#':
+A comment line is marked by a sharp '#' indicator:
 
 <code>
 # This line will be ignored.
 </code>
 
 == Tree node with a text value
-Tree nodes begin with a hyphen '-' followed by a node name. The text value of the node follows a colon ':'. If the colon and text value are not present, the node value of the tree node will be set to null:
+In Silk, a tree node begins with a hyphen '-' followed by a node name. The text value of the node follows a colon ':'. If the colon and text value are not present, the node value of the tree node will be set to null:
 {b|Silk}
 <code>
 - title: hello world
@@ -449,13 +455,12 @@ You can wrap the in-line json data within a named node:
 
 
 
-/*
 
-<pre>
+<code>
 % silk(version:1.0)
 # single comment line
 
-# object data (object_name(attribute1[:value], ...))
+# tree node description. node_name (child_name1[:value], ...)
 - track(name:"refseq gene")
  - author: leo	     # author is a child node of the track node
 
@@ -486,5 +491,4 @@ chr10	gene3	+	357521	358460
 chr3	gene4	+	357521	358460
 chr1	gene5	+	357521	358460
 
-</pre>
-*/
+</code>
