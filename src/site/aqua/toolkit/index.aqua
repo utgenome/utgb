@@ -11,7 +11,8 @@ The UTGB Toolkit includes the UTGB Shell, a command-line client for developing y
 ** How to install UTGB Shell, and how to write your first web application
 * [webaction.html How to create a web action]
 * [dbaccess.html How to access databases]
-
+* [customize.html How to customize browser contents]
+* [track.html How to create your own track]
 
 === Development with UTGB Shell
 * [eclipse.html How to use Eclipse with UTGB Shell]
