@@ -1,12 +1,7 @@
 @title("Database Access")
 
 [index.html Top Page]
-= Databse Access with UTGB Shell
-
-
-==Object Storage
-
-To be written
+= Databse Access
 
 ==Configuring Databases
 
@@ -48,34 +43,131 @@ Note that for a licensing reason, we cannot include MySQL's JDBC library, which 
 After you have done the database configuration, you can test your settings using {b|utgb dbinfo} command, which will display the schema information of the specified databases.
 
  
-{{
+<code>
 myapp> utgb dbinfo            
 [DBInfo]        database ID: mydb
 
 [DBInfo]        table: gene
 [DBInfo]         column: id (integer)
-[DBInfo]         column: target (string)
+[DBInfo]         column: chr (string)
 [DBInfo]         column: start (integer)
 [DBInfo]         column: end (integer)
 [DBInfo]         column: strand (string)
 ...
-}}
+</code>
 
 To actually see the database content, you can use {b|utgb query} command, which receives a database ID and a SQL query, then performs the database query:
 
-{{
+<code>
 myapp> utgb query mydb "select * from gene"
 
-0|chrX|70518318|70518344|+|+_1(1,0,0,0)|
-1|chr12|51949963|51949989|-|-_1(0,1,0,0)|
-2|chr6|48444655|48444681|-|-_1(0,0,0,1)|
-3|chr13|109111185|109111211|-|-_1(0,0,0,1)|
-4|chr5|133731340|133731366|-|-_3(0,0,0,1)|
-5|chr20|61835474|61835500|-|-_1(1,0,0,0)|
+0|chrX|70518318|70518344|+|
+1|chr12|51949963|51949989|-|
+2|chr6|48444655|48444681|-|
+3|chr13|109111185|109111211|-|
+4|chr5|133731340|133731366|-|
+5|chr20|61835474|61835500|-|
 ....
 
-}}
+</code>
 
-== Mapping Java Object to Databases
+= Smart Data Binding in UTGB
 
-To be written
+UTGB has an support to map data from !XML/JSON/Relational data format to Java class objects, and vice verca. This conversion is automatically done once you write appropriate Java class definitions. To implement this feature, UTGB Toolkit uses [http://www.xerial.org/trac/Xerial/wiki/BeanUtil BeanUtil] library, which enables mappings between Java Objects and structured data, including database query results, XML, JSON, etc.
+
+
+
+== An Quick Example (XML)
+
+Supporse you have the following XML data (saved as "gene.xml"), which describes a gene object:
+<code>
+<gene id="1">
+   <name>gene1</name>
+   <chr>chr1</chr>
+   <start>1000</start>
+   <end>4000</end>
+   <strand>+</strand>
+</gene>
+</code>
+
+In order to parse this XML data, you have to write a corresponding Java class definition as follows:
+<code>
+class Gene 
+{
+  int id;
+  String name;
+  String chr;
+  String strand;
+  long start;
+  long end;
+  
+  // public default constructor
+  public Gene() {}
+  
+  // setter definitions
+  public void setId(int id) { this.id = id; }
+  public void setName(String name) { this.name = name; }
+  public void setChr(String chr) { this.chr = chr; }
+  public void setStart(long start) { this.start = start; }
+  public void setEnd(long end) { this.end = end; }
+  public void setStrand(String strand) { this.strand = strand; }
+ 
+  // getter definitions
+  public int getId() { return id; }
+  public Stirng getName() { return name; }
+  public String getChr() { return chr; }
+  public long getStart() { return start; }
+  public long getEnd() { return end; }
+  public String getStrant() { return strand; }
+}
+</code>
+
+Eclipse has a built-in support for generating getters and setters corresponding to each fild variable; right-click - source - Generate getters & setters menu. 
+
+
+To create an instance of the Gene object from the XML file ("gene.xml"), you have to use BeanUtil.createBeanFromXML(target class, input reader) mehtod:
+<code>
+BufferedReader xmlReader = new BufferedReader(new FileReader("gene.xml"));
+Gene gene = BeanUtil.createBeanFromXML(Gene.class, xmlReader);
+
+// gene.getId() == 1
+// gene.getName() == "gene1"
+// gene.getChr() == "chr1"
+// gene.getStart() == 1000
+// gene.getEnd() == 4000
+</code>
+
+UTGB automatically converts string data appeared in the XML file into appropriate data type (integer, String, etc. ) by seeing setter methods in the class definition. 
+
+== Mapping Database Query Results to Java Objects
+
+When your data is stored in an SQLite database, you have to use SQL queries to retreive data.
+
+=== Table Data 
+<code>
+id|target|start|end|strand|
+0|chrX|70518318|70518344|+|
+1|chr12|51949963|51949989|-|
+2|chr6|48444655|48444681|-|
+3|chr13|109111185|109111211|-|
+4|chr5|133731340|133731366|-|
+</code>
+
+=== Sample Code
+<code>
+// get database access of mydb. This id is specified in the track-config.xml file
+DatabaseAccess dbAccess = UTGBMaster.getDatabaseAccess("mydb");
+
+// execute an SQL query, then bind the result rows to Gene object
+List<Gene> result = 
+  dbAccess.query(
+     String.format("select * from gene where start >= %d order by start", start), 
+     Gene.class);
+
+
+// draw the gene objects to some image
+for(Gene eachGene : result)
+{
+   // ... do some drawings
+}
+</code>

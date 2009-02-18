@@ -2,19 +2,348 @@
 
 [index.html UTGB Toolkit Index]
 
+== UTGB Framework
+
+UTGB framework introduces the notion of {b|track group}, a container of several tracks. A track group holds common variables that can be accessed from its contained tracks. For example, the track group variables for speciying a location on a genome sequence are {i|species} (e.g., human, medaka, etc.), {i|revision} (e.g, hg18, version1.0, etc.) and {i|name} (e.g., chr1, scaffold1, etc.). In the Java code of the UTGB tracks, PropertyReader(PropertyWriter) class can read/write these variables, and changes of these variables will be notified to the other tracks in the same track group. To capture these events, you need to override onTrackGroupPropertyChange() method in the track implementation.
+
+=== PropertyReader
+<code>
+ String species = getTrackGroup().getPropertyReader().getProperty("species");
+</code>
+
+=== PropertyWriter
+<code>
+ getTrackGroup().getPropertyWriter().setProperty("species", "human");
+</code>
+
+=== TrackWindow
+The location in the currently displayed genome sequence can be accessed through TrackWindow class. The change to the TrackWindow also will be notified to the other tracks in the track group.
+
+<code>
+long startPosOnGenome = getTrackGroup().getTrackWindow().getStartOnGenome();
+long endPosOnGenome = getTrackGroup().getTrackWindow().getEndOnGenome();
+</code>
+
+=== UTGB Framework Overview
+
+[clip/framework.png] 
+
+
 = How to Create Your Own Tracks
 
 Currently, UTGB toolkit provides three ways to develop you own genome tracks. 
 
+* Genome Track (image data)
+* Genome Track (iframe)
+* Custom Track using Google Web Toolkit 
+
 == Genome Track (image data)
+
+It is the simplest one to visualize genome-related data with UTGB browser. Given a trackBaseURL value, this track generates an URL consisting of 
+<code>
+(trackBaseURL)?group=utgb&species=..&revision=..&name=..&start=..&end=..&width=..
+</code>
+
+These URL query parameters (..) are given from the track group properties and track window. The track content is an image data retrived from the generated URL. 
+
+=== View XML
+<code>
+<track className="org.utgenome.gwt.utgb.client.track.lib.GenomeTrack" 
+       name="RefSeq Gene Demo" pack="true">
+  <property key="type">image</property>
+  <property key="leftMargin">100</property>
+  <property key="trackBaseURL">utgb-core/GeneViewer</property>
+</track>
+</code>
+
+=== Sample Code: GeneViewer 
+This code recieves parameter values, species, revision, parameters, etc., then retrieves RefSeq gene data from the http://utgenome.org/api/refseq/ API, and draws the graphics of RefSeq genes within the specified region. If the accessed URL contains a suffix .tab, i.e. utgb-core/GeneViewer.tab, it simply returns the data of retrived genes in a text format.
+
+<code>
+//--------------------------------------
+//
+// GeneViewer.java
+// Since: 2009/01/15
+//
+//--------------------------------------
+package org.utgenome.gwt.utgb.server.app;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.ArrayList;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.utgenome.graphics.GeneCanvas;
+import org.utgenome.graphics.GenomeWindow;
+import org.utgenome.gwt.utgb.client.bio.Gene;
+import org.utgenome.gwt.utgb.server.WebTrackBase;
+import org.xerial.util.bean.BeanException;
+import org.xerial.util.bean.BeanHandler;
+import org.xerial.util.bean.BeanUtil;
+import org.xerial.util.log.Logger;
+
+/**
+ * Gene Viewer
+ * 
+ * 
+ */
+public class GeneViewer extends WebTrackBase {
+	private static final long serialVersionUID = 1L;
+	private static Logger _logger = Logger.getLogger(GeneViewer.class);
+
+	private String species = "human";
+	private String revision = "hg18";
+	private String name = "chr1";
+	private long start = 1;
+	private long end = 1000000;
+	private int width = 800;
+
+	public GeneViewer() {
+	}
+
+	static class GeneRetriever<T> implements BeanHandler<T> {
+		private ArrayList<T> geneList = new ArrayList<T>();
+
+		public GeneRetriever() {
+		}
+
+		public ArrayList<T> getResult() {
+			return geneList;
+		}
+
+		public void handle(T bean) throws Exception {
+			geneList.add(bean);
+		}
+	}
+
+	public void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+		String refseqURL = String.format("http://utgenome.org/api/refseq/%s/%s/%s:%d-%d/list.json", species, revision, name, start, end);
+		URL apiURL = new URL(refseqURL);
+
+		// retrieve gene data from the UTGB web API
+
+		GeneRetriever<Gene> geneRetriever = new GeneRetriever<Gene>();
+		try {
+			BeanUtil.loadJSON(new InputStreamReader(apiURL.openStream()), Gene.class, geneRetriever);
+
+			String actionSuffix = getActionSuffix(request);
+			if (actionSuffix.equals("tab")) {
+				response.setContentType("text/plain");
+				for (Gene each : geneRetriever.getResult()) {
+					response.getWriter().println(String.format("%s\t%s\t%s", each.getName(), each.getStart(), each.getStrand()));
+				}
+			}
+			else {
+				GeneCanvas geneCanvas = new GeneCanvas(width, 300, new GenomeWindow(start, end));
+				geneCanvas.draw(geneRetriever.getResult());
+
+				response.setContentType("image/png");
+				geneCanvas.toPNG(response.getOutputStream());
+			}
+		}
+		catch (BeanException e) {
+			_logger.error(e);
+		}
+	}
+
+	public void setSpecies(String species) {
+		this.species = species;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setStart(long start) {
+		this.start = start;
+	}
+
+	public void setEnd(long end) {
+		this.end = end;
+	}
+
+	public void setWidth(int width) {
+		this.width = width;
+	}
+
+	public void setRevision(String revision) {
+		this.revision = revision;
+	}
+
+}
+
+</code>
+
+=== UTGB Refseq Genes API
+http://utgenome.org/api/refseq/human/hg18/chr1:1-100000/list.json
+<code>
+{"gene":[{"name":"NM_001005484","end":59871,"start":58953,"strand":"+","exon":[{"end":59871,"start":58953}],"cDS":[{"end":59871,"start":58953}]}]}
+</code>
 
 == Genome Track (iframe)
 
 
-== Custom Track using Google Web Toolkits (GWT)
+
+=== View XML
+<code>
+<track className="org.utgenome.gwt.utgb.client.track.lib.GenomeTrack" 
+       name="RefSeq Gene Table Demo" height="100" pack="true">
+  <property key="type">frame</property>
+  <property key="leftMargin">100</property>
+  <property key="trackBaseURL">utgb-core/GeneViewer.tab</property>
+</track>
+</code>
+
+
+== Custom Track using Google Web Toolkit (GWT)
+
+[http://code.google.com/webtoolkit Google web toolkit] enables developing interactive HTML user interfaces, which can be changed dynamically in response to mouse clicks, keyboard inputs, etc. Standard HTML components are wrapped as [http://code.google.com/docreader/#p=google-web-toolkit-doc-1-5&s=google-web-toolkit-doc-1-5&t=DevGuideWidgetGallery Widget classes] in Java, so no need exists to write HTML tags. 
+
+Implementing custom tracks is the only way to dynamically change the track group properties, track window locations in response to the user input, such as mouse clicks, keybord inputs etc.
+
+=== Notice 
+
+GWT code is a client side program that runs on the web browser (IE, Firefox, etc.) so it is impossible to access databases on the server through JDBC. And also, there are several limitation on available Java libraries in GWT.
+
+For details of GWT programming, see the follwing link: http://www.xerial.org/trac/Xerial/wiki/WebApplication
+
+
+== Sample Code
+
+
+{b|Track implementation}
+
+Extend TrackBase class, and add factory method (public static, and returns TrackFactory).
+In the track code, you have to implement getWidget() method, which returns track content. 
+
+<code>
+package demo.gwt.client;
+
+import org.utgenome.gwt.utgb.client.track.Track;
+import org.utgenome.gwt.utgb.client.track.TrackBase;
+import org.utgenome.gwt.utgb.client.track.UTGBProperty;
+import org.utgenome.gwt.widget.client.Style;
+
+import com.google.gwt.user.client.ui.ClickListener;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Hyperlink;
+import com.google.gwt.user.client.ui.Widget;
+
+public class SampleTrack extends TrackBase
+{
+    /**
+     * Creates a factory of this track
+     * 
+     * @return
+     */
+    public static TrackFactory factory()
+    {
+        return new TrackFactory() {
+            @Override
+            public Track newInstance()
+            {
+                return new SampleTrack();
+            }
+        };
+    }
+
+    private HorizontalPanel panel = new HorizontalPanel();
+    private Hyperlink humanLabel = new Hyperlink("human", "species=human");
+    private Hyperlink medakaLabel = new Hyperlink("medaka", "species=medaka");
+
+    public SampleTrack()
+    {
+        super("Sample Track");
+
+        // set design
+        Style.padding(humanLabel, 5);
+        Style.padding(medakaLabel, 5);
+        panel.add(humanLabel);
+        panel.add(medakaLabel);
+
+        humanLabel.addClickListener(new ClickListener() {
+            public void onClick(Widget arg0)
+            {
+                // change track group property
+                getTrackGroup().getPropertyWriter().setProperty(UTGBProperty.SPECIES, "human");
+            }
+        });
+
+        medakaLabel.addClickListener(new ClickListener() {
+            public void onClick(Widget arg0)
+            {
+                // change track group property
+                getTrackGroup().getPropertyWriter().setProperty(UTGBProperty.SPECIES, "medaka");
+            }
+        });
+
+    }
+
+    public Widget getWidget()
+    {
+        return panel;
+    }
+
+}
+</code>
 
 
 
-== UTGB Framework
+=== Register the new track 
 
-[clip/framework.png]
+Add the TrackFactoryHolder.addTrackFactory() method to the main() method of your UTGBEntry.java code.
+
+<code>
+//--------------------------------------
+// utgb-shell Project
+//
+// UTGBEntryPoint.java
+// Since: 
+//
+//--------------------------------------
+package demo.gwt.client;
+
+import org.utgenome.gwt.utgb.client.UTGBEntryPointBase;
+import org.utgenome.gwt.utgb.client.track.TrackFactoryHolder;
+
+/**
+ * Entry point of the UTGB Browser. Edit the following files to change the
+ * appearance of the browser: src/main/webapp/view/default-view.xml
+ * public/UTGBEntry.html
+ * 
+ */
+public class UTGBEntry extends UTGBEntryPointBase
+{
+
+    @Override
+    public void main()
+    {
+        // register a custom track 
+        TrackFactoryHolder.addTrackFactory("demo.gwt.client.SampleTrack", demo.gwt.client.SampleTrack.factory());
+
+        // This line insert the track display in the <div id="utgb-main"></div> part
+        // Displayed track contents are defined in the view XML file (src/main/webapp/view/default-view.xml is used in default)
+        displayTrackView();
+
+        // add your GWT codes here
+    }
+
+}
+</code>
+
+=== View XML
+<code>
+<track className="demo.gwt.client.SampleTrack" name="Sample" pack="true">
+</track> 
+</code>
+Add the above XML fragment to your view XML file.
+
+
+[clip/sampletrack.png]
+
+Clicking on the human or medaka labels changes the track group properties.
