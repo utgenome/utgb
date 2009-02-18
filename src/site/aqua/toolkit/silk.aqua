@@ -30,14 +30,12 @@ This document is written by Taro L. Saito.
 
 == What is Silk? 
 
-{b|Silk} is a human-friendly and space-efficient text format, desigined for describing tree-structured data. Silk is a replacement XML and JSON, which are well-known tree-structured data formats. Silk format does not use tags or brackets to organize tree-structures. Instead, indentation via spaces represents data hierarachies, which is far simpler than neately opening and closing maching tags (or brackets). Silk is {b|tree-compatible with XML and JSON}; if XML or JSON data have a data model in which each tree node has at most one text value, these XML or JSON data can be automatically translated into Silk format (For the precise definition of tree-compatibility, see [#TreeCompatible this documentation]). The reverse direction is much easier; Silk format can be easily converted into XML or JSON in stream fashion. Therefore, you can utilize existing XML or JSON processors to analyze your data writtin in Silk format. 
-
-
+{b|Silk} is a human-friendly and space-efficient text format, desigined for describing tree-structured data. Silk is a replacement [http://w3c.org/xml XML] and [http://www.json.org JSON], well-known tree-structured data formats. Silk format does not use tags or brackets to organize tree-structures. Instead, indentation via spaces represents data hierarachies, which is far simpler than neately opening and closing maching tags (or brackets). Silk is compatible with XML and JSON when each tree node in XML or JSON has at most one text value. This type of XML or JSON data can be automatically translated into Silk format. The conversion to the reverse direction, Silk to XML or JSON, is straightforward. Silk is designed to accomodate stream-style processing, so you can utilize existing XML or JSON processors to analyze data written in Silk format.
 
 == Silk Features
 Silk text format has the following features:
 * {b|Tree Compatible}
-** Silk is has a [#SilkDataModel tree-structured data model], which is [#TreeCompatible tree-compatible] with XML and JSON data format.
+** Silk is has a [#SilkDataModel tree-structured data model], which can be easily translated into XML or JSON.
 * {b|Human-friendly format}
 ** In Silk, indentation with spaces is used for nesting data structures, so no need exists to wrap text data with tags. In addition, you can omit double quotations to describe text data, which are mandatory in JSON.
 * {b|Space-efficient format}
@@ -49,9 +47,9 @@ Silk text format has the following features:
 
 == Silk Data Model
 
-Data model that can be described with Silk format is a {b|forest}, that is, a list of {b|trees} consisting of nodes. Each tree node can have several child nodes and a text value. 
+Data model that can be described with Silk format is a {b|forest}, that is, a list of {b|trees} consisting of nodes. Each tree node can have several child nodes and a text value. To optimize data representation, Silk tries to translated tree structure as a set of relations (table tuples).
 
-(needs some illustration)
+(needs some illustrations)
 
 == Situations where Silk is useful 
 
@@ -450,12 +448,85 @@ You can wrap the in-line json data within a named node:
 <prime>23</prime>
 </code>
 
+=== CSV structured
+{b|Silk}
+<code>
+-plot(x, y)*
+1,3
+4,5
+7,8
+9,10
+</code>
+
+
 
 = Silk Examples
 
+== Gene locus
 
+<code>
+% silk(version:1.0)
 
+# track name
+- track(name:"gene locus")
 
+# specify a coordinate system of the genome
+- coordinate(group:utgb, species:human, revison:hg18, name:chr1)
+# named locus in the tab-separated data form
+ - locus(name, strand, start, end)|
+NM_001005277	+	357521	358460
+NM_001005224	+	357521	358460
+NM_001005221	+	357521	358460
+NM_001005277	-	610958	611897
+NM_001005224	-	610958	611897
+NM_001005221	-	610958	611897
+
+# move to another coordinate, chr2
+- coordinate(group:utgb, species:human, revison:hg18, name:chr2)
+ - locus(name, strand, start, end)|
+NM_001005277	+	357521	358460
+NM_001005224	+	357521	358460
+NM_001005221	+	357521	358460
+NM_001005277	-	610958	611897
+NM_001005224	-	610958	611897
+NM_001005221	-	610958	611897
+</code>
+
+== Bar chart data
+
+<code>
+% silk(version:1.0)
+
+- track(name:"Transcript Frequency")
+
+- barchart
+ - title:bar chart
+ - yMin:0
+ - yMax:100
+ - xTitle: genome position (bp)
+ - yTitle: number of transcripts (log scale)
+ - yLogScale: true
+# plot y beginning from x=1 (offsetX = 1)
+- coordinate(group:utgb, species:human, revison:hg18, name:chr1) 
+ - offsetX:1
+ - plot*
+0,0,0,0,0,0,0,3,5,10
+2,0,8,4,0,23,0,0,0,0
+
+# plot (x, y)
+- coordinate(group:utgb, species:human, revison:hg18, name:chr1)
+ - plot(x, y)|
+8  3
+9  5
+10 10
+11 2
+12 8
+13 4
+15 23
+
+</code>
+
+== More complex example
 <code>
 % silk(version:1.0)
 # single comment line
@@ -466,7 +537,7 @@ You can wrap the in-line json data within a named node:
 
 # specify coordinates 
 - coordinate(group:utgb, name:chr1, species:human, revision:hg18)
-# gene data description with tab-seaprated data format
+# gene data description with tab-seaprated data format. CDS and exon data use micro-data format 
  - gene(name, strand, start, end, cds(start, end), exon(start, end)*)|
 NM_001005277	+	357521	358460	[357521, 358460]	[[357521, 358460]]
 NM_001005224	+	357521	358460	[357521, 358460]	[[357521, 358460]]
