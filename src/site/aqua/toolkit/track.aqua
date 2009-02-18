@@ -1,5 +1,20 @@
 @title("How to create your own tracks")
 
+[index.html UTGB Toolkit Index]
 
 = How to Create Your Own Tracks
 
+Currently, UTGB toolkit provides three ways to develop you own genome tracks. 
+
+== Genome Track (image data)
+
+== Genome Track (iframe)
+
+
+== Custom Track using Google Web Toolkits (GWT)
+
+
+
+== UTGB Framework
+
+[clip/framework.png]

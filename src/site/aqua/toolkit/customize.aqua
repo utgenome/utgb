@@ -1,42 +1,158 @@
 @title("How to customize browser contents")
 
+[index.html UTGB Toolkit Index]
 
 = How to Customize Browser Contents
+
+=== Notice
+
+Because of some bugs in utgb-shell 1.2.0, it is necessary to change the version number of utgb-track-base from 1.4.4 to 1.4.6 described in (project_folder)/pom.xml file:
+<code>
+<parent>
+  <groupId>org.utgenome.track</groupId>
+  <artifactId>utgb-track-base</artifactId>
+  <version>1.4.6</version>
+</parent>
+</code>
+Then, type 
+<code>
+> utgb clean
+> utgb eclipse
+</code>
+to update several project files.
+
+== Prepare A Genome Browser Interface
+
+In the following explanation, we assume that the project folder name is "demo". 
+
+To create a genome browser interface, type {b|utgb gwt} in the project folder:
+<code>
+leo@lecture-2008/demo> utgb gwt
+[ScaffoldGenerator]     output folder: .
+[ScaffoldGenerator]     packageName      = demo
+[ScaffoldGenerator]     projectName      = demo
+[ScaffoldGenerator]     moduleName       = demo.gwt.UTGBEntry
+[ScaffoldGenerator]     clientPackageName        = demo.gwt.client
+[ScaffoldGenerator]     entryPoint       = demo.gwt.client.UTGBEntry
+[ScaffoldGenerator]     create a directory: ./src/main/java/demo/gwt
+[ScaffoldGenerator]     create a directory: ./src/main/java/demo/gwt/public
+[ScaffoldGenerator]     create a directory: ./src/main/java/demo/gwt/client
+[ScaffoldGenerator]     create a file: ./src/main/java/demo/gwt/public/UTGBEntry.html
+[ScaffoldGenerator]     create a file: ./src/main/java/demo/gwt/UTGBEntry.gwt.xml
+[ScaffoldGenerator]     create a file: ./src/main/java/demo/gwt/client/UTGBEntry.java
+[UTGBShell]     create a file: ./eclipse/demo-gwt.launch
+[UTGBShell]     create a file: ./eclipse/demo-gwt-mac.launch
+</code>
+
+The following steps compile the genome browser interface:
+<code>
+leo@lecture-2008/demo> utgb compile
+</code>
+which converts Java codes into JavaScript codes. This compile process usually takes 30 seconds to 1 minute. 
+
+After the compilation finished, launch the server:
+<code>
+leo@lecture-2008/demo> utgb server -g
+</code>
+
+Then, open the url http://localhost:8989/demo/UTGBEntry.html with your web browser.
+
+== Development with Eclipse
+
+{b|utgb eclipse} command generates Eclipse project files, .project, .classpath into the project folder:
+<code>
+leo@lecture-2008/demo> utgb eclipse
+</code>
+
+Then import the demo folder as a project in Eclipse. See also [quickstart.html#DevelopmentwithEclipse this document] for the other necessary steps to use UTGB Toolkit with Eclipse. At least you have to set M2_REPO and UTGB_HOME variables in Eclipse.
+
+
+In the Debug Configurations menu in Eclipse, you will find demo-gwt, demo-gwt-mac, demo-server Java application launch configurations. 
+
+* The {b|demo-gwt} (or demo-gwt-mac for Mac OS X) opens GWT (Google Web Toolkit) shell console, and enables debugging genome browser interface without compilation from Java to JavaScript code. This launch confuguration is useful when developing the client-side code. 
+* The {b|demo-server} configuration opens UTGB portable server. If you already compiled genome browser interface with {b|utgb compile} command, use the demo-server configuration to debug the server-side code. 
+
+
+== Track View
+
+The browser interface of UTGB consists of set of tracks. To change the tracks displayed in the browser, we call this set of tracks {b|track view}, you have to edit (project folder)/src/main/webapp/view/default-view.xml file or add another view XML file, e.g., (project folder)/src/main/webapp/view/custom-view.xml, etc. The defalut-view.xml file is loaded when opening the browser. To change the view file to be loaded at the startup time, use the following URL query parameter:
+
+<code>
+http://localhost:8989/UTGBEntry.html?view=custom-view.xml
+</code>
+The genome browser will automatically load src/main/webapp/view/custom-view.xml file.
+
+Here is the configuration setting when developing with Eclipse:
+
+[clip/custom-view.png]
+
+== Customizing A Track View
+
+=== View XML Examples
+
+[clip/default-view.png]
 
 <code>
 <trackGroup className="org.utgenome.gwt.utgb.client.track.TrackGroup" name="human">
   <property key="name">human</property>
+
+  <!-- initial display location -->
   <groupProperties>
     <property key="revision">hg17</property>
     <property key="species">human</property>
     <property key="target">chr1</property>
     <trackWindow start="6144720" end="6214720" width="700"/>
   </groupProperties>
+
+  <!-- UTGB Navigator configurations -->
   <track className="org.utgenome.gwt.utgb.client.track.lib.NavigatorTrack" name="UTGB Navigator" height="41" pack="true">
-      <property key="sequenceList">[{"species":"human", "revision":["hg18","hg17"]},{"species":"mouse", "revision":["mm9"]},{"species":"drosophila", "revision":["dm3"]}]</property>
+      <!-- menu contents -->
+      <property key="sequenceList">
+        [{"species":"human", "revision":["hg18","hg17"]},
+         {"species":"mouse", "revision":["mm9"]},
+         {"species":"drosophila", "revision":["dm3"]}]</property>
   </track>
+
+  <!-- keyword search track provides links to other locations on genomes -->
   <track className="org.utgenome.gwt.utgb.client.track.lib.KeywordSearchTrack" name="Keyword Search" pack="true">
-   <property key="keyword.examples">["Scaffold number (e.g. scaffold123)","GenBank accession number (e.g. BJ013363)","UniGene cluster identifier (e.g. Ola.5710)","Clone number (e.g. MF01SSA159G06)"]</property>
+   <property key="keyword.examples">
+      ["Scaffold number (e.g. scaffold123)",
+       "GenBank accession number (e.g. BJ013363)",
+       "UniGene cluster identifier (e.g. Ola.5710)",
+       "Clone number (e.g. MF01SSA159G06)"]
+   </property>
    <property key="species.scope">any</property>
   </track>
 
+  <!-- ruler for the whole sequence -->
   <track className="org.utgenome.gwt.utgb.client.track.lib.SequenceRulerTrack" name="Sequence Overview" height="14" pack="true">
     <property key="leftMargin">100</property>
   </track>
+
+  <!-- ruler for the track -->
   <track className="org.utgenome.gwt.utgb.client.track.lib.RulerTrack" name="Ruler" height="14" pack="true">
     <property key="leftMargin">100</property>
   </track>
-  
+
+  <!-- Refseq gene track provided as a PNG image -->
   <track className="org.utgenome.gwt.utgb.client.track.lib.GenomeTrack" name="RefSeq Gene Demo" pack="true">
+    <!-- use an image data as a track content --> 
     <property key="type">image</property>
     <property key="leftMargin">100</property>
+    <!-- this track retrieves the contents from (server_URL)/utgb-core/GeneViewer -->
     <property key="trackBaseURL">utgb-core/GeneViewer</property>
   </track>
+
+  <!-- Refseq gene table track provided as a text data -->
   <track className="org.utgenome.gwt.utgb.client.track.lib.GenomeTrack" name="RefSeq Gene Table Demo" height="150" pack="false">
+    <!-- use an iframe html element as a track content --> 
     <property key="type">frame</property>
     <property key="leftMargin">100</property>
+    <!-- this track retrieves the contents from (server_URL)/utgb-core/GeneViewer.tab -->
     <property key="trackBaseURL">utgb-core/GeneViewer.tab</property>
   </track>
+
+  <!-- you can add other tracks here -->
   
 </trackGroup>
 
