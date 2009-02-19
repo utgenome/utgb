@@ -90,6 +90,8 @@ Here is the configuration setting when developing with Eclipse:
 
 === View XML Examples
 
+The view XML file defines track contents to be displayed on the browser.
+
 [clip/default-view.png]
 
 <code>
@@ -138,6 +140,7 @@ Here is the configuration setting when developing with Eclipse:
   <track className="org.utgenome.gwt.utgb.client.track.lib.GenomeTrack" name="RefSeq Gene Demo" pack="true">
     <!-- use an image data as a track content --> 
     <property key="type">image</property>
+    <!-- if you have to open spaces in the left-side set this value --> 
     <property key="leftMargin">100</property>
     <!-- this track retrieves the contents from (server_URL)/utgb-core/GeneViewer -->
     <property key="trackBaseURL">utgb-core/GeneViewer</property>
