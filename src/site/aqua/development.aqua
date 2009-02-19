@@ -22,4 +22,120 @@
 * see [utgb-shell/quickstart.html UTGB Shell Quick Start Guide]
 
 ===[./utgb-widget UTGB Widgets]
-* UTGB's User Interface Packag
+* UTGB's User Interface Package
+
+
+== How to update this documentation?
+
+In the utgb source folder, type:
+<code>
+> mvn site:run 
+</code>
+if you have an installation of [http://maven.apache.org Maven] in your PC, or 
+<code>
+> utgb maven site:run
+</code>
+if you have an utgb-shell installed. 
+
+Then, open http://localhost:8080/ to see this documentation on the local machine. Updates to "src/site/aqua/**/*.aqua" files will be reflected to the page after reloading. If you have to add some files to the page (image, attachments, etc.), put these files to the "src/site/resources" folder, the server must be restarted; Stop the Jetty server with Ctrl+C, and rerun the site:run command.
+
+Updates of the latest versions of these wiki document files are daily checked, and this site http://utgenome.org/ will be automatically updated via the Hudson continuous integration server (http://utgenome.org/hudson ). 
+
+= Aqua Wiki Syntax
+
+== Wiki Grammar  
+
+=== wiki source
+{{
+http://www.xerial.org/ 
+
+[http://www.xerial.org/ hyper link with a page name]
+
+[Index] wiki link
+= Heading1
+== Heading2
+=== Heading3
+* item1
+** item2
+*** item3
+
+}}
+
+The above wiki text will be displayed as follows:
+=== result
+http://www.xerial.org/ 
+
+[http://www.xerial.org/ hyper link with a page name]
+
+[Index] wiki link
+= Heading1
+== Heading2
+=== Heading3
+* item1
+** item2
+*** item3
+== Text Decoration
+
+=== wiki source
+<code>
+{b|bold text}    bold text
+{i|italic text}  italic text
+</code>
+
+=== result
+{b|bold text}    bold text
+{i|italic text}  italic text
+
+
+== Image 
+
+* image files(*.gif, *.png, *.jpg, etc.) are automatically displayed as images.
+
+
+sample
+
+=== wiki source
+<code>
+[clip/tooth.gif]
+</code>
+
+=== result
+[clip/tooth.gif]
+
+
+== Program Codes 
+
+=== wiki source
+{{
+<code>
+ std:cout << "Hello World!" << std:endl;
+</code>
+}}
+
+=== result
+<code>
+ std:cout << "Hello World!" << std:endl;
+</code>
+
+
+== Embedded HTML 
+
+=== wiki source
+{{
+<html>
+  <font color="blue">This is HTML message.</font>
+</html>
+}}
+
+=== result
+<html>
+  <font color="blue">This is HTML message.</font>
+</html>
+
+== Set the page title
+
+=== wiki source
+{{
+@title("Top Page")
+}}
+
