@@ -1,0 +1,64 @@
+
+[index.html UTGB Toolkit Index] 
+
+= FAQ 
+
+== Somthing went wrong. What should I do?
+
+Try to update several libraries with the following command:
+<code>
+> utgb maven compile -U
+</code>
+
+Remove temporary folders:
+<code>
+> rm -rf target gwt-home
+</code>
+
+== When some files are gone, how do I recover them?
+
+The utgb shell provides repair command, which reproduces missing files and revert the modified files. 
+<code>
+> utgb repair
+myapp> utgb repair
+[ScaffoldGenerator]     output folder: ./
+[ScaffoldGenerator]     package  = myapp4
+[ScaffoldGenerator]     explodedWebappDir        = target/utgb
+[ScaffoldGenerator]     projectName      = myapp4
+[ScaffoldGenerator]     moduleName       = myapp4.gwt.UTGBEntry
+[ScaffoldGenerator]     group    = org.utgenome.track
+[ScaffoldGenerator]     create a directory: ./tomcat
+[ScaffoldGenerator]     create a directory: ./tomcat/webapps
+[ScaffoldGenerator]     create a directory: ./tomcat/webapps/ROOT
+[ScaffoldGenerator]     create a directory: ./tomcat/webapps/ROOT/WEB-INF
+File ./config/track-config.xml already exists.
+Overwrite it? (y: yes, n: no, A: yes to all, X: no to all) [n]: n
+
+File ./db/README already exists.
+Overwrite it? (y: yes, n: no, A: yes to all, X: no to all) [n]: 
+File ./pom.xml already exists.
+Overwrite it? (y: yes, n: no, A: yes to all, X: no to all) [n]: n
+
+File ./README already exists.
+Overwrite it? (y: yes, n: no, A: yes to all, X: no to all) [n]: 
+File ./src/assembly/jar.xml already exists.
+Overwrite it? (y: yes, n: no, A: yes to all, X: no to all) [n]: n
+
+File ./src/main/webapp/404.jsp already exists.
+Overwrite it? (y: yes, n: no, A: yes to all, X: no to all) [n]: 
+File ./src/main/webapp/image/utgb.gif already exists.
+Overwrite it? (y: yes, n: no, A: yes to all, X: no to all) [n]: n
+
+File ./src/main/webapp/index.jsp already exists.
+Overwrite it? (y: yes, n: no, A: yes to all, X: no to all) [n]: 
+File ./src/main/webapp/view/default-view.xml already exists.
+Overwrite it? (y: yes, n: no, A: yes to all, X: no to all) [n]: n
+
+File ./src/main/webapp/WEB-INF/web.xml already exists.
+Overwrite it? (y: yes, n: no, A: yes to all, X: no to all) [n]: 
+[ScaffoldGenerator]     create a file: ./tomcat/webapps/ROOT/WEB-INF/web.xml
+File ./www/README already exists.
+Overwrite it? (y: yes, n: no, A: yes to all, X: no to all) [n]: X
+
+</code>
+

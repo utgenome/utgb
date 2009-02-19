@@ -231,11 +231,9 @@ Implementing custom tracks is the only way to dynamically change the track group
 
 === Notice 
 
-GWT code is a client side program that runs on the web browser (IE, Firefox, etc.) so it is impossible to access databases on the server through JDBC. And also, there are several limitation on available Java libraries in GWT. 
+GWT code is a client side program that runs on the web browser (IE, Firefox, etc.) so it is impossible to access databases on the server through JDBC or object-data mapping functionality described in [dbaccess.html]. There are several limitation on available Java libraries in GWT. For details of GWT programming, see the follwing link: http://www.xerial.org/trac/Xerial/wiki/WebApplication
 
-For details of GWT programming, see the follwing link: http://www.xerial.org/trac/Xerial/wiki/WebApplication
-
-To interactively communicate server-side programs (e.g. web actions) with custom tracks, for example tracks that retrieves database contents, and changes its display according to the query result, you have to learn how to implement RPC (Remote Procedure Call), which enables invoking methods on a server-side program from the client-side code. 
+To take interactive commucations between server-side programs (e.g. web actions) and custom tracks (client-side program), for example, retrieving database contents and changing track contents according to the query result, you have to learn how to implement RPC (Remote Procedure Call), which enables invoking methods on a server-side program from the client-side code. 
 
 
 == Sample Code
