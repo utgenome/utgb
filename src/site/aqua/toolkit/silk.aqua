@@ -47,7 +47,9 @@ Silk text format has the following features:
 
 == Silk Data Model
 
-Data model that can be described with Silk format is a {b|forest}, that is, a list of {b|trees} consisting of nodes. Each tree node can have several child nodes and a text value. To optimize data representation, Silk tries to translated tree structure as a set of relations (table tuples).
+Data model that can be described with Silk format is a {b|forest}, that is, a list of {b|trees} consisting of nodes. Each tree node can have several child nodes and a text value. 
+
+//To optimize data representation, Silk tries to translated tree structure as a set of relations (table tuples).
 
 (needs some illustrations)
 
