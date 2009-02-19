@@ -290,7 +290,7 @@ Multi-line text values in Silk are connected into a single string. Leading white
 
 == Import another file
 
-Silk format has a built-in support of import function, which is useful for annotating existing data files (e.g., tab-separated data) with Silk. The following examples loads tab-separated data from another file, and associated each tab-separated data with node names:
+Silk format has a built-in support of import function, which is useful for annotating existing data files (e.g., tab-separated data) with Silk. The following examples loads tab-separated data from the file book.tab, and annotates the loaded tab-separated data with the book schema:
 
 <code>
 - book(id, title, isbn, year)|
