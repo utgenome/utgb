@@ -2,6 +2,7 @@
 
 [index.html UTGB Toolkit Index]
 
+= How to Create Your Own Tracks
 
 == UTGB Framework
 
@@ -31,7 +32,7 @@ Given track group properties, each track generates HTML contents to display. Tra
 
 [clip/framework.png] 
 
-= How to Create Your Own Tracks
+= Track Types
 
 Currently, UTGB toolkit provides three ways to develop you own genome tracks. 
 
