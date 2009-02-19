@@ -37,7 +37,7 @@ if you have an installation of [http://maven.apache.org Maven] in your PC, or
 </code>
 if you have an utgb-shell installed. 
 
-Then, open http://localhost:8080/ to see this documentation on the local machine. Updates to "src/site/aqua/**/*.aqua" files will be reflected to the page after reloading. If you have to add some files to the page (image, attachments, etc.), put these files to the "src/site/resources" folder, the server must be restarted; Stop the Jetty server with Ctrl+C, and rerun the site:run command.
+Then, open http://localhost:8080/ to see this documentation on the local machine. Updates to the "src/site/aqua/**/*.aqua" files will be reflected after reloading the page in the browser. If you have to add some files to the page (image, attachments, etc.), put these files to the "src/site/resources" folder. Until the server will be restarted, these new files are not visible from the localhost:8080, so stop the Jetty server with Ctrl+C, and rerun the site:run command.
 
 Updates of the latest versions of these wiki document files are daily checked, and this site http://utgenome.org/ will be automatically updated via the Hudson continuous integration server (http://utgenome.org/hudson ). 
 
