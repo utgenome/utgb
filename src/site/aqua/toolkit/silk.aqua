@@ -1,6 +1,6 @@
 @title("Silk Format Specification")
 
-[index.html UTGB Toolkit Index]
+[index.HTTP UTGB Toolkit Index]
 
 = Silk Text Format Specification
 
@@ -30,7 +30,7 @@ This document is written by Taro L. Saito.
 
 == What is Silk? 
 
-{b|Silk} is a human-friendly and space-efficient text format, desigined for describing tree-structured data. Silk is a replacement [http://w3c.org/xml XML] and [http://www.json.org JSON], well-known tree-structured data formats. Silk format does not use tags or brackets to organize tree-structures. Instead, indentation via spaces represents data hierarachies, which is far simpler than neately opening and closing maching tags (or brackets). Silk is compatible with XML and JSON when each tree node in XML or JSON has at most one text value. This type of XML or JSON data can be automatically translated into Silk format. The conversion to the reverse direction, Silk to XML or JSON, is straightforward. Silk is designed to accomodate stream-style processing, and it is possible to translate Silk file into XML or JSON streams, so you can utilize existing XML or JSON processors to analyze data written in Silk format.
+{b|Silk} is a human-friendly and space-efficient text format, designed for describing tree-structured data. Silk is a replacement [http://w3c.org/xml XML] and [http://www.json.org JSON], well-known tree-structured data formats. Silk format does not use tags or brackets to organize tree-structures. Instead, indentation via spaces represents data hierarchies, which is far simpler than neatly opening and closing matching tags (or brackets). Silk is compatible with XML and JSON when each tree node in XML or JSON has at most one text value. This type of XML or JSON data can be automatically translated into Silk format. The conversion to the reverse direction, Silk to XML or JSON, is straightforward. Silk is designed to accommodate stream-style processing, and it is possible to translate Silk file into XML or JSON streams, so you can utilize existing XML or JSON processors to analyze data written in Silk format.
 
 == Silk Features
 Silk text format has the following features:
@@ -39,9 +39,9 @@ Silk text format has the following features:
 * {b|Human-friendly format}
 ** In Silk, indentation with spaces is used for nesting data structures, so no need exists to wrap text data with tags. In addition, you can omit double quotations to describe text data, which are mandatory in JSON.
 * {b|Space-efficient format}
-** Tab-separated format or comma-separated values (CSV) can be embedded in Silk at any hierarhical position. XML and JSON have no support for such compact data formats.
+** Tab-separated format or comma-separated values (CSV) can be embedded in Silk at any hierarchical position. XML and JSON have no support for such compact data formats.
 * {b|Import function}
-** Several data files (e.g. another Silk file, tab-seaparted data, CSV, text or binary files, etc.) can be imported into a Silk file to compose a large data set.
+** Several data files (e.g. another Silk file, tab-separated data, CSV, text or binary files, etc.) can be imported into a Silk file to compose a large data set.
 * {b|One-liner format}
 ** Silk data can be processed line-by-line, so it is very familiar with standard text-processing tools, such as grep, awk, Perl, Ruby, etc.
 
@@ -54,16 +54,16 @@ Data model that can be described with Silk format is a {b|forest}, that is, a li
 (needs some illustrations)
 
 == Situations where Silk is useful 
-
+ 
 Silk format has no need to wrap data with tags or quotations. This feature is suitable for data logging, which needs to incrementally append data to the end of a file. Silk is also useful for accumulating large program outputs. One of the design goals of Silk is to provide a compact representation of biological data. If you do not like verbose data descriptions of XML or JSON formats, Silk will match your needs. 
 
-In the UTGB Toolkit, we use Silk as a starndard data description format for describing biological data, several configuration files, etc. Several years of experiences of processing XML and JSON format under our belt, we studied these syntaxes can be simplified by removing unnecessary notations, such as tags or brackets. Silk is the result of these syntax optimizations. For example, in most cases, double quotation mark to indicate string data is unnecessary. This plain-style text data description increaes the editablity and readability of the Silk file format. In addition, Silk's embedded tab-separated data description significantly reduces the data size. 
+In the UTGB Toolkit, we use Silk as a standard data description format for describing biological data, several configuration files, etc. Several years of experiences of processing XML and JSON format under our belt, we studied these syntaxes can be simplified by removing unnecessary notations, such as tags or brackets. Silk is the result of these syntax optimizations. For example, in most cases, double quotation mark to indicate string data is unnecessary. This plain-style text data description increase the editablity and readability of the Silk file format. In addition, Silk's embedded tab-separated data description significantly reduces the data size. 
 
 Silk can be used to enhance existing tab-separated data or comma-separated value (CSV) files with node labels and structures. These flat files can be imported into a Silk file, and you can annotate each data with node labels, and also can organize them in a hierarchical data structure. 
 
 == Situations where Silk is not useful
 
-Silk is not a markup language such as HTML, so it doesn't suit to represent text decorations. For example, the following text data description, which mixes text values and tags cannot be desribed with Silk:
+Silk is not a markup language such as HTML, so it doesn't suit to represent text decorations. For example, the following text data description, which mixes text values and tags cannot be described with Silk:
 <code>
 <p>This paragraph contains <b>bold</b> and <i>italic</i> fonts.
 </code>
@@ -206,7 +206,7 @@ Alternatively, you can write the same data as follows:
 
 == Tab-separated data 
 
-The design concept of Silk format is to reduce the redandancy of XML or JSON data format in describing large data set. If node description ends with a bar '|', following lines are splitted by tabs, and each text component separated by tabs is assigned a corresponding node name. The node name of each tab-separated data can be specified in the preceding child node descriptions:
+The design concept of Silk format is to reduce the redundancy of XML or JSON data format in describing large data set. If node description ends with a bar '|', following lines are split by tabs, and each text component separated by tabs is assigned a corresponding node name. The node name of each tab-separated data can be specified in the preceding child node descriptions:
 {b|Silk}
 <pre>
 # A book node schema with 4 parameters. 
