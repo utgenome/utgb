@@ -51,6 +51,8 @@
 
   <menu name="Developer Manual">
     <item name="Development Note" href="development.html"/>
+    <item name="UTGB Javadoc" href="apidocs/"/>
+    <item name="Source Code Xref" href="xref/"/>
   </menu>
 
   <menu name="For Developers" ref="reports"/>
