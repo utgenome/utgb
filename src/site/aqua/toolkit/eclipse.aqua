@@ -3,17 +3,35 @@
 [index.html Top Page]
 = How to use Eclipse with UTGB Shell
 
-Type {b|utgb eclipse} in your project folder. This command generates Eclipse project files for your web application. 
+[http://eclipse.org Eclipse] is an excellent open-source IDE for developing Java programs. We strongly recommend you to use Eclipse in developing your track programs. In order to start track development with Eclipse, type {b|utgb eclipse} in your project folder. 
 
 <code>
-> cd myapp
+> cd (your utgb application folder)
 > utgb eclipse
 </code>
 
-Then, import your web application folder into Eclipse by choosing {b|File - Import - Exisiting Projects into Workspace}.
+
+This command generates Eclipse project files .project and .classpath in the project folder. Then, import your project folder in your Eclipse by choosing {b|File - Import - Exisiting Projects into Workspace}.
 
 When you modified the pom.xml file, you need to run {b|utgb eclipse} again to download the dependent JAR files, described in the dependencies tag in pom.xml.
 
+== Development with Eclipse
+
+You have to set two class path variables in your Eclipse settings:
+
+<code>
+M2_REPO = (Your Home Directory)/.m2/repository
+UTGB_HOME = (Installation folder of the UTGB)
+</code>
+
+[clip/classpath-variable.gif]
+
+These two variables are the same used in the [quickstart.html UTGB quick start].
+
+In the debug dialog of the Eclipse, you will find {i|(your-app-name)-server} item in the Java Application, which will start the local web server. 
+[clip/debug-dialog.gif]
+
+While you are coding the web application, Eclipse automatically reloads your change to the source codes, so interactive editing of your web application becomes possible with Eclipse.
 
 
-
+After you created a genome browser interface via {b|utgb gwt} command, a new launch configuration is added to your Eclipse project. You will find (your-application-name)-gwt in the debug configuration dialog. This configuration will open GWT Shell to enable debugging your genome browser program before compiling it into JavaScript code. If you are a Mac OS X user, choose (your-application-name)-gwt-mac configuration to launch the GWT Shell.
