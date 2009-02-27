@@ -2,5 +2,11 @@
 
 = Release Notes
 
-* {b|Jan 19, 2009} UTGB Shell 1.2.0 released. 
+* {b|Feb 27th, 2009} [http://maven.utgenome.org/repository/artifact/org/utgenome/utgb-shell/1.2.0/utgb-shell-1.2.1-package.zip UTGB Shell 1.2.1] released.
+** Fixed a packaging error, resulting in permission denied error when calling 'utgb compile' command.
+** Fixed a bug that the generated web application may use unstable-versions of utgb-core library. 
+** Removed several warnings when compilng GWT applications. 
+** Upgraeded to utgb-track-base 1.4.6 (uses GWT 1.5.3)
+
+* {b|Jan 19th, 2009} UTGB Shell 1.2.0 released. 
 
