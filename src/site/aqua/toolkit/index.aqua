@@ -30,5 +30,6 @@ The UTGB Toolkit includes the UTGB Shell, a command-line client for developing y
 Silk is an efficient text format for describing biological data. 
 * [silk.html Silk format specification]
 
-
+=== Specifications for Genomic Data
+* [silk-read-format.html Sikl Genome Read Format] for describing genome reads.
 

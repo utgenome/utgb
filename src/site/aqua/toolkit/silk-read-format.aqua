@@ -1,0 +1,114 @@
+@title("Silk Genome Read Format")
+
+= Silk Genome Read Format
+
+Silk Genome Read Format is a data format for describing genome read data in [silk.html Silk]. This format consists of three types of data objects: coordinate, reference and read:
+
+* coordinate(group:utgb, species:medaka, revision:version1.0, type:colorspace)
+** specifies a coordinate system for the following data.
+** The group value must be 'utgb' (predefined for the future extension)
+** The species value is e.g., human, mouse, medaka, etc.
+** The revision value is for specifying sequence version (e.g, hg18, mm9, etc.).
+** The type value must be {b|colorspace} or {b|letterspace}. If the type value is not present, letterspace is used as the default value.
+
+* reference(name, start, strand)
+** specifies a reference sequence to which the following read objects are aligned.
+** The name value is, for example, scaffold1, chr1, etc.
+** reference sequence can be described in a multi-line format. '{b|">"}' symbol is an indicator for using the multi-line format. For example,
+<code>
+ -sequence: A010132310011011111212333333333333333333333331212121
+</code>
+is the same with:
+<code>
+ -sequence>
+A01013231001101111121
+233333333333333333333
+3331212121
+</code>
+
+
+* read(name, start, strand, sequence, ...)|
+** You can add arbitrary parameters to read objects
+** '{b|"|"}' symbol indicates tab-separated data will follow for describing read objects.
+** The order of the attributes is not significant. You can change the attribute order: for example, read(name, start, strand, QV, sequence).
+
+== Indentation
+* Tab characters cannot be used for the indentation in Silk format. Use space characters.
+* Indentation of coordinate and reference objects must be level 0 (no space).
+* Read objects belong to a reference sequence, so its indentation level is 1.
+
+== Example
+<code>
+%silk(version:1.0)
+# coordinate specifies the target sequence
+-coordinate(group:utgb, species:medaka, revision:version1.0, type:colorspace)
+# specifies a reference sequence
+-reference(name:scaffold1, start:1043, strand:+)
+ -sequence>
+A010132310011011111212333333333333333333333331212121
+3213123012312031230123102320032123032102312312302130
+21312031230132003110001320202020123012310
+# read data aligned to the reference sequence
+ -read(name, start, strand, sequence, QV)|
+seq1	     1043    +	     A010012113	   20.1
+seq2	     1047    +	     C01232103011  24.5
+
+# start data for another reference
+-reference(name:scaffold1034, start:0, strand:+)
+ -sequence>
+C4323423434101323100110111112123333312111
+21312031230132003110001320202020123012
+ -read(name, start, strand, sequence, QV)|
+seq3	     0    +	     A010012113	   20.1
+seq4	     0    +	     C01232103011  24.5
+
+</code>
+
+== InDel 
+To specify indel positions to display, use:
+* {b|() (open parentheses)} for minor insertions (which will be hidden in the track view)
+* {b|[] (brackets)} for major insertions (which will be displayed in the track view)
+* {b|-  (hyphen)} for specifying gaps in the sequence. The gap symbol can be used in both the reference and read sequences.
+
+<code>
+%silk(version:1.0)
+-coordinate(group:utgb, species:medaka, revision:version1.0, type:colorspace)
+ -reference(name:scaffold1, start:1043, strand:+)
+  -sequence>
+A01013(31)011011111212333333333333333333333331212121
+32131230123120312[301231]320032123032102312312302130
+21312031230132003110001320202020123012310
+  -read(name, start, strand, sequence, QV)|
+seq1	     1043    +	     A0-100--12113	   20.1
+seq2	     1047    +	     C01232-103-011  24.5
+</code>
+
+== SOLiD Color Space Table
+<code>
+letter	color
+A      	00 (0)
+C      	01 (1)
+G      	10 (2)
+T      	11 (3)
+</code>
+
+Take XOR of two bases:
+<code>
+seq code
+AA  0
+AC  1
+AG  2
+AT  3
+CA  1
+CC  0
+CG  3
+CT  2
+GA  2
+GC  3
+GG  0
+GT  1
+TA  3
+TC  2
+TG  1
+TT  0
+</code>
