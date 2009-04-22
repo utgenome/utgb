@@ -24,7 +24,7 @@ This document is written by Taro L. Saito.
 ** [#InlineJSONdataArray In-line JSON array]
 ** [#InlineJSONdataObject In-line JSON object]
 ** [#CommaseparatedvaluesCSV Comma-separated values: CSV]
-
+** [#MultiLineBlockDataRepresentation Multi-line Block Data Reperesentation]
 * Silk Examples
 ** 
 
@@ -460,7 +460,34 @@ You can wrap the in-line json data within a named node:
 9,10
 </code>
 
+== Multi-Line Block Data Representation
+Instead of tab-spearated format, Silk allows block-style data representations, where each node value is spearated by "--" (node separator) and ">>" (entry separator). 
 
+{b|Silk}
+<code>
+-sequence(seq1, seq2)>> 
+ABCD
+EFGHI
+--
+JKL
+MN
+>>
+0000
+--
+1234
+-message:hello
+</code>
+
+{b|JSON}
+<code>
+{ "sequence":
+   [
+    {"seq1":"ABCDEFGHI", "seq2":"JKLMN"},
+    {"seq1":"0000", "seq2":"1234"}
+   ],
+  "message":"hello" 
+}   
+</code>
 
 = Silk Examples
 
