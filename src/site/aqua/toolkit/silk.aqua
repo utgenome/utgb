@@ -24,9 +24,11 @@ This document is written by Taro L. Saito.
 ** [#InlineJSONdataArray In-line JSON array]
 ** [#InlineJSONdataObject In-line JSON object]
 ** [#CommaseparatedvaluesCSV Comma-separated values: CSV]
-** [#MultiLineBlockDataRepresentation Multi-line Block Data Reperesentation]
+** [#MultiLineBlockDataRepresentationHereDocument Multi-line Block Data Reperesentation] (Here Document)
 * Silk Examples
-** 
+** [#Genelocus Gene Locus Data]
+** [#Barchartdata Bar Chart Data]
+** [#Morecomplexexample More complex example]
 
 == What is Silk? 
 
@@ -115,11 +117,23 @@ In Silk, a tree node begins with a hyphen '-' followed by a node name. The text 
 - title: hello world
 </code>
 
-White spaces around text values will be ignored.
+White spaces around text values will be ignored:
 
 {b|JSON}
 <code>
 { "title":"hello world" }
+</code>
+
+And also, white spaces around node names will be ignored:
+
+{b|Silk}
+<code>
+- first name : Andy 
+</code>
+
+{b|JSON}
+<code>
+{ "first name":"Andy" }
 </code>
 
 == Tree node with several child nodes with text values
@@ -289,6 +303,27 @@ Multi-line text values in Silk are connected into a single string. Leading white
  {"name":"NM_001005277",
   "sequence":"ATGGATGGAGAGAATCACTCAGTGGTATCTGAGTTTTTGTTTCTGGGACTCACTCATTCATGGGAGATCCAGCTCCTCCTCCTAGTGTTTTCCTCTGTGCTCTATGTGGCAAGCATTACTGGAAACATCCTCATTGTGTTTTCTGTGACCACTGACCCTCACTTACACTCCCCCATGTACTTTCTACTGGCCAGTCTCTCCTTCATTGACTTAGGAGCCTGCTCTGTCACTTCTCCCAAGATGATTTATGACCTGTTCAGAAAGCGCAAAGTCATCTCCTTTGGAGGCTGCATCGCTCAAATCTTCTTCATCCACGTCGTTGGTGGTGTGGAGATGGTGCTGCTCATAGCCATGGCCTTTGACAGATATGTGGCCCTATGTAAGCCCCTCCACTATCTGACCATTATGAGCCCAAGAATGTGCCTTTCATTTCTGGCTGTTGCCTGGACCCTTGGTGTCAGTCACTCCCTGTTCCAACTGGCATTTCTTGTTAATTTAGCCTTCTGTGGCCCTAATGTGTTGGACAGCTTCTACTGTGACCTTCCTCGGCTTCTCAGACTAGCCTGTACCGACACCTACAGATTGCAGTTCATGGTCACTGTTAACAGTGGGTTTATCTGTGTGGGTACTTTCTTCATACTTCTAATCTCCTACGTCTTCATCCTGTTTACTGTTTGGAAACATTCCTCAGGTGGTTCATCCAAGGCCCTTTCCACTCTTTCAGCTCACAGCACAGTGGTCCTTTTGTTCTTTGGTCCACCCATGTTTGTGTATACACGGCCACACCCTAATTCACAGATGGACAAGTTTCTGGCTATTTTTGATGCAGTTCTCACTCCTTTTCTGAATCCAGTTGTCTATACATTCAGGAATAAGGAGATGAAGGCAGCAATAAAGAGAGTATGCAAACAGCTAGTGATTTACAAGAGGATCTCATAA"}}
 </code>
+
+
+=== Escape sequence for line head
+
+When the multi-line data contains hyphen in the line head, escape it by using {b|\-} notation:
+
+{b|Silk}
+<code>
+- sequence>
+ATGGATGGAGAGAATCACTCAGTGGTATCTGAGTTTTTGTTTCTGGGACTCACTCATTCAT--
+\-AGCTCCTCCTCCTAGTGTTTTCCTCTGTGCTCTATGTGGCAAGCATTACTGGAAACATCCT
+</code>
+
+{b|JSON}
+<code>
+{"sequence":"ATGGATGGAGAGAATCACTCAGTGGTATCTGAGTTTTTGTTTCTGGGACTCACTCATTCAT---AGCTCCTCCTCCTAGTGTTTTCCTCTGTGCTCTATGTGGCAAGCATTACTGGAAACATCC"}
+</code>
+
+The escape symbol '\' will be removed when parsing the Silk data. To include '\' symbol to the data, use '\\'.
+
+
 
 == Import another file
 
@@ -460,7 +495,7 @@ You can wrap the in-line json data within a named node:
 9,10
 </code>
 
-== Multi-Line Block Data Representation
+== Multi-Line Block Data Representation (Here Document)
 Instead of tab-spearated format, Silk allows block-style data representations, where each node value is spearated by "--" (node separator) and ">>" (entry separator). 
 
 {b|Silk}
