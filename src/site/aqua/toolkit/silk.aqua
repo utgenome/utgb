@@ -20,6 +20,7 @@ This document is written by Taro L. Saito.
 ** [#Nestedtreendoes Nested tree nodes]
 ** [#Tabseparateddata Tab-separated data]
 ** [#Multilinetextvalues Multi-line text values]
+** [#Escapesequencesfortheheadofaline Escape sequences for the head of a line]
 ** [#Importanotherfile Import another file]
 ** [#InlineJSONdataArray In-line JSON array]
 ** [#InlineJSONdataObject In-line JSON object]
@@ -295,7 +296,29 @@ TTTCTGAATCCAGTTGTCTATACATTCAGGAATAAGGAGATGAAGGCAGCAATAAAGAGAGTATGCAAAC
 AGCTAGTGATTTACAAGAGGATCTCATAA
 </code>
 
-Multi-line text values in Silk are connected into a single string. Leading white spaces and tail white spaces (including new line chracters "\r" and "\n") of each text line will be trimmed down.
+Multi-line text values in Silk are connected into a single string. Leading white spaces and tail white spaces (including new line chracters "\r" and "\n") of each text line will be trimmed down. For example, you can insert spaces to the head of lines to make the nesting of the data clear:
+
+{b|Silk}
+<code>
+-gene(name:NM_001005277)
+ -sequence>
+  ATGGATGGAGAGAATCACTCAGTGGTATCTGAGTTTTTGTTTCTGGGACTCACTCATTCATGGGAGATCC
+  AGCTCCTCCTCCTAGTGTTTTCCTCTGTGCTCTATGTGGCAAGCATTACTGGAAACATCCTCATTGTGTT
+  TTCTGTGACCACTGACCCTCACTTACACTCCCCCATGTACTTTCTACTGGCCAGTCTCTCCTTCATTGAC
+  TTAGGAGCCTGCTCTGTCACTTCTCCCAAGATGATTTATGACCTGTTCAGAAAGCGCAAAGTCATCTCCT
+  TTGGAGGCTGCATCGCTCAAATCTTCTTCATCCACGTCGTTGGTGGTGTGGAGATGGTGCTGCTCATAGC
+  CATGGCCTTTGACAGATATGTGGCCCTATGTAAGCCCCTCCACTATCTGACCATTATGAGCCCAAGAATG
+  TGCCTTTCATTTCTGGCTGTTGCCTGGACCCTTGGTGTCAGTCACTCCCTGTTCCAACTGGCATTTCTTG
+  TTAATTTAGCCTTCTGTGGCCCTAATGTGTTGGACAGCTTCTACTGTGACCTTCCTCGGCTTCTCAGACT
+  AGCCTGTACCGACACCTACAGATTGCAGTTCATGGTCACTGTTAACAGTGGGTTTATCTGTGTGGGTACT
+  TTCTTCATACTTCTAATCTCCTACGTCTTCATCCTGTTTACTGTTTGGAAACATTCCTCAGGTGGTTCAT
+  CCAAGGCCCTTTCCACTCTTTCAGCTCACAGCACAGTGGTCCTTTTGTTCTTTGGTCCACCCATGTTTGT
+  GTATACACGGCCACACCCTAATTCACAGATGGACAAGTTTCTGGCTATTTTTGATGCAGTTCTCACTCCT
+  TTTCTGAATCCAGTTGTCTATACATTCAGGAATAAGGAGATGAAGGCAGCAATAAAGAGAGTATGCAAAC
+  AGCTAGTGATTTACAAGAGGATCTCATAA
+</code>
+
+The above two silk data has the same semantics with the following JSON data:
 
 {b|JSON}
 <code>
@@ -305,9 +328,9 @@ Multi-line text values in Silk are connected into a single string. Leading white
 </code>
 
 
-=== Escape sequence for line head
+== Escape sequences for the head of a line
 
-When the multi-line data contains hyphen in the line head, escape it by using {b|\-} notation:
+When the multi-line data contains a hyphen in the head of a line, escape it by using {b|\-} notation, because hyphen(-) is a special character in Silk for describing nodes:
 
 {b|Silk}
 <code>
@@ -321,8 +344,7 @@ ATGGATGGAGAGAATCACTCAGTGGTATCTGAGTTTTTGTTTCTGGGACTCACTCATTCAT--
 {"sequence":"ATGGATGGAGAGAATCACTCAGTGGTATCTGAGTTTTTGTTTCTGGGACTCACTCATTCAT---AGCTCCTCCTCCTAGTGTTTTCCTCTGTGCTCTATGTGGCAAGCATTACTGGAAACATCC"}
 </code>
 
-The escape symbol '\' will be removed when parsing the Silk data. To include '\' symbol to the data, use '\\'.
-
+The escape symbol '\' will be removed when parsing the Silk data. To include '\' symbol to the data, use '\\'. These escape sequences '\-' and '\\' are effective only in the head of a line; do not escape hyphen and \ (backslash) characters after the first character of a line. 
 
 
 == Import another file
