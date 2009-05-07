@@ -31,5 +31,5 @@ Silk is an efficient text format for describing biological data.
 * [silk.html Silk format specification]
 
 === Specifications for Genomic Data
-* [silk-read-format.html Sikl Genome Read Format] for describing genome reads.
-
+* [silk-read-format.html Silk Genome Read Format] for describing genome reads.
+* [silk-locus.html Silk Genome Locus Format] for describing gene loci.
