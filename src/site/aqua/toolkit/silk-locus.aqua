@@ -1,0 +1,90 @@
+@title("silk locus format")
+
+= Silk Locus Format (draft)
+
+== Example
+<code>
+%silk(version:1.0)
+# coordinate specifies the target sequence
+-track(name:pairdReads, description:Clone Paired Reads)
+
+-coordinate(group:utgb, species:human, revision:hg18)
+ -locus(coordinate.name, start, end, name, strand, block(start, end, color)*, color, _[json])|
+chr22 1000 5000 cloneA + [[1,567, "red"], [3513, 4000]] #00FFFF {"score":960}
+chr22 2000 6000 cloneB - [[1,433], [3602, 4000, "blue"]]         {"score":900}
+</code>
+
+
+
+<code>
+
+class Locus
+{
+  String name = "locus";
+  long start = -1;
+  long end = -1;
+  String strand = "+";
+  String color = "#00FFFF";
+}
+</code>
+
+
+
+corresponding BED format:
+<code>
+track name=pairedReads description="Clone Paired Reads" useScore=1
+chr22 1000 5000 cloneA 960 + 1000 5000 0 2 567,488, 0,3512
+chr22 2000 6000 cloneB 900 - 2000 6000 0 2 433,399, 0,3601
+</code>
+
+<pre>
+BED: start:1000 end:5000 
+Silk: [1001, 5000]
+</pre>
+
+
+<code>
+%silk(version:1.0)
+# coordinate specifies the target sequence
+-track(name:pairdReads, description:Clone Paired Reads)
+
+-coordinate(group:utgb, species:human, revision:hg18)
+ -gene(coordinate.name, start, end, name, strand, cds(start, end), exon(start, end)*, color, _[json])|
+chr22 1000 5000 cloneA + [1000, 5000] [[1,567], [3513, 4000]] #00FFFF {"score":960}
+chr22 2000 6000 cloneB - [2000, 6000] [[1,433], [3602, 4000]]         {"score":900}
+</code>
+
+
+<code>
+
+class Gene extends Locus
+{
+  List<Exon> exon;
+  CDS cds;
+}
+
+class Exon extends Locus
+{
+}
+
+class CDS extends Locus
+{
+
+} 
+</code>
+
+
+<code>
+-coordinate(name:chr22)
+ -gene(start:1, end:5000, color:"#00FFFF")
+  -cds(start:1000, end:5000)
+  -exon(start:1, end:567)
+  -exon(start:3513, end:4000)
+ -gene(start:2000, end:6000)
+  -cds(start:2000, end:6000)
+  -exon(start, end)|
+   1    433
+   3602 4000
+ -gene(start:1, end:5000, color:"#00FFFF")
+..
+</code>
