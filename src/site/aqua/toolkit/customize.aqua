@@ -109,10 +109,7 @@ The view XML file defines track contents to be displayed on the browser.
   <!-- UTGB Navigator configurations -->
   <track className="org.utgenome.gwt.utgb.client.track.lib.NavigatorTrack" name="UTGB Navigator" height="41" pack="true">
       <!-- menu contents -->
-      <property key="sequenceList">
-        [{"species":"human", "revision":["hg18","hg17"]},
-         {"species":"mouse", "revision":["mm9"]},
-         {"species":"drosophila", "revision":["dm3"]}]</property>
+      <property key="sequenceList">[{"species":"human", "revision":["hg18","hg17"]},{"species":"mouse", "revision":["mm9"]}, {"species":"drosophila", "revision":["dm3"]}]</property>
   </track>
 
   <!-- keyword search track provides links to other locations on genomes -->
