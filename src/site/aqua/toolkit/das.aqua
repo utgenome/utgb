@@ -14,9 +14,9 @@ Add the following XML fragment to your (project folder)/src/main/webapp/view/def
   <property key="leftMargin">100</property>
   <!-- this track reads DAS data from db/sample.bed -->
   <property key="trackBaseURL">utgb-core/DASViewer</property>
-  <property key="dasBaseURL">http://www.ensembl.org/das/Homo_sapiens.NCBI36.transcript</property>
+  <property key="dasBaseURL">http://www.ensembl.org/das/Homo_sapiens.NCBI36.transcript/</property>
   <!-- the type property is needed for UCSC's DAS servers to reduce the amount of data to be retrieved -->
-  <property key="type">refGene</property>
+  <property key="dasType">refGene</property>
 </track>
 </code>
 
