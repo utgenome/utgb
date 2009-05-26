@@ -4,7 +4,7 @@
 
 = DAS Track
 
-DAS track is for browsing [http://www.biodas.org/ DAS] (Distributed Annotation System) data. Currently (utgb-shell version 1.2.2), browsing feature data is supported. 
+DAS track is for browsing [http://www.biodas.org/ DAS] (Distributed Annotation System) data. Currently (utgb-shell version 1.2.3), browsing feature data is supported. 
 
 Add the following XML fragment to your (project folder)/src/main/webapp/view/default-view.xml file (see also [customize.html How to customize browser contents]), and edit the {b|dasBaseURL} property to specify the DAS server URL:
 
