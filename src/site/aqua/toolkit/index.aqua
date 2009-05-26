@@ -14,6 +14,8 @@ The UTGB Toolkit includes the UTGB Shell, a command-line client for developing y
 * [customize.html How to customize browser contents]
 
 === How to Create Tracks
+Note that BED and DAS tracks are supported since {b|utgb-shell version 1.2.2.} ([../download.html Download])
+
 * [bed.html BED Track]
 * [das.html DAS Track]
 * [track.html How to create your own tracks]

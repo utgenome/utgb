@@ -6,12 +6,12 @@
 
 === Notice
 
-Because of some bugs in utgb-shell 1.2.0, it is necessary to change the version number of utgb-track-base from 1.4.4 to 1.4.6 described in (project_folder)/pom.xml file:
+Because of some bugs in utgb-shell 1.2.0, it is necessary to change the version number of utgb-track-base from 1.4.4 to 1.4.7 described in (project_folder)/pom.xml file:
 <code>
 <parent>
   <groupId>org.utgenome.track</groupId>
   <artifactId>utgb-track-base</artifactId>
-  <version>1.4.6</version>
+  <version>1.4.7</version>
 </parent>
 </code>
 Then, type 
