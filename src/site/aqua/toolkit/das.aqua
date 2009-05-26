@@ -1,0 +1,21 @@
+@title("DAS Track")
+
+[index.html UTGB Toolkit] - DAS Track
+
+= DAS Track
+
+DAS track is for browsing [http://www.biodas.org/ DAS] (Distributed Annotation System) data. Currently (utgb-shell version 1.2.2), browsing feature data is supported. 
+
+Add the following XML fragment to your (project folder)/src/main/webapp/view/default-view.xml file (see also [customize.html How to customize browser contents]), and edit the {b|dasBaseURL} property to specify the DAS server URL:
+
+<code>
+<track className="org.utgenome.gwt.utgb.client.track.lib.DASTrack" name="DAS Track" pack="true">
+  <property key="type">image</property>
+  <property key="leftMargin">100</property>
+  <!-- this track reads DAS data from db/sample.bed -->
+  <property key="dasBaseURL">http://www.ensembl.org/das/Homo_sapiens.NCBI36.transcript</property>
+  <!-- the type property is needed for UCSC's DAS servers to reduce the amount of data to be retrieved -->
+  <property key="type">refGene</property>
+</track>
+</code>
+
