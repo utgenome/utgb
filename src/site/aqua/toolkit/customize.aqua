@@ -114,8 +114,7 @@ The view XML file defines track contents to be displayed on the browser.
 
   <!-- keyword search track provides links to other locations on genomes -->
   <track className="org.utgenome.gwt.utgb.client.track.lib.KeywordSearchTrack" name="Keyword Search" pack="true">
-   <property key="keyword.examples">
-      ["Scaffold number (e.g. scaffold123)",
+   <property key="keyword.examples">["Scaffold number (e.g. scaffold123)",
        "GenBank accession number (e.g. BJ013363)",
        "UniGene cluster identifier (e.g. Ola.5710)",
        "Clone number (e.g. MF01SSA159G06)"]
@@ -155,5 +154,7 @@ The view XML file defines track contents to be displayed on the browser.
   <!-- you can add other tracks here -->
   
 </trackGroup>
+
+To make the change on the view XML file effective, you have to close the utgb server, and do 'utgb server' again.
 
 </code>
