@@ -12,19 +12,19 @@ In order to use UTGB, you need a JDK (Java Development Kit) version 1.5 or highe
  
 === Windows 
 
-* Download the latest version of UTGB shell archive utgb-shell-(version)-package.zip from http://maven.utgenome.org/repository/artifact/org/utgenome/utgb-shell/ (or [../download.html Download page]), unpack it to anywhere you like, e.g., C:\utgb\utgb-shell-1.1.3
+* Download the latest version of UTGB shell archive utgb-shell-(version)-package.zip from http://maven.utgenome.org/repository/artifact/org/utgenome/utgb-shell/ (or [../download.html Download page]), unpack it to anywhere you like, e.g., C:\utgb\utgb-shell-1.2.4
 * You need to set two environment variables. Press Win + Pause (or open Control Panel - System - Settings)  to open Environment Variable panel. 
-* Append C:\utgb\utgb-shell-1.1.3\bin to the PATH variable as follows:
-** PATH = C:\utgb\utgb-shell-1.1.3\bin;%PATH%  
+* Append C:\utgb\utgb-shell-1.2.4\bin to the PATH variable as follows:
+** PATH = C:\utgb\utgb-shell-1.2.4\bin;%PATH%  
 * Set the JAVA_HOME variable to your JDK (1.5 or higher) installation. For example,** JAVA_HOME = C:\Program Files\Java\jdk1.6.0_03 
 
 === Mac OS X & Linux
 
-* Download the UTGB Shell archive in the same way described in the Windows section.  In this example, we use $HOME/local/utgb-shell-1.1.3, where $HOME is your home directory, e.g. !/Users/leo (in Mac OS X), !/home/leo (in Linux).
+* Download the UTGB Shell archive in the same way described in the Windows section.  In this example, we use $HOME/local/utgb-shell-1.2.4, where $HOME is your home directory, e.g. !/Users/leo (in Mac OS X), !/home/leo (in Linux).
 * Install JDK. We assume your JDK is installed in !/usr/java/jdk1.6.0_03.
 * Set the following environment variables in one of your .profile, .bash_profile, .zprofile, etc: 
 <code>
-export UTGB_HOME=$HOME/local/utgb-shell-1.1.3
+export UTGB_HOME=$HOME/local/utgb-shell-1.2.4
 export PATH=$UTGB_HOME/bin:$PATH
 export JAVA_HOME=/usr/java/jdk1.6.0_03
 </code>
