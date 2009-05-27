@@ -16,9 +16,21 @@ BED track is for displaying UCSC's [http://genome.ucsc.edu/FAQ/FAQformat#format1
 </track>
 </code>
 
+== Create Indexes for Faster Data Browsing
+
+Since utgb-shell-1.2.4, {b|utgb import} commands is available for creating database indexes (SQLite DB) of BED data. To create an SQLite index of your BED data, say db/reads.bed, type the following commands: 
+
+<code>
+> utgb import -t bed db/reads.bed
+</code>
+
+The SQLite index will be generated as db/reads.bed.sqlite file. When some SQLite DB file (suffixed with .sqlite) is found for the BED data, BEDTrack issues database queries to reads.bed.sqlite file, instead of reading reads.bed file.
+
+
 == Screnshots
 [../clip/beddas.png]
 
+[clip/bedindes.png]
 
 "db/sample.bed"
 <pre>
