@@ -5,16 +5,18 @@
 
 Silk Genome Read Format is a data format for describing genome read data in [silk.html Silk]. This format consists of three types of data objects: coordinate, reference and read:
 
-* coordinate(group:utgb, species:medaka, revision:version1.0, type:colorspace)
+* coordinate(group:utgb, system:scaffold, species:medaka, revision:version1.0, type:colorspace)
 ** specifies a coordinate system for the following data.
 ** The group value must be 'utgb' (predefined for the future extension)
+** The system value is a coordinate system name: e.g., chromosome, scaffold, superconfig, contig, clone, 
 ** The species value is e.g., human, mouse, medaka, etc.
 ** The revision value is for specifying sequence version (e.g, hg18, mm9, etc.).
 ** The type value must be {b|colorspace} or {b|letterspace}. If the type value is not present, letterspace is used as the default value.
 
-* reference(name, start, strand)
+* reference(name, start, end, strand)
 ** specifies a reference sequence to which the following read objects are aligned.
 ** The name value is, for example, scaffold1, chr1, etc.
+** The start and end values are the position of the reference sequence on the coordinate system.
 ** reference sequence can be described in a multi-line format. '{b|">"}' symbol is an indicator for using the multi-line format. For example,
 <code>
  -sequence: A010132310011011111212333333333333333333333331212121
@@ -28,7 +30,7 @@ A01013231001101111121
 </code>
 
 
-* read(name, start, strand, sequence, ...)|
+* read(name, start, end, strand, sequence, ...)|
 ** You can add arbitrary parameters to read objects
 ** '{b|"|"}' symbol indicates tab-separated data will follow for describing read objects.
 ** The order of the attributes is not significant. You can change the attribute order: for example, read(name, start, strand, QV, sequence).
@@ -42,9 +44,9 @@ A01013231001101111121
 <code>
 %silk(version:1.0)
 # coordinate specifies the target sequence
--coordinate(group:utgb, species:medaka, revision:version1.0, type:colorspace)
+-coordinate(group:utgb, system:scaffold, species:medaka, revision:version1.0, type:colorspace)
 # specifies a reference sequence
--reference(name:scaffold1, start:1043, strand:+)
+-reference(name:scaffold1, start:1043, end:1200 ,strand:+)
  -sequence>
 A010132310011011111212333333333333333333333331212121
 3213123012312031230123102320032123032102312312302130
