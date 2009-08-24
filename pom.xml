@@ -16,7 +16,7 @@
     <module>utgb-core</module>
     <module>utgb-shell</module>
 <!--  <module>utgb-gallery</module> -->
-    <module>utgb-widget</module>
+<!--    <module>utgb-widget</module>-->
     <module>utgb-master</module>
 <!--    <module>utgb-mmdb</module> -->
     <module>utgb-util</module>
@@ -26,8 +26,8 @@
 
 
   <issueManagement>
-    <system>Trac</system>
-    <url>http://trac.utgenome.org/project/UTGB/</url>
+    <system>Google Code</system>
+    <url>http://code.google.com/p/utgb/issues/list</url>
   </issueManagement>
 
   <ciManagement>
