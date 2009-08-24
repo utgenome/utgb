@@ -2,6 +2,9 @@
 
 = Release Notes
 
+* {b|Aug 24th, 2009} [http://maven.utgenome.org/repository/artifact/org/utgenome/utgb-shell/1.2.5/utgb-shell-1.2.5-package.zip UTGB Shell 1.2.5] released. 
+** Fixed [http://code.google.com/p/utgb/issues/detail?id=30 Issue 30]: separate the class loaders of utgb-shell and web applications launched by the utgb-shell. 
+
 * {b|May 27th, 2009} [http://maven.utgenome.org/repository/artifact/org/utgenome/utgb-shell/1.2.4/utgb-shell-1.2.4-package.zip UTGB Shell 1.2.4] released. 
 ** Minor bug fixes
 
