@@ -1,19 +1,44 @@
 = Download
 
-== UTGB Toolkit
+* [toolkit/index.html UTGB Toolkit Documentation]
+* [toolkit/quickstart.html UTGB Toolkit Installation Guide]
 
-* [releases.html Release Notes]
-* [http://maven.utgenome.org/repository/artifact/org/utgenome/utgb-shell/1.2.5/utgb-shell-1.2.5-package.zip version 1.2.5]
-* [http://maven.utgenome.org/repository/artifact/org/utgenome/utgb-shell/1.2.4/utgb-shell-1.2.4-package.zip version 1.2.4]
+== Release Notes
+
+* {b|Aug 26th, 2009}  [http://maven.utgenome.org/repository/artifact/org/utgenome/utgb-shell/1.2.7/utgb-shell-1.2.7-package.zip UTGB Shell 1.2.7] released.
+** see the complete list of [http://code.google.com/p/utgb/issues/list?can=1&q=status%3DFixed+Milestone%3Autgb-shell-1.3+Version%3A1.2.7&colspec=ID+Type+Priority+Milestone+Status+Owner+Summary+Opened+Modified&x=priority&y=milestone&cells=tiles fixed issues]
+** {b|Important note}: The version 1.2.5 contains a bug http://code.google.com/p/utgb/issues/detail?id=41, which failed to compile projects. Use version 1.2.7, instead of 1.2.5.
+<html><s></html>
+
+* {b|Aug 24th, 2009} [http://maven.utgenome.org/repository/artifact/org/utgenome/utgb-shell/1.2.5/utgb-shell-1.2.5-package.zip UTGB Shell 1.2.5] released. 
+<html></s></html>
+** Fixed [http://code.google.com/p/utgb/issues/detail?id=30 Issue 30]: separate the class loaders of utgb-shell and web applications launched by the utgb-shell. 
+
+* {b|May 27th, 2009} [http://maven.utgenome.org/repository/artifact/org/utgenome/utgb-shell/1.2.4/utgb-shell-1.2.4-package.zip UTGB Shell 1.2.4] released. 
+** Minor bug fixes
+
+* {b|May 26th, 2009} [http://maven.utgenome.org/repository/artifact/org/utgenome/utgb-shell/1.2.3/utgb-shell-1.2.3-package.zip UTGB Shell 1.2.3] released. 
+** Included sample DAS and BED tracks to the default view. 
+* {b|May 26th, 2009} [http://maven.utgenome.org/repository/artifact/org/utgenome/utgb-shell/1.2.2/utgb-shell-1.2.2-package.zip UTGB Shell 1.2.2] released. 
+** BED and DAS format support
+* {b|Feb 27th, 2009} [http://maven.utgenome.org/repository/artifact/org/utgenome/utgb-shell/1.2.1/utgb-shell-1.2.1-package.zip UTGB Shell 1.2.1] released.
+** Fixed a packaging error, resulting in permission denied error when calling 'utgb compile' command.
+** Fixed a bug that the generated web application may use unstable-versions of utgb-core library. 
+** Removed several warnings when compilng GWT applications. 
+** Upgraeded to utgb-track-base 1.4.6 (uses GWT 1.5.3)
+
+* {b|Jan 19th, 2009} UTGB Shell 1.2.0 released. 
+
+
 * [http://maven.utgenome.org/repository/artifact/org/utgenome/utgb-shell/ Previous releases]
 
-* [toolkit/index.html UTGB Toolkit Documentation]
 
-
-== Data Resources
+= Data Resources
 
 http://download.utgenome.org/pub/
 
 * UTGB Meada Resources: http://download.utgenome.org/pub/readme.html
 * Machibase Resources: http://download.utgenome.org/pub/machibase/
+
+[download.html Download]
 
