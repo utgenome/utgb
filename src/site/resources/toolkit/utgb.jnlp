@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- JNLP File for SwingSet2 Demo Application -->
-<jnlp spec="1.5+" codebase="file:///D:/work/eclipse/utgb/src/site/resources/toolkit" href="utgb.jnlp">
+<jnlp spec="1.6+" codebase="http://utgenome.org/toolkit" href="utgb.jnlp">
   <information>
     <title>UTGB Toolkit</title>
     <vendor>University of Tokyo</vendor>
 	<homepage>http://utgenome.org</homepage>
     <description>UTGB Toolkit is a personal genome browser development utility</descriptio
     <description kind="short">UTGB launcher</description>
-    <icon href="favicon.ico" width="32" height="32"/>
+<!--    <icon href="favicon.ico" width="32" height="32"/> -->
     <icon kind="splash" href="utgb-title-small.gif"/>
     <offline-allowed/> 
   </information>
