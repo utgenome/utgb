@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- JNLP File for SwingSet2 Demo Application -->
+<jnlp spec="6.0+">
+  <information>
+    <title>UTGB Toolkit</title>
+    <vendor>University of Tokyo</vendor>
+    <homepage href="http://utgenome.org/"/>
+    <description>UTGB Toolkit is a genome browser development utility</description>
+    <description kind="short">Easy UTGB launcher.</description>
+    <icon href="http://utgenome.org/favicon.ico"/>
+    <icon kind="splash" href="http://utgenome.org/images/utgb-title-small.gif"/>
+    <offline-allowed/> 
+  <!--
+    <association>
+      <mime-type="application-x/swingset2-file"/>
+      <extensions="swingset2"/> 
+    </association>
+   -->
+    <shortcut online="true">
+      <desktop/>
+      <menu submenu="UTGB Toolkit"/>
+    </shortcut>
+  </information>
+<!--
+  <information os="linux">   
+    <title> SwingSet2 Demo on Linux </title>
+    <homepage href="docs/linuxhelp.html">
+  </information>
+-->
+  <security>
+      <all-permissions/>
+  </security>
+  <resources>
+    <j2se version="1.5+" java-vm-args=" "/>
+    <jar href="http://maven.utgenome.org/repository/snapshot/org/utgenome/utgb-shell/1.2.7-SNAPSHOT/utgb-shell-1.2.7-SNAPSHOT-shell-bin.jar"/>
+  </resources>
+  <application-desc main-class="org.utgenome.shell.UTGBShell"/>
+</jnlp> 

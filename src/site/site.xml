@@ -21,7 +21,7 @@
      <item name="Top Page" href="index.html"/>
      <item name="Genome Browsers" href="browser.html"/>
      <item name="Download" href="download.html"/>
-     <item name="Discussion Forum" href="http://groups.google.com/group/utgb-users?hl=en"/>
+     <item name="Discussion Forum" href="http://groups.google.com/group/utgb-users?hl=en"/     <item name="Issue Tracker" href="http://code.google.com/p/utgb/issues/list"/>
      <item name="Trac" href="http://trac.utgenome.org/project/UTGB"/>
   </links>
 
@@ -30,6 +30,7 @@
     <item name="Top Page" href="index.html"/>
     <item name="Publications" href="publication.html"/>
     <item name="Members" href="members.html"/>
+    <item name="Issue Tracker" href="http://code.google.com/p/utgb/issues/list"/>
   </menu>
 
   <menu name="Get UTGB Toolkit">
