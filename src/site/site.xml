@@ -36,7 +36,7 @@
 
   <menu name="Get UTGB Toolkit">
     <item name="Download" href="download.html"/>
-    <item name="Release Notes" href="releases.html"/>
+    <item name="Release Notes" href="download.html#releasenotes"/>
   </menu>
   
   <menu name="Documentations">
