@@ -17,7 +17,7 @@
   </security>
   <resources>
     <j2se version="1.5+" java-vm-args=" "/>
-    <jar href="http://maven.utgenome.org/repository/snapshot/org/utgenome/utgb-shell/1.2.7-SNAPSHOT/utgb-shell-1.2.7-SNAPSHOT-standalone.jar" main="true"/>
+    <jar href="http://maven.utgenome.org/repository/snapshot/org/utgenome/utgb-shell/1.2.9-SNAPSHOT/utgb-shell-1.2.9-SNAPSHOT-standalone.jar" main="true"/>
   </resources>
   <application-desc main-class="org.utgenome.shell.UTGBShell">
    <argument>--gui</argument>
