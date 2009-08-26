@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- JNLP File for SwingSet2 Demo Application -->
-<jnlp spec="1.6+" codebase="http://utgenome.org/toolkit" href="utgb.jnlp">
+<jnlp spec="1.5+" codebase="http://utgenome.org/toolkit" href="utgb.jnlp">
   <information>
     <title>UTGB Toolkit</title>
     <vendor>University of Tokyo</vendor>
