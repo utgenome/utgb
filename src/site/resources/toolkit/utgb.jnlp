@@ -7,7 +7,6 @@
 	<homepage>http://utgenome.org</homepage>
     <description>UTGB Toolkit is a personal genome browser development utility</descriptio
     <description kind="short">UTGB launcher</description>
-<!--    <icon href="favicon.ico" width="32" height="32"/> -->
     <icon kind="splash" href="utgb-title-small.gif"/>
     <offline-allowed/> 
   </information>
