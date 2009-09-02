@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- JNLP File for SwingSet2 Demo Application -->
-<jnlp spec="1.5+" codebase="http://utgenome.org/toolkit" href="utgb.jnlp">
+<jnlp spec="1.5+" codebase="http://svn.utgenome.org/utgb/trunk/utgb/src/site/resources/toolkit" href="utgb.jnlp">
   <information>
     <title>UTGB Toolkit</title>
     <vendor>University of Tokyo</vendor>
@@ -17,9 +17,8 @@
   </security>
   <resources>
     <j2se version="1.5+" java-vm-args=" "/>
-    <jar href="http://maven.utgenome.org/repository/snapshot/org/utgenome/utgb-shell/1.2.9-SNAPSHOT/utgb-shell-1.2.9-SNAPSHOT-standalone.jar" main="true"/>
+    <jar href="http://maven.utgenome.org/repository/snapshot/org/utgenome/utgb-installer/1.0-SNAPSHOT/utgb-installer-1.0-SNAPSHOT-standalone.jar"/>
   </resources>
-  <application-desc main-class="org.utgenome.shell.UTGBShell">
-   <argument>--gui</argument>
+  <application-desc main-class="com.izforge.izpack.installer.Installer">
   </application-desc>
 </jnlp> 
