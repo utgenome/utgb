@@ -4,7 +4,7 @@
   <groupId>org.utgenome</groupId>
   <artifactId>utgb</artifactId>
   <name>UTGB Project</name>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
   <description>The University of Tokyo Genome Browser (UTGB) Project</description>
   <packaging>pom</packaging>
   
@@ -52,9 +52,9 @@
   </licenses>
 
   <scm>
-    <connection>scm:svn:http://svn.utgenome.org/utgb/trunk/utgb</connection>
-    <developerConnection>scm:svn:http://svn.utgenome.org/utgb/trunk/utgb</developerConnection>
-    <url>http://svn.utgenome.org/utgb/trunk/utgb/</url>
+    <connection>scm:svn:http://svn.utgenome.org/utgb/tags/utgb/utgb-1.0</connection>
+    <developerConnection>scm:svn:http://svn.utgenome.org/utgb/tags/utgb/utgb-1.0</developerConnection>
+    <url>http://svn.utgenome.org/utgb/tags/utgb/utgb-1.0</url>
   </scm>
 
   <organization>
