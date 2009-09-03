@@ -15,13 +15,6 @@
   <modules>
     <module>utgb-core</module>
     <module>utgb-shell</module>
-<!--  <module>utgb-gallery</module> -->
-<!--    <module>utgb-widget</module>-->
-    <module>utgb-master</module>
-<!--    <module>utgb-mmdb</module> -->
-    <module>utgb-util</module>
-    <module>utgb-style</module>
-    <module>utgb-keyword</module>
   </modules>
 
 
@@ -196,6 +189,7 @@
         </dependencies>
       </plugin>
 
+
     </plugins>
   </build>
 
@@ -232,12 +226,12 @@
           </configuration>
 	</plugin>
 
-	<!--
+
 	<plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>changelog-maven-plugin</artifactId>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-changelog-plugin</artifactId>
 	</plugin>
-	-->
+
 
 	<plugin>
 	  <groupId>org.apache.maven.plugins</groupId>
