@@ -75,6 +75,7 @@
       <timezone>+9</timezone>
     </developer>
     <developer>
+	  <id>yoshimura</id>
       <name>Jun Yoshimura</name>
       <organization>University of Tokyo</organization>
       <roles>
@@ -83,17 +84,8 @@
       <timezone>+9</timezone>
     </developer>
     <developer>
-      <id>sasaki</id>
+      <id>sasa_atsu</id>
       <name>Atsushi Sasaki</name>
-      <organization>University of Tokyo</organization>
-      <roles>
-        <role>Developer</role>
-      </roles>
-      <timezone>+9</timezone>
-    </developer>
-    <developer>
-      <id>ssksn</id>
-      <name>Shin Sasaki</name>
       <organization>University of Tokyo</organization>
       <roles>
         <role>Developer</role>
@@ -125,6 +117,22 @@
       <organization>University of Tokyo</organization>
       <roles>
 	<role>Project Manager</role>
+      </roles>
+      <timezone>+9</timezone>
+    </contributor>
+    <contributor>
+      <name>Shin Sasaki</name>
+      <organization>University of Tokyo</organization>
+      <roles>
+        <role>Alumni</role>
+      </roles>
+      <timezone>+9</timezone>
+    </contributor>
+    <contributor>
+      <name>Yukinobu Nagayasu</name>
+      <organization>University of Tokyo</organization>
+      <roles>
+		<role>Alumni</role>
       </roles>
       <timezone>+9</timezone>
     </contributor>
