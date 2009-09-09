@@ -16,8 +16,7 @@
   </security>
   <resources>
     <j2se version="1.5+" java-vm-args=" "/>
-    <jar href="http://maven.utgenome.org/repository/snapshot/org/utgenome/utgb-installer/1.0-SNAPSHOT/utgb-installer-1.0-SNAPSHOT-standalone.jar" part="installer"/>
-	<package name="org.utgenome.installer.*" part="installer" recursive="true"/>
+    <jar href="http://maven.utgenome.org/repository/snapshot/org/utgenome/utgb-installer/1.0-SNAPSHOT/utgb-installer-1.0-SNAPSHOT-standalone.jar"/>
   </resources>
   <application-desc main-class="org.utgenome.installer.UTGBInstaller">
   </application-desc>
