@@ -4,10 +4,14 @@
 * [toolkit/quickstart.html UTGB Toolkit Installation Guide]
 
 == Release Notes
-
+* {b|Sep 25th, 2009} [http://maven.utgenome.org/repository/artifact/org/utgenome/utgb-shell/1.2.8.1/utgb-shell-1.2.8.1-package.zip UTGB Shell 1.2.8.1] released. This is a maintanance release of the previous version 1.2.8, which is missing a necessary library because of a packaging failure. 
+<html><s></html>
 * {b|Aug 26th, 2009}  [http://maven.utgenome.org/repository/artifact/org/utgenome/utgb-shell/1.2.8/utgb-shell-1.2.8-package.zip UTGB Shell 1.2.8] released.
+<html></s></html>
 ** see the complete list of [http://code.google.com/p/utgb/issues/list?can=1&q=status%3DFixed+Milestone%3Autgb-shell-1.3+Version%3A1.2.7&colspec=ID+Type+Priority+Milestone+Status+Owner+Summary+Opened+Modified&x=priority&y=milestone&cells=tiles fixed issues]
 ** {b|Important note}: The version 1.2.5 contains a bug http://code.google.com/p/utgb/issues/detail?id=41, which failed to compile projects. Use the version 1.2.8 instead of 1.2.5.
+
+
 <html><s></html>
 
 * {b|Aug 24th, 2009} [http://maven.utgenome.org/repository/artifact/org/utgenome/utgb-shell/1.2.5/utgb-shell-1.2.5-package.zip UTGB Shell 1.2.5] released. 
