@@ -9,6 +9,12 @@
 * [http://groups.google.com/group/utgb?hl=en UTGB Developers Discussion Group] (restricted)
 
 
+== Source Codes
+
+* {b|2009 Nov 24} We migrated the source code repository from Subversion to Mercurial (hg)
+
+
+
 == UTGB Components
 ===[./utgb-core UTGB Core]
 * Core library of the UTGB, which includes:
