@@ -4,6 +4,31 @@
 
 = FAQ 
 
+== How do I tell the UTGB Toolkit to use my proxy server?
+
+You have to edit $(HOME)/.m2/settings.xml file and add proxies element as follows:
+
+<code>
+<settings>
+  ...
+  <proxies>
+    <proxy>
+      <id>myproxy</id>
+      <active>true</active>
+      <protocol>http</protocol>
+      <host>proxy.somewhere.com</host>
+      <port>8080</port>
+      <username>proxyuser</username>
+      <password>somepassword</password>
+    </proxy>
+  </proxies>
+  ...
+</settings>
+</code>
+
+* Reference: http://maven.apache.org/settings.html#Proxies
+
+
 == Somthing went wrong. What should I do?
 
 Try to update several libraries with the following command:
