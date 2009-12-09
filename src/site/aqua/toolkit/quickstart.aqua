@@ -149,7 +149,7 @@ To confirm your web application is working correctly, open http://localhost:8989
  
 ==Create a New Web Action
 
-UTGB track (web application) consists of a set of web actions, accessible from http://localhost:8989/myapp/(action name). To add your own action, type {b|utgb action} (action name). This command adds a new web action into you web application source code. To enable the new action in your web server, you need to recompile the project, and then restart the web server. 
+UTGB track (web application) consists of a set of web actions, accessible from http://localhost:8989/myapp/(action name). To add your own action, type {b|utgb action} (action name), which creates a new web action code into you web application source code. To enable the new action in the web browser, you need to recompile the project and then restart the web server. 
 
 {{
 myapp> utgb action HelloWorld     // HelloWorld.java will be generated
@@ -159,14 +159,12 @@ myapp> utgb compile
 myapp> utgb server
 }} 
 
-You may see the new action from http://localhost:8989/myapp/HelloWorld  or http://localhost:8989/myapp/helloworld  (lower case name). 
-
+You may see the new action from http://localhost:8989/myapp/HelloWorld  or http://localhost:8989/myapp/helloworld  (lower case name). You can write any Java code to generate web contents including plain text, HTML, PNG, JPEG graphics, etc., inside the handle() method in your web actions.
 
 ==Magic in Web Actions
 
-Web action receives a set of URL query parameters in the form of String data type. For example, an web request URL http://localhost:8989/myapp/helloworld?name=leo&year=2008 has two parameters, name and year. In the traditional web application development (e.g. CGI), you have to convert the data types of these values; for example, the name value has a String type, so you can use it as is, but the year value must be converted from the String to an Integer type. Programming such data type conversion is bothersome and usually error-prone. In the UTGB, such data type mappings between URL requests and web actions are supported. 
-
-All you need to do is to add public fieds in a web action class for recieving URL request paremeters. The UTGB automatically translates String input values in a URL request by investigating the public field parameter types.
+Web action receives a set of URL query parameters, in the form of String data type. For example, an web request URL http://localhost:8989/myapp/helloworld?name=leo&year=2008 has two parameters, name and year. In the traditional web application development (e.g. CGI), you have to convert the data types of these values; for example, the name value has a String type, so you can use it as is, but the year value must be converted from the String to an Integer type. Programming such data type conversion is bothersome and usually error-prone. In the UTGB, such data type mappings between URL requests and web actions are supported.
+All you need is to add public fieds in a web action class for recieving URL request paremeters. The UTGB automatically translates String input values in a URL request by investigating the public field parameter types.
 
 <code>
 public class HelloWorld extends WebTrackBase
@@ -191,7 +189,9 @@ public class HelloWorld extends WebTrackBase
 
 ==Configuring Databases
 
-UTGB has a built-in support of database access for SQLite, PostgreSQL, MySQL, etc.  In order to use such DBMSs, you need to add some configurations in "config/common.silk" file. Here is an example of the database configuration. One of the database tags below shows an example of using an SQLite database, stored as "db/sample.db" file. The address path is relative to the project folder. The next database tag is an example using PostgreSQL database served at localhost:5432 whose database name is 'addressbook'. Each database configuration is associated with an database ID, 'mydb' or 'pgdb'. In the web action code, you can refer these IDs to access these databases.
+UTGB has a built-in support of database access for SQLite, PostgreSQL, MySQL, etc.  In order to use such DBMSs, you need to add some configurations in {b|"config/common.silk"} file, written in [silk.html silk] format. 
+
+Here is an example of the database configuration. One of the database tags below shows an example of using an SQLite database, stored as "db/sample.db" file. The address path is relative to the project folder. The next database tag is an example using PostgreSQL database served at localhost:5432 whose database name is 'addressbook'. Each database configuration is associated with an database ID, 'mydb' or 'pgdb'. In the web action code, you can refer these IDs to access these databases.
 
 
 <code> 
@@ -247,7 +247,7 @@ In the debug dialog of the Eclipse, you will find {i|(your-app-name)-server} ite
 While you are coding the web application, Eclipse automatically reloads your change to the source codes, so interactive editing of your web application becomes possible with Eclipse.
 
 
-== Generating A GWT Interface
+== Generating A GWT-based Genome Browser Interface
 Use {b|utgb gwt} command:
 {{
 myapp> utgb gwt
@@ -258,21 +258,20 @@ After the compilation of GWT codes (it usually takes a minute or more), you can 
 {{
 myapp> utgb server
 }}
-then, open the page, http://localhost:8989/myapp/UTGBEntry.html 
+then, open the page, http://localhost:8989/myapp/browser.html
 
 [clip/utgbentry.gif]
 
 You can modify the track contents by editing src/main/webapp/view/default-view.xml file. The format used in this XML file is the same with XML data that can be obtained from the {b|save view} button of the UTGB browsers. 
 
 To use another type of views, add a view parameter to the above URL, as follows:
-http://localhost:8989/myapp/UTGBEntry.html?view=anotherview.xml
+http://localhost:8989/myapp/browser.html?view=anotherview.xml
 
-This URL loads !src/main/webapp/view/anotherview.xml file, then shows the track contents described in the view XML file.
-
+This URL loads "src/main/webapp/view/anotherview.xml" file, then shows the track contents described in the view XML file.
 
 To change the default parameter values such as species, revision, target etc. you can also use query parameters of the URL:
-http://localhost:8989/myapp/UTGBEntry.html?species=medaka&revision=version1.0&target=scaffold1
-This URL shows a browser page of medaka, version1.0, scaffold1. 
+"http://localhost:8989/myapp/browser.html#species=medaka;revision=version1.0;target=scaffold1;start=1;end=1000"
+This URL shows a browser page of medaka, version1.0, scaffold1, at genome location beginning from 1 to 1000.
 
 
 
