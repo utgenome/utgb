@@ -4,42 +4,45 @@
 
 =Create a New Web Action
 
-UTGB track (web application) consists of a set of actions, which are accessible from http://localhost:8989/myapp/(action name). To add your own action, type {b|utgb action} (action name). It will add a new action into you web application. To enable the new action in your web server, you need to issue the compile command again, and have to restart the web server. 
+UTGB track (web application) consists of a set of web actions, accessible from http://localhost:8989/myapp/(action name). To add your own action, type {b|utgb action} (action name), which creates a new web action code into you web application source code. To enable the new action in the web browser, you need to recompile the project and then restart the web server. 
 
 {{
-myapp> utgb action HelloWorld
+myapp> utgb action HelloWorld     // HelloWorld.java will be generated
 
 myapp> utgb compile
 
 myapp> utgb server
 }} 
 
-You may see the new action from http://localhost:8989/myapp/HelloWorld  or http://localhost:8989/myapp/helloworld  (lower case name). 
+You may see the new action from http://localhost:8989/myapp/HelloWorld  or http://localhost:8989/myapp/helloworld  (lower case name). You can write any Java code to generate web contents including plain text, HTML, PNG, JPEG graphics, etc., inside the handle() method in your web actions.
 
+==Binding URL query parameters to public fields in Web Action
 
-==Magic in Web Actions
-
-A web action receives a set of URL query parameters in the form of String.  For example, a request http://localhost:8989/myapp/helloworld?name=leo&year=2008 has two parameters, name and year. In the traditional web application development (e.g. CGI), you have to convert the data type of these values; for example, the name value is String itself, and the year value must be translated from String to Integer. To program these processes is bothersome and usually error-prone. In UTGB, these tasks can be performed in a simple manner. All you need to do is to add appropriate setter methods in your action. UTGB automatically translates String input values in a URL request by investigating the setter's argument type.
+Web action receives a set of URL query parameters, in the form of String data type. For example, an web request URL http://localhost:8989/myapp/helloworld?name=leo&year=2008 has two parameters, name and year. In the traditional web application development (e.g. CGI), you have to convert the data types of these values; for example, the name value has a String type, so you can use it as is, but the year value must be converted from the String to an Integer type. Programming such data type conversion is bothersome and usually error-prone. In the UTGB, such data type mappings between URL requests and web actions are supported.
+All you need is to add public fieds in a web action class for recieving URL request paremeters. The UTGB automatically translates String input values in a URL request by investigating the public field parameter types.
 
 <code>
 public class HelloWorld extends WebTrackBase
 {
+    // private fields can be kept secret
     private static final long    serialVersionUID    = 1L;
     private static Logger _logger = Logger.getLogger(HelloWorld.class);
    
-    private String name = "World";
-    private int year = 2007;
-    public HelloWorld()
-    {}
+    // public fields will be modified according to the web request parameters
+    public String name = "Leo";
+    public int year = 2007;
     
     public void handle(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException
+      throws ServletException, IOException
     {
-        response.getWriter().println("Happy new year! " + name + ":" + year);
+        // You can use the name and year parameters, recieved from the URL request.
+        // The following code displays "Happy New Year! Leo (2007)" if no parameter is set
+        response.getWriter().println(String.format("Happy New Year! %s (%d)", name, year));
     }
-
-     // setters for year and name parameters 
-     public void setYear(int year) { this.year = year; }
-     public void setName(String name) { this.name = name; } 
 }
 </code>
+
+== Supported Data Types for Data Binding
+You can use following data types as public fields in your web action:
+* Primitive types: char, byte, int, long, float, double, boolean
+* Standard types: String, Date, File 
