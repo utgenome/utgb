@@ -133,16 +133,15 @@ You can see a individual help message for each sub command by typing utgb (sub c
 ...
 }}
 
-Create command for the first time after your UTGB installation will take longer time for downloading necessary JAR files into your local hard disk. Cross your fingers, and wait the completion. In the next time, the create command will finish in several seconds. 
+For the first time, execution of the create command takes longer time for downloading several JAR files into your local hard disk. Cross your fingers, and wait the completion. The next time, the create command will finish in several seconds. 
 
 ==Compile Your Project
 
-UTGB project consists of several Java files, and you need to compile them before launching the UTGB server. Switch to the newly created project folder (at this time, myapp folder) , then type {b|utgb compile} to generate binary codes of them. If your Java installation is missing or JAVA_HOME environment variable is not set properly, you may find some errors. In these cases, check your configuration.
-
+The generated UTGB project consists of several Java files, and you need to compile them before launching the UTGB server. Switch to the newly created project folder (at this time, we call it myapp folder) , then type {b|utgb compile} to generate their binary code. If your Java installation is missing or JAVA_HOME environment variable is not properly set, some errors will be prompted. Check your configuration descrived above.
 
 ==Launch the Portable Web Server
 
-UTGB is bundled with a portable Tomcat server. So, you can start the your web application (track project) immediately. Type {b|utgb server} to launch the web server. If you like to use GUI interface, type {b|utgb server -g}; a GUI interface to launch the server will appear. The UTGB portable server uses a port 8989 in default. You can change the port number using -p option. For details, type utgb server --help. You can stop the server just by pressing Ctrl+C in your shell.
+The UTGB shell is bundled with a portable Tomcat server. So, you can start the your web application (track project) immediately on your PC. Type {b|utgb server} to launch the web server. If you like to use GUI interface, type {b|utgb server -g}; a GUI interface to launch the web server will appear. The UTGB portable server uses a port 8989 in default. You can change the port number using -p option. For details, type utgb server --help. You can stop the server just by pressing Ctrl+C in your shell.
 
 
 To confirm your web application is working correctly, open http://localhost:8989/myapp in your web browser (IE, Firefox, Opera, etc.)
@@ -150,10 +149,10 @@ To confirm your web application is working correctly, open http://localhost:8989
  
 ==Create a New Web Action
 
-UTGB track (web application) consists of a set of actions, which are accessible from http://localhost:8989/myapp/(action name). To add your own action, type {b|utgb action} (action name). It will add a new action into you web application. To enable the new action in your web server, you need to issue the compile command again, and have to restart the web server. 
+UTGB track (web application) consists of a set of web actions, accessible from http://localhost:8989/myapp/(action name). To add your own action, type {b|utgb action} (action name). This command adds a new web action into you web application source code. To enable the new action in your web server, you need to recompile the project, and then restart the web server. 
 
 {{
-myapp> utgb action HelloWorld
+myapp> utgb action HelloWorld     // HelloWorld.java will be generated
 
 myapp> utgb compile
 
@@ -165,95 +164,65 @@ You may see the new action from http://localhost:8989/myapp/HelloWorld  or http:
 
 ==Magic in Web Actions
 
-A web action receives a set of URL query parameters in the form of String.  For example, a request http://localhost:8989/myapp/helloworld?name=leo&year=2008 has two parameters, name and year. In the traditional web application development (e.g. CGI), you have to convert the data type of these values; for example, the name value is String itself, and the year value must be translated from String to Integer. To program these processes is bothersome and usually error-prone. In UTGB, these tasks can be performed in a simple manner. All you need to do is to add appropriate setter methods in your action. UTGB automatically translates String input values in a URL request by investigating the setter's argument type.
+Web action receives a set of URL query parameters in the form of String data type. For example, an web request URL http://localhost:8989/myapp/helloworld?name=leo&year=2008 has two parameters, name and year. In the traditional web application development (e.g. CGI), you have to convert the data types of these values; for example, the name value has a String type, so you can use it as is, but the year value must be converted from the String to an Integer type. Programming such data type conversion is bothersome and usually error-prone. In the UTGB, such data type mappings between URL requests and web actions are supported. 
+
+All you need to do is to add public fieds in a web action class for recieving URL request paremeters. The UTGB automatically translates String input values in a URL request by investigating the public field parameter types.
 
 <code>
 public class HelloWorld extends WebTrackBase
 {
+    // private fields can be kept secret
     private static final long    serialVersionUID    = 1L;
     private static Logger _logger = Logger.getLogger(HelloWorld.class);
    
-    private String name = "World";
-    private int year = 2007;
-    public HelloWorld()
-    {}
+    // public fields will be modified according to the web request parameters
+    public String name = "Leo";
+    public int year = 2007;
     
     public void handle(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException
+      throws ServletException, IOException
     {
-        response.getWriter().println("Happy new year! " + name + ":" + year);
+        // You can use the name and year parameters, recieved from the URL request.
+        // The following code displays "Happy New Year! Leo (2007)" if no parameter is set
+        response.getWriter().println(String.format("Happy New Year! %s (%d)", name, year));
     }
-
-     // setters for year and name parameters 
-     public void setYear(int year) { this.year = year; }
-     public void setName(String name) { this.name = name; } 
 }
 </code>
 
 ==Configuring Databases
 
-UTGB has a built-in support of database access for SQLite, PostgreSQL, MySQL, etc.  In order to use such DBMSs, you need to add some configurations in !config/track-config.xml file. Here is an example of the database configuration. One of the database tags below shows an example using SQLite database, whose file is placed at !db/mydb.sqlite. The address path is relative to the project folder. The next database tag is an example using PostgreSQL database served at localhost:5432 whose database name is 'addressbook'. Each database configuration is associated with an database ID, 'mydb' or 'pgdb'. In the web action code, you can refer these IDs to access these databases.
+UTGB has a built-in support of database access for SQLite, PostgreSQL, MySQL, etc.  In order to use such DBMSs, you need to add some configurations in "config/common.silk" file. Here is an example of the database configuration. One of the database tags below shows an example of using an SQLite database, stored as "db/sample.db" file. The address path is relative to the project folder. The next database tag is an example using PostgreSQL database served at localhost:5432 whose database name is 'addressbook'. Each database configuration is associated with an database ID, 'mydb' or 'pgdb'. In the web action code, you can refer these IDs to access these databases.
 
 
 <code> 
-<config version="1.0">
-  <group>org.utgenome.track</group>
-  <projectName>myapp</projectName>
-  <package>myapp</package>
-  <import actionPackage="org.utgenome.gwt.utgb.server.app" alias="utgb-core" />
- 
-  <!-- settings for using SQLite database in the local hard disk -->
-  <database id="mydb">
-    <connection dbms="sqlite">
-      <address>db/mydb.sqlite</address>
-    </connection>
-  </database> 
+%silk(version:1.0)
 
-  <!-- settings for using local PostgreSQL database server at port 5432 -->
-  <database id="pgdb">
-    <connection dbms="postgres">
-      <address>localhost:5432/addressbook</address> 
-      <user>postgres</user>
-      <pass>(password)</pass>
-    </connection>
-  </database>
-</config>
+# The version number of this configuration file format
+-config(version:1.0)
+
+# project group name (for Maven repository)
+-group:        org.utgenome.track
+# Name of the project. This name will be used for the web application's context path
+-project name: myapp
+# java package to add/search Web Action codes
+-java package:      myapp
+
+# Importing additional web actions under the specified java package.
+# Web actions (i.e. java classes) in the specified action package folder will be accessible 
+# by the path (alias)/(web action name)
+-web action(alias: utgb-core, java package: org.utgenome.gwt.utgb.server.app)
+
+# Database locations settings. 
+# Database address for SQLite DB files is relative to the project folder.
+# The specified databases will be accessible from your web action codes by referencing the specified id.
+-database(id:mydb, dbms:sqlite)
+ -address: db/sample.db
+
+-database(id:pgdb, dbms:postgres)
+ -address: localhost:5432/addressbook
+ -user: postgres
+ -pass: (password)
 </code>
-
-
-Note that for a licensing reason, we cannot include MySQL's JDBC library, which is licensed under the GPL (Gnu Public License), in the UTGB package, since the UTGB is licensed under the Apache License version 2.0. The main difference between these licenses is that GPL forces every program using GPL-licensed codes also must be licensed under the GPL, while the Apache license is applied in file basis, so your codes generated by UTGB or just using UTGB libraries have no need to be licensed under the Apache license. If you see no problem in applying the GPL license to your source codes, you can use MySQL databases in the UTGB by setting dbms="mysql" in the connection tag in the configuration file. In this case, download the MySQL's JDBC library from the web, and add it to your classpath. 
-
-
-After you have done the database configuration, you can test your settings using {b|utgb dbinfo} command, which will display the schema information of the specified databases.
-
- 
-{{
-myapp> utgb dbinfo            
-[DBInfo]        database ID: mydb
-
-[DBInfo]        table: gene
-[DBInfo]         column: id (integer)
-[DBInfo]         column: target (string)
-[DBInfo]         column: start (integer)
-[DBInfo]         column: end (integer)
-[DBInfo]         column: strand (string)
-...
-}}
-
-To actually see the database content, you can use {b|utgb query} command, which receives a database ID and a SQL query, then performs the database query:
-
-{{
-myapp> utgb query mydb "select * from gene"
-
-0|chrX|70518318|70518344|+|+_1(1,0,0,0)|
-1|chr12|51949963|51949989|-|-_1(0,1,0,0)|
-2|chr6|48444655|48444681|-|-_1(0,0,0,1)|
-3|chr13|109111185|109111211|-|-_1(0,0,0,1)|
-4|chr5|133731340|133731366|-|-_3(0,0,0,1)|
-5|chr20|61835474|61835500|-|-_1(1,0,0,0)|
-....
-
-}}
 
 == Development with Eclipse
 
