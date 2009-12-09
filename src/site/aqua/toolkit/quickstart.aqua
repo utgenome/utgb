@@ -4,23 +4,61 @@
 
 = UTGB Shell Quick Start
 
-The UTGB Shell is a set of supporting utilities to develop your own tracks for querying and visualizing biological data. This document is a quick start guide for beginning track development with UTGB in 30 minutes.
+The UTGB Shell is a command-line utility for developing your own genome browser for querying and visualizing biological data. This document is a quick start guide for beginning track development with UTGB in 30 minutes.
 
-== Installation of UTGB
+== Installation of the UTGB
 
-In order to use UTGB, you need a JDK (Java Development Kit) version 1.5 or higher. If you have no JDK in your OS, visit the Sun's Java site (http://java.sun.com), and follow the installation instruction.
- 
+In order to use UTGB, you need a JDK (Java Development Kit) version 1.5 or higher. If you have no JDK in your OS, visit the Sun's Java site (http://java.sun.com), and follow the installation instruction. 
+
+== Easy Installer
+{b|New!} You can install UTGB Shell with Java Web Start-based installer:
+* Click http://utgenome.org/toolkit/utgb.jnlp
+** Push the Trust button when certificate confirmation dialog is shown.
+** Push the Install button. The latest version of the utgb-shell will be downloaded from out site, and extracted to the specified installation folder. 
+* Default installation path is "$HOME/.utgb". We call this folder UTGB_HOME.
+
+=== Mac OS X and Linux
+Set the environment variables UTGB_HOME, PATH and JAVA_HOME in an appropriate file, e.g., .profile, .bash_profile (for Bash), .zprofile (for ZSH), etc. 
+<code>
+export UTGB_HOME=$HOME/.utgb
+export PATH=$UTGB_HOME/bin:$PATH
+</code>
+In Mac OS X, JAVA_HOME would be:
+<code>
+export JAVA_HOME=/Library/Java/Home
+</code> 
+In Linux:
+<code>
+export JAVA_HOME=/usr/java/jdk1.6.0_03
+</code>
+
+=== Windows 
+In Windows, press Win + Pause (or open Control Panel - System - Settings)  to open Environment Variable panel for setting the environment variables, PATH, JAVA_HOME.
+<code>
+UTGB_HOME = %USERPROFILE%\.utgb
+PATH = %UTGB_HOME%\bin;%PATH%  
+</code>
+ Set the JAVA_HOME variable to your JDK (1.5 or higher) installation. For example,
+<code>
+JAVA_HOME = C:\Program Files\Java\jdk1.6.0_03 
+</code>
+
+
+== Manual Installation 
+
+If you have to install utgb-shell using the command-line, follow the steps:
 === Windows 
 
 * Download the latest version of UTGB shell archive utgb-shell-(version)-package.zip from http://maven.utgenome.org/repository/artifact/org/utgenome/utgb-shell/ (or [../download.html Download page]), unpack it to anywhere you like, e.g., C:\utgb\utgb-shell-1.2.4
 * You need to set two environment variables. Press Win + Pause (or open Control Panel - System - Settings)  to open Environment Variable panel. 
 * Append C:\utgb\utgb-shell-1.2.4\bin to the PATH variable as follows:
 ** PATH = C:\utgb\utgb-shell-1.2.4\bin;%PATH%  
-* Set the JAVA_HOME variable to your JDK (1.5 or higher) installation. For example,** JAVA_HOME = C:\Program Files\Java\jdk1.6.0_03 
+* Set the JAVA_HOME variable to your JDK (1.5 or higher) installation. For example,
+** JAVA_HOME = C:\Program Files\Java\jdk1.6.0_03 
 
 === Mac OS X & Linux
 
-* Download the UTGB Shell archive in the same way described in the Windows section.  In this example, we use $HOME/local/utgb-shell-1.2.4, where $HOME is your home directory, e.g. !/Users/leo (in Mac OS X), !/home/leo (in Linux).
+* Download the UTGB Shell archive in the same way described in the Windows section.  In this example, we use "$HOME/local/utgb-shell-1.2.4", where $HOME is your home directory, e.g. !/Users/leo (in Mac OS X), !/home/leo (in Linux).
 * Install JDK. We assume your JDK is installed in !/usr/java/jdk1.6.0_03.
 * Set the following environment variables in one of your .profile, .bash_profile, .zprofile, etc: 
 <code>
@@ -30,7 +68,7 @@ export JAVA_HOME=/usr/java/jdk1.6.0_03
 </code>
 
 == Confirm your UTGB Installation
- Type,  {b|utgb} from your Command Prompt or Cygwin (in Windows), shell (in Linux and Mac OS). If you see the following message, your installation is succeeded. 
+Type, {b|utgb} from your Command Prompt or Cygwin (in Windows), terminal shell (in Linux and Mac OS X). If you see the following message, your installation is succeeded. 
 
 {{
 leo@leopardcat~/../workspace> utgb    
