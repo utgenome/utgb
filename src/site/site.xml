@@ -28,7 +28,7 @@
 
 <!--  <menu name="UTGB Project" ref="parent"/> -->
   <menu name="Main">
-    <item name="Top Page" href="index.html"/>
+    <item name="Home" href="index.html"/>
     <item name="Publications" href="publication.html"/>
     <item name="Members" href="members.html"/>
     <item name="Issue Tracker" href="http://code.google.com/p/utgb/issues/list"/>
