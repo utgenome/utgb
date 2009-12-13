@@ -46,3 +46,30 @@ public class HelloWorld extends WebTrackBase
 You can use following data types as public fields in your web action:
 * Primitive types: char, byte, int, long, float, double, boolean
 * Standard types: String, Date, File 
+
+
+== Drawing Graphics 
+
+You can draw graphics using Graphics2D and ImageIO. For drawing graphics in Java, read a nice tutorial in http://java.sun.com/docs/books/tutorial/2d/index.html 
+
+<code>
+public void handle(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+
+    // set the content type to be generated to PNG image
+    response.setContentType("image/png");
+
+    // prepare a buffer for drawing grpahics  
+    BufferedImage buffer = new BufferedImage(500, 500, BufferedImage.TYPE_INT_ARGB);
+    Graphics2D g = (Graphics2D) buffer.getGraphics();
+
+    // draw a rectangle
+    g.setColor(Color.BLUE);
+    g.fillRect(10, 50, 100, 150);
+    
+    // output the buffered image as PNG image 
+    ImageIO.write(buffer, "png", response.getOutputStream());
+
+}
+</code>
+
