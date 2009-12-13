@@ -18,7 +18,7 @@
 
   <body>
   <links>
-     <item name="Top Page" href="index.html"/>
+     <item name="Home Page" href="index.html"/>
      <item name="Genome Browsers" href="browser.html"/>
      <item name="Download" href="download.html"/>
      <item name="Discussion Forum" href="http://groups.google.com/group/utgb-users?hl=en"/>
