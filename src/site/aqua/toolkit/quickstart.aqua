@@ -244,9 +244,18 @@ To change the default parameter values such as species, revision, target etc. yo
 "http://localhost:8989/myapp/browser.html#species=medaka;revision=version1.0;target=scaffold1;start=1;end=1000"
 This URL shows a browser page of medaka, version1.0, scaffold1, at genome location beginning from 1 to 1000.
 
+{b|Notice} Due to the bug contained in the recent update for Safari 4, GWT HostedMode for debugging utgb application using Eclipse crashes in Mac OS X. http://code.google.com/p/utgb/issues/detail?id=79
 
-
-
+To resolve this problem, 
+* Download the old WebKit, say r51062 from http://nightly.webkit.org/
+* Install it to /Applications folder. 
+* Then select Debug -> Debug Configurations ... and select myapp-gwt-mac. 
+* Click the Environment tab.
+* Add a variable:
+<code>
+DYLD_FRAMEWORK_PATH = /Applications/WebKit.app/Contents/Frameworks/10.5
+(The number 10.5 must be 10.4 (in Tiger) and 10.6 (in Snowleopard))
+</code>
 
 
 
