@@ -247,9 +247,9 @@ This URL shows a browser page of medaka, version1.0, scaffold1, at genome locati
 {b|Notice} Due to the bug contained in the recent update for Safari 4, GWT HostedMode for debugging utgb application using Eclipse crashes in Mac OS X. http://code.google.com/p/utgb/issues/detail?id=79
 
 To resolve this problem, 
-* Download the old WebKit, say r51062 from http://nightly.webkit.org/
-* Install it to /Applications folder. 
-* Then select Debug -> Debug Configurations ... and select myapp-gwt-mac. 
+* Download the old "WebKit", say r51062 from http://nightly.webkit.org/
+* Install it to "/Applications" folder. 
+* Then select Debug "->" Debug Configurations ... and select myapp-gwt-mac. 
 * Click the Environment tab.
 * Add a variable:
 <code>
