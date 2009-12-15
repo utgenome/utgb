@@ -35,10 +35,12 @@ export JAVA_HOME=/usr/java/jdk1.6.0_03
 === Windows 
 In Windows, press Win + Pause (or open Control Panel - System - Settings)  to open Environment Variable panel for setting the environment variables, PATH, JAVA_HOME.
 <code>
-UTGB_HOME = %USERPROFILE%\.utgb
-PATH = %UTGB_HOME%\bin;%PATH%  
+PATH = (UTGB_HOME)\bin;%PATH%  
 </code>
- Set the JAVA_HOME variable to your JDK (1.5 or higher) installation. For example,
+Replace the above (UTGB_HOME) to your UTGB installation path.
+
+
+Set the JAVA_HOME variable to your JDK (1.5 or higher) installation. For example,
 <code>
 JAVA_HOME = C:\Program Files\Java\jdk1.6.0_03 
 </code>
