@@ -8,7 +8,7 @@
 
 == Release Notes
 * {b|December 10th, 2009} UTGB Shell 1.2.18 released
-* Some minor bug fixes
+** Some minor bug fixes
 * {b|December 10th, 2009} UTGB Shell 1.2.16 released
 ** [http://utgenome.org/toolkit/utgb.jnlp Java Web Start based installer] is available: http://utgenome.org/toolkit/utgb.jnlp
 *** No need to manually download and unpack the archive. Just click the above link!
