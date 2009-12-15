@@ -7,6 +7,12 @@
 * http://utgenome.org/toolkit/utgb.jnlp
 
 == Release Notes
+* {b|December 10th, 2009} UTGB Shell 1.2.17 released
+** "[Major]" Upgraded to GWT2.0. You have to upgrade pom.xml and eclipse launch files in the project with utgb repair command:
+<code>
+> utgb repair -f pom.xml
+> utgb repair -f eclipse
+</code>
 * {b|December 10th, 2009} UTGB Shell 1.2.16 released
 ** [http://utgenome.org/toolkit/utgb.jnlp Java Web Start based installer] is available: http://utgenome.org/toolkit/utgb.jnlp
 *** No need to manually download and unpack the archive. Just click the above link!
