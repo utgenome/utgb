@@ -47,7 +47,7 @@ public class Import extends UTGBShellCommand {
 
 	private static Logger _logger = Logger.getLogger(Import.class);
 
-	private enum FileType {
+	public static enum FileType {
 		AUTO, READ, BED, FASTA, WIG
 	}
 

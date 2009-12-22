@@ -24,6 +24,8 @@
 //--------------------------------------
 package org.utgenome.shell;
 
+import static org.junit.Assert.*;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -43,6 +45,16 @@ public class ImportTest {
 	@Test
 	public void importTest() throws Exception {
 		UTGBShell.runCommand(new String[] { "import", "f:/cygwin/home/leo/work/t2k/scaffold5001.silk" });
+	}
+
+	@Test
+	public void auto() throws Exception {
+
+		assertEquals(Import.FileType.WIG, Import.detectFileType("sample.wig"));
+		assertEquals(Import.FileType.FASTA, Import.detectFileType("hg19.fa"));
+		assertEquals(Import.FileType.FASTA, Import.detectFileType("sample.fasta"));
+		assertEquals(Import.FileType.BED, Import.detectFileType("sample.bed"));
+		assertEquals(Import.FileType.AUTO, Import.detectFileType("sample.fdasfa.dfa"));
 	}
 
 }
