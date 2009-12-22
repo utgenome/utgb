@@ -16,7 +16,6 @@
 
 
   <properties>
-    <gwt.version>1.7.0</gwt.version>
     <gwt.module>utgb</gwt.module>
     <gwt.jvmargs />
   </properties>
@@ -194,11 +193,6 @@
       <version>1.2</version>
     </dependency>
 
-    <dependency>
-      <groupId>org.xerial</groupId>
-      <artifactId>xerial-storage</artifactId>
-      <version>1.0.4</version>
-    </dependency>
 
     <dependency>
       <groupId>org.utgenome.thirdparty</groupId>
@@ -210,13 +204,13 @@
     <dependency>
       <groupId>org.xerial</groupId>
       <artifactId>sqlite-jdbc</artifactId>
-      <version>3.6.19</version>
+      <version>${sqlite-jdbc.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.xerial</groupId>
       <artifactId>xerial-core</artifactId>
-      <version>1.0.16</version>
+      <version>1.0.17</version>
     </dependency>
 
     <dependency>

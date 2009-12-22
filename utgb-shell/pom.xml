@@ -15,7 +15,6 @@
 
   <properties>
     <revision>$Revision$</revision>
-    <sqlite-jdbc.version>3.6.20</sqlite-jdbc.version>
     <tomcat.version>6.0.18</tomcat.version>
   </properties>
 
@@ -93,34 +92,32 @@
     <developerConnection>scm:hg:default</developerConnection>
   </scm>
 
-
   <dependencies>
 
     <dependency>
       <groupId>org.utgenome</groupId>
       <artifactId>utgb-core</artifactId>
-      <version>1.0.23</version>
+      <version>${utgb.version}</version>
     </dependency>
 
+
+    <dependency>
+      <groupId>org.xerial</groupId>
+      <artifactId>xerial-core</artifactId>
+      <version>1.0.17</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.xerial</groupId>
+      <artifactId>xerial-storage</artifactId>
+      <version>1.0.5</version>
+    </dependency>
 
     <dependency>
       <groupId>org.xerial.thirdparty</groupId>
       <artifactId>svnkit</artifactId>
       <version>1.3.0.5847</version>
     </dependency>
-
-    <dependency>
-      <groupId>org.xerial</groupId>
-      <artifactId>xerial-core</artifactId>
-      <version>1.0.16</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.xerial</groupId>
-      <artifactId>xerial-storage</artifactId>
-      <version>1.0.4</version>
-    </dependency>
-
 
     <!-- Tomcat Libraries -->
     <dependency>

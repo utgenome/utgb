@@ -15,6 +15,8 @@
 
   <properties>
     <utgb.version>1.3.0-SNAPSHOT</utgb.version>
+    <gwt.version>1.7.0</gwt.version>
+    <sqlite-jdbc.version>3.6.20</sqlite-jdbc.version>
   </properties>
   
   <inceptionYear>2007</inceptionYear>
@@ -230,6 +232,7 @@
       <version>4.7</version>
       <scope>test</scope>
     </dependency>
+
   </dependencies>
 
   <!-- Java Doc -->
