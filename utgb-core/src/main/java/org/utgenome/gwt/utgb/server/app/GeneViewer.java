@@ -44,7 +44,7 @@ public class GeneViewer extends WebTrackBase {
 	public GeneViewer() {
 	}
 
-	static class GeneRetriever<T> implements BeanHandler<T> {
+	class GeneRetriever<T> implements BeanHandler<T> {
 		private ArrayList<T> geneList = new ArrayList<T>();
 
 		public GeneRetriever() {
@@ -56,6 +56,10 @@ public class GeneViewer extends WebTrackBase {
 
 		public void handle(T bean) throws Exception {
 			geneList.add(bean);
+		}
+
+		public void handleException(Exception e) throws Exception {
+			_logger.error(e);
 		}
 	}
 

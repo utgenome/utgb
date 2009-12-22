@@ -27,7 +27,6 @@ import org.utgenome.gwt.utgb.server.WebTrackBase;
 import org.utgenome.gwt.utgb.server.util.graphic.GraphicUtil;
 import org.xerial.db.DBException;
 import org.xerial.db.sql.BeanResultHandler;
-import org.xerial.db.sql.ByteArray;
 import org.xerial.db.sql.DatabaseAccess;
 import org.xerial.db.sql.sqlite.SQLiteAccess;
 import org.xerial.json.JSONWriter;
@@ -69,14 +68,14 @@ public class Sequence extends WebTrackBase {
 	public String colorN = DEFAULT_COLOR_N;
 
 	public static class NSeq {
-		private long start;
-		private long end;
-		private ByteArray sequence;
+		public long start;
+		public long end;
+		private byte[] sequence;
 
 		public NSeq() {
 		}
 
-		public NSeq(long start, long end, ByteArray sequence) {
+		public NSeq(long start, long end, byte[] sequence) {
 			this.start = start;
 			this.end = end;
 			this.sequence = sequence;
@@ -96,40 +95,31 @@ public class Sequence extends WebTrackBase {
 			return start;
 		}
 
-		public void setStart(long start) {
-			this.start = start;
-		}
-
 		public long getEnd() {
 			return end;
 		}
 
-		public void setEnd(long end) {
-			this.end = end;
-		}
-
-		public ByteArray getSequence() {
-			return sequence;
-		}
-
 		public String getSubSequence(int start, int end) {
-			byte[] seq = sequence.getBytes();
-			return new String(seq, start, end - start);
+			return new String(sequence, start, end - start);
 		}
 
 		public int getLength() {
-			return this.sequence.size();
+			return sequence.length;
 		}
 
-		public void setSequence(ByteArray sequence) throws IOException {
-			GZIPInputStream decompressor = new GZIPInputStream(new ByteArrayInputStream(sequence.getBytes()));
+		public byte[] getSequence() {
+			return sequence;
+		}
+
+		public void setSequence(byte[] sequence) throws IOException {
+			GZIPInputStream decompressor = new GZIPInputStream(new ByteArrayInputStream(sequence));
 			ByteArrayOutputStream b = new ByteArrayOutputStream();
 			byte[] buf = new byte[1024];
 			int readBytes = 0;
 			while ((readBytes = decompressor.read(buf)) != -1) {
 				b.write(buf, 0, readBytes);
 			}
-			this.sequence = new ByteArray(b.toByteArray());
+			this.sequence = b.toByteArray();
 		}
 
 	}
@@ -148,7 +138,10 @@ public class Sequence extends WebTrackBase {
 		}
 	}
 
-	public static abstract class SequenceRetrieverBase extends BeanResultHandler<NSeq> {
+	public static abstract class SequenceRetrieverBase implements BeanResultHandler<NSeq> {
+
+		private static Logger _logger = Logger.getLogger(SequenceRetrieverBase.class);
+
 		private final long start;
 		private final long end;
 		private final boolean isReverseStrand;
@@ -167,7 +160,6 @@ public class Sequence extends WebTrackBase {
 		}
 
 		public SequenceRetrieverBase(long start, long end, boolean isReverseStrand) {
-			super(NSeq.class);
 
 			assert (start <= end);
 			this.start = start;
@@ -203,6 +195,19 @@ public class Sequence extends WebTrackBase {
 			else
 				return ch.charValue();
 		}
+
+		public void init() {
+
+		}
+
+		public void finish() {
+
+		}
+
+		public void handleException(Exception e) throws Exception {
+			_logger.error(e);
+		}
+
 	}
 
 	/**
@@ -439,17 +444,17 @@ public class Sequence extends WebTrackBase {
 			String actionString = getActionSuffix(request);
 
 			if (actionString.equals("json"))
-				db.query(sql, new JSONOutput(response.getWriter(), start, end, isReverseStrand));
+				db.query(sql, NSeq.class, new JSONOutput(response.getWriter(), start, end, isReverseStrand));
 			else if (actionString.equals("xml"))
-				db.query(sql, new XMLOutput(response.getWriter(), start, end, isReverseStrand));
+				db.query(sql, NSeq.class, new XMLOutput(response.getWriter(), start, end, isReverseStrand));
 			else if (actionString.equals("png")) {
 				if (range > width)
-					db.query(sql, new RoughGraphicalOutput(response, start, end, width, isReverseStrand));
+					db.query(sql, NSeq.class, new RoughGraphicalOutput(response, start, end, width, isReverseStrand));
 				else
-					db.query(sql, new GraphicalOutput(response, start, end, width, isReverseStrand));
+					db.query(sql, NSeq.class, new GraphicalOutput(response, start, end, width, isReverseStrand));
 			}
 			else
-				db.query(sql, new TextOutput(response.getWriter(), start, end, isReverseStrand));
+				db.query(sql, NSeq.class, new TextOutput(response.getWriter(), start, end, isReverseStrand));
 		}
 		catch (DBException e) {
 			_logger.error(e);

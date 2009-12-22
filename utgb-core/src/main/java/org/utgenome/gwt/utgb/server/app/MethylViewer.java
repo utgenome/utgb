@@ -141,10 +141,21 @@ public class MethylViewer extends WebTrackBase {
 
 			entryList = new ArrayList<MethlEntry>();
 
-			dbAccess.query(sql, new BeanResultHandler<MethlEntry>(MethlEntry.class) {
-				@Override
+			dbAccess.query(sql, MethlEntry.class, new BeanResultHandler<MethlEntry>() {
 				public void handle(MethlEntry e) throws SQLException {
 					entryList.add(e);
+				}
+
+				public void finish() {
+
+				}
+
+				public void handleException(Exception e) throws Exception {
+					_logger.error(e);
+				}
+
+				public void init() {
+
 				}
 			});
 

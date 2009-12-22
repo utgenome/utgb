@@ -332,6 +332,10 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 		public void handle(T bean) throws Exception {
 			geneList.add(bean);
 		}
+
+		public void handleException(Exception e) throws Exception {
+			_logger.error(e);
+		}
 	}
 
 	public List<Gene> getGeneList(String serviceURI) {

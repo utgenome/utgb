@@ -45,12 +45,16 @@ import org.xerial.util.FileResource;
 import org.xerial.util.StringUtil;
 import org.xerial.util.bean.BeanHandler;
 import org.xerial.util.bean.BeanUtil;
+import org.xerial.util.log.Logger;
 
 /**
  * @author leo
  * 
  */
 public abstract class WebTrackBase extends RequestHandlerBase {
+
+	private static final long serialVersionUID = 1L;
+	private static Logger _logger = Logger.getLogger(WebTrackBase.class);
 
 	public static String createSQLStatement(String sqlTemplate, Object... args) throws UTGBException {
 		try {
@@ -131,6 +135,10 @@ public abstract class WebTrackBase extends RequestHandlerBase {
 
 		public ArrayList<T> getResult() {
 			return result;
+		}
+
+		public void handleException(Exception e) throws Exception {
+			_logger.error(e);
 		}
 	}
 
