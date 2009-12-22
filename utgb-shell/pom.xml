@@ -73,7 +73,7 @@
         <configuration>
           <!--  do not run site-deploy goal, included in the default settings  -->
           <goals>deploy</goals>
-          <connectionUrl>scm:hg:https://shell.utgb.googlecode.com/hg/</connectionUrl>
+          <connectionUrl>scm:hg:https://utgb.googlecode.com/hg/</connectionUrl>
         </configuration>
       </plugin>
     </plugins>
@@ -89,7 +89,7 @@
   </repositories>
 
   <scm>
-    <connection>scm:hg:https://shell.utgb.googlecode.com/hg/</connection>
+    <connection>scm:hg:https://utgb.googlecode.com/hg/</connection>
     <developerConnection>scm:hg:default</developerConnection>
   </scm>
 

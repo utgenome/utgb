@@ -173,7 +173,7 @@
 
 
   <scm>
-    <connection>scm:hg:https://core.utgb.googlecode.com/hg/</connection>
+    <connection>scm:hg:https://utgb.googlecode.com/hg/</connection>
     <developerConnection>scm:hg:default</developerConnection>
   </scm>
     

@@ -12,7 +12,6 @@
 
   <url>http://utgenome.org/</url>
 
-
   <issueManagement>
     <system>Google Code</system>
     <url>http://code.google.com/p/utgb/issues/list</url>
@@ -53,9 +52,8 @@
   </licenses>
 
   <scm>
-    <connection>scm:hg:http://www.xerial.org/hg/utgb-site</connection>
-    <developerConnection>scm:hg:ssh://hg@sprite.xerial.org/public/utgb-site</developerConnection>
-    <url>http://www.xerial.org/hg</url>
+    <connection>scm:hg:https://utgb.googlecode.com/hg/</connection>
+    <developerConnection>scm:hg:default</developerConnection>
   </scm>
 
   <organization>
@@ -192,7 +190,8 @@
       <plugin>
         <artifactId>maven-release-plugin</artifactId>
         <configuration>
-          <tagBase>scm:hg:http://www.xerial.org/hg/utgb-site</tagBase>
+          <tagBase>scm:hg:https://utgb.googlecode.com/hg</tagBase>
+		  <developerConnection>scm:hg:default</developerConnection>
           <goals>deploy</goals>
         </configuration>
       </plugin>
