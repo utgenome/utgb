@@ -57,4 +57,16 @@ public class BED2SilkReaderTest {
 		buf.close();
 	}
 
+	@Test
+	public void invalidBED() throws Exception {
+		BED2SilkReader reader = new BED2SilkReader(FileResource.open(BED2SilkReaderTest.class, "test_for_error.bed"));
+
+		BufferedReader buf = new BufferedReader(reader);
+		for (String line; (line = buf.readLine()) != null;) {
+			_logger.info(line);
+		}
+
+		buf.close();
+
+	}
 }
