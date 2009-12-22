@@ -213,6 +213,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.xerial</groupId>
+      <artifactId>xerial-storage</artifactId>
+      <version>1.0.5</version>
+    </dependency>
+
+    <dependency>
       <groupId>com.google.gwt.gears</groupId>
       <artifactId>gwt-google-apis</artifactId>
       <version>1.0.0</version>
