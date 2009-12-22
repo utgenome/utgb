@@ -28,17 +28,15 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.Modifier;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.xerial.core.XerialException;
 import org.xerial.util.FileResource;
 import org.xerial.util.ResourceFilter;
 import org.xerial.util.StringUtil;
-import org.xerial.util.bean.BeanUtil;
 import org.xerial.util.io.VirtualFile;
 import org.xerial.util.log.LogLevel;
 import org.xerial.util.log.Logger;
@@ -261,25 +259,20 @@ public class UTGBShell {
 		return "UTGB Shell: version " + getVersion();
 	}
 
-	private static POM getPom() {
-		POM pom = new POM();
-		// read the pom.xml file and extract the version information
+	public static String getVersion() {
+		String version = "(unknown)";
 		try {
 			// load the pom.xml file copied as a resource
-			InputStream pomIn = UTGBShell.class.getResourceAsStream("/META-INF/maven/org.utgenome/utgb-shell/pom.xml");
+			InputStream pomIn = UTGBShell.class.getResourceAsStream("/META-INF/maven/org.utgenome/utgb-core/pom.properties");
 			if (pomIn != null) {
-				BufferedReader pomReader = new BufferedReader(new InputStreamReader(pomIn));
-				if (pomReader != null)
-					BeanUtil.populateBeanWithXML(pom, pomReader);
+				Properties prop = new Properties();
+				prop.load(pomIn);
+				version = prop.getProperty("version", version);
 			}
 		}
-		catch (XerialException e) {
+		catch (IOException e) {
 			_logger.debug(e);
 		}
-		return pom;
-	}
-
-	public static String getVersion() {
-		return getPom().getVersion();
+		return version;
 	}
 }

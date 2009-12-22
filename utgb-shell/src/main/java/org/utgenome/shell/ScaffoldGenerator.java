@@ -85,6 +85,8 @@ public class ScaffoldGenerator {
 		property.setProperty("serverPackageName", serverPackageName);
 		property.setProperty("moduleName", moduleName);
 		property.setProperty("entryPoint", entryPoint);
+
+		property.setProperty("utgbVersion", UTGBShell.getVersion());
 	}
 
 	public void createProjectScaffold(UTGBConfig config) throws IOException, UTGBShellException {

@@ -13,6 +13,14 @@
     <url>http://code.google.com/p/utgb/issues/list</url>
   </issueManagement>
 
+  <!-- set your GWT module name within the gwt.module tag (optional) -->  
+  <properties>
+  	<utgb.version>$utgbVersion$</utgb.version>
+	<gwt.version>1.7.0</gwt.version>
+    <gwt.module>$moduleName$</gwt.module>
+    <sqlite-jdbc.version>3.6.20</sqlite-jdbc.version>
+    <gwt.jvmargs></gwt.jvmargs>
+  </properties>
 
   <!--  OS dependent settings for GWT compiler -->
   <profiles>
@@ -53,14 +61,6 @@
 
   </profiles>
 
-  <!-- set your GWT module name within the gwt.module tag (optional) -->  
-  <properties>
-  	<gwt.version>1.7.0</gwt.version>
-    <gwt.module>$moduleName$</gwt.module>
-    <sqlite-jdbc.version>3.6.20</sqlite-jdbc.version>
-    <gwt.ant.version>1.2.1</gwt.ant.version>
-    <gwt.jvmargs></gwt.jvmargs>
-  </properties>
 
 
   <build>
@@ -300,7 +300,7 @@
     <dependency>
       <groupId>org.utgenome</groupId>
       <artifactId>utgb-core</artifactId>
-      <version>${utgb.version}</version>
+      <version>\${utgb.version}</version>
     </dependency>
 
     

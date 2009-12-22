@@ -157,9 +157,6 @@
       </resource>
       <resource>
         <directory>src/main/resources</directory>
-        <excludes>
-          <exclude>**/.svn/**</exclude>
-        </excludes>
       </resource>
     </resources>
     <testResources>
