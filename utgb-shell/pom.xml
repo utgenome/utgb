@@ -11,7 +11,7 @@
   <packaging>jar</packaging>
   <version>${utgb.version}</version>
   <name>UTGB Shell</name>
-  <description>A command-line client of UTGB tools.</description>
+  <description>A command-line client of UTGB Toolkit.</description>
 
   <properties>
     <revision>$Revision$</revision>

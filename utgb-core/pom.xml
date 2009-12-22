@@ -14,7 +14,6 @@
   <description>UTGB Core Components</description>
   <packaging>jar</packaging>
 
-
   <properties>
     <gwt.module>utgb</gwt.module>
     <gwt.jvmargs />
