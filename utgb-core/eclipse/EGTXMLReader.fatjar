@@ -1,0 +1,14 @@
+#Fat Jar Configuration File
+#Fri Dec 21 12:43:34 GMT+09:00 2007
+onejar.license.required=true
+manifest.classpath=
+manifest.removesigners=true
+onejar.checkbox=false
+jarname=EGTXMLReader.jar
+manifest.mergeall=true
+manifest.mainclass=org.utgenome.format.egt.EGTXMLReader
+manifest.file=<createnew>
+jarname.isextern=false
+onejar.expand=
+excludes=<po|utgb-core>~eagyGeneTrack/;<po|utgb-core>~fasta/;<po|utgb-core>~format/;<po|utgb-core>~mock/;<po|utgb-core>~graph.db;<po|utgb-core>~log.config;<po|utgb-core>~new.db;<po|utgb-core>~sample.db;<po|utgb-core>~sample.sqlite.dump;<cl|F\:\\cygwin\\home\\leo\\work\\workspace\\XerialJ\\xerial-core>;<cl|F\:\\cygwin\\home\\leo\\work\\workspace\\utgb\\utgb-portable>;<cl|F\:\\cygwin\\home\\leo\\work\\workspace\\XerialJ\\xerial-storage>;<po|xerial-core>~empty.file;<po|xerial-core>~log.config;<cl|F\:\\cygwin\\home\\leo\\work\\workspace\\XerialJ\\xerial-core>;<po|xerial-core>~empty.file;<po|xerial-core>~log.config;<po|xerial-storage>~relation/;<po|xerial-storage>~sqlite/;<po|xerial-storage>~empty.file;<po|xerial-storage>~log.config;<cl|F\:\\cygwin\\home\\leo\\work\\workspace\\XerialJ\\xerial-core>;<po|xerial-core>~empty.file;<po|xerial-core>~log.config;<jar|coyote-6.0.13.jar>;<jar|jasper-jdt-6.0.13.jar>;<jar|gwt-google-apis-1.0.0.jar>;<jar|juli-6.0.13.jar>;<jar|commons-fileupload-1.2.jar>;<jar|jnlp-1.2.jar>;<jar|annotations-api-6.0.13.jar>;<jar|jasper-6.0.13.jar>;<jar|gwt-dragdrop-1.2.jar>;<jar|swt-win32-3.3.jar>;<jar|gwt-servlet-1.4.60.jar>;<jar|servlet-api-6.0.13.jar>;<jar|jsp-api-6.0.13.jar>;<jar|catalina-6.0.13.jar>;<jar|gwt-user-1.4.60.jar>;<jar|junit-4.1.jar>;<jar|jasper-el-6.0.13.jar>;<jar|log4j-1.2.9.jar>;<jar|el-api-6.0.13.jar>;<jar|tomcat-server-1.2.jar>;<jar|antlr3-3.0.1.jar>;<jar|antlr2-2.7.7.jar>;<jar|log4j-1.2.14.jar>;<jar|xercesImpl-2.8.1.jar>;<jar|xml-apis-1.3.03.jar>
+includes=

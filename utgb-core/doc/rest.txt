@@ -1,0 +1,37 @@
+
+
+RESTful service implementation
+
+gene list
+
+http://utgenome.org/api/refseq/human/hg18/chr1/list
+http://utgenome.org/api/refseq/human/hg18/chr1/list.json
+http://utgenome.org/api/refseq/human/hg18/chr1:1000-20000/list.json
+http://utgenome.org/api/refseq/human/hg18/chr1/list?page=2
+
+=> {"gene":[{"name":"NM_2342342", "start":43434, "end":1342444, "strand":"+", "exon":[...], "cds":[...] }, ... ] }
+
+sequence
+
+http://utgenome.org/api/refseq/human/hg18/chr1/sequence
+http://utgenome.org/api/refseq/human/hg18/chr1/sequence.fasta
+http://utgenome.org/api/refseq/human/hg18/chr1/sequence.json
+http://utgenome.org/api/refseq/human/hg18/chr1:1000-20000/sequence
+
+=> *.fasta 
+>NM_234234234
+ACGTCT....
+>NM_234234254
+CCGGTAAAA...
+..
+
+
+Genome Sequence
+http://utgenome.org/api/genome/human/hg18/chr1/sequence.fasta
+http://utgenome.org/api/genome/human/hg18/chr2/sequence.fasta
+...
+
+
+
+http://utgenome.org/api/genescan/medaka/version1.0/scaffold1:1000-20000/list
+

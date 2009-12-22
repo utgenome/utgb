@@ -1,0 +1,27 @@
+= UTGB Quick Start = 
+
+The UTGB Shell is a set of supporting utilities to develop your own tracks for querying and visualizing biological data. This document is a quick start guide for beginning track development with UTGB in 30 minutes.
+
+= Installation of UTGB =
+
+In order to use UTGB, you need a JDK (Java Development Kit) version 1.5 or higher. If you have no JDK in your OS, visit the Sun's Java site (http://java.sun.com), and follow the installation instruction. 
+
+== Windows == 
+ 1.  Download the UTGB shell archive from [[http://maven.utgenome.org/repository/release/utgb-shell-1.0-SNAPSHOT.tgz]], unpack it to anywhere you want, e.g., C:\utgb\utgb-shell-1.0-SNAPSHOT.
+ 1.  You need to set two environment variables. Press Win + Pause (or open Control Panel -> System -> Settings)  to open Environment Variable panel. 
+   1. Append C:\utgb\utgb-shell-1.0-SNAPSHOT\bin to the PATH variable as follows:
+   * PATH = C:\utgb\utgb-shell-1.0-SNAPSHOT\bin;%PATH%
+   1. Set the JAVA_HOME variable to your JDK (1.5 or higher) installation. For example, 
+     * JAVA_HOME = C:\Program Files\Java\jdk1.6.0_03
+
+== Linux ==
+  1. Download the UTGB Shell archive in the same way described in the Windows section.  In this example, we use $HOME/local/utgb-shell-1.0-SNAPSHOT, where $HOME$ is your home directory, e.g. /home/leo
+  1. Install JDK. We assume your JDK is installed in /usr/java/jdk1.6.0_03.
+  1. Set the following two environment variables in one of the .profile, .bash_profile, .zprofile, etc:
+{{{
+  export UTGB_HOME=$HOME/local/utgb-shell-1.0-SNAPSHOT
+  export PATH=$UTGB/bin:$PATH
+  export JAVA_HOME=/usr/java/jdk1.6.0_03
+}}}
+ 
+

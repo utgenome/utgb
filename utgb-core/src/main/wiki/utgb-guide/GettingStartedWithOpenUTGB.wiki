@@ -1,0 +1,9 @@
+= Preparing to Use OpenUTGB
+
+In this section, it is assumed that you have already set up OpenUTGB on your local system. To download OpenUTGB, please refere to [[HowToSetUpOpenUTGB]] first.
+
+From now on, we will refer your installation folder of the OpenUTGB as UTGB_HOME. For example, UTGB_HOME=/Users/leo/local/OpenUTGB-win-1.0.
+
+
+
+

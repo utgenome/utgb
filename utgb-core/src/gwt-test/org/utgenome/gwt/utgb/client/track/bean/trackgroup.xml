@@ -1,0 +1,20 @@
+<trackGroup className="org.utgenome.gwt.utgb.client.track.TrackGroup">
+  <property key="name">global</property>
+  <groupProperties>
+    <property key="species">medaka</property>
+    <property key="revision">200506</property>
+    <property key="target">scaffold1</property>
+    <trackWindow start="1" end="1000000" width="800"/>
+  </groupProperties>
+  <track className="org.utgenome.gwt.utgb.client.track.lib.RulerTrack" name="Ruler" height="0" pack="true">
+    <property key="leftMargin">100</property>
+  </track>		
+  <trackGroup>
+  	<track className="org.utgenome.gwt.utgb.client.track.lib.old.OldUTGBTrack" name="quality value" height="40" pack="false">
+    	<property key="descriptionXMLURL">["http://medaka3.gi.k.u-tokyo.ac.jp/~ssksn/descriptions/qv.xml"]</property>
+  	</track>
+  </trackGroup>
+  <track className="org.utgenome.gwt.utgb.client.track.lib.old.OldUTGBRulerTrack" name="BaseColor" height="10" pack="false">
+    <property key="descriptionXMLURL">["http://medaka3.gi.k.u-tokyo.ac.jp/~ssksn/descriptions/basecolortrack.xml"]</property>
+  </track>
+</trackGroup>

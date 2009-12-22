@@ -1,0 +1,32 @@
+<%# usage: > cd $(UTGB_COMMON_HOME); erb script/AllTests.erb > test/org/utgenome/AllTests.java  %>
+//--------------------------------------
+// UTGB Common Project
+//
+// AllTests.java
+// Since: 2007/04/02
+//
+// $Date$ 
+// $URL$
+// $Author$
+//--------------------------------------
+package org.utgenome;
+
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+<%
+test = ARGV[0] || "bin" 
+#alltestClasses = ARGV[1] || "UTGBCommonTests.java"
+
+Dir.chdir(test)
+testClasses = Dir["**/*Test.class"].find_all { |f|
+  !f.include? "gwt"
+} %>
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+<%=(testClasses.collect { |f| f.strip.gsub(/(\/|\\)/, ".") }).join(",\n")%>
+})
+public class AllTests
+{
+}
+
+

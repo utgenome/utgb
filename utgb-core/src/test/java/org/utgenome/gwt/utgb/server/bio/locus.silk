@@ -1,0 +1,7 @@
+
+ -coordinate(group:utgb, species:human, revision:hg18, name:chr22)
+  -locus(start, end, name, strand, cds(start, end))|
+1000	5000	cloneA	+	[1000, 4600]
+2000	6000	cloneB	-
+2000	6000	cloneC	-
+

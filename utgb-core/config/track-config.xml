@@ -1,0 +1,38 @@
+<config version="1.0">
+
+  <group>org.utgenome</group>
+  <projectName>utgb-core</projectName>
+  <package>org.utgenome.gwt.utgb.server</package>
+  
+  <import actionPackage="org.utgenome.gwt.utgb.server.app" alias="utgb-core" />
+
+  <!-- 
+    database descriptors
+      database address for SQLite is relative to the track project folder 
+  -->
+
+  <database id="legacy-track">
+    <connection dbms="sqlite">
+      <address>db/legacy-track.db</address>
+    </connection>
+  </database>
+
+  <database id="seq">
+    <connection dbms="sqlite">
+      <address>file://d:/work/genome/hg19/hg19.sqlite</address>
+    </connection>
+  </database>
+
+  <database id="blastura">
+    <connection dbms="sqlite">
+      <address>file://c:/Users/leo/work/bss/blastura_tagmap.sqlite</address>
+    </connection>
+  </database>
+
+  <database id="liver">
+    <connection dbms="sqlite">
+      <address>file://c:/Users/leo/work/bss/liver_tagmap.sqlite</address>
+    </connection>
+  </database>
+
+</config>

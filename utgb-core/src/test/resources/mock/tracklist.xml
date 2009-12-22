@@ -1,0 +1,40 @@
+<utgb>
+ <track-group>
+ <species>drosophila</species>
+ <revision>R4.1</revision>
+
+ <track> 
+   <name>5'-SAGE Dme</name>
+   <graphic>http://dev.utgenome.org/api/browserview/default/easytrack/easygenetrack.php/dbtype=dbaccess/trackname=5pSageDme/tracktype=gene</graphic>
+ </track>
+
+ <track>
+   <name>5'-SAGE Dmw</name>
+   <graphic>http://dev.utgenome.org/api/browserview/default/easytrack/easygenetrack.php/dbtype=dbaccess/trackname=5pSageDmw/tracktype=gene</graphic>
+ </track>
+
+ <track>
+   <name>FlyBase CDS</name>
+   <graphic>http://dev.utgenome.org/api/browserview/default/easytrack/easygenetrack.php/dbtype=dbaccess/trackname=FlyBaseCDS/tracktype=gene</graphic>
+ </track>
+
+ <track>
+   <name>FlyBase Transcript</name>
+   <graphic>http://dev.utgenome.org/api/browserview/default/easytrack/easygenetrack.php/dbtype=dbaccess/trackname=FlyBaseTranscript/tracktype=gene</graphic>
+ </track>
+
+ <track>
+   <name>FlyBase GSVector</name>
+   <graphic>http://dev.utgenome.org/api/browserview/default/easytrack/easygenetrack.php/dbtype=dbaccess/trackname=GSvector/tracktype=gene</graphic>
+ </track>
+
+ <track>
+   <name>-5'SAGE Dme</name>
+   <graphic>http://dev.utgenome.org/api/browserview/default/easytrack/easygenetrack.php/dbtype=dbaccess/trackname=minus5pSageDme/tracktype=gene</graphic>
+ </track>
+
+ </track-group>
+
+
+
+</utgb>

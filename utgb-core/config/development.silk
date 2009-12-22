@@ -1,0 +1,24 @@
+%silk(version:1.0)
+
+# Import the settings described in common.silk file
+@import(common.silk)
+
+# This configuration file will be used when -e option is used 
+
+# Add your own settings here (for development purpose)
+
+## An example of using memory database of SQLite  
+# -database(id:test-db)
+#  -dbms: sqlite
+#  -address: :memory: 
+
+# User's own properties
+# -wiki.source: src/wiki 
+
+
+-database (id:seq, dbms:sqlite)
+ -address: file://d:/work/genome/hg19/hg19.sqlite
+
+-cyteband.dbfolder : db
+-utgb.db.folder: "c:/Documents and Settings/jun/.utgb/db"
+

@@ -1,0 +1,12 @@
+%silk(version:1.0)
+
+# Import the settings described in common.silk file
+@import(common.silk)
+
+# This configuration file will be used when -e option is used 
+
+# Add your own settings here (for development purpose)
+
+-cyteband.dbfolder : db
+-utgb.db.folder: /Users/leo/.utgb/db
+

@@ -1,0 +1,33 @@
+#config file in Silk format
+-config	(version:1.0)
+
+-group: 		org.utgenome
+-project name: 	myapp
+-java package:	org.utgenome.gwt.utgb.server
+
+-web action(alias:utgb-core, java package: org.utgenome.gwt.utgb.server.app)
+
+#----------------------
+# database descriptors
+# database address for SQLite is relative to the track project folder 
+#----------------------
+-database(id:legacy-track)
+ -dbms:sqlite
+ -address: db/legacy-track.db
+
+-database(id:pg, dbms:postgres)
+ -address: localhost
+ -user: leo
+ -pass: pass
+
+# MySQL database connection example
+-database(id:mysql-db, dbms:mysql)
+ -driver: com.mysql.jdbc.Driver
+ -jdbc prefix: jdbc:mysql:///
+ -address: mydb
+ -user: leo2
+ -pass: pass2
+
+# other user-defined properties
+-database.folder:  	/home/leo/utgb
+-sqlite.bin:		/usr/local/bin/sqlite3

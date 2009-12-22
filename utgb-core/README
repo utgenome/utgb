@@ -1,0 +1,71 @@
+UTGB Genome Browser
+
+
+== How to build
+
+1. Install Maven (http://maven.apache.org/) version 2.0.9 or higher
+2. type
+  > mvn compile
+
+
+(the following information is now obsolete. by Taro L. Saito. 2009 May 28th.) 
+
+
+= Build & Debug (with Eclipse) =
+1. Install maven-eclipse (m2eclipse) plug-in from the following update site:
+  http://m2eclipse.codehaus.org/update/
+  
+2. Install GWT (Google Web Toolkit. version 1.4.60 or higher)
+3. In Window->Preference->Java->Classpath Variables, add a new variable as follows:
+{{
+GWT_HOME=(your GWT installation folder)
+}}
+4. (debug) launch Debug -> utgb-core_gwt-shell, which displays GWT debug shell and 
+genome browser interface.
+
+= Build (from command line) = 
+
+1. Download the Google Web Toolkit from the web. Version 1.4.10 or higher is required.
+2. Copy 'build.properties.sample' to 'build.properties'
+3. Open the 'build.property' file, then change the gwt.home variable to the path of your GWT (Google Web Toolkit) folder, 
+and comment out appropriate 'gwt.dev' lines to select GWT develeopement library on your OS.
+ - e.g.  (in Windows)
+{{
+gwt.home=C:/(somewhere in your PC)/gwt-windows-1.4.10
+gwt.dev=gwt-dev-windows.jar
+#gwt.dev=gwt-dev-mac.jar
+#gwt.dev=gwt-dev-linux.jar
+}}
+4. > ant compileJs
+5. Open www/org.utgenome.gwt.utgb.UTGB/UTGB.html in your web browser (IE, Firefox, etc.)
+
+= Deploy =
+
+1. Install Tomcat 5.0 (or higher) Java web server.
+2. Edit your build.properties file, and modify the following variables:
+{{
+TOMCAT_HOME=(Tomcat Installation folder)
+tomcat.base.url=http://localhost:8080
+tomcat.manager.username=(tomcat manager username)
+tomcat.manager.password=(tomcat manager password)
+}}
+
+3. Set up GWT as described above (the section on build from command line)
+4. > ant deploy
+ * This generates a war file (web application archive), and deploy the war file in the tomcat server
+
+= Trouble Shooting =
+
+* Q: GWT Shell invokes a following error:
+{{
+[ERROR] Errors in 'jar:file(...)UTGB%20Common/lib/gwt-dragdrop-1.0RC.jar!/com/allen_sauer/gwt/dragdrop/client/DeferredMoveCommand.java'
+}}
+  * A: Your GWT version must be higher than 1.4.10 in order to use drag & drop facility.
+  
+  
+* Q: out of memory error when running Ant.
+  * A: create a $HOME/.ant/ant.conf file, then write the following line:
+{{
+ANT_OPTS="-Xmx512M"
+}}
+

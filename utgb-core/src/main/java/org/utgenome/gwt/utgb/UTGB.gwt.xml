@@ -1,0 +1,14 @@
+<module>
+
+	<!-- Inherit the core Web Toolkit stuff.                  -->
+		<inherits name='com.google.gwt.user.User'/>
+		<inherits name="com.google.gwt.json.JSON"/>
+		<inherits name="com.google.gwt.http.HTTP"/>
+		<inherits name="com.google.gwt.xml.XML"/>
+	    <inherits name="org.utgenome.gwt.widget.UTGBWidget"/>
+        <inherits name='com.google.gwt.widgetideas.GWTCanvas'/>
+        <inherits name='com.allen_sauer.gwt.dnd.gwt-dnd'/>
+   <!-- <stylesheet src="style/default.css"/> -->
+
+   <set-property name="gwt.suppressNonStaticFinalFieldWarnings" value="true" /> 
+</module>

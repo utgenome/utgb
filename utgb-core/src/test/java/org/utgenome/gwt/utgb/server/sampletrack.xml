@@ -1,0 +1,156 @@
+<track revision="1.0">
+
+  <!-- 
+    group: トラックをグループ分けするときに使う。optionalだが、トラックをUTGB管理のもとで、公開する際には必須。
+    group名のつけ方は、URLドメインの逆順にすることが望ましい（フォルダ管理のため）
+    たとえば、http://medaka.utgenome.org というドメインを所有している場合、groupは、org.utgenome.medaka とすると、
+    org/utgenome/medakaという階層で、トラックが管理される。
+  -->
+  <group>org.utgenome.medaka</group>
+  <!-- name: トラックの名前. [A-Za-z0-9_-+]+ (required) -->
+  <name>QualityValue</name>
+  <!-- トラックの実装のversion (required) -->
+  <version>1.1</version>
+
+  <!-- トラックの内容の記述 (optional)-->
+  <description>
+    This track presents the quality value of medaka assembled sequences. The quality value of a subsequence in a
+    scaffold can be viewed by inserting sequence’s scaffold name and location on main window.
+  </description>
+  <!-- トラックに関するweb siteのURL (optional) -->
+  <website>http://trac.utgenome.org/project/UTGB/wiki/UTGBMedaka/Track#QualityValueTrack</website>
+
+  <!-- author: トラックの作成者。複数列挙できる (optional) -->
+  <author>Taro L. Saito</author>
+
+  <!-- 
+    content: トラックの内容に関する記述。utgb typeは、UTGBで主に使う。
+    typeの種類を増やすことで、今後の仕様の拡張に対応。
+    
+    contentの内部で複数のWeb APIが使えるときや、APIに共通のパラメータがある場合、layerタグを使う。
+    layerをどのように組み合わせて表示するかは、ブラウザの実装側の判断による。
+    
+    contentタグの内部では、どのようなuser preferene parameterが設定できて、
+     どのようなURLでアクセスできるかを指定できればよい
+  -->
+  <content type="utgb">
+    <!-- species: このトラックで扱える配列データの種類 (optional) -->
+    <species name="medaka" revision="hg17" />
+    <species name="medaka" revision="hg18" />
+
+    <!-- 
+      param: トラック内の各レイヤーで、共通に使われるWeb APIパラメータ
+      argument@name: parameter name. APIへの引数名としてそのまま使われる (required)
+      displayName: user interface側で表示させるときのパラメータの名称  (optional)
+      type: data型を示す。 string, integer, number, booleanの4種が使える。(optional) default（何も指定しない場合）は、string。 
+      だが、Web APIに渡される引数としては、string, integer, numberの間には何も違いがない。booleanは、"true"か"false"の文字列となる
+      default: parameterの値が明示的に指定されないときに使われるdefault値。 (optional)
+      required: true の場合、このパラメータが与えられれないとAPIが正しく動作しないことを示す。 default （何も書かない場合）は、false  (optional)
+      style: input の形状　box (テキストボックス。optionがない場合のdefault), list (ドロップダウンリスト. optionがある場合のdefault）, radio (radioボタン), checkbox (booleanの場合のdefault) 
+    -->
+
+    <!-- userが設定できないパラメータ -->
+    <hidden name="species" displayName="Species" default="medaka" required="true" />
+
+    <!-- 
+      userが設定できるパラメータ
+    -->
+    <param name="revision" displayName="Revision" required="true" />
+    <param name="start" displayName="Start" type="integer" required="true" />
+    <param name="end" displayName="End" type="integer" required="true" />
+
+    <!-- 
+      画像によってcontentを生成する際のレイヤー
+      preference内のparameterも同時に送られる.
+      以下の例の場合は、
+      http://somewhere.org/graphic.cgi?species=medaka&revision=hg18&start=1000&end=100000&width=800&color=red&view=full&xtick=true&ytick=false
+      というURLがWeb APIとして使えることを意味する。
+      
+      layer@type:  
+      graphic (画像）
+      operation(画像の上に乗せるクリック、ウィンドウを開くなどの操作データ)
+      table (テーブル形式でデータを配信する）  
+      layer@name:  layerの名前。layerを取捨選択するときに使う
+    -->
+    <layer type="graphic" name="QV">
+      <!-- WebAPIにアクセスするためのURL. このアドレスの後に query string(?param=value&param2=value& ... と続く-->
+      <!-- http:// ではじまらない文字列の場合、このtrack description XMLの配信元のアドレスからの相対アドレスになる -->
+      <baseURL>http://somewhere.org/graphic.cgi</baseURL>
+      <!-- 表示方法の指定 -->
+      <frame style="horizontal" height="150" autoAdjust="false" />
+      <!-- userが設定できる（べき）parameter -->
+
+      <param name="width" displayName="Track Width" type="integer" default="800" />
+      <param name="color" displayName="Graph Color" style="list" default="red">
+        <option displayName="Red" value="red" />
+        <option displayName="Green" value="green" />
+        <option displayName="Blue" value="blue" />
+      </param>
+      <param name="view" displayName="Display Style" style="radio" default="full">
+        <option value="full" />
+        <option value="pack" />
+        <option value="dense" />
+      </param>
+      <param name="xtick" displayName="X ticks" type="boolean" default="true" />
+      <param name="ytick" displayName="Y ticks" type="boolean" default="false" />
+
+    </layer>
+
+    <!-- 
+      マウスクリックなどのoperationを定義するレイヤー。
+      このアクセス先で配信されるデータ形式は、この記述ファイルとは別仕様になる。
+    -->
+    <layer type="operation">
+      <baseURL>http://somewhere.org/operation.cgi</baseURL>
+    </layer>
+
+    <!-- 
+      テーブル形式でデータを配信する際のレイヤー。この記述ファイルの場合は、
+      http://somewhere.org/table.cgi?species=medaka&revision=hg18&start=1000&end=100000&database=db1&limit=10&page=1
+      というURL（＋query arguments)でアクセスできるAPIがあるということを示す
+    -->
+    <layer type="table" name="QV raw data">
+      <baseURL>http://somewhere.org/table.cgi</baseURL>
+      <hidden name="database" default="db1" />
+      <frame style="tab" autoAdjust="true" />
+
+      <param name="limit" displayName="# of rows" type="integer" default="10" />
+      <param name="page" displayName="Page" type="integer" default="1" />
+
+    </layer>
+
+    <layer type="table" name="Locus list">
+      <baseURL>http://somewhere.org/table.cgi</baseURL>
+      <frame style="tab" autoAdjust="true" />
+      <hidden name="database" default="db2" />
+
+      <param name="signal_more_than" displayName="Signal Lower Bound" type="number" default="0" />
+      <param name="signal_less_than" displayName="Signal Upper Bound" type="number" default="100" />
+      <param name="start_origin" default="start">
+        <option displayName="Start" value="start" />
+        <option displayName="Middle" value="middle" />
+        <option displayName="End" value="end" />
+      </param>
+      <param name="end_origin" default="start">
+        <option displayName="Start" value="start" />
+        <option displayName="Middle" value="middle" />
+        <option displayName="End" value="end" />
+      </param>
+      <param name="limit" displayName="# of rows" type="integer" default="10" />
+      <param name="page" displayName="Page" type="integer" default="1" />
+
+    </layer>
+
+    <!--
+       Queryを受け取るlayer。といっても、queryを受け取る側の実装依存なので、
+       query syntaxなどの仕様は、外側で定義。結果はテーブル型なので、上の２つのlayerと同じ
+     -->    
+    <layer type="table" name="General Query">
+      <param name="query" displayName="Query" required="true"/>
+    </layer>
+
+
+  </content>
+
+</track>
+

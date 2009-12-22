@@ -1,0 +1,10 @@
+AminoAcidChar=10
+SequenceLine=12
+FASTA=5
+SEQUENCE=6
+SingleLineComment=7
+AminoAcid=11
+Description=13
+WhiteSpace=9
+NewLine=8
+FASTA_LINE=4

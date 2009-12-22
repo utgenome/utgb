@@ -1,0 +1,60 @@
+<trackGroup className="org.utgenome.gwt.utgb.client.track.TrackGroup" name="root">
+	<property key="name">root</property>
+	<groupProperties>
+		<property key="species">human</property>
+		<property key="revision">hg17</property>
+		<property key="target">chr1</property>
+		<trackWindow start="1" end="1000" width="700"/>
+	</groupProperties>
+	<track className="org.utgenome.gwt.utgb.client.track.lib.ToolBoxTrack" name="Tool Box" height="14" pack="true">
+	</track>
+	<track className="org.utgenome.gwt.utgb.client.track.lib.NavigatorTrack" name="UTGB Navigator" height="41" pack="true">
+  	  <property key="sequenceList">[{"species":"human", "revision":["hg18", "hg17"]}]</property>
+	</track>
+ <track className="org.utgenome.gwt.utgb.client.track.lib.SequenceRulerTrack" name="Sequence Ruler" height="21" pack="true">
+  <property key="leftMargin">100</property>
+ </track>
+	<track className="org.utgenome.gwt.utgb.client.track.lib.RulerTrack" name="Track Ruler" height="21" pack="true">
+  <property key="leftMargin">100</property>
+ </track>
+  <track className="org.utgenome.gwt.utgb.client.track.lib.LegacyTrack" name="Base Color" height="21" pack="true">
+    <property key="baseURL">http://human.utgenome.org/utgb-human/base-color/subsequence.png?database=human:hg17</property>
+    <property key="revision">hg17</property>
+    <property key="offset">0</property>
+  </track>
+	<track className="org.utgenome.gwt.utgb.client.track.lib.old.OldUTGBTrack"  height="16" pack="true">
+		<property key="descriptionXMLURL">["http://dev.utgenome.org/~utgb/human/tracks/hg17/gwt/refseq.xml"]</property>
+	</track>
+	<track className="org.utgenome.gwt.utgb.client.track.lib.old.OldUTGBTrack"  height="16" pack="true">
+		<property key="descriptionXMLURL">["http://dev.utgenome.org/~utgb/human/tracks/hg17/gwt/refseqUniq.xml"]</property>
+	</track>
+<!--
+	<track className="org.utgenome.gwt.utgb.client.track.lib.LegacyTrack" name="RefSeq Uniq Gene" height="27" pack="true">
+		<property key="baseURL">http://dev.utgenome.org/~utgb/api/browserview/default/easytrack/easygenetrack.php/dbtype=dbaccess/trackname=refSeqUniqGenes/tracktype=gene</property>
+		<property key="offset">0</property>
+	</track>
+
+	<track className="org.utgenome.gwt.utgb.client.track.lib.LegacyTrack" name="Legacy Track" height="27" pack="true">
+		<property key="baseURL">
+http://dev.utgenome.org/~sasaki/flydb/cgi/vizgeneweb.py/sharey%3dTrue%26height%3d500%3ayscale%3dlog%26ymin%3d1%3ayscale%3dlog%26ymin%3d1%3ayscale%3dlog%26ymin%3d1%3ayscale%3dlog%26ymin%3d1%7cdb%3dhuman_hg17_sage%26table%3dSAGE_7345%26type%3dplot%26bpname%3dfive_prime%26valname%3dcount%26minval%3d2%26ax%3d0%7cdb%3dhuman_hg17_sage%26table%3dSAGE_7346%26type%3dplot%26bpname%3dfive_prime%26valname%3dcount%26minval%3d2%26ax%3d1%7cdb%3dhuman_hg17_sage%26table%3dSAGE_7361%26type%3dplot%26bpname%3dfive_prime%26valname%3dcount%26minval%3d2%26ax%3d2%7cdb%3dhuman_hg17_sage%26table%3dSAGE_7363%26type%3dplot%26bpname%3dfive_prime%26valname%3dcount%26minval%3d2%26ax%3d3%7ctype%3dygrid%26cmap=jet%26ax%3d0%2c1%2c2%2c3</property>
+		<property key="offset">0</property>
+	</track>
+-->
+
+	<track className="org.utgenome.gwt.utgb.client.track.lib.old.OldUTGBTrack" name="Solid Sample" height="16" pack="true">
+		<property key="descriptionXMLURL">["http://dev.utgenome.org/~utgb/human/tracks/hg17/SolidSample.xml"]</property>
+	</track>
+
+<!--
+
+
+	<track className="org.utgenome.gwt.utgb.client.track.lib.old.OldUTGBTrack" name="Refseq" height="16" pack="true">
+		<property key="descriptionXMLURL">["http://dev.utgenome.org/~utgb/human/tracks/hg17/refseq.xml"]</property>
+	</track>
+	<track className="org.utgenome.gwt.utgb.client.track.lib.old.OldUTGBTrack" name="Refseq Unique" height="16" pack="true">
+		<property key="descriptionXMLURL">["http://dev.utgenome.org/~utgb/human/tracks/hg17/refseqUniq.xml"]</property>
+	</track>
+-->
+
+
+</trackGroup>

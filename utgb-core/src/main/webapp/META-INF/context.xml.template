@@ -1,0 +1,7 @@
+<!-- rename this file to context.xml, and edit it according to your environment -->
+<Context>
+    <Environment description="absolute path to the resource folder" 
+	        name="resource.dir" 
+	        type="java.lang.String" 
+	        value="${resource.dir}"/>
+</Context>

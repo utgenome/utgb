@@ -1,0 +1,60 @@
+To deploy jar file to the maven.utgenome.org server (webdav server), you have to edit your $(HOME)/.m2/settings.xml file, and insert the following WebDAV server settings:
+
+(settings.xml file)
+--------------------
+<settings>
+
+  <servers>
+    <server>
+      <id>utgb.dav</id>
+      <username>leo</username>
+      <password>xxxxxxx</password>
+      <filePermissions>664</filePermissions>
+      <directoryPermissions>775</directoryPermissions>
+    </server>
+  </servers>
+
+
+</settings>
+---------------------
+
+Then, you can deploy the jar file to the server.
+> mvn deploy 
+
+Snapshot libraries (version 1.x.x-SNAPSHOT, etc.) will be generated at:
+http://maven.utgenome.org/repository/snapshot/org/utgenome/utgb-core/
+
+
+You can create a release jar file (version 1.x.x) with the following steps:
+
+> mvn release:prepare
+> mvn release:perform
+
+Whene some error occurs, you can undo the changes (although change history remains in the commit of the Mercurial)
+> mvn release:rollback
+
+
+When using SSL based protocol for Mercurial (e.g., https://...), you have to enter username and password in a command line (huh!) 
+> mvn release:prepare -Dusername=... -Dpassword=... 
+
+If you worry how the above command works, you can test the behavior with
+> mvn release:prepare -DdryRun=true
+
+
+The release artifacts (jar files) will be sent to:
+http://maven.utgenome.org/repository/artifact/org/utgenome/utgb-core/
+
+
+Be careful when creating releases, since no undo is supported for the release artifacts. 
+You can use snapshot-releases anytime, because it can be easily overwritten with mvn deploy command. 
+
+SNAPSHOT releases will be never used when creating release artifacts. That means, you hav e to remove all SNAPSHOT jars from dependencies described in pom.xml file when building release artifacts via mvn relese:prepare, mvn release:perform commands.
+
+
+
+To locally install the jar file, use 
+
+> mvn install
+
+command.
+

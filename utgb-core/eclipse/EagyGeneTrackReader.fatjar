@@ -1,0 +1,14 @@
+#Fat Jar Configuration File
+#Mon Dec 10 17:12:13 GMT+09:00 2007
+onejar.license.required=true
+manifest.classpath=
+manifest.removesigners=true
+onejar.checkbox=false
+jarname=EasyGeneTrackReader.jar
+manifest.mergeall=true
+manifest.mainclass=org.utgenome.format.egt.EagyGeneTrackReader
+manifest.file=<createnew>
+jarname.isextern=false
+onejar.expand=
+excludes=<po|utgb-core>~eagyGeneTrack/;<po|utgb-core>~fasta/;<po|utgb-core>~format/;<po|utgb-core>~mock/;<po|utgb-core>~org/~utgenome/~db/;<po|utgb-core>~org/~utgenome/~gwt/;<po|utgb-core>~org/~utgenome/~util/;<po|utgb-core>~org/~xerial/;<po|utgb-core>~graph.db;<po|utgb-core>~log.config;<po|utgb-core>~new.db;<po|utgb-core>~sample.db;<po|utgb-core>~sample.sqlite.dump
+includes=<inc|xerial-core/target\\classes>~org/

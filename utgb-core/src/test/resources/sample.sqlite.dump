@@ -1,0 +1,14 @@
+BEGIN TRANSACTION;
+CREATE TABLE phone ( pid integer not null, phone string);
+INSERT INTO "phone" VALUES(1, '011-340-4434');
+INSERT INTO "phone" VALUES(1, '011-340-4435');
+INSERT INTO "phone" VALUES(2, '0431-34-4441');
+CREATE TABLE keyed ( id integer primary key autoincrement, value string );
+INSERT INTO "keyed" VALUES(1, 'hello world');
+INSERT INTO "keyed" VALUES(2, 'nice to meet you');
+DELETE FROM sqlite_sequence;
+INSERT INTO "sqlite_sequence" VALUES('keyed', 2);
+CREATE TABLE person ( id integer primary key not null, name string);
+INSERT INTO "person" VALUES(1, 'leo');
+INSERT INTO "person" VALUES(2, 'yui');
+COMMIT;

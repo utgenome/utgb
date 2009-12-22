@@ -1,0 +1,6 @@
+<Context path="/utgb-core" privileged="true" reloadable="true">
+    <Environment description="absolute path to the project root folder" 
+	        name="projectRoot" 
+	        type="java.lang.String" 
+	        value="F:\workspace\utgb\utgb-core"/>
+</Context>

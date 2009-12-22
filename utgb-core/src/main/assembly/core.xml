@@ -1,0 +1,35 @@
+<assembly>
+  <id>lib</id>
+  <formats>
+    <format>jar</format>
+  </formats>
+  
+  <includeBaseDirectory>false</includeBaseDirectory>
+
+  <fileSets>
+    <fileSet>
+      <directory>target/classes</directory>
+      <outputDirectory></outputDirectory>
+    </fileSet>
+  </fileSets>
+
+  <dependencySets>
+    <dependencySet>
+      <outputDirectory></outputDirectory>
+      <outputFileNameMapping></outputFileNameMapping>
+      <unpack>false</unpack>
+      <scope>compile</scope>
+      <excludes>
+        <exclude>com.google.gwt:gwt-servlet</exclude>
+        <!-- 
+        <exclude>com.google.gwt.gears:gwt-google-apis</exclude>
+        <exclude>com.allen_sauer.gwt:gwt-dragdrop</exclude>
+        <exclude>org.xerial:sqlite-jdbc</exclude>
+        <exclude>org.xerial:xerial-storage</exclude>
+         -->
+      </excludes>
+    </dependencySet>
+  </dependencySets>
+  
+
+</assembly>

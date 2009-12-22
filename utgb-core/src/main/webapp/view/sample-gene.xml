@@ -1,0 +1,20 @@
+<trackGroup className="org.utgenome.gwt.utgb.client.track.TrackGroup" name="root">
+  <property key="name">root</property>
+  <groupProperties>
+    <property key="species">human</property>
+    <property key="revision">hg17</property>
+    <property key="target">chr1</property>
+    <trackWindow start="1" end="1000" width="700"/>
+  </groupProperties>
+  <track className="org.utgenome.gwt.utgb.client.track.lib.ToolBoxTrack" name="Tool Box" height="14" pack="true">
+  </track>
+  <track className="org.utgenome.gwt.utgb.client.track.lib.NavigatorTrack" name="UTGB Navigator" height="41" pack="true">
+      <property key="speciesList">["human"]</property>
+  </track>
+ <track className="org.utgenome.gwt.utgb.client.track.lib.SequenceRulerTrack" name="Sequence Ruler" height="21" pack="true">
+  <property key="leftMargin">100</property>
+ </track>
+  <track className="org.utgenome.gwt.utgb.client.track.lib.RulerTrack" name="Track Ruler" height="21" pack="true">
+  <property key="leftMargin">100</property>
+ </track>
+</trackGroup>

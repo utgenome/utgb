@@ -1,0 +1,28 @@
+<trackGroup className="org.utgenome.gwt.utgb.client.track.TrackGroup" name="root">
+  <property key="name">root</property>
+  <groupProperties>
+    <property key="revision">hg17</property>
+    <property key="species">human</property>
+    <property key="target">chr22</property>
+    <trackWindow start="29870562" end="29922562" width="800"/>
+  </groupProperties>
+  <track className="org.utgenome.gwt.utgb.client.track.lib.NavigatorTrack" name="UTGB Navigator" height="41" pack="true">
+      <property key="sequenceList">[{"species":"human", "revision":["hg18","hg17"]},{"species":"medaka", "revision":["version1.0", "version0.9"]}]</property>
+  </track>
+  <track className="org.utgenome.gwt.utgb.client.track.lib.SequenceRulerTrack" name="Sequence Overview" height="14" pack="true">
+    <property key="leftMargin">100</property>
+  </track>
+  <track className="org.utgenome.gwt.utgb.client.track.lib.RulerTrack" name="Ruler" height="14" pack="true">
+    <property key="leftMargin">100</property>
+  </track>
+
+    <!-- Refseq gene table track provided as a text data -->
+  <track className="org.utgenome.gwt.utgb.client.track.lib.MiniBrowserTrack" name="Mini Browser" height="200" pack="false">
+    <!-- use an iframe html element as a track content --> 
+    <property key="type">frame</property>
+    <property key="leftMargin">0</property>
+    <!-- this track retrieves the contents from http://pubmed.org -->
+    <property key="URL">http://www.google.com/</property>
+  </track>
+  
+</trackGroup>

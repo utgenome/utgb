@@ -1,0 +1,12 @@
+<module>
+  <!-- Inherit the core Web Toolkit stuff.                  -->
+    <inherits name='com.google.gwt.user.User'/>
+    <inherits name="com.google.gwt.json.JSON"/>
+    <inherits name="com.google.gwt.http.HTTP"/>
+    <inherits name="com.google.gwt.xml.XML"/>
+    <inherits name="org.utgenome.gwt.widget.UTGBWidget"/>
+
+   <!-- Specify the app entry point class.                   -->
+   <entry-point class='org.utgenome.gwt.widget.client.UTGBWidgetTest'/>
+
+</module>

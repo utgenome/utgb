@@ -1,0 +1,21 @@
+<track className="org.utgenome.gwt.utgb.client.track.lib.RulerTrack" name="Ruler" pack="true">
+  <!--  track properties -->
+  <property key="leftMargin">100</property>
+  
+  <!--  configuration panel -->
+  <config name="sequence_length" displayName="Sequence Length" type="integer" defaultValue="100"/>
+  <config name="color" displayName="Color" type="string" defaultValue="">
+  	<enum name="Red" value="#FF0000"/>
+  	<enum name="Green" value="#00FF00"/>
+  	<enum name="Blue" value="#0000FF"/>
+  </config>
+  <config name="option" displayName="Radio Box" type="integer" defaultValue="1">
+  	<enum name="option 1" value="1"/>
+  	<enum name="option 2" value="2"/>
+  	<enum name="option 3" value="3"/>
+  </config>
+  <config name="checkbox" displayName="Check This" type="boolean" defaultValue="false"/>
+
+  
+
+</track>		

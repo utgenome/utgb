@@ -1,0 +1,40 @@
+
+UTGB WebAPI 
+
+json data passing
+
+*examples
+
+query interface: 
+
+
+get: (gene, id, name, start, end)
+condition: 10 <= start < 100, name like ABC*
+
+
+
+{ 
+  "get" : ["gene", "id", "name", "start", "end"],
+  "condition" : ["start":{">=":10, "<":100]}, "name":{"like":"ABC*"}],
+}  
+
+
+return 
+{
+  "format":["gene", "id", "name", "start", "end"],
+  "result":[
+  	[],
+  	[],
+  	[]
+  ]
+}
+
+
+== Tack Information ==
+
+
+
+
+
+
+

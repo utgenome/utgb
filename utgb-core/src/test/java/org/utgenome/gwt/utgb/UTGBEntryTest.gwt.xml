@@ -1,0 +1,19 @@
+<module>
+
+  <!-- Inherit the core Web Toolkit stuff.                  -->
+    <inherits name='com.google.gwt.user.User'/>
+    <inherits name="com.google.gwt.json.JSON"/>
+    <inherits name="com.google.gwt.http.HTTP"/>
+    <inherits name="com.google.gwt.xml.XML"/>
+    <inherits name="org.utgenome.gwt.utgb.UTGB"/>
+    
+  <!-- Specify the app entry point class.                   -->
+  <entry-point class='org.utgenome.gwt.utgb.client.UTGBEntryTestEntry'/>
+  
+   <servlet path="/service" class="org.utgenome.gwt.utgb.server.BrowserServiceImpl"/>
+   <servlet path="/echo" class="org.utgenome.gwt.utgb.server.EchoServlet"/>
+   <servlet path="/database" class="org.utgenome.gwt.utgb.server.db.DatabaseServiceImpl"/>
+   
+   <servlet path="/dispatcher" class="org.utgenome.gwt.utgb.server.RequestDispatcher"/>
+   
+</module>

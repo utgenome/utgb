@@ -1,0 +1,64 @@
+<trackGroup className="org.utgenome.gwt.utgb.client.track.TrackGroup" name="human">
+  <property key="name">human</property>
+  <groupProperties>
+    <property key="revision">hg18</property>
+    <property key="species">human</property>
+    <property key="target">chr1</property>
+    <trackWindow start="1" end="100000" width="700"/>
+  </groupProperties>
+  <track className="org.utgenome.gwt.utgb.client.track.lib.NavigatorTrack" name="UTGB Navigator" height="41" pack="true">
+      <property key="sequenceList">[{"species":"human", "revision":["hg18","hg17"]},{"species":"mouse", "revision":["mm9"]},{"species":"drosophila", "revision":["dm3"]}]</property>
+  </track>
+  <track className="org.utgenome.gwt.utgb.client.track.lib.KeywordSearchTrack" name="Keyword Search" pack="true">
+   <property key="keyword.examples">["Scaffold number (e.g. scaffold123)","GenBank accession number (e.g. BJ013363)","UniGene cluster identifier (e.g. Ola.5710)","Clone number (e.g. MF01SSA159G06)"]</property>
+   <property key="species.scope">any</property>
+  </track>
+
+  <track className="org.utgenome.gwt.utgb.client.track.lib.SequenceRulerTrack" name="Sequence Overview" height="14" pack="true">
+    <property key="leftMargin">100</property>
+  </track>
+  <track className="org.utgenome.gwt.utgb.client.track.lib.RulerTrack" name="Ruler" height="14" pack="true">
+    <property key="leftMargin">100</property>
+  </track>
+  
+  <track className="org.utgenome.gwt.utgb.client.track.lib.GenomeTrack" name="RefSeq Gene Demo" pack="true">
+    <property key="type">image</property>
+    <property key="leftMargin">100</property>
+    <property key="trackBaseURL">utgb-core/GeneViewer</property>
+  </track>
+  <track className="org.utgenome.gwt.utgb.client.track.lib.GenomeTrack" name="RefSeq Gene Table Demo" height="100" pack="true"> 
+    <property key="type">frame</property> 
+    <property key="leftMargin">100</property> 
+    <property key="trackBaseURL">utgb-core/GeneViewer.tab</property> 
+  </track> 
+
+  <track className="org.utgenome.gwt.utgb.client.track.lib.BEDTrack" name="BED Gene Demo" pack="true">
+    <property key="type">image</property>
+    <property key="leftMargin">100</property>
+    <property key="trackBaseURL">utgb-core/BEDViewer</property>
+    <property key="fileName">db/sample.bed</property>
+  </track>
+  
+<!--  <track className="org.utgenome.gwt.utgb.client.track.lib.DASTrack" name="DAS Gene Demo (ensembl.org)" pack="true">
+    <property key="type">image</property>
+    <property key="leftMargin">100</property>
+    <property key="trackBaseURL">utgb-core/DASViewer</property>
+    <property key="dasBaseURL">http://www.ensembl.org/das/Homo_sapiens.NCBI36.transcript/</property>
+  </track> -->
+
+<!--  <track className="org.utgenome.gwt.utgb.client.track.lib.DASTrack" name="DAS Gene Demo (ebi)" pack="true">-->
+<!--    <property key="type">image</property>-->
+<!--    <property key="leftMargin">100</property>-->
+<!--    <property key="trackBaseURL">utgb-core/DASViewer</property>-->
+<!--    <property key="dasBaseURL">http://www.ebi.ac.uk/das-srv/genomicdas/das/asd_human/</property>-->
+<!--  </track>-->
+<!---->
+<!--  <track className="org.utgenome.gwt.utgb.client.track.lib.DASTrack" name="DAS Gene Demo (UCSC)" pack="true">-->
+<!--    <property key="type">image</property>-->
+<!--    <property key="leftMargin">100</property>-->
+<!--    <property key="trackBaseURL">utgb-core/DASViewer</property>-->
+<!--    <property key="dasBaseURL">http://genome.ucsc.edu/cgi-bin/das/hg18</property>-->
+<!--    <property key="dasType">refGene</property>-->
+<!--  </track>-->
+
+</trackGroup>

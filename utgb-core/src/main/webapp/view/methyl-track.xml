@@ -1,0 +1,50 @@
+<trackGroup className="org.utgenome.gwt.utgb.client.track.TrackGroup" name="root">
+  <property key="name">root</property>
+  <groupProperties>
+    <property key="revision">version1.0</property>
+    <property key="species">medaka</property>
+    <property key="target">scaffold1</property>
+    <trackWindow start="1" end="10000" width="800"/>
+  </groupProperties>
+  <track className="org.utgenome.gwt.utgb.client.track.lib.NavigatorTrack" name="UTGB Navigator" height="41" pack="true">
+      <property key="sequenceList">[{"species":"medaka", "revision":["version1.0"]}]</property>
+  </track>
+ <track className="org.utgenome.gwt.utgb.client.track.lib.KeywordSearchTrack" name="Keyword Search" pack="true">
+   <property key="keyword.examples">["Scaffold number (e.g. scaffold123)","GenBank accession number (e.g. BJ013363)","UniGene cluster identifier (e.g. Ola.5710)","Clone number (e.g. MF01SSA159G06)"]</property>
+ </track>
+
+  <track className="org.utgenome.gwt.utgb.client.track.lib.SequenceRulerTrack" name="Sequence Overview" height="14" pack="true">
+    <property key="ruler.length">1000000</property>
+    <property key="leftMargin">100</property>
+  </track>
+  <track className="org.utgenome.gwt.utgb.client.track.lib.RulerTrack" name="Ruler" height="14" pack="true">
+    <property key="leftMargin">100</property>
+  </track>
+
+  <track className="org.utgenome.gwt.utgb.client.track.lib.GenomeTrack" name="Blastura Methylation" height="100" pack="true"> 
+    <property key="type">image</property> 
+    <property key="leftMargin">100</property> 
+    <property key="trackBaseURL">utgb-core/MethylViewer?db=blastura&amp;%q</property> 
+  </track>
+  
+  <track className="org.utgenome.gwt.utgb.client.track.lib.GenomeTrack" name="Liver Methylation" height="100" pack="true"> 
+    <property key="type">image</property>
+    <property key="leftMargin">100</property> 
+    <property key="trackBaseURL">utgb-core/MethylViewer?db=liver&amp;%q</property> 
+  </track>
+  
+  <track className="org.utgenome.gwt.utgb.client.track.lib.old.OldUTGBTrack" name="predictedNucleosomePosition" height="40" pack="true">
+    <property key="descriptionXMLURL">["http://medaka3.gi.k.u-tokyo.ac.jp/~ssksn/nucleosome_position_tracks/common/nucleosome_position_description.xml"]</property>
+  </track>  
+  
+  <track className="org.utgenome.gwt.utgb.client.track.lib.old.OldUTGBTrack" name="GC content Track" height="30" pack="true">
+    <property key="descriptionXMLURL">["http://utgenome.org/UTGBMedaka/description/GCContent.xml"]</property>
+  </track>
+  <track className="org.utgenome.gwt.utgb.client.track.lib.old.OldUTGBRulerTrack" name="BaseColor" height="0" pack="true">
+    <property key="descriptionXMLURL">["http://medaka3.gi.k.u-tokyo.ac.jp/~ssksn/descriptions/basecolortrack.xml"]</property>
+  </track>
+  <track className="org.utgenome.gwt.utgb.client.track.lib.old.OldUTGBTrack" name="HNI Alignment" height="0" pack="true">
+    <property key="descriptionXMLURL">["http://medaka3.utgenome.org/~ssksn/HNI_SNPs/v1.0/HNI_SNPs_description.xml","http://medaka3.utgenome.org/~ssksn/HNI_SNPs/v0.9/HNI_SNPs_description.xml"]</property>
+  </track>
+
+</trackGroup>

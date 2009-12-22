@@ -1,0 +1,27 @@
+<utgb>
+ <track-state>
+   <track-group class="org.utgenome.gwt.utgb.client.track.TrackGroupBase">
+   	  <property key="name">Root Group</property>
+      <!-- track group properties -->
+      <group-properties>
+       	<property key="species">human</property>
+      	<property key="revision">hg18</property>
+      </group-properties>
+      <track-window start="0" end="100000" width="500"/> 
+      
+      <track class="org.utgenome.gwt.utgb.client.track.lib.ToolBoxTrack" pack="true" height="15"/>
+      <track class="org.utgenome.gwt.utgb.client.track.lib.SequenceRulerTrack" pack="false">
+        <property key="sequence_length" type="integer">10000000</property>
+      </track>
+      
+      <!-- nested track group -->
+      <track-group class="org.utgenome.gwt.utgb.client.track.TrackGroupBase">
+        <property key="species">drosopihila</property>
+        <property key="revision">R4.1</property>
+        <track-window start="0" end="100000" width="500"/> 
+      	<track class="org.utgenome.gwt.utgb.client.track.lib.debug.DebugToolBoxTrack"/>
+      </track-group>
+   </track-group>
+ </track-state>
+</utgb>
+

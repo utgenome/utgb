@@ -1,0 +1,13 @@
+[[Question]] Where can I download OpenUTGB? 
+
+[[Answer]]
+OpenUTGB is available for download from http://utgenome.org/download
+
+
+[[Question]] How to install OpenUTGB? 
+
+OpenUTGB needs no installation. Visit the http://utgenome.org/ (OpenUTGB web page), and download the archive for your operating system, e.g. OpenUTGB-win-1.0.zip, then expand it to anywhere in your PC. Now, you are ready to use OpenUTGB.
+
+
+[[Question]] 
+

@@ -1,0 +1,55 @@
+<track version="1.0">
+
+  <trackID>org.utgenome.track.QualityValue</trackID>
+  <version>1.1</version>
+
+  <name>Quality Value Track</name>
+  <description>
+    This track presents the quality value of medaka assembled sequences. The quality value of a subsequence in a
+    scaffold can be viewed by inserting sequence’s scaffold name and location on main window.
+  </description>
+  <docURL>http://trac.utgenome.org/project/UTGB/wiki/UTGBMedaka/Track#QualityValueTrack</docURL>
+
+  <keyword tag="species">human,medaka</keyword>
+  <keyword tag="revision">hg17</keyword>
+  <keyword tag="revision">hg18</keyword>
+  <keyword tag="track">qv</keyword>
+  <keyword tag="track">quality value</keyword>
+
+  <frame pack="true">
+    <height>150</height>
+  </frame>
+
+  <configuration>
+    <content type="cgi-track">
+      <param name="species" displayName="Species" type="string" required="true" />
+      <param name="revision" displayName="Revision" type="revision" required="true" />
+      <param name="start" displayName="Start" type="integer" required="true" />
+      <param name="end" displayName="End" type="integer" required="true" />
+      <param name="width" displayName="Track Width" type="integer" default="800" />
+      <param name="color" displayName="Graph Color" type="list" default="red">
+        <option displayName="Red" value="red" />
+        <option displayName="Green" value="green" />
+        <option displayName="Blue" value="blue" />
+      </param>
+      <param name="view" displayName="Display Style" type="radio" default="full">
+        <option value="full" />
+        <option value="pack" />
+        <option value="full" />
+        <option value="dense" />
+      </param>
+      <param name="option" displayName="Display Style" type="check">
+        <option value="xtick" default="true" />
+        <option value="ytick" default="false" />
+      </param>
+
+      <layer type="graphic">
+        <baseURL>http://medaka3.gi.k.u-tokyo.ac.jp/~doi/track/qv/gene_test.php</baseURL>
+      </layer>
+      <layer type="link">
+        <baseURL>http://medaka3.gi.k.u-tokyo.ac.jp/~doi/track/qv/gene_op.php</baseURL>
+      </layer>
+    </content>
+  </configuration>
+
+</track>

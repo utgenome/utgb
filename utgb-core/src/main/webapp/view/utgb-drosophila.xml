@@ -1,0 +1,72 @@
+<trackGroup className="org.utgenome.gwt.utgb.client.track.TrackGroup">
+ <property key="name">UTGB Drosophila</property>
+ <groupProperties>
+  <property key="revision">R4.1</property>
+  <property key="species">drosophila</property>
+  <property key="target">2L</property>
+  <track-window start="0" end="100000" width="600"/>
+ </groupProperties>
+ <track className="org.utgenome.gwt.utgb.client.track.lib.ToolBoxTrack" pack="false" name="Tool Box">
+ </track>
+ <track className="org.utgenome.gwt.utgb.client.track.lib.ScrollButtonTrack" pack="false" name="Scroll Button">
+ </track>
+ <track className="org.utgenome.gwt.utgb.client.track.lib.SpeciesSelectTrack" pack="true" name="Species">
+  <property key="targetProperty">species</property>
+  <property key="valueList">["human","drosophila","medaka","monoshigeobata"]</property>
+  <property key="selectedValue">drosophila</property>
+ </track>
+ <track className="org.utgenome.gwt.utgb.client.track.lib.RevisionSelectTrack" pack="true" name="Revision">
+  <property key="targetProperty">revision</property>
+  <property key="valueList">["R4.1","R5.1"]</property>
+  <property key="selectedValue">R4.1</property>
+ </track>
+ <track className="org.utgenome.gwt.utgb.client.track.lib.TargetSelectTrack" pack="true" name="Target">
+  <property key="targetProperty">target</property>
+  <property key="valueList">["2L","2R","3L","3R","4","X","U"]</property>
+  <property key="selectedValue">2L</property>
+ </track>
+ <track className="org.utgenome.gwt.utgb.client.track.lib.LegacyTrack" pack="true" name="5'SAGE Dme">
+  <property key="revision">R4.1</property>
+  <property key="species">drosophila</property>
+  <property key="name">5'SAGE Dme</property>
+  <property key="target">2L</property>
+  <property key="baseURL">http://dev.utgenome.org/~utgb/api/browserview/default/easytrack/easygenetrack.php/dbtype=dbaccess/trackname=5pSageDme/tracktype=gene</property>
+  <property key="offset">0</property>
+ </track>
+ <track className="org.utgenome.gwt.utgb.client.track.lib.LegacyTrack" pack="true" name="5'SAGE Dmw">
+  <property key="revision">R4.1</property>
+  <property key="species">drosophila</property>
+  <property key="name">5'SAGE Dmw</property>
+  <property key="target">2L</property>
+  <property key="baseURL">http://dev.utgenome.org/~utgb/api/browserview/default/easytrack/easygenetrack.php/dbtype=dbaccess/trackname=5pSageDmw/tracktype=gene</property>
+  <property key="offset">0</property>
+ </track>
+ <track className="org.utgenome.gwt.utgb.client.track.lib.LegacyTrack" pack="true" name="FlyBase CDS">
+  <property key="revision">R4.1</property>
+  <property key="species">drosophila</property>
+  <property key="name">FlyBase CDS</property>
+  <property key="target">2L</property>
+  <property key="baseURL">http://dev.utgenome.org/~utgb/api/browserview/default/easytrack/easygenetrack.php/dbtype=dbaccess/trackname=FlyBaseCDS/tracktype=gene</property>
+  <property key="offset">0</property>
+ </track>
+ <track className="org.utgenome.gwt.utgb.client.track.lib.LegacyTrack" pack="true" name="FlyBase Transcript">
+  <property key="revision">R4.1</property>
+  <property key="species">drosophila</property>
+  <property key="name">FlyBase Transcript</property>
+  <property key="target">2L</property>
+  <property key="baseURL">http://dev.utgenome.org/~utgb/api/browserview/default/easytrack/easygenetrack.php/dbtype=dbaccess/trackname=FlyBaseTranscript/tracktype=gene</property>
+  <property key="offset">0</property>
+ </track>
+ <track className="org.utgenome.gwt.utgb.client.track.lib.LegacyTrack" pack="true" name="FlyBase GSVector">
+  <property key="revision">R4.1</property>
+  <property key="species">drosophila</property>
+  <property key="name">FlyBase GSVector</property>
+  <property key="target">2L</property>
+  <property key="baseURL">http://dev.utgenome.org/~utgb/api/browserview/default/easytrack/easygenetrack.php/dbtype=dbaccess/trackname=GSvector/tracktype=gene</property>
+  <property key="offset">0</property>
+ </track>
+ <track className="org.utgenome.gwt.utgb.client.track.lib.debug.DebugToolBoxTrack" pack="false" name="Debug Toolbox">
+ </track>
+ <track className="org.utgenome.gwt.utgb.client.track.lib.LoadAndStoreTrack" pack="false" name="Load and Store Track">
+ </track>
+</trackGroup>

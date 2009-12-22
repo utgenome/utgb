@@ -1,0 +1,38 @@
+<assembly>
+	<id>war</id>
+	<formats>
+		<format>dir</format>
+	</formats>
+	<includeBaseDirectory>false</includeBaseDirectory>
+
+	<fileSets>
+		<fileSet>
+			<directory>
+				www/org.utgenome.gwt.utgb.UTGBResourceCenter/
+			</directory>
+			<outputDirectory>webapp</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>src/main/webapp/</directory>
+			<outputDirectory>webapp</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>target/classes</directory>
+			<outputDirectory>webapp/WEB-INF/classes</outputDirectory>
+		</fileSet>
+	</fileSets>
+	<files>
+		<file>
+			<source>README</source>
+		</file>
+	</files>
+
+	<dependencySets>
+		<dependencySet>
+			<outputDirectory>webapp/WEB-INF/lib</outputDirectory>
+			<outputFileNameMapping></outputFileNameMapping>
+			<unpack>false</unpack>
+		</dependencySet>
+	</dependencySets>
+
+</assembly>
