@@ -1,0 +1,10 @@
+<Context path="/$contextPath$" privileged="true" reloadable="$reloadable$">
+    <Environment description="absolute path to the project root folder" 
+	        name="projectRoot" 
+	        type="java.lang.String" 
+	        value="$projectRoot$"/>
+    <Environment description="running mode: debug, production, etc."
+	        name="environment" 
+	        type="java.lang.String" 
+	        value="$environment$"/>
+</Context>

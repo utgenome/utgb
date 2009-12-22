@@ -1,0 +1,3 @@
+usage: create [option] PROJECT_NAME
+
+Creates a new track project in a folder PROJECT_NAME.

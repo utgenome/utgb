@@ -1,0 +1,35 @@
+usage: deploy [option] 
+
+Deploy the project war file into the remote Tomcat server.
+
+If your Tomcat server requires a user name and password to deploy web applications, edit (create if not present)
+$HOME/.m2/settings.xml file, and describe the username and password in this file.
+ 
+($HOME is usually C:/Document and Settings/(user name) in Windows, /home/(user name) in Linux, /Users/(user name) in Mac OS X)
+
+Here is an example of settings.xml file:
+
+<settings>
+ <servers>
+  <server>
+    <id>tomcat</id>
+    <username>admin</username>
+    <password></password>
+   </server>
+ </servers>
+</settings>
+  
+To change the deploy location, you have to edit pom.xml file in your project folder. In the pom.xml file, 
+there is a plug-in section that denotes Tomcat manager's URL (http://localhost:8080/manager).  
+ 
+  <plugin>
+    <groupId>org.codehaus.mojo</groupId>
+    <artifactId>tomcat-maven-plugin</artifactId>
+    <configuration>
+      <server>tomcat</server>
+      <url>http://localhost:8080/manager</url>
+      <path>/base-color</path>
+      <update>true</update>
+    </configuration>
+  </plugin>
+

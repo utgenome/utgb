@@ -1,0 +1,4 @@
+usage: clean 
+
+Clean the compiled java classes, web application packages, etc.
+

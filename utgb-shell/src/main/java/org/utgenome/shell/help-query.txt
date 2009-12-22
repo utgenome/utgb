@@ -1,0 +1,3 @@
+usage: query [option] (databaseID) "(SQL expression)"
+
+Performs an SQL query for a database specified in the config/track-config.xml file.

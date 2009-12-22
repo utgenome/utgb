@@ -1,0 +1,4 @@
+usage: dbinfo [option] 
+
+Connect to the databases described in the config/track-config.xml, 
+then retrieves their information.

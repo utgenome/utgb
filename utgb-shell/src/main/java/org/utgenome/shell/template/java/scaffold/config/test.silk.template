@@ -1,0 +1,8 @@
+%silk(version:1.0)
+
+# Import the settings described in common.silk file
+@import(common.silk)
+
+# This configuration file will be used when -e option is used 
+# e.g., utgb -e test (command) 
+

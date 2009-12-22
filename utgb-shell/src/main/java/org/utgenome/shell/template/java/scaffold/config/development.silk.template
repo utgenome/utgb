@@ -1,0 +1,19 @@
+%silk(version:1.0)
+
+# Import the settings described in common.silk file
+@import(common.silk)
+
+# This configuration file will be used when -e option is used 
+
+# Add your own settings here (for development purpose)
+
+## An example of using memory database of SQLite  
+# -database(id:test-db)
+#  -dbms: sqlite
+#  -address: :memory: 
+
+# User's own properties
+# -wiki.source: src/wiki 
+
+
+

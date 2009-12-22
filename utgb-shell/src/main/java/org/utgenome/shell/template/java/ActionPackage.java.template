@@ -1,0 +1,19 @@
+//--------------------------------------
+//
+// $actionPackageClass$.java
+// Since: $date$
+//
+//--------------------------------------
+package $package$;
+
+import org.utgenome.gwt.utgb.server.ActionPackage;
+import org.utgenome.gwt.utgb.server.ActionPackageAlias;
+
+/** 
+ * This annotation defines a short-hand prefix of all RequestHandler classes contained in this package 
+ */
+@ActionPackageAlias("$actionPackage$")
+public class $actionPackageClass$ implements ActionPackage {
+}
+
+

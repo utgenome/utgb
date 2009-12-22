@@ -1,0 +1,4 @@
+usage: server [option] 
+
+Start up a portable web server. 
+ 

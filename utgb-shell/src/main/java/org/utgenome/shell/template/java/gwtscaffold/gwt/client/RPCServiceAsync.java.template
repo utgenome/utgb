@@ -1,0 +1,21 @@
+//--------------------------------------
+//
+// RPCServiceAsync.java
+// Since: $date$
+//
+// $URL$ 
+// $Author$
+//--------------------------------------
+package $clientPackageName$;
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.RemoteService;
+
+/**
+ * Asynchronous version of the RPCService interface.
+ * To implement GWT RPC procecdure, see http://code.google.com/intl/en/webtoolkit/doc/1.6/DevGuideServerCommunication.html 
+ */
+public interface RPCServiceAsync extends RemoteService {
+	// add asynchronous version of the RPC procedure
+	public void helloWorld(String name, AsyncCallback<String> callback);
+}

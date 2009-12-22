@@ -1,0 +1,55 @@
+@title("REL (Relation) Format")
+
+= REL Format
+
+<code>
+% rel(version:1.0)
+
+
+</code>
+
+<code>
+# single comment line
+
+# object schema definition:  object_name(attribute1, attribute2, ...) 
+> object
+track(name)
+coordinate(group, type, species, revision, name)
+coordinate -> gene(name, strand, start, end, cds(start,end), exon(start, end)*)
+
+# object data (object_name(attribute1[:value], ...))
+> track(name:"refseq gene")
+# specify coordinates 
+> coordinate(group:utgb, type:chromosome, species:human, revision:hg18)
+# chromosome 1 scope begin
+> coordinate(name:chr1)
+
+> gene
+NM_001005277	+	357521	358460	[357521, 358460]	[[357521, 358460]]
+NM_001005224	+	357521	358460	[357521, 358460]	[[357521, 358460]]
+NM_001005221	+	357521	358460	[357521, 358460]	[[357521, 358460]]
+NM_001005277	-	610958	611897	[610958, 611897]	[[610958, 611897]]
+NM_001005224	-	610958	611897	[610958, 611897]	[[610958, 611897]]
+NM_001005221	-	610958	611897	[610958, 611897]	[[610958, 611897]]
+NM_152486	+	850983	869824	[851184, 869396]	[[850983, 851043],[851164, 851256],[855397, 855579]]
+- description: NL_152486 has several exons
+
+# chromosome 1 scope end
+# chromosome 2 scope begin
+> coordinate(name:chr2)
+> gene
+NM_001005277	+	357521	358460	[357521, 358460]	[[357521, 358460]]
+
+# chromosome 2 scope end
+  
+# flexible relation description
+> coordinate(group:utgb, type:chromosome, species:human, revision:hg18)
+> coordinate.name, gene
+chr1	gene1	+	357521	358460
+chr2	gene2	+	357521	358460
+chr10	gene3	+	357521	358460
+chr3	gene4	+	357521	358460
+chr1	gene5	+	357521	358460
+
+
+</code>

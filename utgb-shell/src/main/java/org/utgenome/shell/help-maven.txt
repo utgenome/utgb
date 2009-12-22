@@ -1,0 +1,3 @@
+usage: maven [options] [<goal(s)>] [<phase(s)>]
+ 
+ Run maven tasks.

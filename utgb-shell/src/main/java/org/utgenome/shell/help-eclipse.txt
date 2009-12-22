@@ -1,0 +1,4 @@
+usage: eclipse [option] 
+
+Creates (or updates) the Eclipse project files. 
+

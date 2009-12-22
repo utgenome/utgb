@@ -1,0 +1,5 @@
+usage: svn-add [option] 
+
+Add the current project folder to the subversion repository (no commit will be performed)
+The parent folder of the project must be under the version control to use this command.
+

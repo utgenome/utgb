@@ -1,0 +1,3 @@
+usage: import [option] (input file path) 
+
+Create an SQLite database file from a text file (e.g., Silk format, BED, etc).

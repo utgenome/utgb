@@ -1,0 +1,19 @@
+@title("How to use Eclipse with UTGB Shell")
+
+[index.html Top Page]
+= How to use Eclipse with UTGB Shell
+
+Type {b|utgb eclipse} in your project folder. This command generates Eclipse project files for your web application. 
+
+<code>
+> cd myapp
+> utgb eclipse
+</code>
+
+Then, import your web application folder into Eclipse by choosing {b|File - Import - Exisiting Projects into Workspace}.
+
+When you modified the pom.xml file, you need to run {b|utgb eclipse} again to download the dependent JAR files, described in the dependencies tag in pom.xml.
+
+
+
+

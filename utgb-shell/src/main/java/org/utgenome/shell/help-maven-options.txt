@@ -1,0 +1,32 @@
+Options:
+ -q,--quiet                    Quiet output - only show errors
+ -C,--strict-checksums         Fail the build if checksums don't match
+ -c,--lax-checksums            Warn if checksums don't match
+ -P,--activate-profiles        Comma-delimited list of profiles to
+                               activate
+ -ff,--fail-fast               Stop at first failure in reactorized builds
+ -fae,--fail-at-end            Only fail the build afterwards; allow all
+                               non-impacted builds to continue
+ -B,--batch-mode               Run in non-interactive (batch) mode
+ -fn,--fail-never              NEVER fail the build, regardless of project
+                               result
+ -up,--update-plugins          Synonym for cpu
+ -N,--non-recursive            Do not recurse into sub-projects
+ -npr,--no-plugin-registry     Don't use ~/.m2/plugin-registry.xml for
+                               plugin versions
+ -U,--update-snapshots         Forces a check for updated releases and
+                               snapshots on remote repositories
+ -cpu,--check-plugin-updates   Force upToDate check for any relevant
+                               registered plugins
+ -npu,--no-plugin-updates      Suppress upToDate check for any relevant
+                               registered plugins
+ -D,--define                   Define a system property
+ -X,--debug                    Produce execution debug output
+ -e,--errors                   Produce execution error messages
+ -f,--file                     Force the use of an alternate POM file.
+ -h,--help                     Display help information
+ -o,--offline                  Work offline
+ -r,--reactor                  Execute goals for project found in the
+                               reactor
+ -s,--settings                 Alternate path for the user settings file
+ -v,--version                  Display version information

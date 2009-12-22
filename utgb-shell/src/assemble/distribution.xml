@@ -1,0 +1,25 @@
+<assembly>
+  <id>package</id>
+  <formats>
+    <format>zip</format>
+<!--    <format>tar.bz2</format>-->
+  </formats>
+
+  <includeBaseDirectory>false</includeBaseDirectory>
+
+  <files>
+    <file>
+      <source>${project.build.directory}/${project.build.finalName}-standalone.jar</source>
+      <destName>utgb-shell-standalone.jar</destName>
+      <outputDirectory>utgb/lib</outputDirectory>
+    </file>
+  </files>
+  <fileSets>
+    <fileSet>
+      <directory>src/main/java/org/utgenome/shell/script</directory>
+      <outputDirectory>utgb</outputDirectory>
+      <fileMode>755</fileMode>
+    </fileSet>
+  </fileSets>
+
+</assembly>

@@ -1,0 +1,29 @@
+@title("UTGB Shell")
+
+
+= UTGB Shell
+
+The UTGB Shell is a command-line client of the UTGB Toolkit. With the UTGB Shell, you can create a your own xweb application {i|in a minute,} which can support database access, web actions, rich-web interfaces, etc.
+
+== Documentations
+=== Introduction
+* [quickstart.html UTGB Shell Quick Start Guide]
+** How to install UTGB Shell, and how to write your first web application
+* [webaction.html How to create a web action]
+* [dbaccess.html How to access databases]
+
+
+=== Development with UTGB Shell
+* [eclipse.html How to use Eclipse with UTGB Shell]
+* [subversion.html How to use Subversion with UTGB Shell]
+
+=== Managing Web Applications
+* [deploy.html How to deploy your web application to the server]
+
+=== Miscellaneous
+* [build.html Build UTGB Shell from Source Codes]
+
+== REL (Relation) Data Format 
+REL is a simple text format for describing data. 
+* [rel-spec.html REL format specification]
+

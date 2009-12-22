@@ -1,0 +1,59 @@
+<trackGroup className="org.utgenome.gwt.utgb.client.track.TrackGroup" name="root">
+  <property key="name">root</property>
+  <groupProperties>
+    <property key="revision">version1.0</property>
+    <property key="species">human</property>
+    <property key="target">chr1</property>
+    <trackWindow start="1" end="100000" width="700"/>
+  </groupProperties>
+  <track className="org.utgenome.gwt.utgb.client.track.lib.NavigatorTrack" name="UTGB Navigator" height="41" pack="true">
+      <property key="sequenceList">[{"species":"human", "revision":["hg18", "hg17"]},{"species":"medaka", "revision":["version1.0", "version0.9"]}]</property>
+  </track>
+  <track className="org.utgenome.gwt.utgb.client.track.lib.SequenceRulerTrack" name="Sequence Overview" height="14" pack="true">
+    <property key="leftMargin">100</property>
+  </track>
+  <track className="org.utgenome.gwt.utgb.client.track.lib.RulerTrack" name="Ruler" height="14" pack="true">
+    <property key="leftMargin">100</property>
+  </track> 
+
+
+  <track className="org.utgenome.gwt.utgb.client.track.lib.DASTrack" name="DAS Track" pack="true">
+    <property key="type">image</property>
+    <property key="leftMargin">100</property>
+    <!-- this track reads DAS data from db/sample.bed -->
+    <property key="dasBaseURL">http://www.ensembl.org/das/Homo_sapiens.NCBI36.transcript/</property>
+    <property key="trackBaseURL">utgb-core/DASViewer</property>
+    <!-- the type property is needed for UCSC's DAS servers to reduce the amount of data to be retrieved -->
+    <property key="dasType">refGene</property>
+  </track>
+
+  <track className="org.utgenome.gwt.utgb.client.track.lib.BEDTrack" name="BED Track" pack="true">
+    <property key="type">image</property>
+    <property key="leftMargin">100</property>
+    <property key="trackBaseURL">utgb-core/BEDViewer</property>
+    <!-- this track reads BED data from db/sample.bed -->
+    <property key="fileName">db/sample.bed</property>
+  </track>
+
+  <!-- Refseq gene track provided as a PNG image -->
+  <track className="org.utgenome.gwt.utgb.client.track.lib.GenomeTrack" name="RefSeq Gene Demo" pack="true">
+    <!-- use an image data as a track content --> 
+    <property key="type">image</property>
+    <!-- if you have to open spaces in the left-side set this value --> 
+    <property key="leftMargin">100</property>
+    <!-- this track retrieves the contents from (server_URL)/utgb-core/GeneViewer -->
+    <property key="trackBaseURL">utgb-core/GeneViewer?%q</property>
+  </track>
+  
+  <!-- Refseq gene table track provided as a text data -->
+  <track className="org.utgenome.gwt.utgb.client.track.lib.GenomeTrack" name="RefSeq Gene Table Demo" height="100" pack="true">
+    <!-- use an iframe html element as a track content --> 
+    <property key="type">frame</property>
+    <property key="leftMargin">100</property>
+    <!-- this track retrieves the contents from (server_URL)/utgb-core/GeneViewer.tab -->
+    <property key="trackBaseURL">utgb-core/GeneViewer.tab?%q</property>
+  </track>
+
+
+  
+</trackGroup>

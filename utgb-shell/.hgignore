@@ -1,0 +1,7 @@
+target
+.classpath
+.project
+
+
+syntax: regexp
+^gwt-home$

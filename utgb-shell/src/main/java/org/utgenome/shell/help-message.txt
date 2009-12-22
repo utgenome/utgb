@@ -1,0 +1,3 @@
+usage: utgb <subcommand> [options] [args...]
+Type utgb <subcommand> --help for a help on a specific subcommand.
+
