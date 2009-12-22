@@ -26,7 +26,7 @@ package org.utgenome.gwt.utgb.client.view;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Properties;
 
 public class TrackView implements Serializable {
 
@@ -48,10 +48,18 @@ public class TrackView implements Serializable {
 		public int height;
 		public boolean pack;
 		public String javaClass;
-		public HashMap<String, String> properties = new HashMap<String, String>();
+		public Properties properties = new Properties();
 
-		public String put(String key, String value) {
-			return properties.put(key, value);
+		public void put(String key, String value) {
+			properties.setProperty(key, value);
+		}
+
+		public String get(String key, String defaultValue) {
+			return properties.getProperty(key, defaultValue);
+		}
+
+		public boolean containsProperty(String key) {
+			return properties.containsKey(key);
 		}
 	}
 
