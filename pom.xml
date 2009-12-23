@@ -197,6 +197,7 @@
       <plugin>
         <artifactId>maven-release-plugin</artifactId>
         <configuration>
+	  <localCheckout>true</localCheckout>
 	  <autoVersionSubmodules>true</autoVersionSubmodules>
 	  <preparationGoals>clean install</preparationGoals>
           <goals>deploy</goals>
