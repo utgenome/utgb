@@ -48,19 +48,8 @@ public class TrackView implements Serializable {
 		public int height;
 		public boolean pack;
 		public String javaClass;
-		public Properties properties = new Properties();
+		public Properties _ = new Properties();
 
-		public void put(String key, String value) {
-			properties.setProperty(key, value);
-		}
-
-		public String get(String key, String defaultValue) {
-			return properties.getProperty(key, defaultValue);
-		}
-
-		public boolean containsProperty(String key) {
-			return properties.containsKey(key);
-		}
 	}
 
 	public static class Window implements Serializable {
