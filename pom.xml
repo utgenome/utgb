@@ -197,6 +197,8 @@
       <plugin>
         <artifactId>maven-release-plugin</artifactId>
         <configuration>
+	  <autoVersionSubmodules>true</autoVersionSubmodules>
+	  <preparationGoals>clean verify install</preparationGoals>
           <goals>deploy</goals>
           <connectionUrl>scm:hg:https://utgb.googlecode.com/hg/</connectionUrl>
         </configuration>
