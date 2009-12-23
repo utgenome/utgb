@@ -26,7 +26,8 @@ package org.utgenome.gwt.utgb.client.view;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Properties;
+
+import org.utgenome.gwt.utgb.client.util.Properties;
 
 public class TrackView implements Serializable {
 
