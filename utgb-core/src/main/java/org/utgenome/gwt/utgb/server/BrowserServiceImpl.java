@@ -47,6 +47,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.utgenome.UTGBException;
+import org.utgenome.format.wig.WIGDatabaseReader;
 import org.utgenome.gwt.utgb.client.BrowserService;
 import org.utgenome.gwt.utgb.client.bean.DatabaseEntry;
 import org.utgenome.gwt.utgb.client.bean.track.TrackDescription;
@@ -55,8 +56,10 @@ import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.ChrRange;
 import org.utgenome.gwt.utgb.client.bio.Gene;
 import org.utgenome.gwt.utgb.client.bio.Locus;
+import org.utgenome.gwt.utgb.client.bio.WigGraphData;
 import org.utgenome.gwt.utgb.client.track.bean.SearchResult;
 import org.utgenome.gwt.utgb.client.track.bean.TrackBean;
+import org.utgenome.gwt.utgb.client.track.lib.WIGGraphCanvasTrack;
 import org.utgenome.gwt.utgb.server.app.ChromosomeMap.Comparator4ChrName;
 import org.utgenome.gwt.utgb.server.util.WebApplicationResource;
 import org.xerial.core.XerialException;
@@ -541,6 +544,23 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 		}
 
 		return result;
+	}
+
+	public List<WigGraphData> getWigDataList(String fileName, long windowWidth, ChrLoc location)
+	{
+		ArrayList<WigGraphData> wigDataList = null;
+
+		try
+		{
+			WIGDatabaseReader reader = new WIGDatabaseReader(WebTrackBase.getProjectRootPath() + "/" +fileName);
+			wigDataList = reader.getWigDataList(windowWidth, location.target, location.start, location.end);
+			reader.close();
+		}
+		catch (Exception e) {
+			_logger.error(e);
+		}
+
+		return wigDataList;
 	}
 
 }

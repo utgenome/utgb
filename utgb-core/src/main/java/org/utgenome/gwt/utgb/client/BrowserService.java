@@ -33,9 +33,11 @@ import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.ChrRange;
 import org.utgenome.gwt.utgb.client.bio.Gene;
 import org.utgenome.gwt.utgb.client.bio.Locus;
+import org.utgenome.gwt.utgb.client.bio.WigGraphData;
 import org.utgenome.gwt.utgb.client.track.bean.SearchResult;
 import org.utgenome.gwt.utgb.client.track.bean.TrackBean;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -79,5 +81,7 @@ public interface BrowserService extends RemoteService {
 	public List<String> getDBNames(String dbGroup);
 
 	public List<DatabaseEntry> getDBEntry(String dbGroup);
+
+	public List<WigGraphData> getWigDataList(String fileName, long windowWidth, ChrLoc location);
 
 }

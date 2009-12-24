@@ -60,4 +60,17 @@ public class TrackConfigChangeImpl implements TrackConfigChange {
 		return Integer.parseInt(value);
 	}
 
+	public float getFloatValue(String configParamName) {
+		String value = _config.getParameter(configParamName);
+		return Float.parseFloat(value);		
+	}
+
+	public boolean getBoolValue(String configParamName) {
+		String value = _config.getParameter(configParamName);
+		return Boolean.parseBoolean(value);		
+	}
+	public HashSet<String> getChangedParamSet()
+	{
+		return changedParamSet;
+	}
 }
