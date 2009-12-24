@@ -1,0 +1,128 @@
+@title("Lens for binding data sources to objects")
+
+[index.html Top Page]
+= Lens
+
+The UTGB Toolkit has a built-in support for data mapping, called lens, between "XML/JSON/Silk/Relational" data to Java class objects. Our Lens utility automatically detects public fileds in your class definition, and maps data souces to the object instances.
+
+== An Quick Example (XML to Objects)
+
+Supporse you have the following XML data (saved as "gene.xml") describing a gene object:
+<code>
+<gene id="1">
+   <name>gene1</name>
+   <chr>chr1</chr>
+   <start>1000</start>
+   <end>4000</end>
+   <strand>+</strand>
+</gene>
+</code>
+
+To parse this XML data, you have to describe a Gene class with public fields corresponding to the XML elements:
+<code>
+class Gene 
+{
+  public int id;
+  public String name;
+  public String chr;
+  public String strand;
+  public long start;
+  public long end;
+  
+  // public default constructor
+  public Gene() {}
+
+}
+</code>
+
+By using Lens.loadXML(target class, input reader) method, you can create an instance of the Gene object from the XML file ("gene.xml"):
+<code>
+BufferedReader xmlReader = new BufferedReader(new FileReader("gene.xml"));
+Gene gene = Lens.loadXML(Gene.class, xmlReader);
+
+// gene.id == 1
+// gene.name == "gene1"
+// gene.chr == "chr1"
+// gene.start == 1000
+// gene.end == 4000
+</code>
+
+UTGB automatically converts string data appeared in the XML file into appropriate data type (integer, String, etc. ) by seeing field or setter methods in the class definition. 
+
+
+
+== Mapping Database Query Results to Java Objects
+
+When your data is stored in an SQLite database, you have to use SQL queries to retreive data.
+
+=== Table Data 
+<code>
+id|target|start|end|strand|
+0|chrX|70518318|70518344|+|
+1|chr12|51949963|51949989|-|
+2|chr6|48444655|48444681|-|
+3|chr13|109111185|109111211|-|
+4|chr5|133731340|133731366|-|
+</code>
+
+=== Sample Code
+<code>
+// get database access of mydb. This id is specified in the config/common.silk file
+DatabaseAccess dbAccess = UTGBMaster.getDatabaseAccess("mydb");
+
+// execute an SQL query, then bind the result rows to Gene object
+List<Gene> result = 
+  dbAccess.query(
+     String.format("select * from gene where start >= %d order by start", start), 
+     Gene.class);
+
+// draw the gene objects to some image
+for(Gene eachGene : result)
+{
+   // ... do some drawings
+}
+</code>
+
+
+== Mapping to Nested Objects
+
+*genelist.xml
+<code>
+<genelist>
+ <description>gene list</description>
+ <gene id="1">
+   <name>gene1</name>
+   <chr>chr1</chr>
+   <start>1000</start>
+   <end>4000</end>
+   <strand>+</strand>
+ </gene>
+ <gene id="2">
+   <name>gene1</name>
+   <chr>chr4</chr>
+   <start>3000</start>
+   <end>8000</end>
+   <strand>-</strand>
+ </gene>
+</genelist>
+</code>
+
+
+<code>
+class GeneList 
+{
+   public List<Gene> gene;
+   public String description;
+}
+</code>
+
+<code>
+BufferedReader xmlReader = new BufferedReader(new FileReader("genelist.xml"));
+GeneList geneList = Lens.loadXML(GeneList.class, xmlReader);
+
+// Output object as JSON
+System.out.println(Lens.toJSON(geneList));
+// Output object as Silk 
+System.out.println(Lens.toSilk(geneList));
+</code>
+
