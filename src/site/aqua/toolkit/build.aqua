@@ -1,13 +1,13 @@
-@title("Build UTGB Shell from Source")
+@title("Build UTGB Toolkit from Source")
 
 [index.html Top Page]
 
-= Build UTGB Shell from Source
+= Build UTGB Toolkit from Source
 
 == Setup
 In ordre to build the UTGB shell from the source codes, you need the following tools:
 * Java SDK (1.5 or higher)
-* Subversion 
+* Mercurial (hg) 
 * [http://maven.apache.org Maven] (version 2.0.7 or higher)
 * GNU Make 
 
@@ -15,33 +15,31 @@ In ordre to build the UTGB shell from the source codes, you need the following t
 * JAVA_HOME and PATH environment variables must be set as described in [quickstart.html here]. If you are an Windows user, you have to use cygwin (an UNIX emulator) to build UTGB shell.
 
 == Build
-First, obtain the entire source code from our Subversion repository:
+First, obtain the entire source code from our Mercurial source code repository:
 {{
-> svn checkout http://svn.utgenome.org/utgb/trunk/utgb/utgb-shell utgb-shell
+> hg clone https://utgb.googlecode.com/hg utgb
 }}
 
 Then, do make:
 {{
-> cd utgb-shell
-> make
+> cd utgb
+> mvn compile
 }}
 
 To install the UTGB shell, you must be a super user, then {b|make install}.
 <code>
-utgb-shell# make install
+> cd utgb-shell
+> sudo make install
 </code>
 
 == Installation to another folder
 
-To alter the installation folder, edit the INSTALL_DIR variable in the Makefile:
+To alter the installation folder, set INSTALL_DIR variable when installing:
 <code>
-INSTALL_DIR = /usr/local
+> make INSTALL_DIR = /home/leo/local install
 </code>
 
-For example, with the following setting, the UTGB shell is installed as /home/leo/local/bin/utgb
-<code>
-INSTALL_DIR = /home/leo/local
-</code>
+For example, when INSTALL_DIR = "/home/leo/local", the UTGB shell will be installed as /home/leo/local/bin/utgb
 
 == Confirm the UTGB shell installation
 
@@ -59,12 +57,12 @@ type --help for a list of the available sub commands.
 
 == Upgrade UTGB Shell
 
-To install the latest version of the UTGB shell, use {b|svn update}:
+To install the latest version of the UTGB shell, use {b|hg pull}:
 <code>
-> svn update
+utgb> hg pull -u
 </code>
 
-Then, make clean, make, make install. 
+Then, mvn clean compile, make install. 
 
 == What's Next?
 

@@ -37,10 +37,10 @@ To display genome track on your genome browser, you have to add the following XM
 </track>
 </code>
 
-For the local server, the above trackBaseURL value corresponds to http://localhost:8989/utgb-core/GeneViewer. You can use full-length URL name beginning with "http://" to specify arbitrary web pages. 
+For the local server, the above trackBaseURL value corresponds to http://localhost:8989/myapp/utgb-core/GeneViewer. You can use full-length URL name beginning with "http://" to specify arbitrary web pages. 
 
 === Sample Code: GeneViewer 
-This code recieves parameter values, species, revision, parameters, etc. from the genome browser interface (client-side code), then the server-side code retrieves RefSeq gene data from the http://utgenome.org/api/refseq/ API. Next, it draws the graphics of RefSeq genes within the specified region. If the accessed URL contains a suffix .tab, i.e. utgb-core/GeneViewer.tab, it simply returns the data of retrived genes in a text format.
+This code recieves parameter values, species, revision, parameters, etc. from the genome browser interface (client-side code), then the server-side code retrieves RefSeq gene data from the http://utgenome.org/api/refseq/ API. Next, the GeneViewer draws the graphics of RefSeq genes within the specified region. If the accessed URL contains a suffix .tab, i.e. utgb-core/GeneViewer.tab, it simply returns the data of retrived genes in a text format.
 
 To draw graphics, this web action code uses GeneCanvas class, the source code of which is available from http://svn.utgenome.org/utgb/trunk/utgb/utgb-core/src/main/java/org/utgenome/graphics/GeneCanvas.java
 
@@ -48,13 +48,12 @@ To draw graphics, this web action code uses GeneCanvas class, the source code of
 <code>
 /**
  * Gene Viewer
- * 
- * 
  */
 public class GeneViewer extends WebTrackBase {
   private static final long serialVersionUID = 1L;
   private static Logger _logger = Logger.getLogger(GeneViewer.class);
 
+  // public fields for receiving URL query parameters
   public String species = "human";
   public String revision = "hg18";
   public String name = "chr1";
@@ -275,20 +274,22 @@ import org.utgenome.gwt.utgb.client.track.TrackFactoryHolder;
 /**
  * Entry point of the UTGB Browser. Edit the following files to change the
  * appearance of the browser: src/main/webapp/view/default-view.xml
- * public/UTGBEntry.html
+ * public/browser.html
  * 
  */
-public class UTGBEntry extends UTGBEntryPointBase
+public class Browser extends UTGBEntryPointBase
 {
 
     @Override
     public void main()
     {
-        // register a custom track 
-        TrackFactoryHolder.addTrackFactory("demo.gwt.client.SampleTrack", demo.gwt.client.SampleTrack.factory());
+        // register your custom track 
+        TrackFactoryHolder.addTrackFactory
+           ("demo.gwt.client.SampleTrack", demo.gwt.client.SampleTrack.factory());
 
         // This line insert the track display in the <div id="utgb-main"></div> part
-        // Displayed track contents are defined in the view XML file (src/main/webapp/view/default-view.xml is used in default)
+        // You can defiene track contents to be displayed   
+        // in the view XML file (src/main/webapp/view/default-view.xml is used in default)
         displayTrackView();
 
         // add your GWT codes here

@@ -6,7 +6,7 @@
 
 == How do I tell the UTGB Toolkit to use my proxy server?
 
-You have to edit $(HOME)/.m2/settings.xml file and add proxies element as follows:
+Edit "$(HOME)/.m2/settings.xml" file and add proxies element as follows:
 
 <code>
 <settings>
@@ -31,19 +31,19 @@ You have to edit $(HOME)/.m2/settings.xml file and add proxies element as follow
 
 == Somthing went wrong. What should I do?
 
-Try to update several libraries with the following command:
+Update several libraries with the following command:
 <code>
 > utgb maven compile -U
 </code>
 
-Remove temporary folders:
+Or remove temporary folders:
 <code>
-> rm -rf target gwt-home
+> rm -rf target 
 </code>
 
 == When some files are gone, how do I recover them?
 
-The utgb shell provides repair command, which reproduces missing files and revert the modified files. 
+The utgb shell provides repair command for reproducing missing files and reverting the modified files:
 <code>
 > utgb repair
 myapp> utgb repair

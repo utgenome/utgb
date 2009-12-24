@@ -5,38 +5,51 @@
 
 The UTGB Toolkit includes the UTGB Shell, a command-line client for developing your own genome browsers. With the UTGB Shell, you can create a your own web application {i|in a minute,} which can support database access, web actions, rich-web interfaces, etc.
 
-== UTGB Shell Documentations
-=== Introduction
-* [quickstart.html UTGB Shell Quick Start Guide]
-** How to install UTGB Shell, and how to write your first web application
-* [webaction.html How to create a web action]
-* [dbaccess.html How to access databases]
-* [customize.html How to customize browser contents]
+= UTGB Toolkit Documentations
 
-=== How to Create Tracks
-Note that BED and DAS tracks are supported since {b|utgb-shell version 1.2.2.} ([../download.html Download])
+== Introduction
 
-* [bed.html BED Track]
-* [das.html DAS Track]
+=== How to install & How to use the UTGB Toolkit
+* [quickstart.html UTGB Toolkit Quick Start Guide]
+
+== Developing Web Applications with the UTGB Toolkit
+* [webaction.html How to create a web action] 
+* [dbaccess.html How to access databases] 
+* [lens.html Lens: How to map various data sources to objects] 
+
+* [eclipse.html How to use Eclipse for Web Application Development]
+
+== Creating Tracks
+
+* [customize.html How to customize browser contents] (client-side)
+
+=== Using Existing Data Format
+* [bed.html BED Track] (locus data)
+* [gff.html GFF Track] (locus data) (to be written)
+* [wig.html WIG Track] (graph data) (to be written)
+* [das.html DAS Track] 
+* Importing FASTA file (genome sequence data) (to be written) 
+** Chromosome Map Track
+** Sequence Track 
+
+=== Track Development
 * [track.html How to create your own tracks]
-
 
 * [FAQ.html FAQ: Frequently Asqued Questions]
 
-=== Development with UTGB Shell
-* [eclipse.html How to use Eclipse with UTGB Shell]
-* [subversion.html How to use Subversion with UTGB Shell]
 
-=== Managing Web Applications
+== Managing Web Applications
 * [deploy.html How to deploy your web application to the server]
 
-=== Miscellaneous
-* [build.html Build UTGB Shell from Source Codes]
+== For UTGB Developers
+* [build.html Build UTGB from Source Codes]
+* [subversion.html How to use Subversion with UTGB Shell]
 
-== Silk Data Format 
-Silk is an efficient text format for describing biological data. 
+
+= Silk Data Format 
+Silk is a compact text format for describing biological data. 
 * [silk.html Silk format specification]
 
-=== Specifications for Genomic Data
+== Specifications for Genomic Data
 * [silk-read-format.html Silk Genome Read Format] for describing genome reads.
 * [silk-locus.html Silk Genome Locus Format] for describing gene loci.

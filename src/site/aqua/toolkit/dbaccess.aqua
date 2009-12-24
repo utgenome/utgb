@@ -40,59 +40,9 @@ Here is an example of the database configuration. One of the database tags below
  -pass: (password)
 </code>
 
-= Smart Data Binding in UTGB
-
-The UTGB Toolkit has a built-in support for data mapping between "XML/JSON/Silk/Relational" data to Java class objects. Our Lens utility automatically detects public fileds in your class definition, and maps data to the object instances.
-
-== An Quick Example (XML to Objects)
-
-Supporse you have the following XML data (saved as "gene.xml") describing a gene object:
-<code>
-<gene id="1">
-   <name>gene1</name>
-   <chr>chr1</chr>
-   <start>1000</start>
-   <end>4000</end>
-   <strand>+</strand>
-</gene>
-</code>
-
-To parse this XML data, you have to describe a Gene class with public fields corresponding to nested elements:
-<code>
-class Gene 
-{
-  public int id;
-  public String name;
-  public String chr;
-  public String strand;
-  public long start;
-  public long end;
-  
-  // public default constructor
-  public Gene() {}
-
-}
-</code>
-
-By using Lens.loadXML(target class, input reader) method, you can create an instance of the Gene object from the XML file ("gene.xml"):
-<code>
-BufferedReader xmlReader = new BufferedReader(new FileReader("gene.xml"));
-Gene gene = Lens.loadXML(Gene.class, xmlReader);
-
-// gene.id == 1
-// gene.name == "gene1"
-// gene.chr == "chr1"
-// gene.start == 1000
-// gene.end == 4000
-</code>
-
-UTGB automatically converts string data appeared in the XML file into appropriate data type (integer, String, etc. ) by seeing field or setter methods in the class definition. 
-
-
-
 == Mapping Database Query Results to Java Objects
 
-When your data is stored in an SQLite database, you have to use SQL queries to retreive data.
+When your data is stored in an SQLite database with id mydb, you can use SQL queries to retreive object data from the data base.
 
 === Table Data 
 <code>
@@ -122,46 +72,6 @@ for(Gene eachGene : result)
 }
 </code>
 
-
-== Mapping to Nested Objects
-
-*genelist.xml
-<code>
-<genelist>
- <description>gene list</description>
- <gene id="1">
-   <name>gene1</name>
-   <chr>chr1</chr>
-   <start>1000</start>
-   <end>4000</end>
-   <strand>+</strand>
- </gene>
- <gene id="2">
-   <name>gene1</name>
-   <chr>chr4</chr>
-   <start>3000</start>
-   <end>8000</end>
-   <strand>-</strand>
- </gene>
-</genelist>
-</code>
-
-
-<code>
-class GeneList 
-{
-   public List<Gene> gene;
-   public String description;
-}
-</code>
-
-<code>
-BufferedReader xmlReader = new BufferedReader(new FileReader("genelist.xml"));
-GeneList geneList = Lens.loadXML(GeneList.class, xmlReader);
-
-// Output object as JSON
-System.out.println(Lens.toJSON(geneList));
-// Output object as Silk 
-System.out.println(Lens.toSilk(geneList));
-</code>
+== Object-Relational Mapping
+To learn how UTGB maps table data to objects see [lens.html Lens].
 
