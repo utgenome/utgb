@@ -114,7 +114,7 @@ public class UTGBMaster implements ServletContextListener {
 		;
 		try {
 			_logger.info(String.format("loading %s", configFile));
-			UTGBConfig config = Lens.loadSilk(UTGBConfig.class, new File(projectRootFolder, configFile).toURL());
+			UTGBConfig config = Lens.loadSilk(UTGBConfig.class, new File(projectRootFolder, configFile).toURI().toURL());
 			return config;
 		}
 		catch (XerialException e) {
@@ -204,7 +204,6 @@ public class UTGBMaster implements ServletContextListener {
 		setVariable("projectRoot", configFolderName);
 		_logger.info("project root folder: " + configFolderName);
 
-			
 		String environment = getContextProperty("environment", System.getProperty("utgb.env", "development"));
 		setVariable("environment", environment);
 		_logger.info("environment: " + environment);

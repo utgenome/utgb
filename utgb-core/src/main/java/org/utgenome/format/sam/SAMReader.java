@@ -24,6 +24,11 @@
 //--------------------------------------
 package org.utgenome.format.sam;
 
+import java.io.InputStream;
+
+import net.sf.samtools.SAMFileReader;
+import net.sf.samtools.SAMRecord;
+
 /**
  * SAM File reader
  * 
@@ -31,5 +36,9 @@ package org.utgenome.format.sam;
  * 
  */
 public class SAMReader {
+
+	public static Iterable<SAMRecord> getSAMRecord(InputStream samFile) {
+		return new SAMFileReader(samFile);
+	}
 
 }

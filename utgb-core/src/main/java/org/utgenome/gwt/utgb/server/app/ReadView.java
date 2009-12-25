@@ -26,78 +26,68 @@ import org.xerial.util.log.Logger;
  * Request handler
  * 
  */
-public class ReadView extends WebTrackBase
-{
-    private static final long serialVersionUID = 1L;
-    private static Logger _logger = Logger.getLogger(ReadView.class);
+public class ReadView extends WebTrackBase {
+	private static final long serialVersionUID = 1L;
+	private static Logger _logger = Logger.getLogger(ReadView.class);
 
-    public ReadView()
-    {}
+	public ReadView() {
+	}
 
-    public long start = 0;
-    public long end = 1000;
-    public String strand = "+";
-    public String group = "utgb";
-    public String species = "medaka";
-    public String revision = "version1.0";
-    public String name = "scaffold3000";
+	public long start = 0;
+	public long end = 1000;
+	public String strand = "+";
+	public String group = "utgb";
+	public String species = "medaka";
+	public String revision = "version1.0";
+	public String name = "scaffold3000";
 
-    public int width = 700;
+	public int width = 700;
 
-    public void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-    {
-        // input data file
-        File readFile = new File(getProjectRootPath(), "db/" + name + ".silk");
+	public void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// input data file
+		File readFile = new File(getProjectRootPath(), "db/" + name + ".silk");
 
-        try
-        {
-            ReadPainter painter = new ReadPainter(start, end, width);
-            Lens.loadSilk(painter, readFile.toURL());
+		try {
+			ReadPainter painter = new ReadPainter(start, end, width);
+			Lens.loadSilk(painter, readFile.toURI().toURL());
 
-            response.setContentType("image/png");
-            painter.canvas.toPNG(response.getOutputStream());
+			response.setContentType("image/png");
+			painter.canvas.toPNG(response.getOutputStream());
 
-        }
-        catch (Exception e)
-        {
-            _logger.error(e);
-        }
+		}
+		catch (Exception e) {
+			_logger.error(e);
+		}
 
-    }
+	}
 
-    public static class ReferenceReader extends Reference
-    {
-        @Override
-        public void appendSequence(String sequence)
-        {
+	public static class ReferenceReader extends Reference {
+		@Override
+		public void appendSequence(String sequence) {
 
-        }
-    }
+		}
+	}
 
-    public static class ReadPainter
-    {
-        final RibbonCanvas canvas;
+	public static class ReadPainter {
+		final RibbonCanvas canvas;
 
-        public Coordinate coordinate;
+		public Coordinate coordinate;
 
-        public ReadPainter(long start, long end, int width)
-        {
-            canvas = new RibbonCanvas(width, 500, new GenomeWindow(start, end));
-        }
+		public ReadPainter(long start, long end, int width) {
+			canvas = new RibbonCanvas(width, 500, new GenomeWindow(start, end));
+		}
 
-        public void addReference(ReferenceReader reference)
-        {
-            _logger.info("reference: " + reference);
-            canvas.setReference(reference);
+		public void addReference(ReferenceReader reference) {
+			_logger.info("reference: " + reference);
+			canvas.setReference(reference);
 
-        }
+		}
 
-        public void addReference_read(ReferenceReader reference, Read read)
-        {
-            _logger.info(String.format("ref:%s, read: %s", reference.hashCode(), read));
-            canvas.draw(read);
-        }
+		public void addReference_read(ReferenceReader reference, Read read) {
+			_logger.info(String.format("ref:%s, read: %s", reference.hashCode(), read));
+			canvas.draw(read);
+		}
 
-    }
+	}
 
 }
