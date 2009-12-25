@@ -50,7 +50,7 @@ import org.xerial.db.sql.sqlite.SQLiteAccess;
 import org.xerial.lens.Lens;
 import org.xerial.util.log.Logger;
 
-public class BEDViewer extends WebTrackBase implements Serializable{
+public class BEDViewer extends WebTrackBase implements Serializable {
 
 	/**
      * 
@@ -72,11 +72,11 @@ public class BEDViewer extends WebTrackBase implements Serializable{
 	@SuppressWarnings("unchecked")
 	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	
+
 		BED2SilkReader in = null;
-		
+
 		long sqlStart = end >= start ? start : end;
-		long sqlEnd   = end >= start ? end : start;
+		long sqlEnd = end >= start ? end : start;
 
 		try {
 
@@ -86,8 +86,8 @@ public class BEDViewer extends WebTrackBase implements Serializable{
 				// use db
 				SQLiteAccess dbAccess = new SQLiteAccess(dbInput.getAbsolutePath());
 
-				String sql = createSQLStatement("select start, end, name, score, strand, cds, exon, color from gene " +
-						"where coordinate = '$1' and start <= $2 and end >= $3", name, sqlEnd, sqlStart);
+				String sql = createSQLStatement("select start, end, name, score, strand, cds, exon, color from gene "
+						+ "where coordinate = '$1' and start <= $2 and end >= $3", name, sqlEnd, sqlStart);
 
 				if (_logger.isDebugEnabled())
 					_logger.debug(sql);
@@ -96,21 +96,21 @@ public class BEDViewer extends WebTrackBase implements Serializable{
 					public Object handle(ResultSet rs) throws SQLException {
 						BEDGene gene = new BEDGene();
 						gene.coordinate = name;
-						gene.setStart(rs.getLong(1));
-						gene.setEnd(rs.getLong(2));
+						gene.setStart(rs.getInt(1));
+						gene.setEnd(rs.getInt(2));
 
 						gene.setName(rs.getString(3));
 						gene.score = rs.getInt(4);
 						gene.setStrand(rs.getString(5));
 
 						ArrayList<long[]> regionList = readRegions(rs.getString(6));
-						for(long[] region : regionList){
+						for (long[] region : regionList) {
 							CDS cds = new CDS(region[0], region[1]);
 							gene.addCDS(cds);
 						}
-						
+
 						regionList = readRegions(rs.getString(7));
-						for(long[] region : regionList){
+						for (long[] region : regionList) {
 							Exon exon = new Exon(region[0], region[1]);
 							gene.addExon(exon);
 						}
@@ -124,19 +124,19 @@ public class BEDViewer extends WebTrackBase implements Serializable{
 					private ArrayList<long[]> readRegions(String string) {
 						ArrayList<long[]> res = new ArrayList<long[]>();
 
-						StringTokenizer st = new StringTokenizer(string,"[] ,");
+						StringTokenizer st = new StringTokenizer(string, "[] ,");
 						while (st.hasMoreTokens()) {
 							String str = st.nextToken();
-							
+
 							// get start of region
-							if(str.startsWith("(")){
+							if (str.startsWith("(")) {
 								long[] region = new long[2];
 								region[0] = Long.valueOf(str.substring(1)).longValue();
 
 								// get end of region
-								while(st.hasMoreTokens()){
+								while (st.hasMoreTokens()) {
 									str = st.nextToken();
-									if(str.endsWith(")")){
+									if (str.endsWith(")")) {
 										region[1] = Long.valueOf(str.substring(0, str.length() - 1)).longValue();
 										res.add(region);
 										break;
@@ -196,7 +196,7 @@ public class BEDViewer extends WebTrackBase implements Serializable{
 		}
 	}
 
-	public static class BEDTrack implements Serializable{
+	public static class BEDTrack implements Serializable {
 
 		/**
 		 * 
@@ -224,7 +224,7 @@ public class BEDViewer extends WebTrackBase implements Serializable{
 		}
 	}
 
-	public static class BEDGene extends Gene implements Serializable{
+	public static class BEDGene extends Gene implements Serializable {
 
 		/**
 		 * 
@@ -232,7 +232,7 @@ public class BEDViewer extends WebTrackBase implements Serializable{
 		private static final long serialVersionUID = 1L;
 		public String coordinate;
 		public int score;
-		
+
 		// public void addCDS(CDS cds)
 		// {
 		// this.cdsList.add(cds);
@@ -245,7 +245,8 @@ public class BEDViewer extends WebTrackBase implements Serializable{
 		@Override
 		public String toString() {
 			// TODO Auto-generated method stub
-			return String.format("%s: %s:%d-%d\t%s\t%s\t%s\t%s\t%d", getName(), coordinate, getStart(), getEnd(), getStrand(), getCDS(), getExon(), getColor(), score);
+			return String.format("%s: %s:%d-%d\t%s\t%s\t%s\t%s\t%d", getName(), coordinate, getStart(), getEnd(), getStrand(), getCDS(), getExon(), getColor(),
+					score);
 		}
 	}
 

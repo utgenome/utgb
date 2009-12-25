@@ -121,19 +121,19 @@ public class GeneCanvas {
 
 		for (Locus l : locusList) {
 
-			long x1 = l.getViewStart();
-			long x2 = l.getViewEnd();
+			int x1 = l.getViewStart();
+			int x2 = l.getViewEnd();
 
 			if (drawLabel) {
 				int width = fontMetrics.stringWidth(l.getName()) + gapWidth;
-				long fontWidthOnGenome = canvas.getGenomeWindow().toGenomeLength(width, canvas.getWidth());
+				int fontWidthOnGenome = canvas.getGenomeWindow().toGenomeLength(width, canvas.getWidth());
 				if ((x1 - fontWidthOnGenome) < leftOnGenome)
 					x2 += fontWidthOnGenome;
 				else
 					x1 -= fontWidthOnGenome;
 			}
 
-			List<LocusLayout> activeLocus = locusLayout.rangeQuery(x1, Long.MAX_VALUE, x2);
+			List<LocusLayout> activeLocus = locusLayout.rangeQuery(x1, Integer.MAX_VALUE, x2);
 
 			HashSet<Integer> filledY = new HashSet<Integer>();
 			// overlap test

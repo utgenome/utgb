@@ -41,20 +41,20 @@ public class Locus implements Serializable, Comparable<Locus> {
 	 * 
 	 */
 	String name = "locus";
-	long start = -1; // 1-origin
-	long end = -1;
+	int start = -1; // 1-origin
+	int end = -1;
 	String strand = "?";
 	String color = null;
 
 	public Locus() {
 	}
 
-	public Locus(long start, long end) {
+	public Locus(int start, int end) {
 		this.start = start;
 		this.end = end;
 	}
 
-	public Locus(String name, long start, long end) {
+	public Locus(String name, int start, int end) {
 		this.name = name;
 		this.start = start;
 		this.end = end;
@@ -72,18 +72,18 @@ public class Locus implements Serializable, Comparable<Locus> {
 		return start;
 	}
 
-	public void setStart(long start) {
+	public void setStart(int start) {
 		this.start = start;
 	}
 
-	public long getViewStart() {
+	public int getViewStart() {
 		if (start <= end)
 			return start;
 		else
 			return end;
 	}
 
-	public long getViewEnd() {
+	public int getViewEnd() {
 		if (start <= end)
 			return end;
 		else
@@ -94,7 +94,7 @@ public class Locus implements Serializable, Comparable<Locus> {
 		return end;
 	}
 
-	public void setEnd(long end) {
+	public void setEnd(int end) {
 		this.end = end;
 	}
 

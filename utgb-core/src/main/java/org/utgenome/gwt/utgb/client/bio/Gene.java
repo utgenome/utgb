@@ -46,11 +46,11 @@ public class Gene extends Locus implements Serializable {
 	public Gene() {
 	}
 
-	public Gene(long start, long end) {
+	public Gene(int start, int end) {
 		super(start, end);
 	}
 
-	public Gene(String name, long start, long end) {
+	public Gene(String name, int start, int end) {
 		super(name, start, end);
 	}
 

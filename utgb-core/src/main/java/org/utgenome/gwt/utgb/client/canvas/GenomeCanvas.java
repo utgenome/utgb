@@ -16,7 +16,7 @@
 //--------------------------------------
 // utgb-core Project
 //
-// GeneCanvas.java
+// GenomeCanvas.java
 // Since: Jul 8, 2008
 //
 // $URL$ 
@@ -53,7 +53,7 @@ import com.google.gwt.widgetideas.graphics.client.GWTCanvas;
  * @author leo
  * 
  */
-public class GeneCanvas extends Composite {
+public class GenomeCanvas extends Composite {
 
 	private int windowWidth = 800;
 	private long startIndexOnGenome = 1;
@@ -72,11 +72,11 @@ public class GeneCanvas extends Composite {
 	private LocusClickHandler handler = null;
 	private PrioritySearchTree<LocusLayout> locusLayout = new PrioritySearchTree<LocusLayout>();
 
-	public GeneCanvas() {
+	public GenomeCanvas() {
 		initWidget();
 	}
 
-	public GeneCanvas(int windowPixelWidth, long startIndexOnGenome, long endIndexOnGenome) {
+	public GenomeCanvas(int windowPixelWidth, long startIndexOnGenome, long endIndexOnGenome) {
 		this.windowWidth = windowPixelWidth;
 		setWindow(startIndexOnGenome, endIndexOnGenome);
 
@@ -165,9 +165,9 @@ public class GeneCanvas extends Composite {
 		int x = getXOnCanvas(event);
 		int y = getYOnCanvas(event);
 
-		long xOnGenome = calcGenomePosition(x);
+		int xOnGenome = calcGenomePosition(x);
 
-		for (LocusLayout gl : locusLayout.rangeQuery(xOnGenome, Long.MAX_VALUE, xOnGenome)) {
+		for (LocusLayout gl : locusLayout.rangeQuery(xOnGenome, Integer.MAX_VALUE, xOnGenome)) {
 			Locus g = gl.getLocus();
 			int y1 = gl.getYOffset();
 			int y2 = y1 + geneHeight;
@@ -231,15 +231,15 @@ public class GeneCanvas extends Composite {
 		return (int) v2;
 	}
 
-	public long calcGenomePosition(int xOnWindow) {
+	public int calcGenomePosition(int xOnWindow) {
 		if (startIndexOnGenome <= endIndexOnGenome) {
 			double genomeLengthPerBit = (double) (endIndexOnGenome - startIndexOnGenome) / (double) windowWidth;
-			return (long) (startIndexOnGenome + (double) xOnWindow * genomeLengthPerBit);
+			return (int) (startIndexOnGenome + (double) xOnWindow * genomeLengthPerBit);
 		}
 		else {
 			// reverse strand
 			double genomeLengthPerBit = (double) (startIndexOnGenome - endIndexOnGenome) / (double) windowWidth;
-			return (long) (endIndexOnGenome + (double) (windowWidth - xOnWindow) * genomeLengthPerBit);
+			return (int) (endIndexOnGenome + (double) (windowWidth - xOnWindow) * genomeLengthPerBit);
 		}
 	}
 
@@ -292,10 +292,10 @@ public class GeneCanvas extends Composite {
 
 		for (Locus l : locusList) {
 
-			long x1 = l.getViewStart();
-			long x2 = l.getViewEnd();
+			int x1 = l.getViewStart();
+			int x2 = l.getViewEnd();
 
-			List<LocusLayout> activeLocus = locusLayout.rangeQuery(x1, Long.MAX_VALUE, x2);
+			List<LocusLayout> activeLocus = locusLayout.rangeQuery(x1, Integer.MAX_VALUE, x2);
 
 			HashSet<Integer> filledY = new HashSet<Integer>();
 			// overlap test
@@ -328,7 +328,7 @@ public class GeneCanvas extends Composite {
 		setPixelSize(windowWidth, height);
 
 		locusLayout.depthFirstSearch(new PrioritySearchTree.Visitor<LocusLayout>() {
-			private int h = GeneCanvas.this.geneHeight + GeneCanvas.this.geneMargin;
+			private int h = GenomeCanvas.this.geneHeight + GenomeCanvas.this.geneMargin;
 
 			public void visit(LocusLayout gl) {
 				gl.yOffset = gl.yOffset * h;
@@ -348,7 +348,7 @@ public class GeneCanvas extends Composite {
 		setPixelSize(windowWidth, height);
 
 		locusLayout.depthFirstSearch(new PrioritySearchTree.Visitor<LocusLayout>() {
-			private int h = GeneCanvas.this.geneHeight + GeneCanvas.this.geneMargin;
+			private int h = GenomeCanvas.this.geneHeight + GenomeCanvas.this.geneMargin;
 
 			public void visit(LocusLayout gl) {
 				gl.yOffset = gl.yOffset * h;
@@ -484,23 +484,7 @@ public class GeneCanvas extends Composite {
 			}
 
 		}
-
-		//		int boxWidth = ex2 - ex;
-		//		if (boxWidth <= 0)
-		//			boxWidth = 1;
-		//		canvas.setLineWidth(1);
-		//		canvas.setStrokeStyle(new Color("#333333"));
-		//		canvas.strokeRect(drawPosition(ex + 0.5f), yPosition + 0.5f, boxWidth, geneHeight);
 	}
-
-	//	public void draw(CDS cds, int yPosition) {
-	//		int cx = pixelPositionOnWindow(cds.getStart());
-	//		int cx2 = pixelPositionOnWindow(cds.getEnd());
-	//
-	//		canvas.setGlobalAlpha(0.8f);
-	//		drawGeneRect(cx, cx2, yPosition, new Color("#EFCF8F"));
-	//		canvas.setGlobalAlpha(1f);
-	//	}
 
 	public void drawGeneRect(int x1, int x2, int y, Color c) {
 

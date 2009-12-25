@@ -37,13 +37,13 @@ public class PrioritySearchTree<E> {
 
 	public class Node {
 		public E elem;
-		public long x;
-		public long y;
-		public long splitX;
+		public int x;
+		public int y;
+		public int splitX;
 		public Node left;
 		public Node right;
 
-		public Node(E node, long x, long y) {
+		public Node(E node, int x, int y) {
 			if (node == null)
 				throw new NullPointerException("node cannot be null");
 			this.elem = node;
@@ -53,12 +53,12 @@ public class PrioritySearchTree<E> {
 
 		public void swap(Node n) {
 			// swap x
-			long tmpX = this.x;
+			int tmpX = this.x;
 			this.x = n.x;
 			n.x = tmpX;
 
 			// swap y
-			long tmpY = this.y;
+			int tmpY = this.y;
 			this.y = n.y;
 			n.y = tmpY;
 
@@ -76,17 +76,17 @@ public class PrioritySearchTree<E> {
 	}
 
 	private Node root = null;
-	private long lowerBoundOfX = 0;
-	private long upperBoundOfX = Integer.MAX_VALUE;
-	private long lowerBoundOfY = 0;
-	private long uppperBoundOfY = Integer.MAX_VALUE;
+	private int lowerBoundOfX = 0;
+	private int upperBoundOfX = Integer.MAX_VALUE;
+	private int lowerBoundOfY = 0;
+	private int uppperBoundOfY = Integer.MAX_VALUE;
 	private int nodeCount = 0;
 
 	public PrioritySearchTree() {
 
 	}
 
-	public PrioritySearchTree(long lowerBoundOfX, long upperBoundOfX, long lowerBoundOfY, long upperBoundOfY) {
+	public PrioritySearchTree(int lowerBoundOfX, int upperBoundOfX, int lowerBoundOfY, int upperBoundOfY) {
 		this.lowerBoundOfX = lowerBoundOfX;
 		this.upperBoundOfX = upperBoundOfX;
 		this.lowerBoundOfY = lowerBoundOfY;
@@ -110,11 +110,11 @@ public class PrioritySearchTree<E> {
 	}
 
 	private static class QueryBox {
-		public final long x1;
-		public final long x2;
-		public final long upperY;
+		public final int x1;
+		public final int x2;
+		public final int upperY;
 
-		public QueryBox(long x1, long x2, long upperY) {
+		public QueryBox(int x1, int x2, int upperY) {
 			this.x1 = x1;
 			this.x2 = x2;
 			this.upperY = upperY;
@@ -140,13 +140,13 @@ public class PrioritySearchTree<E> {
 	 * @param upperY
 	 * @return elements contained in the range (X:[x1, x2], Y:[ , upperY])
 	 */
-	public List<E> rangeQuery(long x1, long x2, long upperY) {
+	public List<E> rangeQuery(int x1, int x2, int upperY) {
 		ArrayList<E> result = new ArrayList<E>();
 		rangeQuery_internal(root, new QueryBox(x1, x2, upperY), x1, x2, result);
 		return result;
 	}
 
-	boolean rangeQuery_internal(Node currentNode, QueryBox queryBox, long rangeX1, long rangeX2, List<E> result) {
+	boolean rangeQuery_internal(Node currentNode, QueryBox queryBox, int rangeX1, int rangeX2, List<E> result) {
 		boolean toContinue = true;
 		if (currentNode != null) {
 			if (currentNode.y <= queryBox.upperY) {
@@ -157,7 +157,7 @@ public class PrioritySearchTree<E> {
 				}
 
 				// search the descendant nodes
-				long middleX = currentNode.splitX;
+				int middleX = currentNode.splitX;
 
 				// search the left tree
 				if (toContinue && queryBox.x1 < middleX) {
@@ -180,7 +180,7 @@ public class PrioritySearchTree<E> {
 	 * 
 	 * @param elem
 	 */
-	public void insert(E elem, long x, long y) {
+	public void insert(E elem, int x, int y) {
 		root = insert_internal(root, new Node(elem, x, y), lowerBoundOfX, upperBoundOfX);
 	}
 
@@ -189,11 +189,11 @@ public class PrioritySearchTree<E> {
 	 * 
 	 * @param elem
 	 */
-	public void remove(E elem, long x, long y) {
+	public void remove(E elem, int x, int y) {
 		root = remove_internal(root, new Node(elem, x, y), lowerBoundOfX, upperBoundOfX);
 	}
 
-	Node insert_internal(Node currentNode, Node insertNode, long lowerRangeOfX, long upperRangeOfX) {
+	Node insert_internal(Node currentNode, Node insertNode, int lowerRangeOfX, int upperRangeOfX) {
 		if (currentNode == null) {
 			// empty leaf is found. Insert the new node here
 			currentNode = insertNode;
@@ -214,7 +214,7 @@ public class PrioritySearchTree<E> {
 		return currentNode;
 	}
 
-	Node remove_internal(Node currentNode, Node removeTarget, long x_lower, long x_upper) {
+	Node remove_internal(Node currentNode, Node removeTarget, int x_lower, int x_upper) {
 		if (currentNode == null) {
 			// no node to delete
 			return currentNode;
