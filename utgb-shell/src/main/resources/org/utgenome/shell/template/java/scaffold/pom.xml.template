@@ -15,8 +15,8 @@
 
   <!-- set your GWT module name within the gwt.module tag (optional) -->  
   <properties>
-  	<utgb.version>$utgbVersion$</utgb.version>
-	<gwt.version>1.7.0</gwt.version>
+    <utgb.version>$utgbVersion$</utgb.version>
+    <gwt.version>1.7.0</gwt.version>
     <gwt.module>$moduleName$</gwt.module>
     <sqlite-jdbc.version>3.6.20</sqlite-jdbc.version>
     <gwt.jvmargs></gwt.jvmargs>
@@ -302,7 +302,12 @@
       <artifactId>utgb-core</artifactId>
       <version>\${utgb.version}</version>
     </dependency>
-
+    <dependency>
+      <groupId>org.utgenome</groupId>
+      <artifactId>utgb-shell</artifactId>
+      <version>\${utgb.version}</version>
+      <scope>test</scope>
+    </dependency>
     
 	<!-- Servlet API -->    
     <dependency>
