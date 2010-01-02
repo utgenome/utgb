@@ -65,7 +65,7 @@ public class TrackViewTest {
 		assertEquals(41, t.height);
 		assertEquals(true, t.pack);
 		assertEquals("org.utgenome.gwt.utgb.client.track.lib.NavigatorTrack", t.javaClass);
-		//assertEquals(true, t._.containsKey("sequenceList"));
+		assertEquals(true, t._.containsKey("sequenceList"));
 
 	}
 
