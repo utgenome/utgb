@@ -27,6 +27,7 @@ package org.utgenome.format.wig;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -37,15 +38,22 @@ import java.util.HashMap;
 import java.util.zip.DataFormatException;
 import java.util.zip.GZIPInputStream;
 
+import org.utgenome.gwt.utgb.client.bio.WigGraphData;
+import org.xerial.util.StopWatch;
+import org.xerial.util.log.Logger;
+
 public class WIGDatabaseReader 
 {
 	private Connection connection = null;
 	private Statement statement;
+	private static Logger _logger = Logger.getLogger(WIGDatabaseReader.class);
+
+	private static float minValue = Float.MAX_VALUE;
+	private static float maxValue = Float.MIN_VALUE;
 	
 	public WIGDatabaseReader(String inputFileURL) throws ClassNotFoundException, SQLException
 	{
 		Class.forName("org.sqlite.JDBC");
-
 		connection = DriverManager.getConnection("jdbc:sqlite:" + inputFileURL);
 		statement = connection.createStatement();
 	}
@@ -56,14 +64,53 @@ public class WIGDatabaseReader
 			connection.close();
 	}
 	
+	public ArrayList<String> getBrowser() throws SQLException
+	{
+		ArrayList<String> browser = new ArrayList<String>();
+		
+		ResultSet rs = statement.executeQuery(String.format("select * from browser"));
+		while(rs.next())
+		{
+			browser.add(rs.getString("description"));
+		}
+		
+		return browser;		
+	}
+	
 	public ArrayList<Integer> getTrackIdList(String chrom) throws SQLException
 	{
 		ArrayList<Integer> trackIdList = new ArrayList<Integer>();
 		
-		ResultSet rs = statement.executeQuery(String.format("select track_id from track where name='%s' and value='%s' ", "chrom", chrom));
+		ResultSet rs = statement.executeQuery(String.format("select distinct track_id from track where name='chrom' and value='%s'", chrom));
 		while(rs.next())
 		{
 			trackIdList.add(Integer.valueOf(rs.getInt("track_id")));
+		}
+		
+		return trackIdList;
+	}	
+
+	public ArrayList<Integer> getTrackIdList() throws SQLException
+	{
+		ArrayList<Integer> trackIdList = new ArrayList<Integer>();
+		
+		ResultSet rs = statement.executeQuery("select distinct track_id from track");
+		while(rs.next())
+		{
+			trackIdList.add(Integer.valueOf(rs.getInt("track_id")));
+		}
+		
+		return trackIdList;
+	}	
+
+	public ArrayList<String> getChromList() throws SQLException
+	{
+		ArrayList<String> trackIdList = new ArrayList<String>();
+		
+		ResultSet rs = statement.executeQuery("select distinct value from track where name='chrom'");
+		while(rs.next())
+		{
+			trackIdList.add(rs.getString("value"));
 		}
 		
 		return trackIdList;
@@ -82,33 +129,140 @@ public class WIGDatabaseReader
 		return track;
 	}
 	
-	public HashMap<Long, Double> getData(int trackId, long start, long end)
-		throws SQLException, IOException, DataFormatException, NumberFormatException
+	public HashMap<Long, Float> getData(int trackId, long start, long end)
+		throws SQLException, IOException, DataFormatException, NumberFormatException, ClassNotFoundException
 	{
-		HashMap<Long, Double> data = new HashMap<Long, Double>();
+		return(getData((long)(end - start), trackId, start, end));
+	}
+	
+	public HashMap<Long, Float> getData(long windowWidth, int trackId, long start, long end)
+		throws SQLException, IOException, DataFormatException, NumberFormatException, ClassNotFoundException
+	{
+		HashMap<Long, Float> data = new HashMap<Long, Float>();
 		HashMap<String, String> track = getTrack(trackId);
 
-		ResultSet rs = statement.executeQuery(String.format("select * from data where track_id=%d and start<=%d and end>=%d", trackId, end, start));
+		long[] chromStarts;
+		float[] dataValues;
+		
+		minValue = Float.MAX_VALUE;
+		maxValue = Float.MIN_VALUE;
+		
+		long rough = (long)Math.floor((end - start) / windowWidth);
+		if(rough < 1)rough = 1;
+		
+		StopWatch st1 = new StopWatch();
+		StopWatch st2 = new StopWatch();
+		
+		ResultSet rs = statement.executeQuery(String.format("select * from data where track_id=%d and start<=%d and end>=%d order by start", trackId, end, start));
+		while(rs.next())
+		{
+			int i;
+			ByteArrayInputStream bis;
+			GZIPInputStream in;
+			ObjectInputStream ois;
+			
+			int nDatas = rs.getInt("data_num");
+			
+			// read data point
+			if(track.get("stepType").equals("variableStep"))
+			{
+				bis = new ByteArrayInputStream(rs.getBytes("chrom_starts"));
+				in = new GZIPInputStream(bis);
+				ois = new ObjectInputStream(in);
+				
+				chromStarts = (long[]) ois.readObject();
+				
+				ois.close();
+				in.close();
+				bis.close();
+			}
+			else if(track.get("stepType").equals("fixedStep"))
+			{
+				long startPoint = rs.getLong("start");
+				long stepSize = Long.parseLong(track.get("step"));
+				chromStarts = new long[nDatas];
+					
+				for(i = 0; i < nDatas; i++)
+				{
+					chromStarts[i] = startPoint + (stepSize * (long)i);
+				}
+			}
+			else
+			{
+				throw new DataFormatException();
+			}
+
+			// read data value
+			bis = new ByteArrayInputStream(rs.getBytes("data_values"));
+			in = new GZIPInputStream(bis);
+			ois = new ObjectInputStream(in);
+
+			dataValues = (float[]) ois.readObject();
+			
+			ois.close();
+			in.close();
+			bis.close();
+
+			st2.resume();
+			for(i = 0; i < nDatas; i++)
+			{
+				if(start <= chromStarts[i] && chromStarts[i] <= end)
+				{
+					long chromStart = chromStarts[i] - (chromStarts[i] % rough);
+					if(data.containsKey(chromStart))
+						data.put(chromStart, Math.max(dataValues[i], data.get(chromStart)));
+					else
+						data.put(chromStart, dataValues[i]);
+
+					minValue = Math.min(minValue, dataValues[i]);
+					maxValue = Math.max(maxValue, dataValues[i]);
+				}
+			}
+			st2.stop();
+		}
+		_logger.info("st2:"+st2.getElapsedTime());
+		_logger.info("st1:"+st1.getElapsedTime());
+		return data;
+	}
+	
+	public HashMap<Long, Float> getData_old(long windowWidth, int trackId, long start, long end)
+		throws SQLException, IOException, DataFormatException, NumberFormatException
+		{
+		HashMap<Long, Float> data = new HashMap<Long, Float>();
+		HashMap<String, String> track = getTrack(trackId);
+
+		byte[] buffer = new byte[32768];
+
+		long rough = (long)Math.floor((end - start) / windowWidth);
+		if(rough < 1)rough = 1;
+
+		StopWatch st1 = new StopWatch();
+		StopWatch st2 = new StopWatch();
+
+		ResultSet rs = statement.executeQuery(String.format("select * from data where track_id=%d and start<=%d and end>=%d order by start", trackId, end, start));
 		while(rs.next())
 		{
 			int i;
 			int temp;
-			ByteArrayInputStream buf;
+			ByteArrayInputStream bis;
 			GZIPInputStream in;
 			ByteArrayOutputStream os;
 
 			int nDatas = rs.getInt("data_num");
 			long[] chromStarts = new long[nDatas];
-			double[] dataValues = new double[nDatas];
+			//float[] dataValues = new float[nDatas];
+			String[] dataValues;
 
 			// read data point
 			if(track.get("stepType").equals("variableStep"))
 			{
-				buf = new ByteArrayInputStream(rs.getBytes("chrom_starts"));
-				in = new GZIPInputStream(buf);
+				bis = new ByteArrayInputStream(rs.getBytes("chrom_starts"));
+				in = new GZIPInputStream(bis);
 				os = new ByteArrayOutputStream();
-				while((temp = in.read()) != -1)
-					os.write(temp);
+				while((temp = in.read(buffer, 0, buffer.length)) != -1)
+				{
+					os.write(buffer, 0, temp);
+				}
 				os.flush();
 
 				i = 0;
@@ -116,10 +270,10 @@ public class WIGDatabaseReader
 				{
 					chromStarts[i++] = Long.parseLong(tempString);
 				}
-				
+
 				os.close();
 				in.close();
-				buf.close();
+				bis.close();
 			}
 			else if(track.get("stepType").equals("fixedStep"))
 			{
@@ -137,39 +291,113 @@ public class WIGDatabaseReader
 			}
 
 			// read data value
-			buf = new ByteArrayInputStream(rs.getBytes("data_values"));
-			in = new GZIPInputStream(buf);
+			bis = new ByteArrayInputStream(rs.getBytes("data_values"));
+			in = new GZIPInputStream(bis);
 			os = new ByteArrayOutputStream();
-			while((temp = in.read()) != -1)
-				os.write(temp);
+			while((temp = in.read(buffer, 0, buffer.length)) != -1)
+			{
+				os.write(buffer, 0, temp);
+			}
 			os.flush();
 
+			st2.resume();
 			i = 0;
-			for(String tempString : os.toString().split("\t"))
-			{
-				dataValues[i++] = Double.parseDouble(tempString);
-			}
+			//		for(String tempString : os.toString().split("\t"))
+			//		{
+			//			dataValues[i++] = Float.parseFloat(tempString);
+			//		}
+			dataValues = os.toString().split("\t");
+			st2.stop();
 
 			os.close();
 			in.close();
-			buf.close();				
+			bis.close();
 
 			for(i = 0; i < nDatas; i++)
 			{
-				if(chromStarts[i] <= end && chromStarts[i]>= start)
+				if(chromStarts[i] >= start && chromStarts[i] <= end)
 				{
-					data.put(chromStarts[i], dataValues[i]);
+					long chromStart = chromStarts[i] - (chromStarts[i] % rough);
+					if(data.containsKey(chromStarts))
+						//					data.put(chromStart, Math.max(dataValues[i], data.get(chromStarts)));
+						data.put(chromStart, Math.max(Float.parseFloat(dataValues[i]), data.get(chromStarts)));
+					else
+						//					data.put(chromStart, dataValues[i]);
+						data.put(chromStart, Float.parseFloat(dataValues[i]));
 				}
-			}		
+			}
 		}
-		
+		System.out.println("st2:"+st2.getElapsedTime());
+		System.out.println("st1:"+st1.getElapsedTime());
 		return data;
-	}
+}
 	
-	public HashMap<Long, Double> getData(int trackId)
-		throws NumberFormatException, SQLException, IOException, DataFormatException
+	public HashMap<Long, Float> getData(int trackId)
+		throws NumberFormatException, SQLException, IOException, DataFormatException, ClassNotFoundException
 	{
 		return getData(trackId, 0, Long.MAX_VALUE);
+	}
+	
+	public WigGraphData getWigData(long windowWidth, int trackId, long start, long end) 
+		throws SQLException, NumberFormatException, IOException, DataFormatException, ClassNotFoundException
+	{
+		WigGraphData wigData = new WigGraphData();
+		
+		wigData.setTrack_id(trackId);
+		wigData.setBrowser(getBrowser());
+		wigData.setTrack(getTrack(trackId));
+		wigData.setData(getData(windowWidth, trackId, start, end));
+		wigData.setMinValue(minValue);
+		wigData.setMaxValue(maxValue);
+		
+		return wigData;
+	}
+
+	public WigGraphData getWigData(int trackId, long start, long end) 
+		throws SQLException, NumberFormatException, IOException, DataFormatException, ClassNotFoundException
+	{
+		WigGraphData wigData = new WigGraphData();
+
+		wigData.setTrack_id(trackId);
+		wigData.setBrowser(getBrowser());
+		wigData.setTrack(getTrack(trackId));
+		wigData.setData(getData(trackId, start, end));
+		wigData.setMinValue(minValue);
+		wigData.setMaxValue(maxValue);
+		
+		return wigData;
+	}
+	
+	public WigGraphData getWigData(int trackId)
+		throws SQLException, NumberFormatException, IOException, DataFormatException, ClassNotFoundException
+	{
+		return getWigData(trackId, 0, Long.MAX_VALUE);
+	}
+	
+	public ArrayList<WigGraphData> getWigDataList(long windowWidth, String chrom, long start, long end)
+		throws SQLException, NumberFormatException, IOException, DataFormatException, ClassNotFoundException
+	{
+		ArrayList<WigGraphData> wigDataList = new ArrayList<WigGraphData>();
+		
+		for(int id : getTrackIdList(chrom))
+		{
+			wigDataList.add(getWigData(windowWidth, id, start, end));
+		}
+		
+		return wigDataList;
+	}
+
+	public ArrayList<WigGraphData> getWigDataList(String chrom, long start, long end)
+		throws SQLException, NumberFormatException, IOException, DataFormatException, ClassNotFoundException
+	{
+		ArrayList<WigGraphData> wigDataList = new ArrayList<WigGraphData>();
+			
+		for(int id : getTrackIdList(chrom))
+		{
+			wigDataList.add(getWigData(id, start, end));
+		}
+		
+		return wigDataList;
 	}
 }
 

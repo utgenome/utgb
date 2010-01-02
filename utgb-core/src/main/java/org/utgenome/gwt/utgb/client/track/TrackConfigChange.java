@@ -24,6 +24,8 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.track;
 
+import java.util.HashSet;
+
 /**
  * Change notifier of {@link TrackConfig}
  * @author leo
@@ -35,6 +37,9 @@ public interface TrackConfigChange {
 	
 	public String getValue(String configParamName);
 	public int getIntValue(String configParamName);
+	public float getFloatValue(String configParamName);
+	public boolean getBoolValue(String configParamName);
+	public HashSet<String> getChangedParamSet();
 }
 
 

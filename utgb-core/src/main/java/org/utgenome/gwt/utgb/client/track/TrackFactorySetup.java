@@ -97,6 +97,9 @@ public class TrackFactorySetup {
 		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.DBSelectTrack", org.utgenome.gwt.utgb.client.track.lib.DBSelectTrack
 				.factory());
 
+		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.WIGGraphCanvasTrack", 
+				org.utgenome.gwt.utgb.client.track.lib.WIGGraphCanvasTrack.factory());
+
 		TrackFactoryHolder.addTrackGroupFactory("org.utgenome.gwt.utgb.client.track.lib.debug.DrosophilaTrackGroup",
 				org.utgenome.gwt.utgb.client.track.lib.debug.DrosophilaTrackGroup.factory());
 		TrackFactoryHolder.addTrackGroupFactory("org.utgenome.gwt.utgb.client.track.lib.debug.SampleGeneTrackGroup",

@@ -24,6 +24,7 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.canvas;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -31,10 +32,13 @@ import org.utgenome.gwt.utgb.client.bio.CDS;
 import org.utgenome.gwt.utgb.client.bio.Exon;
 import org.utgenome.gwt.utgb.client.bio.Gene;
 import org.utgenome.gwt.utgb.client.bio.Locus;
+import org.utgenome.gwt.utgb.client.bio.WigGraphData;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.ui.CSS;
+import org.utgenome.gwt.utgb.client.ui.FormLabel;
 import org.utgenome.gwt.widget.client.Style;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
@@ -56,6 +60,7 @@ import com.google.gwt.widgetideas.graphics.client.GWTCanvas;
 public class GeneCanvas extends Composite {
 
 	private int windowWidth = 800;
+	private int windowHeight = 100;
 	private long startIndexOnGenome = 1;
 	private long endIndexOnGenome = 1000;
 
@@ -258,7 +263,7 @@ public class GeneCanvas extends Composite {
 		canvas.setPixelHeight(height);
 		panel.setPixelSize(width, height);
 	}
-
+	
 	public static int width(int x1, int x2) {
 		return (x1 < x2) ? x2 - x1 : x1 - x2;
 	}
@@ -515,4 +520,269 @@ public class GeneCanvas extends Composite {
 			canvas.fillRect(drawPosition(x2), y, boxWidth, geneHeight);
 	}
 
+	private int indentHeight = 0;
+
+	private float maxValue = 20.0f;
+	private float minValue = 0.0f;
+	private boolean isLog = false;
+
+	public void drawWigGraph(WigGraphData data, Color color) {
+		// TODO Auto-generated method stub
+		long span = 1;
+		if(data.getTrack().containsKey("span"))
+		{
+			span = Long.parseLong(data.getTrack().get("span"));
+		}
+		// draw data graph
+		for(long pos : data.getData().keySet())
+		{
+			float value = data.getData().get(pos);
+			if(value == 0.0f)
+				continue;
+
+			float x1 = pixelPositionOnWindow(pos);
+			float y1 = getYPosition(value);
+			float width = pixelPositionOnWindow(pos + span) - x1;
+
+			if (width <= 1.0f)
+			{
+				width = 1.0f;
+			}
+
+			if (reverse)
+			{
+				width *= -1.0f;
+				x1 = windowWidth - x1;
+			}
+			
+			float height;
+			if (y1 == getYPosition(0.0f))
+			{
+				continue;
+			}
+			else
+			{
+				if(y1 < 0.0f)
+					y1 = 0.0f;
+				else if(y1 > windowHeight)
+					y1 = windowHeight;
+				
+				height = getYPosition(0.0f) - y1;
+			}
+			
+			canvas.setFillStyle(color);
+			canvas.fillRect(x1, y1, width, height);
+		}
+	}
+
+	public void drawFrame(AbsolutePanel panel, int leftMargin)
+	{
+		// draw frame
+		canvas.setFillStyle(Color.BLACK);
+		canvas.fillRect(0, 0, 1, windowHeight);
+		canvas.fillRect(windowWidth - 1, 0, 1, windowHeight);
+		canvas.fillRect(0, 0, windowWidth, 1);
+		canvas.fillRect(0, windowHeight - 1, windowWidth, 1);
+
+		// draw indent line & label
+		Indent indent = new Indent(minValue, maxValue);
+		
+		FormLabel[] label = new FormLabel[indent.nSteps + 1];
+		for(int i = 0; i <= indent.nSteps; i ++)
+		{
+			float value = indent.getIndentValue(i);
+
+			label[i] = new FormLabel();
+			label[i].setStyleName("search-label");
+			label[i].setText(indent.getIndentString(i));
+			
+			panel.add(label[i], 0, 0);
+
+			int labelPosition = 0;
+			if(label[i].getOffsetWidth() < leftMargin)
+				labelPosition = leftMargin - label[i].getOffsetWidth();
+
+			panel.setWidgetPosition(label[i], labelPosition, 
+					(int)(getYPosition(value) - (label[i].getOffsetHeight() - indentHeight) / 2.0));
+
+			if(getYPosition(value) < 0.0f || getYPosition(value) > windowHeight)
+			{
+				panel.remove(label[i]);
+				continue;
+			}
+
+			// draw indent line
+			canvas.setGlobalAlpha(0.2);
+			canvas.fillRect(0, getYPosition(value), windowWidth, 1);
+			// draw zero line
+			canvas.setGlobalAlpha(1.0);
+		}
+
+		canvas.fillRect(0, getYPosition(0.0f), windowWidth, 1);		
+	}
+
+	public class Indent
+	{
+		public int exponent = 0;
+		public long fraction = 0;
+		
+		public int nSteps = 0;
+		
+		public float min = 0.0f;
+		public float max = 0.0f;
+		
+		public Indent(float minValue, float maxValue)
+		{
+			if(indentHeight == 0)
+				indentHeight = 10;
+
+			min = minValue < maxValue ? minValue : maxValue;
+			max = minValue > maxValue ? minValue : maxValue;
+			
+			if(isLog)
+			{
+				min = getLogValue(min);
+				max = getLogValue(max);
+			}
+			
+			double tempIndentValue = (max - min) / windowHeight * indentHeight;
+			
+			if(isLog && tempIndentValue < 1.0)
+				tempIndentValue = 1.0;
+			
+			fraction = (long) Math.floor(Math.log10(tempIndentValue));
+			exponent =  (int) Math.ceil(Math.round(tempIndentValue / Math.pow(10, fraction - 3)) / 1000.0);
+			
+			if(exponent <=5)
+				;
+//			else if(exponent <= 7)
+//				exponent = 5;
+			else
+				exponent = 10;
+
+			double stepSize = exponent * Math.pow(10, fraction);
+			max = (float)(Math.floor(max / stepSize) * stepSize);
+			min = (float)(Math.ceil(min / stepSize) * stepSize);
+			
+			nSteps = (int) Math.abs((max - min) / stepSize);
+		}
+		
+		public float getIndentValue(int step)
+		{
+			double indentValue = min + (step * exponent * Math.pow(10, fraction));
+
+			if(!isLog)
+				return (float) indentValue;
+			else if(indentValue == 0.0f)
+				return 0.0f;
+			else if(indentValue >= 0.0f)
+				return (float) Math.pow(2, indentValue - 1);
+			else
+				return (float) -Math.pow(2, -indentValue - 1);
+		}
+		
+		public String getIndentString(int step){
+			float indentValue = getIndentValue(step);
+
+			if(indentValue == (int)indentValue)
+				return String.valueOf((int)indentValue);
+			else
+				return String.valueOf(indentValue);
+		}
+	}
+	
+	public float getYPosition(float value)
+	{
+		if(maxValue == minValue)
+			return 0.0f;
+
+		float tempMin = maxValue < minValue ? maxValue : minValue;
+		float tempMax = maxValue > minValue ? maxValue : minValue;
+
+		if(isLog)
+		{
+			value = getLogValue(value);
+			tempMax = getLogValue(tempMax);
+			tempMin = getLogValue(tempMin);
+		}
+		float valueHeight = (value - tempMin) / (tempMax - tempMin) * windowHeight;
+
+		if(maxValue < minValue)
+			return valueHeight;
+		else
+			return windowHeight - valueHeight; 
+	}
+	
+	private float logBase = 2.0f;
+	public float getLogBase() {
+		return logBase;
+	}
+	public void setLogBase(float logBase) {
+		this.logBase = logBase;
+	}
+
+	public float getLogValue(float value)
+	{
+		if(Math.log(logBase) == 0.0)
+			return value;
+		
+		float temp = 0.0f;
+		if(value > 0.0f)
+		{
+			temp = (float)(Math.log(value) / Math.log(logBase) + 1.0);
+			if(temp < 0.0f)
+				temp = 0.0f;
+		}
+		else if(value < 0.0f)
+		{
+			temp = (float)(Math.log(-value) / Math.log(logBase) + 1.0);
+			if(temp < 0.0f)
+				temp = 0.0f;
+			temp *= -1.0f;
+		}
+		return temp;
+	}
+	
+	
+	public void setWindowHeight(int windowHeight)
+	{
+		this.windowHeight = windowHeight;			
+		setPixelSize(windowWidth, windowHeight);
+	}
+	public int getWindowHeight()
+	{
+		return windowHeight;
+	}
+	public void setPanelHeight(int height)
+	{
+		if(height > 0)
+		{
+			panel.setHeight(height + "px");
+			panel.setWidgetPosition(canvas, 0, indentHeight / 2);
+		}	
+	}
+	public float getMaxValue() {
+		return maxValue;
+	}
+	public void setMaxValue(float maxValue) {
+		this.maxValue = maxValue;
+	}
+	public float getMinValue() {
+		return minValue;
+	}
+	public void setMinValue(float minValue) {
+		this.minValue = minValue;			
+	}
+	public boolean getIsLog() {
+		return isLog;
+	}
+	public void setIsLog(boolean isLog) {
+		this.isLog = isLog;
+	}
+	public int getIndentHeight() {
+		return indentHeight;
+	}
+	public void setIndentHeight(int indentHeight) {
+		this.indentHeight = indentHeight;
+	}
 }
