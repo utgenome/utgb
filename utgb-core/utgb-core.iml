@@ -13,7 +13,7 @@
     <orderEntry type="library" exported="" name="Maven: commons-fileupload:commons-fileupload:1.2" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.utgenome.thirdparty:sam:1.11" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.xerial:sqlite-jdbc:3.6.20" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.xerial:xerial-core:1.0.17" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.xerial:xerial-core:1.0.18" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.antlr:antlr:3.1.3" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.antlr:antlr-runtime:3.1.3" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.antlr:stringtemplate:3.2" level="project" />

@@ -1,6 +1,7 @@
 target
 .classpath
 .project
+.idea
 war/utgb
 war/WEB-INF/classes
 war/org.utgenome.gwt.utgb.UTGBResourceCenter
