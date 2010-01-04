@@ -30,19 +30,34 @@ package org.utgenome.gwt.utgb.client.bio;
  * @author leo
  * 
  */
-public class Read
-{
+public class SAMRead {
+	public static enum Strand {
+		FORWARD, REVERSE
+	}
 
-    public long viewstart;
-    public long viewend;
-    public long start;
-    public long end;
-    public String strand;
-    public String sequence;
+	public static final int FLAG_PAIRED_READ = 0x001;
+	public static final int FLAG_MAPPED_IN_A_PROPER_PAIR = 0x002;
+	public static final int FLAG_QUERY_IS_UNMAPPED = 0x004;
+	public static final int FLAG_MATE_IS_UNMAPPED = 0x008;
+	public static final int FLAG_STRAND_OF_QUERY = 0x0010;
+	public static final int FLAG_STRAND_OF_MATE = 0x0020;
+	public static final int FLAG_IS_FIRST_READ = 0x0040;
+	public static final int FLAG_IS_SECOND_READ = 0x0080;
+	public static final int FLAG_NOT_PRIMARY = 0x0100;
+	public static final int FLAG_FAILS_QUALITY_CHECK = 0x0200;
+	public static final int FLAG_PCR_OR_OPTICAL_DUPLICATE = 0x0400;
 
-    public Read()
-    {
+	public Strand strand;
 
-    }
+	public String seq;
+	public String cigar;
+	public int pos;
+	public int mPos;
+
+	public int isize;
+
+	public SAMRead() {
+
+	}
 
 }
