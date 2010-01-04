@@ -40,75 +40,9 @@ Here is an example of the database configuration. One of the database tags below
  -pass: (password)
 </code>
 
-= Smart Data Binding in UTGB
-
-UTGB has an support to map data from !XML/JSON/Relational data format to Java class objects, and vice verca. This conversion is automatically done once you write appropriate Java class definitions. To implement this feature, UTGB Toolkit uses [http://www.xerial.org/trac/Xerial/wiki/BeanUtil BeanUtil] library, which enables mappings between Java Objects and structured data, including database query results, XML, JSON, etc.
-
-== An Quick Example (XML)
-
-Supporse you have the following XML data (saved as "gene.xml"), which describes a gene object:
-<code>
-<gene id="1">
-   <name>gene1</name>
-   <chr>chr1</chr>
-   <start>1000</start>
-   <end>4000</end>
-   <strand>+</strand>
-</gene>
-</code>
-
-In order to parse this XML data, you have to write a corresponding Java class definition as follows:
-<code>
-class Gene 
-{
-  int id;
-  String name;
-  String chr;
-  String strand;
-  long start;
-  long end;
-  
-  // public default constructor
-  public Gene() {}
-  
-  // setter definitions
-  public void setId(int id) { this.id = id; }
-  public void setName(String name) { this.name = name; }
-  public void setChr(String chr) { this.chr = chr; }
-  public void setStart(long start) { this.start = start; }
-  public void setEnd(long end) { this.end = end; }
-  public void setStrand(String strand) { this.strand = strand; }
- 
-  // getter definitions
-  public int getId() { return id; }
-  public Stirng getName() { return name; }
-  public String getChr() { return chr; }
-  public long getStart() { return start; }
-  public long getEnd() { return end; }
-  public String getStrant() { return strand; }
-}
-</code>
-
-Eclipse has a built-in support for generating getters and setters corresponding to each fild variable; right-click - source - Generate getters & setters menu. 
-
-
-To create an instance of the Gene object from the XML file ("gene.xml"), you have to use Lens.loadXML(target class, input reader) mehtod:
-<code>
-BufferedReader xmlReader = new BufferedReader(new FileReader("gene.xml"));
-Gene gene = Lens.loadXML(Gene.class, xmlReader);
-
-// gene.getId() == 1
-// gene.getName() == "gene1"
-// gene.getChr() == "chr1"
-// gene.getStart() == 1000
-// gene.getEnd() == 4000
-</code>
-
-UTGB automatically converts string data appeared in the XML file into appropriate data type (integer, String, etc. ) by seeing setter methods in the class definition. 
-
 == Mapping Database Query Results to Java Objects
 
-When your data is stored in an SQLite database, you have to use SQL queries to retreive data.
+When your data is stored in an SQLite database with id mydb, you can use SQL queries to retreive object data from the data base.
 
 === Table Data 
 <code>
@@ -131,10 +65,13 @@ List<Gene> result =
      String.format("select * from gene where start >= %d order by start", start), 
      Gene.class);
 
-
 // draw the gene objects to some image
 for(Gene eachGene : result)
 {
    // ... do some drawings
 }
 </code>
+
+== Object-Relational Mapping
+To learn how UTGB maps table data to objects see [lens.html Lens].
+

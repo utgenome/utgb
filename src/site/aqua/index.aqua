@@ -7,6 +7,8 @@
 ** No need to install other web server programs, database management sysytems, etc.
 * {b|Guaranteed data privacy}
 ** Your genome browser works in your PCs (desktop, laptop, etc.)
+* {b|Object Mapping Support}
+** Various types of data mapping between objects and XML, JSON, Silk and JDBC result set, etc. is supported. 
 * {b|Sophisticated web user interface}
 ** AJAX-based interactive genome browser
 

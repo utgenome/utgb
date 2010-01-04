@@ -61,6 +61,10 @@ public class Properties extends HashMap<String, String> {
 		super.put(key, Long.toString(value));
 	}
 
+	public void add(String key, float value) {
+		super.put(key, Float.toString(value));
+	}
+
 	public void add(String key, boolean value) {
 		super.put(key, Boolean.toString(value));
 	}
@@ -100,6 +104,21 @@ public class Properties extends HashMap<String, String> {
 	 */
 	public int getInt(String key, int defaultValue) {
 		return containsKey(key) ? getInt(key) : defaultValue;
+	}
+
+	public float getFloat(String key) {
+		return Float.parseFloat((String) super.get(key));
+	}
+	/**
+	 * Gets the float value associated with the given key. If any corresponding value is not found, returns the given
+	 * default value
+	 * 
+	 * @param key
+	 * @param defaultValue
+	 * @return
+	 */
+	public float getFloat(String key, float defaultValue) {
+		return containsKey(key) ? getFloat(key) : defaultValue;
 	}
 
 	public boolean getBoolean(String key) {

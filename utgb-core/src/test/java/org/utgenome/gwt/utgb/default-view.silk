@@ -1,0 +1,63 @@
+%silk(version:1.0)
+
+-revision: hg19
+-species:  human
+-target:   chr1
+-window(start:1, end:100000, width:800)
+
+# track list to be displayed
+-track(name:UTGB Navigator, height:41, pack:true)
+ -java class: org.utgenome.gwt.utgb.client.track.lib.NavigatorTrack
+ -sequenceList>
+ [
+   {"species":"human", "revision":["hg18", "hg17"]},
+   {"species":"medaka", "revision":["version1.0", "version0.9"]}
+ ]
+
+-track(name:Sequence Overview, height:14, pack:true)
+ -java class: org.utgenome.gwt.utgb.client.track.lib.SequenceRulerTrack
+ -leftMargin: 100
+
+-track (name:Ruler, height:14, pack:true)
+ -java class: org.utgenome.gwt.utgb.client.track.lib.RulerTrack
+ -leftMargin: 100
+
+# DAS data track
+-track(name: DAS Track, pack:true)
+ -java class: org.utgenome.gwt.utgb.client.track.lib.DASTrack
+ -type: image
+ -leftMargin: 100
+ # DAS url to connect
+ -dasBaseURL: http://www.ensembl.org/das/Homo_sapiens.NCBI36.transcript/
+ # %q symbol will be replaced with species=human&revision=version1.0&start=1&end=10000&name=chr1
+ -trackBaseURL:utgb-core/DASViewer?%q
+ # The dasType property is needed for UCSC's DAS servers to reduce the amount of data to be retrieved 
+ -dasType: refGene
+
+# BED data track
+-track(name: BED Track, pack:true)
+ -java class: org.utgenome.gwt.utgb.client.track.lib.DASTrack
+ -type: image
+ -leftMargin: 100
+ # %q symbol will be replaced with species=human&revision=version1.0&start=1&end=10000&name=chr1
+ -trackBaseURL:utgb-core/BEDViewer?%q
+ # this track reads DAS data from db/sample.bed 
+ -fileName:db/sample.bed
+
+
+# Refseq gene track provided as a PNG image
+-track(name:RefSeq Gene Demo, pack:true)
+ -java class: org.utgenome.gwt.utgb.client.track.lib.GenomeTrack
+ -type: image 
+ -leftMargin: 100
+ # This track retrieves the contents from (server_URL)/utgb-core/GeneViewer 
+ -trackBaseURL: utgb-core/GeneViewer?%q
+
+# Refseq gene track provided as a PNG image
+-track(name:RefSeq Gene Table Demo, pack:true)
+ -java class: org.utgenome.gwt.utgb.client.track.lib.GenomeTrack
+ -type: frame 
+ -leftMargin: 100
+ # This track retrieves the contents from (server_URL)/utgb-core/GeneViewer 
+ -trackBaseURL: utgb-core/GeneViewer.tab?%q
+

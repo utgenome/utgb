@@ -26,7 +26,8 @@ package org.utgenome.gwt.utgb.client.view;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
+
+import org.utgenome.gwt.utgb.client.util.Properties;
 
 public class TrackView implements Serializable {
 
@@ -48,11 +49,8 @@ public class TrackView implements Serializable {
 		public int height;
 		public boolean pack;
 		public String javaClass;
-		public HashMap<String, String> properties = new HashMap<String, String>();
+		public Properties _ = new Properties();
 
-		public String put(String key, String value) {
-			return properties.put(key, value);
-		}
 	}
 
 	public static class Window implements Serializable {

@@ -27,6 +27,7 @@ package org.utgenome.format.wig;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.sql.Connection;
@@ -69,8 +70,12 @@ public class WIGDatabaseGenerator
 	private static int buffer_count = 0;
 	private static long buffer_start = -1;
 	private static long buffer_end = -1;
-	private static double buffer_maxValue = -1.0;
+	private static float buffer_maxValue = Float.MIN_VALUE;
+	private static float buffer_minValue = Float.MAX_VALUE;
 	
+	private static int dataSplitUnit = 100000;
+	private static long[] chromStarts;
+	private static float[] dataValues;
 	
 	public static void toSQLiteDB(Reader wigInput, String dbName) throws IOException, XerialException
 	{
@@ -82,9 +87,9 @@ public class WIGDatabaseGenerator
 		dataValueBuffer = new CompressedBuffer();
 		
 		long nPoints = 0;
+		chromStarts = new long[dataSplitUnit];
+		dataValues = new float[dataSplitUnit];
 		
-		final int dataSplitUnit = 10000;
-
 		String line = null;
 		int lineNum = 1;
 
@@ -105,15 +110,16 @@ public class WIGDatabaseGenerator
 			
 			stat.executeUpdate("create table browser (description text)");
 			stat.executeUpdate("create table track (track_id integer, name text, value text)");
-			stat.executeUpdate("create table data (track_id integer, start integer, end integer, " +
+			stat.executeUpdate("create table data (track_id integer, start integer, end integer, min_value real, " +
 												  "max_value real, data_num integer, chrom_starts blob, " +
 												  "data_values blob)");
-			
+						
+			stat.executeUpdate("create index track_index on track (name, value)");
 			stat.executeUpdate("create index data_index on data (track_id, start)");
 
 			PreparedStatement p1 = conn.prepareStatement("insert into browser values(?)");
 			PreparedStatement p2 = conn.prepareStatement("insert into track values(?, ?, ?)");
-			PreparedStatement p3 = conn.prepareStatement("insert into data values(?, ?, ?, ?, ?, ?, ?)");
+			PreparedStatement p3 = conn.prepareStatement("insert into data values(?, ?, ?, ?, ?, ?, ?, ?)");
 	 		
 			stopWatch.reset();
 
@@ -157,7 +163,6 @@ public class WIGDatabaseGenerator
 					// insert data lines					
 					isBufferEnpty = false;
 					
-					double dataValue;
 					if(isVariableStep)
 					{
 						String[] lineValues = readDataLine(line, lineNum);
@@ -170,9 +175,8 @@ public class WIGDatabaseGenerator
 						{
 							buffer_end = currentPoint;
 						}
-						chromStartBuffer.write((currentPoint + "\t").getBytes());
-						dataValue = Double.parseDouble(lineValues[1]);
-						dataValueBuffer.write((dataValue + "\t").getBytes());
+						chromStarts[buffer_count] = currentPoint;
+						dataValues[buffer_count] = Float.parseFloat(lineValues[1]);
 					}
 					else
 					{
@@ -186,12 +190,11 @@ public class WIGDatabaseGenerator
 						{
 							buffer_end = currentPoint;
 						}
-//						chromStartBuffer.write((currentPoint + "\t").getBytes());
-						dataValue = Double.parseDouble(lineValues[0]);
-						dataValueBuffer.write((lineValues[0] + "\t").getBytes());
+						dataValues[buffer_count] = Float.parseFloat(lineValues[0]);
 					}
 
-					buffer_maxValue = Math.max(dataValue, buffer_maxValue);
+					buffer_maxValue = Math.max(dataValues[buffer_count], buffer_maxValue);	
+					buffer_minValue = Math.min(dataValues[buffer_count], buffer_minValue);
 					
 					nPoints++;
 					buffer_count++;
@@ -224,19 +227,43 @@ public class WIGDatabaseGenerator
 	}
 	
     private static void insertData(int track_id, PreparedStatement p3) throws SQLException, IOException {
+
+    	long[] tempChromStarts = new long[buffer_count];
+    	float[] tempDataValues = new float[buffer_count];
+    	
+    	System.arraycopy(chromStarts, 0, tempChromStarts, 0, buffer_count);
+    	System.arraycopy(dataValues, 0, tempDataValues, 0, buffer_count);
+    	
+		ByteArrayOutputStream buf = new ByteArrayOutputStream();
+		ObjectOutputStream out = new ObjectOutputStream(buf);
+		if(isVariableStep)
+		{
+			out.writeObject(tempChromStarts);
+			out.flush();
+			chromStartBuffer.write(buf.toByteArray());
+		}
+		buf = new ByteArrayOutputStream();
+		out = new ObjectOutputStream(buf);
+		out.writeObject(tempDataValues);
+		out.flush();
+		dataValueBuffer.write(buf.toByteArray());
+    	
     	// insert data line
     	p3.setInt(1, track_id);
 		p3.setLong(2, buffer_start);
 		p3.setLong(3, buffer_end);
-		p3.setDouble(4, buffer_maxValue);
-		p3.setLong(5, buffer_count);
-		p3.setBytes(6, chromStartBuffer.toByteArray());
-		p3.setBytes(7, dataValueBuffer.toByteArray());
+		p3.setFloat(4, buffer_minValue);
+		p3.setFloat(5, buffer_maxValue);
+		p3.setLong(6, buffer_count);
+		p3.setBytes(7, chromStartBuffer.toByteArray());
+		p3.setBytes(8, dataValueBuffer.toByteArray());
 		p3.execute();
 		
-		_logger.info(String.format("insert data %d-%d", buffer_start, buffer_end));
+		_logger.info(String.format("insert data %d:%d-%d", track_id, buffer_start, buffer_end));
 		
 		// init variables
+		chromStarts = new long[dataSplitUnit];
+		dataValues = new float[dataSplitUnit];
 		isAddTrackId = true;
 		isBufferEnpty = true;
 		chromStartBuffer.reset();
@@ -244,9 +271,10 @@ public class WIGDatabaseGenerator
 		buffer_count = 0;
 		buffer_start = -1;
 		buffer_end = -1;
-		buffer_maxValue = -1.0;
+		buffer_maxValue = Float.MIN_VALUE;
+		buffer_minValue = Float.MAX_VALUE;
 	}
-
+    
 	private static String[] readDataLine(String line, int lineNum) throws DataFormatException
     {
         String[] temp = line.replace(" ", "\t").trim().split("\t+");

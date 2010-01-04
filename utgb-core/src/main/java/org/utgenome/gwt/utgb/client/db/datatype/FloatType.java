@@ -16,8 +16,8 @@
 //--------------------------------------
 // UTGB Common Project
 //
-// BooleanType.java
-// Since: 2007/04/13
+// DoubleType.java
+// Since: 2009/12/14
 //
 // $Date$
 // $URL$ 
@@ -25,68 +25,65 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.db.datatype;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.json.client.JSONBoolean;
+import com.google.gwt.json.client.JSONNumber;
+import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
-import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.TextBox;
 
-public class BooleanType extends DataTypeBase {
-
-	public BooleanType(String name) {
+public class FloatType extends DataTypeBase {
+	public FloatType(String name) {
 		super(name);
 	}
 
 	public InputForm getInputForm() {
-		return new BooleanTypeForm();
+		return new FloatTypeForm();
 	}
 
-	public class BooleanTypeForm extends InputForm {
-		CheckBox form = new CheckBox();
+	public class FloatTypeForm extends InputForm {
+		private TextBox form = new TextBox();
 
-		public BooleanTypeForm() {
+		public FloatTypeForm() {
 			initWidget(form);
 		}
 
 		public String getUserInput() {
-			return form.getValue() ? "true" : "false";
+			return form.getText();
 		}
 
 		public JSONValue getJSONValue() {
-			return JSONBoolean.getInstance(form.getValue());
+			try {
+				double value = Float.parseFloat(form.getText());
+				return new JSONNumber(value);
+			}
+			catch (NumberFormatException e) {
+				return new JSONString("");
+			}
 		}
 
 		public void setValue(String value) {
-			form.setValue(value.equals("true"));
+			try {
+				float v = Float.parseFloat(value);
+				form.setText(value);
+			}
+			catch (NumberFormatException e) {
+				GWT.log(value + " is not a float type", e);
+			}
 		}
 
 		public void addKeyPressHandler(KeyPressHandler listener) {
 			form.addKeyPressHandler(listener);
 		}
 
-		public void addChangeHandler(final ChangeHandler listener) {
-
-			form.addClickHandler(new ClickHandler() {
-				public void onClick(ClickEvent event) {
-					listener.onChange(null);
-				}
-			});
+		public void addChangeHandler(ChangeHandler listener) {
+			form.addChangeHandler(listener);
 		}
-
-	}
-
-	public String toString(JSONValue json) {
-		JSONBoolean b = json.isBoolean();
-		if (b == null)
-			return super.toString(json);
-		else
-			return b.booleanValue() ? "true" : "false";
 	}
 
 	public String getTypeName() {
-		return "boolean";
+		return "float";
 	}
 
 }
