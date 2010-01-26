@@ -5,11 +5,11 @@
 
 ==Configuring Databases
 
-UTGB has a built-in support of database access for SQLite, PostgreSQL, MySQL, etc.  In order to use such DBMSs, you need to add some configurations in {b|"config/common.silk"} file, written in [silk.html silk] format. 
-
-Here is an example of the database configuration. One of the database tags below shows an example of using an SQLite database, stored as "db/sample.db" file. The address path is relative to the project folder. The next database tag is an example using PostgreSQL database served at localhost:5432 whose database name is 'addressbook'. Each database configuration is associated with an database ID, 'mydb' or 'pgdb'. In the web action code, you can refer these IDs to access these databases.
-
-
+UTGB has a built-in support of database access for SQLite, PostgreSQL, MySQL, etc.  In order to use these DBMSs, you need to add some configurations in {b|"config/common.silk"} file, written in [silk.html silk] format, which denotes data nodes using hyphen and colon: 
+<code>
+- node name : node value
+</code>
+Indentation in Silk format represents the hierarchy of the data nodes. Here is an example of the UTGB configuration file "config/common.silk":
 <code> 
 %silk(version:1.0)
 
@@ -27,18 +27,97 @@ Here is an example of the database configuration. One of the database tags below
 # Web actions (i.e. java classes) in the specified action package folder will be accessible 
 # by the path (alias)/(web action name)
 -web action(alias: utgb-core, java package: org.utgenome.gwt.utgb.server.app)
+</code>
 
+
+Consider to use an SQLite database file "db/sample.db" file. Add the following description to the configuration file. The address path of the database file is relative to the project folder. 
+
+<code>
 # Database locations settings. 
 # Database address for SQLite DB files is relative to the project folder.
-# The specified databases will be accessible from your web action codes by referencing the specified id.
+# The specified databases will be accessible from your web action codes 
+# by referencing the specified id used here. 
 -database(id:mydb, dbms:sqlite)
  -address: db/sample.db
+</code>
 
+The next example is for using PostgreSQL database served at localhost:5432 whose database name is 'addressbook', which is accessible using the specified user name and password:
+<code>
 -database(id:pgdb, dbms:postgres)
  -address: localhost:5432/addressbook
  -user: postgres
  -pass: (password)
 </code>
+
+
+Each database configuration is associated with an database ID, 'mydb' or 'pgdb'. Within your web action code, these IDs can be used to access these databases.
+
+
+= Smart Data Binding in UTGB
+
+The UTGB supports to map data from "XML/JSON/Relational" data format to Java class objects, and vice verca. This conversion is automatically done once you write appropriate Java class definitions. To implement this feature, UTGB Toolkit uses Lens library developed in [http://www.xerial.org/ Xerial Project], which enables mappings between Java Objects and structured data, including database query results, XML, JSON, etc.
+
+== A quick example for mapping XML data to Objects
+
+Supporse you have the following XML data (saved as "gene.xml"), which describes a gene object:
+<code>
+<gene id="1">
+   <name>gene1</name>
+   <chr>chr1</chr>
+   <start>1000</start>
+   <end>4000</end>
+   <strand>+</strand>
+</gene>
+</code>
+
+In order to parse this XML data, you have to write a corresponding Java class definition as follows:
+<code>
+class Gene 
+{
+  public int id;
+  public String name;
+  public String chr;
+  public String strand;
+  public long start;
+  public long end;
+  
+  // public default constructor
+  public Gene() {}
+  
+  // setter definitions 
+  public void setId(int id) { this.id = id; }
+  public void setName(String name) { this.name = name; }
+  public void setChr(String chr) { this.chr = chr; }
+  public void setStart(long start) { this.start = start; }
+  public void setEnd(long end) { this.end = end; }
+  public void setStrand(String strand) { this.strand = strand; }
+ 
+  // getter definitions
+  public int getId() { return id; }
+  public Stirng getName() { return name; }
+  public String getChr() { return chr; }
+  public long getStart() { return start; }
+  public long getEnd() { return end; }
+  public String getStrant() { return strand; }
+}
+</code>
+
+Eclipse has a built-in support for generating getters and setters corresponding to each fild variable; right-click - source - Generate getters & setters menu. 
+
+To create an instance of the Gene object from the XML file ("gene.xml"), you have to use Lens.loadXML(target class, input reader) mehtod:
+<code>
+BufferedReader xmlReader = new BufferedReader(new FileReader("gene.xml"));
+Gene gene = Lens.loadXML(Gene.class, xmlReader);
+
+// gene.getId() == 1
+// gene.getName() == "gene1"
+// gene.getChr() == "chr1"
+// gene.getStart() == 1000
+// gene.getEnd() == 4000
+</code>
+
+Lens library used in the UTGB automatically translates string data appeared in the XML file into appropriate data type (integer, String, etc. ) by seeing setter methods (or data types of the public fields)  in the class definition. 
+
 
 == Mapping Database Query Results to Java Objects
 
@@ -72,6 +151,161 @@ for(Gene eachGene : result)
 }
 </code>
 
+
 == Object-Relational Mapping
 To learn how UTGB maps table data to objects see [lens.html Lens].
 
+
+In web action codes, you can map various types of data to the java objects using Lens:
+
+* XML
+* JSON
+* [silk.html Silk]
+* Map objects (Properties, etc.)
+* [http://antlr.org ANTLR] parse trees
+
+== Display the object contents
+
+You can use Lens to display the object contents:
+<code>
+List<Gene> result = 
+  dbAccess.query(
+     String.format("select * from gene where start >= %d order by start", start), 
+     Gene.class);
+ 
+ // output gene objects in Silk format
+ for(Gene each: result)
+   System.out.println(Lens.toSilk(each));
+
+ // output gene objects in JSON format
+ for(Gene each: result)
+   System.out.println(Lens.toSilk(each));
+</code>
+
+== Mapping more complex data structures to objects
+
+You can more complex structured data to objects. Here is an example of the DAS XML format:
+<code>
+<DASGFF> 
+<GFF version="1.01" href="http://uswest.ensembl.org/das/Homo_sapiens.NCBI36.transcript/features?segment=1:1,100000;type=refGene"> 
+<SEGMENT id="1" start="1" stop="100000"> 
+  <FEATURE id="ENSE00001644536-ENST00000421949"> 
+    <START>53049</START> 
+    <END>53067</END> 
+    <TYPE id="exon:coding:ensembl" category="transcription">exon:coding:ensembl</TYPE> 
+    <METHOD id="ensembl">ensembl</METHOD> 
+    <SCORE>-</SCORE> 
+    <ORIENTATION>+</ORIENTATION> 
+    <GROUP id="ENST00000421949" type="transcript:ensembl" label="ENST00000421949 (AL627309.2-201)"> 
+      <LINK href="http://uswest.ensembl.org/Homo_sapiens/Transcript/Summary?t=ENST00000421949;db=core">TransView ENST00000421949</LINK> 
+    </GROUP> 
+    <TARGET id="ENST00000421949" start="1" stop="19" /> 
+  </FEATURE> 
+  <FEATURE id="ENSE00001682480-ENST00000421949"> 
+    <START>54830</START> 
+    <END>54936</END> 
+    <TYPE id="exon:coding:ensembl" category="transcription">exon:coding:ensembl</TYPE> 
+    <METHOD id="ensembl">ensembl</METHOD> 
+    <SCORE>-</SCORE> 
+    <ORIENTATION>+</ORIENTATION> 
+    <GROUP id="ENST00000421949" type="transcript:ensembl" label="ENST00000421949 (AL627309.2-201)"> 
+      <LINK href="http://uswest.ensembl.org/Homo_sapiens/Transcript/Summary?t=ENST00000421949;db=core">TransView ENST00000421949</LINK> 
+    </GROUP> 
+    <TARGET id="ENST00000421949" start="20" stop="126" /> 
+  </FEATURE> 
+</SEGMENT>
+</GFF>
+</DASGFF>
+</code>
+
+The above XML can be mapped to DASFeature object as follows:
+
+<code>
+  String url = "http://www.ensembl.org/das/Homo_sapiens.NCBI36.transcript/features?segment=1:1,100000;type=refGene"
+  DASFeature feature = Lens.loadXML(DASFeature.class, new URL(url));
+</code>
+
+The object structure corresponding to the DAS XML format:
+<code>
+public static class DASFeature
+{
+    public DASGFF gff;
+    public Segment segment;
+}
+
+public static class DASGFF
+{
+    public String version;
+    public String href;
+}
+
+public static class Segment
+{
+    public String id;
+    public long start;
+    public long stop;
+    public List<Feature> feature;
+}
+
+public static class Feature 
+{
+    public String id;
+
+    public long start;
+    public long end;
+    public String name;
+
+    public String label;
+    public String score;
+    public String orientation;
+    public String phase;
+
+    public Method method;
+    public FeatureType type;
+    public Group group;
+    public Target target;
+
+    public void setId(String id)
+    {
+        setName(id);
+    }
+}
+
+public static class Target
+{
+    public String id;
+    public long start;
+    public long stop;
+    public String value;
+}
+
+public static class FeatureType
+{
+    public String id;
+    public String category;
+    public String reference;
+    public String value;
+}
+
+public static class Group
+{
+    public String id;
+    public String type;
+    public String label;
+    public Link link;
+    public Target target;
+}
+
+public static class Link
+{
+    public String href;
+    public String value;
+}
+
+public static class Method
+{
+    public String id;
+    public String value;
+}
+
+</code>

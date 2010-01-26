@@ -35,10 +35,12 @@ export JAVA_HOME=/usr/java/jdk1.6.0_03
 === Windows 
 In Windows, press Win + Pause (or open Control Panel - System - Settings)  to open Environment Variable panel for setting the environment variables, PATH, JAVA_HOME.
 <code>
-UTGB_HOME = %USERPROFILE%\.utgb
-PATH = %UTGB_HOME%\bin;%PATH%  
+PATH = (UTGB_HOME)\bin;%PATH%  
 </code>
- Set the JAVA_HOME variable to your JDK (1.5 or higher) installation. For example,
+Replace the above (UTGB_HOME) to your UTGB installation path.
+
+
+Set the JAVA_HOME variable to your JDK (1.5 or higher) installation. For example,
 <code>
 JAVA_HOME = C:\Program Files\Java\jdk1.6.0_03 
 </code>
@@ -191,38 +193,7 @@ public class HelloWorld extends WebTrackBase
 
 UTGB has a built-in support of database access for SQLite, PostgreSQL, MySQL, etc.  In order to use such DBMSs, you need to add some configurations in {b|"config/common.silk"} file, written in [silk.html silk] format. 
 
-Here is an example of the database configuration. One of the database tags below shows an example of using an SQLite database, stored as "db/sample.db" file. The address path is relative to the project folder. The next database tag is an example using PostgreSQL database served at localhost:5432 whose database name is 'addressbook'. Each database configuration is associated with an database ID, 'mydb' or 'pgdb'. In the web action code, you can refer these IDs to access these databases.
-
-
-<code> 
-%silk(version:1.0)
-
-# The version number of this configuration file format
--config(version:1.0)
-
-# project group name (for Maven repository)
--group:        org.utgenome.track
-# Name of the project. This name will be used for the web application's context path
--project name: myapp
-# java package to add/search Web Action codes
--java package:      myapp
-
-# Importing additional web actions under the specified java package.
-# Web actions (i.e. java classes) in the specified action package folder will be accessible 
-# by the path (alias)/(web action name)
--web action(alias: utgb-core, java package: org.utgenome.gwt.utgb.server.app)
-
-# Database locations settings. 
-# Database address for SQLite DB files is relative to the project folder.
-# The specified databases will be accessible from your web action codes by referencing the specified id.
--database(id:mydb, dbms:sqlite)
- -address: db/sample.db
-
--database(id:pgdb, dbms:postgres)
- -address: localhost:5432/addressbook
- -user: postgres
- -pass: (password)
-</code>
+* See [dbaccess.html Configuring Databases] for details.
 
 == Development with Eclipse
 
@@ -273,9 +244,18 @@ To change the default parameter values such as species, revision, target etc. yo
 "http://localhost:8989/myapp/browser.html#species=medaka;revision=version1.0;target=scaffold1;start=1;end=1000"
 This URL shows a browser page of medaka, version1.0, scaffold1, at genome location beginning from 1 to 1000.
 
+{b|Notice} Due to the bug contained in the recent update for Safari 4, GWT HostedMode for debugging utgb application using Eclipse crashes in Mac OS X. http://code.google.com/p/utgb/issues/detail?id=79
 
-
-
+To resolve this problem, 
+* Download the old "WebKit", say r51062 from http://nightly.webkit.org/
+* Install it to "/Applications" folder. 
+* Then select Debug "->" Debug Configurations ... and select myapp-gwt-mac. 
+* Click the Environment tab.
+* Add a variable:
+<code>
+DYLD_FRAMEWORK_PATH = /Applications/WebKit.app/Contents/Frameworks/10.5
+(The number 10.5 must be 10.4 (in Tiger) and 10.6 (in Snowleopard))
+</code>
 
 
 

@@ -135,7 +135,7 @@ To embed arbitrary HTML contents as a track, e.g., web pages, web action for gen
 
 == Custom Track using Google Web Toolkit (GWT)
 
-To implement your own tracks using GWT, you have to understand how the UTGB displays track contents. In the UTGB framework, we introduce the notion of {b|track group}, a container of several tracks. A track group holds common variables that can be accessed from its contained tracks. For example, the track group variables for speciying a location on a genome sequence are {i|species} (e.g., human, medaka, etc.), {i|revision} (e.g, hg18, version1.0, etc.) and {i|name} (e.g., chr1, scaffold1, etc.). In the Java code of the UTGB tracks, PropertyReader(PropertyWriter) class can read/write these variables, and changes of these variables will be notified to the other tracks in the same track group. To capture these events, you need to override onTrackGroupPropertyChange() method in the track implementation.
+To implement your own tracks using GWT, you have to understand how the UTGB displays track contents. A {b|track group} is a container of several tracks, and holds common variables that can be accessed from its contained tracks. For example, the track group variables for speciying a location on a genome sequence are {i|species} (e.g., human, medaka, etc.), {i|revision} (e.g, hg18, version1.0, etc.) and {i|name} (e.g., chr1, scaffold1, etc.). In the Java code of the UTGB tracks, PropertyReader(PropertyWriter) class can be used to read/write these variables, and changes to these variables will be notified to the other tracks in the same track group. To capture these events, you need to override onTrackGroupPropertyChange() method in the track implementation.
 
 === PropertyReader
 <code>
