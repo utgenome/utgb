@@ -27,6 +27,8 @@ package org.utgenome.gwt.utgb;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.UnsupportedEncodingException;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,6 +44,13 @@ public class TrackViewTest {
 
 	@After
 	public void tearDown() throws Exception {
+	}
+
+	@Test
+	public void encode() throws UnsupportedEncodingException {
+
+		System.out.println("hello world".getBytes("UTF-16").length);
+		System.out.println(System.getProperty("file.encoding"));
 	}
 
 	@Test
