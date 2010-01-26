@@ -30,11 +30,6 @@
     <url-pattern>/service</url-pattern>
   </servlet-mapping>
 
- <servlet-mapping>
-   <servlet-name>api</servlet-name>
-   <url-pattern>/org.utgenome.gwt.utgb.UTGBResourceCenter/service</url-pattern>
- </servlet-mapping>
-
   <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>

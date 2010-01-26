@@ -1,4 +1,4 @@
-<module>
+<module rename-to="utgb">
 
   <!-- Inherit the core Web Toolkit stuff.                  -->
       <inherits name="org.utgenome.gwt.utgb.UTGB"/>
