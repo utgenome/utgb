@@ -30,9 +30,7 @@
   <target name="compile" depends="gwt-update-check" if="gwt.module" unless="gwt.build.notRequired">
     <mkdir dir="${gwt.out}"/>
     <echo>GWT Compiler</echo>
-    <echo>Using GWT dev library: ${gwt.home}/${gwt.dev}.jar</echo>
     <path id="project.classpath">
-      <pathelement path="${gwt.home}/${gwt.dev}.jar" />
       <pathelement path="${classpath.compile}" />
       <pathelement path="${gwt.src}" />
     </path>

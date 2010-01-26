@@ -106,7 +106,7 @@ public abstract class UTGBShellCommand implements Comparable<UTGBShellCommand> {
 			throw new UTGBShellException(String.format("Not in the project root folder: configuration file %s not found", getConfigFile()));
 		}
 		try {
-			UTGBConfig config = Lens.loadSilk(UTGBConfig.class, getConfigFile().toURL());
+			UTGBConfig config = Lens.loadSilk(UTGBConfig.class, getConfigFile().toURI().toURL());
 			return config;
 		}
 		catch (XerialException e) {

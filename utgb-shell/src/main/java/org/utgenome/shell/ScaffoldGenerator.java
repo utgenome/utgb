@@ -114,9 +114,7 @@ public class ScaffoldGenerator {
 		String gwtOutputFolder = outputFolder + "/src/main/java/" + config.javaPackage.replaceAll("\\.", "/");
 		copyScaffold("org.utgenome.shell.template.java.gwtscaffold", gwtOutputFolder);
 
-		createEclipseLaunchFile(config.projectName, "template/java/gwt-win.launch.template", "gwt");
-		createEclipseLaunchFile(config.projectName, "template/java/gwt-mac.launch.template", "gwt-mac");
-
+		createEclipseLaunchFile(config.projectName, "template/java/gwt.launch.template", "gwt");
 	}
 
 	public void createEclipseLaunchFile(String projectName, String templatePath, String suffix) throws IOException, UTGBShellException {

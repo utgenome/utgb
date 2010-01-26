@@ -100,7 +100,7 @@ public class Import extends UTGBShellCommand {
 		case READ: {
 			ReadDBBuilder builder = new ReadDBBuilder(outputFileName);
 			if (input != null)
-				builder.build(input.toURL());
+				builder.build(input.toURI().toURL());
 			else
 				builder.build(new InputStreamReader(System.in));
 			break;

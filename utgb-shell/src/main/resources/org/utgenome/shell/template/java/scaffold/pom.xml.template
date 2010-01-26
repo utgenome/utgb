@@ -16,7 +16,7 @@
   <!-- set your GWT module name within the gwt.module tag (optional) -->  
   <properties>
     <utgb.version>$utgbVersion$</utgb.version>
-    <gwt.version>1.7.0</gwt.version>
+    <gwt.version>2.0.0</gwt.version>
     <gwt.module>$moduleName$</gwt.module>
     <sqlite-jdbc.version>3.6.20</sqlite-jdbc.version>
     <gwt.jvmargs></gwt.jvmargs>
@@ -25,28 +25,6 @@
   <!--  OS dependent settings for GWT compiler -->
   <profiles>
     <profile>
-      <id>windows</id>
-      <activation>
-        <os>
-          <family>windows</family>
-        </os>
-      </activation>
-      <properties>
-        <gwt.dev>gwt-dev-windows</gwt.dev>
-      </properties>
-    </profile>
-    <profile>
-      <id>unix</id>
-      <activation>
-        <os>
-          <family>unix</family>
-        </os>
-      </activation>
-      <properties>
-        <gwt.dev>gwt-dev-linux</gwt.dev>
-      </properties>
-    </profile>
-    <profile>
       <id>mac</id>
       <activation>
         <os>
@@ -54,7 +32,6 @@
         </os>
       </activation>
       <properties>
-        <gwt.dev>gwt-dev-mac</gwt.dev>
         <gwt.jvmargs>-XstartOnFirstThread</gwt.jvmargs>
       </properties>
     </profile>
@@ -149,32 +126,6 @@
       </executions>
      </plugin>
 
-      <!-- Download GWT Dev Library -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>unpack-gwt-dev</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>unpack</goal>
-            </goals>
-            <configuration>
-	        <excludes>.svn,**/.svn/**/*,META-INF,META-INF/**/*</excludes>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>com.google.gwt</groupId>
-                  <artifactId>\${gwt.dev}</artifactId>
-                  <version>\${gwt.version}</version>
-                  <type>jar</type>
-                </artifactItem>
-              </artifactItems>
-              <outputDirectory>target/gwt-home</outputDirectory>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
 
       <!--  GWT compiler -->
       <plugin>
@@ -185,7 +136,7 @@
             <configuration>
               <tasks>
                 <property name="classpath.compile" refid="maven.compile.classpath" />
-                <property name="gwt.dev" value="\${gwt.dev}" />
+                <property name="gwt.dev" value="gwt-dev" />
                 <property name="gwt.jvmargs" value="\${gwt.jvmargs}" />
                 <property name="gwt.out" value="war"/>
                 <property name="gwt.opts" value="-localWorkers 2"/>
@@ -330,6 +281,13 @@
       <artifactId>gwt-servlet</artifactId>
       <version>\${gwt.version}</version>
       <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-dev</artifactId>
+      <version>\${gwt.version}</version>
+      <scope>provided</scope>
     </dependency>
     
     <!-- JUnit library -->
