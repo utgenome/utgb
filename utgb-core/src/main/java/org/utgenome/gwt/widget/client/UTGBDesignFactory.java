@@ -25,7 +25,7 @@
 package org.utgenome.gwt.widget.client;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Image;
 
 /**
@@ -62,14 +62,14 @@ public class UTGBDesignFactory {
 		return defaultImageBundle;
 	}
 
-	private Image image(AbstractImagePrototype prototype, String title) {
-		Image image = prototype.createImage();
+	private Image image(ImageResource resource, String title) {
+		Image image = new Image(resource);
 		image.setTitle(title);
 		return image;
 	}
 
-	private Image image(AbstractImagePrototype prototype) {
-		return prototype.createImage();
+	private Image image(ImageResource resource) {
+		return new Image(resource);
 	}
 
 	public Icon getCloseButton() {

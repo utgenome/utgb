@@ -41,11 +41,11 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -160,7 +160,7 @@ public class SQLiteTrack extends TrackBase {
 
 	}
 
-	class TableLink extends Hyperlink implements ClickHandler {
+	class TableLink extends Anchor implements ClickHandler {
 		public TableLink(String tableName) {
 			super(tableName, tableName);
 			setStyleName("selector-item");
@@ -168,7 +168,7 @@ public class SQLiteTrack extends TrackBase {
 		}
 
 		public void onClick(ClickEvent e) {
-			fetchTable(getTargetHistoryToken());
+			fetchTable(getText());
 		}
 	}
 

@@ -50,7 +50,7 @@ public abstract class TrackPanelBase extends TrackFrame {
 
 	public TrackPanelBase() {
 		UTGBDesignFactory designFactory = new UTGBDesignFactory();
-		Image resizeBar = designFactory.getUTGBImageBundle().windowResizeIcon().createImage();
+		Image resizeBar = new Image(designFactory.getUTGBImageBundle().windowResizeIcon());
 		resizeBar.setTitle("drag this to resize");
 
 		resizeButton = new TrackResizeButton(this, resizeBar);

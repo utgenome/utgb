@@ -31,6 +31,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.widgetideas.graphics.client.Color;
@@ -62,7 +63,7 @@ public class UTGBWidgetTest implements EntryPoint {
 		hp.add(iconFactory.getFixedHightButton());
 		hp.add(iconFactory.getOpenButton());
 		hp.add(iconFactory.getHideButton());
-		hp.add(iconFactory.getUTGBImageBundle().windowResizeIcon().createImage());
+		hp.add(new Image(iconFactory.getUTGBImageBundle().windowResizeIcon()));
 
 		final NowLoadingIcon loading = iconFactory.getNowLoadingIcon();
 		hp.add(loading);
@@ -183,13 +184,13 @@ public class UTGBWidgetTest implements EntryPoint {
 
 		canvas.setStrokeStyle(Color.BLACK);
 		canvas.beginPath();
-		canvas.arc(75, 75, 50, 0, (float) (Math.PI * 2), true); // ŠO‚Ì‰~
+		canvas.arc(75, 75, 50, 0, (float) (Math.PI * 2), true); // ï¿½Oï¿½Ì‰~
 		canvas.moveTo(110, 75);
-		canvas.arc(75, 75, 35, 0, (float) Math.PI, false); // Œû (Œv‰ñ‚è)
+		canvas.arc(75, 75, 35, 0, (float) Math.PI, false); // ï¿½ï¿½ (ï¿½ï¿½ï¿½vï¿½ï¿½ï¿½)
 		canvas.moveTo(65, 65);
-		canvas.arc(60, 65, 5, 0, (float) (Math.PI * 2), true); // ¶–Ú
+		canvas.arc(60, 65, 5, 0, (float) (Math.PI * 2), true); // ï¿½ï¿½ï¿½ï¿½
 		canvas.moveTo(95, 65);
-		canvas.arc(90, 65, 5, 0, (float) (Math.PI * 2), true); // ‰E–Ú
+		canvas.arc(90, 65, 5, 0, (float) (Math.PI * 2), true); // ï¿½Eï¿½ï¿½
 		canvas.stroke();
 
 		canvas.setLineWidth(1);

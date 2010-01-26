@@ -38,8 +38,8 @@ import org.utgenome.gwt.utgb.client.util.Properties;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -92,7 +92,7 @@ public class ValueSelectorTrack extends TrackBase {
 	private FlowPanel _linkPanel = new FlowPanel();
 	private ArrayList<ValueLink> _linkList = new ArrayList<ValueLink>();
 
-	class ValueLink extends Hyperlink implements ClickHandler {
+	class ValueLink extends Anchor implements ClickHandler {
 		public ValueLink(String value) {
 			super(value, value);
 			setStyleName("selector-item");
@@ -100,7 +100,7 @@ public class ValueSelectorTrack extends TrackBase {
 		}
 
 		public void onClick(ClickEvent e) {
-			getTrackGroup().getPropertyWriter().setProperty(_targetProperty, this.getTargetHistoryToken());
+			getTrackGroup().getPropertyWriter().setProperty(_targetProperty, getText());
 
 			setSelectionStyle(this);
 		}

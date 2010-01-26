@@ -35,8 +35,8 @@ import org.utgenome.gwt.utgb.client.track.lib.debug.DebugToolBoxTrack;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -59,7 +59,7 @@ public class ToolBoxTrack extends TrackBase {
 	private ArrayList<TrackLink> trackTable = new ArrayList<TrackLink>();
 	private Track _self = this;
 
-	class TrackLink extends Hyperlink implements ClickHandler {
+	class TrackLink extends Anchor implements ClickHandler {
 		TrackFactory trackFactory;
 
 		public TrackLink(String label, TrackFactory trackFactory) {

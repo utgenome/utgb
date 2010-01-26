@@ -24,78 +24,78 @@
 //--------------------------------------
 package org.utgenome.gwt.widget.client;
 
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import com.google.gwt.user.client.ui.ImageBundle;
+import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.ImageResource;
 
 /**
- * A {@link ImageBundle} of UTGB Images
+ * Graphic Resource list of UTGB Interface
  * 
  * @author leo
  * 
  */
-public interface UTGBImageBundle extends ImageBundle {
+public interface UTGBImageBundle extends ClientBundle {
 
-	@Resource("org/utgenome/gwt/widget/theme/default/disabledButton.gif")
-	public AbstractImagePrototype disabledIcon();
+	@Source("org/utgenome/gwt/widget/theme/default/disabledButton.gif")
+	public ImageResource disabledIcon();
 
-	@Resource("org/utgenome/gwt/widget/theme/default/close-btn-on.gif")
-	public AbstractImagePrototype tabCloseMouseOverIcon();
+	@Source("org/utgenome/gwt/widget/theme/default/close-btn-on.gif")
+	public ImageResource tabCloseMouseOverIcon();
 
-	@Resource("org/utgenome/gwt/widget/theme/default/close-btn.gif")
-	public AbstractImagePrototype tabCloseIcon();
+	@Source("org/utgenome/gwt/widget/theme/default/close-btn.gif")
+	public ImageResource tabCloseIcon();
 
-	@Resource("org/utgenome/gwt/widget/theme/default/resize.gif")
-	public AbstractImagePrototype windowResizeIcon();
+	@Source("org/utgenome/gwt/widget/theme/default/resize.gif")
+	public ImageResource windowResizeIcon();
 
-	@Resource("org/utgenome/gwt/widget/theme/default/wframe_l.gif")
-	public AbstractImagePrototype windowFrameLeftIcon();
+	@Source("org/utgenome/gwt/widget/theme/default/wframe_l.gif")
+	public ImageResource windowFrameLeftIcon();
 
-	@Resource("org/utgenome/gwt/widget/theme/default/wframe_c.gif")
-	public AbstractImagePrototype windowFrameCenterIcon();
+	@Source("org/utgenome/gwt/widget/theme/default/wframe_c.gif")
+	public ImageResource windowFrameCenterIcon();
 
-	@Resource("org/utgenome/gwt/widget/theme/default/wframe_r.gif")
-	public AbstractImagePrototype windowFrameRightIcon();
+	@Source("org/utgenome/gwt/widget/theme/default/wframe_r.gif")
+	public ImageResource windowFrameRightIcon();
 
-	@Resource("org/utgenome/gwt/widget/theme/default/trackReload.gif")
-	public AbstractImagePrototype trackReloadIcon();
+	@Source("org/utgenome/gwt/widget/theme/default/trackReload.gif")
+	public ImageResource trackReloadIcon();
 
-	@Resource("org/utgenome/gwt/widget/theme/default/trackReloadW.gif")
-	public AbstractImagePrototype trackReloadMouseOverIcon();
+	@Source("org/utgenome/gwt/widget/theme/default/trackReloadW.gif")
+	public ImageResource trackReloadMouseOverIcon();
 
-	@Resource("org/utgenome/gwt/widget/theme/default/trackClose.gif")
-	public AbstractImagePrototype trackCloseIcon();
+	@Source("org/utgenome/gwt/widget/theme/default/trackClose.gif")
+	public ImageResource trackCloseIcon();
 
-	@Resource("org/utgenome/gwt/widget/theme/default/trackCloseW.gif")
-	public AbstractImagePrototype trackCloseMouseOverIcon();
+	@Source("org/utgenome/gwt/widget/theme/default/trackCloseW.gif")
+	public ImageResource trackCloseMouseOverIcon();
 
-	@Resource("org/utgenome/gwt/widget/theme/default/trackConfig.gif")
-	public AbstractImagePrototype trackConfigcon();
+	@Source("org/utgenome/gwt/widget/theme/default/trackConfig.gif")
+	public ImageResource trackConfigcon();
 
-	@Resource("org/utgenome/gwt/widget/theme/default/trackConfigW.gif")
-	public AbstractImagePrototype trackConfigMouseOverIcon();
+	@Source("org/utgenome/gwt/widget/theme/default/trackConfigW.gif")
+	public ImageResource trackConfigMouseOverIcon();
 
-	@Resource("org/utgenome/gwt/widget/theme/default/trackHide.gif")
-	public AbstractImagePrototype trackHideIcon();
+	@Source("org/utgenome/gwt/widget/theme/default/trackHide.gif")
+	public ImageResource trackHideIcon();
 
-	@Resource("org/utgenome/gwt/widget/theme/default/trackHideW.gif")
-	public AbstractImagePrototype trackHideMouseOverIcon();
+	@Source("org/utgenome/gwt/widget/theme/default/trackHideW.gif")
+	public ImageResource trackHideMouseOverIcon();
 
-	@Resource("org/utgenome/gwt/widget/theme/default/trackOpen.gif")
-	public AbstractImagePrototype trackOpenIcon();
+	@Source("org/utgenome/gwt/widget/theme/default/trackOpen.gif")
+	public ImageResource trackOpenIcon();
 
-	@Resource("org/utgenome/gwt/widget/theme/default/trackOpenW.gif")
-	public AbstractImagePrototype trackOpenMouseOverIcon();
+	@Source("org/utgenome/gwt/widget/theme/default/trackOpenW.gif")
+	public ImageResource trackOpenMouseOverIcon();
 
-	@Resource("org/utgenome/gwt/widget/theme/default/trackPack.gif")
-	public AbstractImagePrototype trackAdjustHightIcon();
+	@Source("org/utgenome/gwt/widget/theme/default/trackPack.gif")
+	public ImageResource trackAdjustHightIcon();
 
-	@Resource("org/utgenome/gwt/widget/theme/default/trackPackW.gif")
-	public AbstractImagePrototype trackAdjustHightMouseOverIcon();
+	@Source("org/utgenome/gwt/widget/theme/default/trackPackW.gif")
+	public ImageResource trackAdjustHightMouseOverIcon();
 
-	@Resource("org/utgenome/gwt/widget/theme/default/trackUnpack.gif")
-	public AbstractImagePrototype trackFixedHightIcon();
+	@Source("org/utgenome/gwt/widget/theme/default/trackUnpack.gif")
+	public ImageResource trackFixedHightIcon();
 
-	@Resource("org/utgenome/gwt/widget/theme/default/trackUnpackW.gif")
-	public AbstractImagePrototype trackFixedHightMouseOverIcon();
+	@Source("org/utgenome/gwt/widget/theme/default/trackUnpackW.gif")
+	public ImageResource trackFixedHightMouseOverIcon();
 
 }

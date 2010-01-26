@@ -47,13 +47,13 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -150,8 +150,8 @@ public class UniversalKeywordSearchTrack extends TrackBase {
 			}
 		}
 
-		private Hyperlink getPagerLink(final int pageNum, String label) {
-			Hyperlink link = new Hyperlink(label, label);
+		private Anchor getPagerLink(final int pageNum, String label) {
+			Anchor link = new Anchor(label);
 			link.addClickHandler(new ClickHandler() {
 				public void onClick(ClickEvent e) {
 					performSearch(keyword, pageNum, 10);
@@ -188,7 +188,7 @@ public class UniversalKeywordSearchTrack extends TrackBase {
 						hp.setVerticalAlignment(HorizontalPanel.ALIGN_MIDDLE);
 						hp.add(new Image("image/item.gif"));
 						String label = e.getSpecies() + "/" + e.getRevision() + "/" + e.getTarget() + ":" + e.getStart() + "-" + e.getEnd() + "";
-						Hyperlink link = new Hyperlink(label, label);
+						Anchor link = new Anchor(label);
 						link.setStyleName("searchresult");
 						link.addClickHandler(new ClickHandler() {
 							public void onClick(ClickEvent event) {

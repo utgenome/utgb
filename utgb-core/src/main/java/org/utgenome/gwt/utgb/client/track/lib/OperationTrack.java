@@ -51,8 +51,8 @@ import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbsolutePanel;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.DockPanel;
-import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -99,7 +99,7 @@ public class OperationTrack extends TrackBase {
 	final AbsolutePanel _absolutePanel = new AbsolutePanel();
 	final Image graphicPanel = new Image();
 
-	final Hyperlink parameterButton = new Hyperlink();
+	final Anchor parameterButton = new Anchor();
 	final Label _label = new Label();
 
 	public OperationTrack() {

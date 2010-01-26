@@ -16,46 +16,9 @@
 
   <properties>
     <gwt.module>utgb</gwt.module>
+    <gwt.version>2.0.0</gwt.version>
     <gwt.jvmargs />
   </properties>
-
-  <!--  OS dependent settings for GWT compiler -->
-  <profiles>
-    <profile>
-      <id>windows</id>
-      <activation>
-        <os>
-          <family>windows</family>
-        </os>
-      </activation>
-      <properties>
-        <gwt.dev>gwt-dev-windows</gwt.dev>
-      </properties>
-    </profile>
-    <profile>
-      <id>unix</id>
-      <activation>
-        <os>
-          <family>unix</family>
-        </os>
-      </activation>
-      <properties>
-        <gwt.dev>gwt-dev-linux</gwt.dev>
-      </properties>
-    </profile>
-    <profile>
-      <id>mac</id>
-      <activation>
-        <os>
-          <family>mac</family>
-        </os>
-      </activation>
-      <properties>
-        <gwt.dev>gwt-dev-mac</gwt.dev>
-        <utgb.jvmargs>-XstartOnFirstThread</utgb.jvmargs>
-      </properties>
-    </profile>
-  </profiles>
 
   <build>
     <resources>
@@ -119,13 +82,13 @@
             <id>unpack-gwt-dev</id>
             <phase>generate-sources</phase>
             <goals>
-              <goal>unpack</goal>
+              <goal>copy</goal>
             </goals>
             <configuration>
               <artifactItems>
                 <artifactItem>
                   <groupId>com.google.gwt</groupId>
-                  <artifactId>${gwt.dev}</artifactId>
+                  <artifactId>gwt-dev</artifactId>
                   <version>${gwt.version}</version>
                   <type>jar</type>
                 </artifactItem>
@@ -252,7 +215,7 @@
 
     <dependency>
       <groupId>com.google.gwt</groupId>
-      <artifactId>${gwt.dev}</artifactId>
+      <artifactId>gwt-dev</artifactId>
       <version>${gwt.version}</version>
       <scope>provided</scope>
     </dependency>
