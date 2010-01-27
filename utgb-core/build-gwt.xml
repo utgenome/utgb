@@ -7,7 +7,8 @@
   <property name="gwt.src" value="src/main/java"/>
   <property name="gwt.target" value="${gwt.module}"/>
   <property name="gwt.home" value="target/gwt-home"/>
-  
+  <loadfile property="classpath.compile" srcFile="target/classpath" failonerror="false"/>
+	
   <!--
       Google Web Toolkit 1.7.0
       Compiler [-logLevel level] [-treeLogger] [-workDir dir] [-gen dir] [-style style] [-ea] [-validateOnly] [-localWorkers count] [-war dir] [-extra dir] module[s]
@@ -30,7 +31,6 @@
   <target name="compile" depends="gwt-update-check" if="gwt.module" unless="gwt.build.notRequired">
     <mkdir dir="${gwt.out}"/>
     <echo>GWT Compiler</echo>
-    <echo>Using GWT dev library: ${gwt.home}/${gwt.dev}.jar</echo>
     <path id="project.classpath">
       <pathelement path="${gwt.home}/${gwt.dev}.jar" />
       <pathelement path="${classpath.compile}" />
@@ -41,7 +41,20 @@
       <arg line="-war ${gwt.out} ${gwt.opts} ${gwt.module}"/> 
     </java>
   </target>
-  
+
+	  <target name="draft-compile" depends="gwt-update-check" if="gwt.module">
+	    <mkdir dir="${gwt.out}"/>
+	    <echo>GWT Compiler</echo>
+	    <path id="project.classpath">
+	      <pathelement path="${classpath.compile}" />
+	      <pathelement path="${gwt.src}" />	
+	    </path>
+	    <java classpathref="project.classpath" classname="com.google.gwt.dev.Compiler" fork="true">
+	      <jvmarg line="-Xmx${gwt.memory} ${gwt.jvmargs}" />
+	      <arg line="-draftCompile -war ${gwt.out} ${gwt.opts} ${gwt.module}"/> 
+	    </java>
+	  </target>
+	
   <target name="gwt-update-check">
     <uptodate property="gwt.build.notRequired" targetfile="${gwt.out}/${gwt.target}/${gwt.target}.nocache.js">
       <srcfiles dir="${gwt.src}" includes="**/client/**/*.java,**/public/**"/>
