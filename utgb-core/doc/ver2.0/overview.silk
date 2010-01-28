@@ -1,0 +1,45 @@
+%silk(version:1.0, schema:http://xerial.org/silk/wiki)
+-title: UTGB 2.0 Overview
+-author: Taro L. Saito
+
+-section: Introduction
+
+This document is a development note for the new version of the University of Tokyo Genome Browser (UTGB). 
+
+-sub section: Pros and Cons 
+Here is a summary of pros and cons of the current implementation of our genome browser: 
+
+-paragraph: What is good? 
+
+-item: Visualization of genomic data in a specified window on a genome 
+-item: Simple text data (tab, BED, WIG, etc.) can be used to create tracks. 
+-item: The browser's presentation is customizable by using track-wise relocation.
+-item: GWT-based implementation is good for portability across browsers.
+-item: UTGB Toolkit can be installed quickly
+-item: UTGB works in a local machine.
+
+-paragraph: What is NOT good?
+
+-item: Lacks functions to search data.
+-item: The user has to do many mouse clicks to navigate the browser.
+-item: Does not fit to the small screen.
+-item: No central data repository for providing track contents.
+-item: Alignment to the displayed genome is not supported.
+-item: Developing GWT-based tracks needs some expertise.
+-item: Scrolling genome browser has to reload the entire data in a window (no partial updates)
+-item: Listing up the search result and using that result for the next search are not possible.
+-item: Cannot display indels and inversions, chromosome/contig/scaffold maps, 
+-item: 
+
+-sub section: Goals of the UTGB 2.0
+
+
+
+
+
+
+
+
+
+
+
