@@ -2,7 +2,7 @@
 <project>
   <property name="gwt.out" value="war" />
   <property name="gwt.jvmargs" value="" />
-  <property name="gwt.opts" value="-localWorkers 3"/>
+  <property name="gwt.opts" value="-localWorkers 2"/>
   <property name="gwt.memory" value="1G" />
   <property name="gwt.src" value="src/main/java"/>
   <property name="gwt.target" value="${gwt.module}"/>

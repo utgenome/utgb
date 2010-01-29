@@ -200,9 +200,9 @@
 
 
     <dependency>
-      <groupId>com.google.gwt</groupId>
+      <groupId>org.utgenome.thirdparty</groupId>
       <artifactId>gwt-incubator</artifactId>
-      <version>1.7-july-14-2009</version>
+      <version>20091216-r1739</version>
     </dependency>
 
     <dependency>

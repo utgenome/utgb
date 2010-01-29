@@ -4,12 +4,14 @@
   <display-name>UTGB Genome Browser</display-name>
 
   <listener>
-    <listener-class>org.utgenome.gwt.utgb.server.UTGBMaster</listener-class>
+    <listener-class>org.utgenome.gwt.utgb.server.UTGBMaster
+    </listener-class>
   </listener>
 
   <filter>
     <filter-name>RequestDispatcher</filter-name>
-    <filter-class>org.utgenome.gwt.utgb.server.RequestDispatcher</filter-class>
+    <filter-class>org.utgenome.gwt.utgb.server.RequestDispatcher
+    </filter-class>
   </filter>
   <filter-mapping>
     <filter-name>RequestDispatcher</filter-name>
@@ -19,7 +21,8 @@
   <!-- server side service -->
   <servlet>
     <servlet-name>api</servlet-name>
-    <servlet-class>org.utgenome.gwt.utgb.server.BrowserServiceImpl</servlet-class>
+    <servlet-class>org.utgenome.gwt.utgb.server.BrowserServiceImpl
+    </servlet-class>
   </servlet>
 
   <servlet-mapping>
@@ -27,7 +30,19 @@
     <url-pattern>/utgb/service</url-pattern>
   </servlet-mapping>
 
- 
+
+  <servlet>
+    <servlet-name>remoteLoggingServiceImpl</servlet-name>
+    <servlet-class>com.google.gwt.libideas.logging.server.RemoteLoggingServiceImpl
+    </servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>remoteLoggingServiceImpl</servlet-name>
+    <url-pattern>/utgb/logging</url-pattern>
+  </servlet-mapping>
+
+
   <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>

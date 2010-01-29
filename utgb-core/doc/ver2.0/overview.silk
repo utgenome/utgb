@@ -6,8 +6,8 @@
 
 This document is a development note for the new version of the University of Tokyo Genome Browser (UTGB). 
 
--sub section: Pros and Cons 
-Here is a summary of pros and cons of the current implementation of our genome browser: 
+-sub section: Analysys of the UTGB version 1.x
+Here is a summary of pros and cons of the current implementation of the UTGB: 
 
 -paragraph: What is good? 
 
@@ -20,7 +20,7 @@ Here is a summary of pros and cons of the current implementation of our genome b
 
 -paragraph: What is NOT good?
 
--item: Lacks functions to search data.
+-item: functions to search data.
 -item: The user has to do many mouse clicks to navigate the browser.
 -item: Does not fit to the small screen.
 -item: No central data repository for providing track contents.
