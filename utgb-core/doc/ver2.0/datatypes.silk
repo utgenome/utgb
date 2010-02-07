@@ -1,0 +1,23 @@
+%silk(version:1.0)
+
+
+-section: Importing FASTA files 
+
+-genome(species:human, revision:hg19)
+ -chromosome(name:chr1) 
+ -chromosome(name:chr2)
+ -chromosome(name:chr3)
+ -chromosome(name:chr4)
+ -chromosome(name:chr5)
+
+-genome(species:medaka, revison:version1.0)
+ -chromosome(name:chr1)
+
+
+-section: Mapping between genomes
+ genome -(bridge) - genome 
+ homologue
+ 
+
+
+

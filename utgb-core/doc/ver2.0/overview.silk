@@ -20,7 +20,7 @@ Here is a summary of pros and cons of the current implementation of the UTGB:
 
 -paragraph: What is NOT good?
 
--item: functions to search data.
+-item: Lacks functions to search data
 -item: The user has to do many mouse clicks to navigate the browser.
 -item: Does not fit to the small screen.
 -item: No central data repository for providing track contents.
@@ -29,10 +29,11 @@ Here is a summary of pros and cons of the current implementation of the UTGB:
 -item: Scrolling genome browser has to reload the entire data in a window (no partial updates)
 -item: Listing up the search result and using that result for the next search are not possible.
 -item: Cannot display indels and inversions, chromosome/contig/scaffold maps, 
--item: 
+-item: The genome windows is localized to a single chromosome on a genome
 
 -sub section: Goals of the UTGB 2.0
 
+-item: Walking through genomes. 
 
 
 

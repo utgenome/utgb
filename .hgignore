@@ -4,8 +4,8 @@ target
 .idea
 war/utgb
 war/WEB-INF/classes
-war/org.utgenome.gwt.utgb.UTGBResourceCenter
+
 
 syntax: glob
 *~
-
+war/org.utgenome.gwt.*
