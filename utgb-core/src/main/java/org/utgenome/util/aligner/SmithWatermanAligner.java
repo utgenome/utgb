@@ -24,6 +24,8 @@
 //--------------------------------------
 package org.utgenome.util.aligner;
 
+import org.utgenome.util.sequence.GenomeSequence;
+
 /**
  * Simple Smith-Waterman based aligner
  * 
@@ -68,7 +70,29 @@ public class SmithWatermanAligner {
 		this.config = config;
 	}
 
+	public static class StringWrapper implements GenomeSequence {
+
+		public final String seq;
+
+		public StringWrapper(String seq) {
+			this.seq = seq;
+		}
+
+		public char charAt(int index) {
+			return seq.charAt(index);
+		}
+
+		public int length() {
+			return seq.length();
+		}
+
+	}
+
 	public Alignment align(String seq1, String seq2) {
+		return align(new StringWrapper(seq1), new StringWrapper(seq2));
+	}
+
+	public <Seq extends GenomeSequence> Alignment align(Seq seq1, Seq seq2) {
 
 		final int N = seq1.length() + 1;
 		final int M = seq2.length() + 1;
