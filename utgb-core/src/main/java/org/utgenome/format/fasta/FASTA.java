@@ -35,13 +35,10 @@ import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
 import org.utgenome.UTGBException;
 
-
-public class FASTA  
-{
+public class FASTA {
 	private ArrayList<FASTASequence> sequenceList = new ArrayList<FASTASequence>();
-	
-	public FASTA(InputStream fastaFormatStream) throws IOException, UTGBException
-	{
+
+	public FASTA(InputStream fastaFormatStream) throws IOException, UTGBException {
 		sequenceList = parse(fastaFormatStream);
 	}
 
@@ -49,30 +46,41 @@ public class FASTA
 		return sequenceList;
 	}
 
+	public static String pickSequenceName(String descriptionLine) {
+		int begin = 1;
+		// skip leading white spaces
+		for (; begin < descriptionLine.length(); ++begin) {
+			char c = descriptionLine.charAt(begin);
+			if (!(c == ' ' | c == '\t'))
+				break;
+		}
+		int end = begin + 1;
+		for (; end < descriptionLine.length(); ++end) {
+			char c = descriptionLine.charAt(end);
+			if (c == ' ' | c == '\t') {
+				break;
+			}
+		}
+		return descriptionLine.substring(begin, end);
+	}
 
-	public static ArrayList<FASTASequence> parse(InputStream fastaFormatStream) throws IOException, UTGBException
-	{
+	public static ArrayList<FASTASequence> parse(InputStream fastaFormatStream) throws IOException, UTGBException {
 		FASTALexer lexer = new FASTALexer(new ANTLRInputStream(fastaFormatStream));
 		CommonTokenStream tokenStream = new CommonTokenStream(lexer);
 		FASTAParser parser = new FASTAParser(tokenStream);
 		try {
 			FASTAParser.fasta_return r = parser.fasta();
-			CommonTreeNodeStream nodes = new CommonTreeNodeStream((CommonTree)r.getTree());
+			CommonTreeNodeStream nodes = new CommonTreeNodeStream((CommonTree) r.getTree());
 			FASTAWalker walker = new FASTAWalker(nodes);
 			return walker.fasta();
-		} catch (RecognitionException e) {
+		}
+		catch (RecognitionException e) {
 			throw new UTGBException(e);
 		}
 	}
-	
-	public String toString()
-	{
+
+	public String toString() {
 		return sequenceList.toString();
 	}
-	
 
 }
-
-
-
-

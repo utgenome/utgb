@@ -24,13 +24,12 @@
 //--------------------------------------
 package org.utgenome.format.fasta;
 
+import static org.junit.Assert.assertEquals;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
-import static org.junit.Assert.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,32 +46,32 @@ public class FASTATest {
 	public void tearDown() throws Exception {
 	}
 
-	
 	@Test
-	public void fasta() throws IOException, UTGBException
-	{
+	public void fasta() throws IOException, UTGBException {
 		URL url = FileResource.find(FASTATest.class, "sample.fasta");
 		FASTA f = new FASTA(url.openStream());
-		
+
 		ArrayList<FASTASequence> list = f.getSequenceList();
 		assertEquals(2, list.size());
-		
+
 		FASTASequence s1 = list.get(0);
 		assertEquals(2, s1.getDescriptionSize());
 		assertEquals("sample data", s1.getDescription(0));
 		assertEquals("9123", s1.getDescription(1));
 		assertEquals("ACTGDTGCCGGTAA", s1.getSequence());
-		
+
 		FASTASequence s2 = list.get(1);
 		assertEquals(2, s2.getDescriptionSize());
 		assertEquals("second data", s2.getDescription(0));
 		assertEquals("1", s2.getDescription(1));
 		assertEquals("ACCCGG", s2.getSequence());
 
-				
+	}
+
+	@Test
+	public void pickSeqName() throws Exception {
+		String c = FASTA.pickSequenceName("> chr1 length=10000");
+		assertEquals("chr1", c);
+		assertEquals("chr2", FASTA.pickSequenceName(">chr2"));
 	}
 }
-
-
-
-
