@@ -56,7 +56,7 @@ public class CompactACGTWriter {
 	private final byte[] nSeqBuffer = new byte[BUFFER_SIZE / 2];
 	private int index = 0;
 	private long length = 0;
-	private final Random rand = new Random(1); // use fixed seed
+	private final Random rand = new Random(17); // use fixed seed
 
 	public CompactACGTWriter(OutputStream seqOut, OutputStream nSeqOut) {
 		this.seqOut = seqOut;
@@ -78,7 +78,7 @@ public class CompactACGTWriter {
 			return;
 
 		seqOut.write(seqBuffer, 0, index / 4 + ((index % 4 > 0) ? 1 : 0));
-		nSeqOut.write(seqBuffer, 0, index / 8 + ((index % 8 > 0) ? 1 : 0));
+		nSeqOut.write(nSeqBuffer, 0, index / 8 + ((index % 8 > 0) ? 1 : 0));
 		index = 0;
 
 		seqOut.flush();
