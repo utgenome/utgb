@@ -47,7 +47,10 @@ public class FASTA {
 	}
 
 	public static String pickSequenceName(String descriptionLine) {
-		int begin = 1;
+		int begin = 0;
+		if (descriptionLine.length() > 0 && descriptionLine.charAt(0) == '>')
+			begin++;
+
 		// skip leading white spaces
 		for (; begin < descriptionLine.length(); ++begin) {
 			char c = descriptionLine.charAt(begin);

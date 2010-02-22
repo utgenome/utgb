@@ -67,7 +67,13 @@ public class CompactACGTWriter {
 		return length;
 	}
 
-	public void finish() throws IOException {
+	public void close() throws IOException {
+		finish();
+		seqOut.close();
+		nSeqOut.close();
+	}
+
+	private void finish() throws IOException {
 		if (index <= 0)
 			return;
 

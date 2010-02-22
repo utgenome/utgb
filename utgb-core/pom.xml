@@ -154,6 +154,13 @@
       <version>1.2</version>
     </dependency>
 
+    <!-- ant library contains tar.bz2 extracting utility -->
+    <dependency>
+      <groupId>org.apache.ant</groupId>
+      <artifactId>ant</artifactId>
+      <version>1.7.1</version>
+    </dependency>
+
 
     <dependency>
       <groupId>org.utgenome.thirdparty</groupId>
