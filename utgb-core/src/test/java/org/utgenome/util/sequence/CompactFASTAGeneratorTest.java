@@ -45,4 +45,10 @@ public class CompactFASTAGeneratorTest {
 		g.packFASTA(FileResource.find(CompactFASTAGeneratorTest.class, "sample.fa"));
 	}
 
+	@Test
+	public void testGenTarGZ() throws Exception {
+		CompactFASTAGenerator g = new CompactFASTAGenerator();
+		g.packFASTA(FileResource.find(CompactFASTAGeneratorTest.class, "sample-archive.fa.tar.gz"));
+	}
+
 }
