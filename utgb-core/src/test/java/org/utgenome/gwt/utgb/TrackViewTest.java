@@ -35,8 +35,11 @@ import org.junit.Test;
 import org.utgenome.gwt.utgb.client.view.TrackView;
 import org.xerial.lens.Lens;
 import org.xerial.util.FileResource;
+import org.xerial.util.log.Logger;
 
 public class TrackViewTest {
+
+	private static Logger _logger = Logger.getLogger(TrackViewTest.class);
 
 	@Before
 	public void setUp() throws Exception {
@@ -75,6 +78,8 @@ public class TrackViewTest {
 		assertEquals(true, t.pack);
 		assertEquals("org.utgenome.gwt.utgb.client.track.lib.NavigatorTrack", t.javaClass);
 		assertEquals(true, t._.containsKey("sequenceList"));
+
+		_logger.info(Lens.toSilk(v));
 
 	}
 
