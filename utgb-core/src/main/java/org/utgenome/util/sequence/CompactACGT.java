@@ -24,6 +24,9 @@
 //--------------------------------------
 package org.utgenome.util.sequence;
 
+import java.io.File;
+import java.net.URL;
+
 /**
  * Compact array for ACGT (and N) sequences
  * 
@@ -38,6 +41,19 @@ public class CompactACGT implements GenomeSequence {
 
 	private final static int BYTE = 8;
 	private final static char[] ACGT = { 'A', 'C', 'G', 'T' };
+
+	static class PacFileAccess {
+		private final String fileNamePrefix;
+
+		public PacFileAccess(URL fastaFile) {
+			fileNamePrefix = new File(fastaFile.getPath()).getName();
+		}
+
+	}
+
+	static class OnMemoryPacDataAccess {
+
+	}
 
 	public int length() {
 		return length;
@@ -55,10 +71,6 @@ public class CompactACGT implements GenomeSequence {
 
 		int c = (sequence[pos] >> ((3 - offset) * 2)) & 0x03;
 		return ACGT[c];
-	}
-
-	public static class Builder {
-
 	}
 
 }

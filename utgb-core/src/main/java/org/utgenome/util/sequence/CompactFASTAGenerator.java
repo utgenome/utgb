@@ -28,12 +28,12 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.zip.GZIPInputStream;
 
@@ -61,17 +61,17 @@ public class CompactFASTAGenerator {
 
 	}
 
-	public void packFASTA(String file) throws IOException {
-		try {
-			packFASTA(new File(file).toURI().toURL());
-		}
-		catch (MalformedURLException e) {
-			throw new IOException(e);
-		}
+	public void packFASTA(String fastaFilePath) throws IOException {
+		packFASTA(fastaFilePath, new FileInputStream(fastaFilePath));
 	}
 
 	public void packFASTA(URL fastaFile) throws IOException {
-		String fileName = new File(fastaFile.getPath()).getName();
+		packFASTA(fastaFile.getPath(), fastaFile.openStream());
+	}
+
+	public void packFASTA(String fastaFilePrefix, InputStream inputFASTA) throws IOException {
+
+		String fileName = new File(fastaFilePrefix).getName();
 		String baseName = FileType.removeFileExt(fileName);
 
 		// output files
@@ -88,18 +88,19 @@ public class CompactFASTAGenerator {
 		indexOut = new SilkWriter(new BufferedWriter(new FileWriter(new File(workDir, pacIndexFile))));
 
 		indexOut.preamble();
+		indexOut.preamble("schema sequence(length, offset)");
 
 		// load FASTA file
 		// switch the input stream according to the file type
 		switch (FileType.getFileType(fileName)) {
 		case TAR_GZ:
-			packFASTAInTarGZFormat(new GZIPInputStream(new BufferedInputStream(fastaFile.openStream())));
+			packFASTAInTarGZFormat(new GZIPInputStream(new BufferedInputStream(inputFASTA)));
 			break;
 		case GZIP:
-			packFASTA(new GZIPInputStream(new BufferedInputStream(fastaFile.openStream())));
+			packFASTA(new GZIPInputStream(new BufferedInputStream(inputFASTA)));
 			break;
 		default:
-			packFASTA(new BufferedInputStream(fastaFile.openStream()));
+			packFASTA(new BufferedInputStream(inputFASTA));
 			break;
 		}
 
@@ -107,6 +108,7 @@ public class CompactFASTAGenerator {
 		indexOut.close();
 
 		_logger.info("pack done.");
+
 	}
 
 	private void packFASTA(InputStream in) throws IOException {
