@@ -46,6 +46,8 @@ import org.xerial.util.FileType;
 import org.xerial.util.log.Logger;
 
 /**
+ * 
+ * 
  * @author leo
  * 
  */
@@ -59,6 +61,14 @@ public class CompactFASTAGenerator {
 
 	public CompactFASTAGenerator() {
 
+	}
+
+	public void setWorkDir(String workDir) {
+		this.workDir = workDir;
+	}
+
+	public String getWorkDir() {
+		return workDir;
 	}
 
 	public void packFASTA(String fastaFilePath) throws IOException {
@@ -77,7 +87,7 @@ public class CompactFASTAGenerator {
 		// output files
 		String pacSeqFile = baseName + ".pac";
 		String pacNSeqFile = baseName + ".npac";
-		String pacIndexFile = baseName + ".pac.index.silk";
+		String pacIndexFile = baseName + ".index.silk";
 		_logger.info("pac file: " + pacSeqFile);
 		_logger.info("pac file for N: " + pacNSeqFile);
 		_logger.info("pac index file: " + pacIndexFile);
@@ -129,6 +139,7 @@ public class CompactFASTAGenerator {
 			long sequenceLength = end - start;
 
 			SilkWriter s = indexOut.node("sequence").attribute("name", sequenceName);
+			s.leaf("description", description);
 			s.leaf("length", Long.toString(sequenceLength));
 			s.leaf("offset", Long.toString(start));
 		}

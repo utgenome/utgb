@@ -24,8 +24,15 @@
 //--------------------------------------
 package org.utgenome.util.sequence;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.xerial.core.XerialException;
 
 /**
  * Compact array for ACGT (and N) sequences
@@ -45,8 +52,16 @@ public class CompactACGT implements GenomeSequence {
 	static class PacFileAccess {
 		private final String fileNamePrefix;
 
-		public PacFileAccess(URL fastaFile) {
-			fileNamePrefix = new File(fastaFile.getPath()).getName();
+		private Map<String, CompactACGTIndex> indexTable = new HashMap<String, CompactACGTIndex>();
+
+		public PacFileAccess(URL fastaFile) throws XerialException, IOException {
+			File f = new File(fastaFile.getPath());
+			fileNamePrefix = f.getName();
+			String fileDir = f.getParent();
+			File indexFile = new File(fileDir, fileNamePrefix + ".index.silk");
+			for (CompactACGTIndex each : CompactACGTIndex.load(new BufferedReader(new FileReader(indexFile)))) {
+				indexTable.put(each.name, each);
+			}
 		}
 
 	}

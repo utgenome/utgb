@@ -115,6 +115,9 @@ public class CompactACGTWriter {
 		}
 	}
 
+	/**
+	 * This method is used to generate source code for the charToACGTCodeTable
+	 */
 	public static void generateCharTo2BitACGTTable() {
 
 		ArrayList<Byte> buffer = new ArrayList<Byte>();
