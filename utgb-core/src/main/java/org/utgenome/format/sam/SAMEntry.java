@@ -45,6 +45,10 @@ public class SAMEntry {
 	public int iSize;
 	public String seq;
 	public String qual;
-	public Properties tag;
+	public Tag tag;
+
+	public static class Tag {
+		public Properties _ = new Properties();
+	}
 
 }

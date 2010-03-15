@@ -56,6 +56,7 @@ public class SAM2SilkReader {
 
 	public void convert(Writer out) {
 		SilkWriter w = new SilkWriter(out);
+
 		w.preamble();
 		w.preamble("schema record(qname, flag, rname, start, end, mapq, cigar, mrnm, mpos, isize, seq, qual, tag, vtype, tag*)");
 
