@@ -37,8 +37,8 @@ import org.xerial.util.StringUtil;
  * @author leo
  * 
  */
-public class CompactACGTWriter {
 
+public class CompactACGTWriter {
 	/**
 	 * table for translating ASCII code to Nucleotide in 2 bit. (4 is for N);
 	 */

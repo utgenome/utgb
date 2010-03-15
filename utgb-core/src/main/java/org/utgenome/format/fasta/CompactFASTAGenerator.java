@@ -57,8 +57,14 @@ public class CompactFASTAGenerator {
 	private SilkWriter indexOut;
 	private String workDir = "target";
 
+	public int BUFFER_SIZE = 8 * 1024 * 1024;
+
 	public CompactFASTAGenerator() {
 
+	}
+
+	public void setBuffferSize(int bufferSizeInMB) {
+		BUFFER_SIZE = bufferSizeInMB * 1024 * 1024;
 	}
 
 	public void setWorkDir(String workDir) {
@@ -86,35 +92,35 @@ public class CompactFASTAGenerator {
 		}
 
 		String fileName = new File(fastaFilePrefix).getName();
-		//String baseName = FileType.removeFileExt(fileName);
+		String baseName = fileName.endsWith(".fa") ? fileName : FileType.removeFileExt(fileName);
 
 		// output files
-		String pacSeqFile = fileName + CompactFASTA.PAC_FILE_SUFFIX;
-		String pacNSeqFile = fileName + CompactFASTA.PAC_N_FILE_SUFFIX;
-		String pacIndexFile = fileName + CompactFASTA.PAC_INDEX_FILE_SUFFIX;
+		String pacSeqFile = baseName + CompactFASTA.PAC_FILE_SUFFIX;
+		String pacNSeqFile = baseName + CompactFASTA.PAC_N_FILE_SUFFIX;
+		String pacIndexFile = baseName + CompactFASTA.PAC_INDEX_FILE_SUFFIX;
 		_logger.info("pac file: " + pacSeqFile);
 		_logger.info("pac file for N: " + pacNSeqFile);
 		_logger.info("pac index file: " + pacIndexFile);
 
-		BufferedOutputStream pacSeqOut = new BufferedOutputStream(new FileOutputStream(new File(workDir, pacSeqFile)));
-		BufferedOutputStream pacNSeqOut = new BufferedOutputStream(new FileOutputStream(new File(workDir, pacNSeqFile)));
+		BufferedOutputStream pacSeqOut = new BufferedOutputStream(new FileOutputStream(new File(workDir, pacSeqFile)), BUFFER_SIZE);
+		BufferedOutputStream pacNSeqOut = new BufferedOutputStream(new FileOutputStream(new File(workDir, pacNSeqFile)), BUFFER_SIZE);
 		compressor = new CompactACGTWriter(pacSeqOut, pacNSeqOut);
 		indexOut = new SilkWriter(new BufferedWriter(new FileWriter(new File(workDir, pacIndexFile))));
 
 		indexOut.preamble();
-		indexOut.preamble("schema sequence(length, offset)");
+		indexOut.preamble("schema sequence(name, description, length, offset)");
 
 		// load FASTA file
 		// switch the input stream according to the file type
 		switch (FileType.getFileType(fileName)) {
 		case TAR_GZ:
-			packFASTAInTarGZFormat(new GZIPInputStream(new BufferedInputStream(inputFASTA)));
+			packFASTAInTarGZFormat(new GZIPInputStream(new BufferedInputStream(inputFASTA, BUFFER_SIZE)));
 			break;
 		case GZIP:
-			packFASTA(new GZIPInputStream(new BufferedInputStream(inputFASTA)));
+			packFASTA(new GZIPInputStream(new BufferedInputStream(inputFASTA, BUFFER_SIZE)));
 			break;
 		default:
-			packFASTA(new BufferedInputStream(inputFASTA));
+			packFASTA(new BufferedInputStream(inputFASTA, BUFFER_SIZE));
 			break;
 		}
 

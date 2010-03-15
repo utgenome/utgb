@@ -33,6 +33,7 @@ import java.util.HashMap;
 
 import org.utgenome.UTGBException;
 import org.xerial.core.XerialException;
+import org.xerial.util.FileType;
 
 /**
  * CompactFASTA is a packed FASTA file
@@ -52,7 +53,7 @@ public class CompactFASTA {
 
 	public CompactFASTA(String fastaFile) throws XerialException, IOException {
 		File f = new File(fastaFile);
-		String prefix = f.getName();
+		String prefix = FileType.removeFileExt(f.getName());
 		String fileDir = f.getParent();
 		File indexFile = new File(fileDir, prefix + PAC_INDEX_FILE_SUFFIX);
 		for (CompactACGTIndex each : CompactACGTIndex.load(new BufferedReader(new FileReader(indexFile)))) {

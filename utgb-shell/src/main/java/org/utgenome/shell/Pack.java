@@ -29,6 +29,7 @@ import java.util.regex.Pattern;
 
 import org.utgenome.UTGBException;
 import org.utgenome.format.fasta.CompactFASTAGenerator;
+import org.xerial.util.StopWatch;
 import org.xerial.util.log.Logger;
 import org.xerial.util.opt.Argument;
 import org.xerial.util.opt.Option;
@@ -58,6 +59,7 @@ public class Pack extends UTGBShellCommand {
 		_logger.info("input file: " + inputFile);
 		_logger.info("output dir: " + outputDir);
 
+		StopWatch sw = new StopWatch();
 		CompactFASTAGenerator g = new CompactFASTAGenerator();
 		g.setWorkDir(outputDir);
 		// is protocol?
@@ -66,6 +68,8 @@ public class Pack extends UTGBShellCommand {
 		}
 		else
 			g.packFASTA(inputFile);
+
+		_logger.info(String.format("elapsed time %s sec.", sw.getElapsedTime()));
 	}
 
 	@Override
