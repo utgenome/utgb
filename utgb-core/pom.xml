@@ -178,7 +178,7 @@
     <dependency>
       <groupId>org.xerial</groupId>
       <artifactId>xerial-core</artifactId>
-      <version>1.0.20</version>
+      <version>1.0.19</version>
     </dependency>
 
     <dependency>
