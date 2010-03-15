@@ -16,31 +16,28 @@
 //--------------------------------------
 // utgb-core Project
 //
-// CompactACGTWriterTest.java
+// GenomeSequence.java
 // Since: Feb 22, 2010
 //
 // $URL$ 
 // $Author$
 //--------------------------------------
-package org.utgenome.util.sequence;
+package org.utgenome.format.fasta;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+/**
+ * Common interface of genome sequences
+ * 
+ * @author leo
+ * 
+ */
+public interface GenomeSequence {
 
-public class CompactACGTWriterTest {
+	public int length();
 
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	@After
-	public void tearDown() throws Exception {
-	}
-
-	@Test
-	public void genTable() {
-		CompactACGTWriter.generateCharTo2BitACGTTable();
-	}
-
+	/**
+	 * @param index
+	 *            index on the genome sequence (0-origin)
+	 * @return
+	 */
+	public char charAt(int index);
 }

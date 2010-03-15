@@ -22,7 +22,7 @@
 // $URL$ 
 // $Author$
 //--------------------------------------
-package org.utgenome.util.sequence;
+package org.utgenome.format.fasta;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -39,8 +39,6 @@ import java.util.zip.GZIPInputStream;
 
 import org.apache.tools.tar.TarEntry;
 import org.apache.tools.tar.TarInputStream;
-import org.utgenome.format.fasta.FASTA;
-import org.utgenome.format.fasta.FASTAPullParser;
 import org.xerial.silk.SilkWriter;
 import org.xerial.util.FileType;
 import org.xerial.util.log.Logger;

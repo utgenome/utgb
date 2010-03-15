@@ -22,7 +22,7 @@
 // $URL$ 
 // $Author$
 //--------------------------------------
-package org.utgenome.util.sequence;
+package org.utgenome.format.fasta;
 
 import java.io.BufferedReader;
 import java.io.IOException;

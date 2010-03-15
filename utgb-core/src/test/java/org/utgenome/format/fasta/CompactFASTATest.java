@@ -22,7 +22,7 @@
 // $URL$ 
 // $Author$
 //--------------------------------------
-package org.utgenome.util.sequence;
+package org.utgenome.format.fasta;
 
 import static org.junit.Assert.assertEquals;
 
@@ -31,6 +31,9 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.utgenome.format.fasta.CompactFASTA;
+import org.utgenome.format.fasta.CompactFASTAGenerator;
+import org.utgenome.format.fasta.GenomeSequence;
 import org.xerial.util.FileResource;
 import org.xerial.util.log.Logger;
 

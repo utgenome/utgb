@@ -24,7 +24,7 @@
 //--------------------------------------
 package org.utgenome.util.aligner;
 
-import org.utgenome.util.sequence.GenomeSequence;
+import org.utgenome.format.fasta.GenomeSequence;
 
 /**
  * Simple Smith-Waterman based aligner

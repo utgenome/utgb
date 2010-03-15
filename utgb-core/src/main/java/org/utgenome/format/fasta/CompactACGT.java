@@ -22,7 +22,7 @@
 // $URL$ 
 // $Author$
 //--------------------------------------
-package org.utgenome.util.sequence;
+package org.utgenome.format.fasta;
 
 import org.utgenome.UTGBErrorCode;
 import org.utgenome.UTGBException;

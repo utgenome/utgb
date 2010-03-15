@@ -16,23 +16,40 @@
 //--------------------------------------
 // utgb-core Project
 //
-// CompactFASTAGeneratorTest.java
-// Since: 2010/02/22
+// CompactACGTIndexTest.java
+// Since: 2010/03/11
 //
 // $URL$ 
 // $Author$
 //--------------------------------------
-package org.utgenome.util.sequence;
+package org.utgenome.format.fasta;
+
+import static org.junit.Assert.assertEquals;
+
+import java.io.File;
+import java.io.FileReader;
+import java.util.List;
 
 import org.junit.After;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.utgenome.format.fasta.CompactACGTIndex;
+import org.utgenome.format.fasta.CompactFASTAGenerator;
+import org.xerial.lens.Lens;
 import org.xerial.util.FileResource;
+import org.xerial.util.log.Logger;
 
-public class CompactFASTAGeneratorTest {
+public class CompactACGTIndexTest {
 
-	@Before
-	public void setUp() throws Exception {
+	private static Logger _logger = Logger.getLogger(CompactACGTIndexTest.class);
+
+	public static String workDir = "target";
+
+	@BeforeClass
+	public static void setUp() throws Exception {
+		CompactFASTAGenerator g = new CompactFASTAGenerator();
+		g.setWorkDir(workDir);
+		g.packFASTA(FileResource.find(CompactFASTAGeneratorTest.class, "sample.fa"));
 	}
 
 	@After
@@ -40,15 +57,11 @@ public class CompactFASTAGeneratorTest {
 	}
 
 	@Test
-	public void testGen() throws Exception {
-		CompactFASTAGenerator g = new CompactFASTAGenerator();
-		g.packFASTA(FileResource.find(CompactFASTAGeneratorTest.class, "sample.fa"));
-	}
+	public void load() throws Exception {
+		List<CompactACGTIndex> index = CompactACGTIndex.load(new FileReader(new File(workDir, "sample.index.silk")));
+		assertEquals(3, index.size());
+		_logger.info(Lens.toSilk(index));
 
-	@Test
-	public void testGenTarGZ() throws Exception {
-		CompactFASTAGenerator g = new CompactFASTAGenerator();
-		g.packFASTA(FileResource.find(CompactFASTAGeneratorTest.class, "sample-archive.fa.tar.gz"));
 	}
 
 }

@@ -24,9 +24,11 @@
 //--------------------------------------
 package org.utgenome.shell;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.InputStreamReader;
+import java.io.Reader;
 
 import org.utgenome.format.bed.BEDDatabaseGenerator;
 import org.utgenome.format.fasta.FASTA2Db;
@@ -48,45 +50,52 @@ public class Import extends UTGBShellCommand {
 	private static Logger _logger = Logger.getLogger(Import.class);
 
 	public static enum FileType {
-		AUTO, READ, BED, FASTA, WIG
+		AUTO, READ, BED, FASTA, WIG, UNKNOWN
 	}
 
 	@Option(symbol = "t", longName = "type", description = "specify the input file type: (AUTO, FASTA, READ, BED, WIG)")
 	private FileType fileType = FileType.AUTO;
 
 	@Argument(index = 0, required = false)
-	private String inputFilePath = null;
+	private final String inputFilePath = null;
+
+	@Option(symbol = "d", description = "output directory. default = db")
+	private final String outDir = "db";
 
 	@Option(symbol = "o", longName = "output", varName = "DB FILE NAME", description = "output SQLite DB file name")
 	private String outputFileName;
 
 	@Option(symbol = "w", longName = "overwrite", description = "overwrite existing DB files")
-	private boolean overwriteDB = false;
+	private final boolean overwriteDB = false;
 
 	@Override
 	public void execute(String[] args) throws Exception {
 
 		File input = null;
 
-		if (inputFilePath == null)
+		Reader in = null;
+		if (inputFilePath == null) {
 			_logger.info("use STDIN for the input");
+			in = new InputStreamReader(System.in);
+		}
 		else {
 			_logger.info("input file: " + inputFilePath);
 			input = new File(inputFilePath);
 			if (!input.exists())
 				throw new UTGBShellException("file not found: " + inputFilePath);
-		}
 
-		_logger.info("file type: " + fileType);
+			in = new BufferedReader(new FileReader(input));
+		}
 
 		if (outputFileName == null) {
 			// new File("db").mkdirs();
 
-			outputFileName = String.format("%s.sqlite", inputFilePath);
+			String inputName = inputFilePath == null ? "out" : inputFilePath;
+			outputFileName = String.format("%s.sqlite", inputName);
 			int count = 1;
 			if (!overwriteDB) {
 				while (new File(outputFileName).exists()) {
-					outputFileName = String.format("%s.sqlite.%d", inputFilePath, count++);
+					outputFileName = String.format("%s.sqlite.%d", inputName, count++);
 				}
 			}
 		}
@@ -95,21 +104,16 @@ public class Import extends UTGBShellCommand {
 
 		if (fileType == FileType.AUTO)
 			fileType = detectFileType(inputFilePath);
+		_logger.info("file type: " + fileType);
 
 		switch (fileType) {
 		case READ: {
 			ReadDBBuilder builder = new ReadDBBuilder(outputFileName);
-			if (input != null)
-				builder.build(input.toURI().toURL());
-			else
-				builder.build(new InputStreamReader(System.in));
+			builder.build(in);
 			break;
 		}
 		case BED: {
-			if (input != null)
-				BEDDatabaseGenerator.toSQLiteDB(new FileReader(input), outputFileName);
-			else
-				BEDDatabaseGenerator.toSQLiteDB(new InputStreamReader(System.in), outputFileName);
+			BEDDatabaseGenerator.toSQLiteDB(in, outputFileName);
 			break;
 		}
 		case FASTA:
@@ -119,13 +123,10 @@ public class Import extends UTGBShellCommand {
 				FASTA2Db.main(new String[] { "-o", outputFileName });
 			break;
 		case WIG:
-			if (input != null)
-				WIGDatabaseGenerator.toSQLiteDB(new FileReader(input), outputFileName);
-			else
-				WIGDatabaseGenerator.toSQLiteDB(new InputStreamReader(System.in), outputFileName);
-		case AUTO:
+			WIGDatabaseGenerator.toSQLiteDB(in, outputFileName);
+		case UNKNOWN:
 		default: {
-			_logger.warn("file type (-t) must be specified");
+			_logger.warn("specify the input file type with -t option");
 			break;
 		}
 		}
@@ -133,6 +134,9 @@ public class Import extends UTGBShellCommand {
 	}
 
 	public static FileType detectFileType(String fileName) {
+		if (fileName == null)
+			return FileType.UNKNOWN;
+
 		if (fileName.endsWith(".fa") || fileName.endsWith(".fasta"))
 			return FileType.FASTA;
 		else if (fileName.endsWith(".bed"))
@@ -148,6 +152,7 @@ public class Import extends UTGBShellCommand {
 		return "import";
 	}
 
+	@Override
 	public String getOneLinerDescription() {
 		return "import a file and create a new database";
 	}
