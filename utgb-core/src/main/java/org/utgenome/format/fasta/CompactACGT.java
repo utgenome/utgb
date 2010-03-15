@@ -56,7 +56,7 @@ public class CompactACGT implements GenomeSequence {
 	 *            offset char length in the packed array
 	 * @throws UTGBException
 	 */
-	public CompactACGT(byte[] sequence, byte[] sequenceMask, int length, int offset) throws UTGBException {
+	CompactACGT(byte[] sequence, byte[] sequenceMask, int length, int offset) throws UTGBException {
 		this.sequence = sequence;
 		this.sequenceMask = sequenceMask;
 

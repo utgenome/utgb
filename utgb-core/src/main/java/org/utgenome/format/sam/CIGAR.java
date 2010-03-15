@@ -139,18 +139,17 @@ public class CIGAR {
 	private static ArrayList<Element> parse(String cigarString) throws UTGBException {
 
 		ArrayList<Element> result = new ArrayList<Element>();
-		int numStart = 0;
-		int cursor = 0;
-		for (; cursor < cigarString.length(); cursor++) {
+		int startIndexOfNumber = 0;
+		for (int cursor = 0; cursor < cigarString.length(); cursor++) {
 			char c = cigarString.charAt(cursor);
 			if (c >= '0' && c <= '9')
 				continue;
 			else {
-				int len = Integer.parseInt(cigarString.substring(numStart, cursor));
+				int len = Integer.parseInt(cigarString.substring(startIndexOfNumber, cursor));
 				Type t = Type.convert(cigarString.charAt(cursor));
 				result.add(new Element(t, len));
 
-				numStart = cursor + 1;
+				startIndexOfNumber = cursor + 1;
 			}
 		}
 
