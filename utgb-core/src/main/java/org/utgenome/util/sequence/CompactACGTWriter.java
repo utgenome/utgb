@@ -93,8 +93,6 @@ public class CompactACGTWriter {
 			nSeqOut.write(nSeqBuffer, 0, BUFFER_SIZE / 2);
 			index = 0;
 		}
-		else
-			index++;
 
 		int pos = index / 4;
 		int offset = index % 4;
@@ -105,6 +103,7 @@ public class CompactACGTWriter {
 		}
 
 		seqBuffer[pos] |= code << ((3 - offset) * 2);
+		index++;
 		length++;
 	}
 

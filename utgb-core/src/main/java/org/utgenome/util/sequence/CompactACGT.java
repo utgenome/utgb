@@ -24,15 +24,8 @@
 //--------------------------------------
 package org.utgenome.util.sequence;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.xerial.core.XerialException;
+import org.utgenome.UTGBErrorCode;
+import org.utgenome.UTGBException;
 
 /**
  * Compact array for ACGT (and N) sequences
@@ -45,29 +38,36 @@ public class CompactACGT implements GenomeSequence {
 	private byte[] sequence; // 2 bit for each char
 	private byte[] sequenceMask; // 1 bit for each char: 0 for ACGT, 1 for otherwise including N
 	private int length;
+	private int offset;
 
+	private final static int CODE_SIZE = 2;
 	private final static int BYTE = 8;
 	private final static char[] ACGT = { 'A', 'C', 'G', 'T' };
 
-	static class PacFileAccess {
-		private final String fileNamePrefix;
+	/**
+	 * @param sequence
+	 *            packed sequence
+	 * @param sequenceMask
+	 *            packed sequence for N
+	 * @param bitOffset
+	 *            offset char length in the packed array
+	 * @throws UTGBException
+	 */
+	public CompactACGT(byte[] sequence, byte[] sequenceMask, int length, int offset) throws UTGBException {
+		this.sequence = sequence;
+		this.sequenceMask = sequenceMask;
 
-		private Map<String, CompactACGTIndex> indexTable = new HashMap<String, CompactACGTIndex>();
+		this.length = length;
+		this.offset = offset;
 
-		public PacFileAccess(URL fastaFile) throws XerialException, IOException {
-			File f = new File(fastaFile.getPath());
-			fileNamePrefix = f.getName();
-			String fileDir = f.getParent();
-			File indexFile = new File(fileDir, fileNamePrefix + ".index.silk");
-			for (CompactACGTIndex each : CompactACGTIndex.load(new BufferedReader(new FileReader(indexFile)))) {
-				indexTable.put(each.name, each);
-			}
+		// assertion
+		if ((this.sequence.length * BYTE / CODE_SIZE - offset) <= length) {
+			throw new UTGBException(UTGBErrorCode.INVALID_INPUT, String.format("packed array is shorter than the specified length: %d < %d", sequence.length,
+					length));
 		}
-
-	}
-
-	static class OnMemoryPacDataAccess {
-
+		if ((this.sequenceMask.length * BYTE - offset) <= length) {
+			throw new UTGBException(UTGBErrorCode.INVALID_INPUT, String.format("invalid mask binary"));
+		}
 	}
 
 	public int length() {
@@ -76,16 +76,26 @@ public class CompactACGT implements GenomeSequence {
 
 	public char charAt(int index) {
 
-		int maskPos = index / 8;
-		int maskOffset = index % 8;
-		if ((sequenceMask[maskPos] & (0x01 << (7 - maskOffset))) != 0)
+		int x = index + offset;
+
+		int maskPos = x / 8;
+		int maskOffset = x % 8;
+		if ((sequenceMask[maskPos] >>> (7 - maskOffset) & 0x01) != 0)
 			return 'N';
 
-		int pos = index / 4;
-		int offset = index % 4;
+		int bPos = x / 4;
+		int bOffset = x % 4;
 
-		int c = (sequence[pos] >> ((3 - offset) * 2)) & 0x03;
+		int c = (sequence[bPos] >>> (6 - bOffset * 2)) & 0x03;
 		return ACGT[c];
+	}
+
+	public String toString() {
+		StringBuilder buf = new StringBuilder();
+		for (int i = 0; i < length; i++) {
+			buf.append(charAt(i));
+		}
+		return buf.toString();
 	}
 
 }

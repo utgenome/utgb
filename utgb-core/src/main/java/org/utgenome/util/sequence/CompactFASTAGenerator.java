@@ -82,12 +82,12 @@ public class CompactFASTAGenerator {
 	public void packFASTA(String fastaFilePrefix, InputStream inputFASTA) throws IOException {
 
 		String fileName = new File(fastaFilePrefix).getName();
-		String baseName = FileType.removeFileExt(fileName);
+		//String baseName = FileType.removeFileExt(fileName);
 
 		// output files
-		String pacSeqFile = baseName + ".pac";
-		String pacNSeqFile = baseName + ".npac";
-		String pacIndexFile = baseName + ".index.silk";
+		String pacSeqFile = fileName + CompactFASTA.PAC_FILE_SUFFIX;
+		String pacNSeqFile = fileName + CompactFASTA.PAC_N_FILE_SUFFIX;
+		String pacIndexFile = fileName + CompactFASTA.PAC_INDEX_FILE_SUFFIX;
 		_logger.info("pac file: " + pacSeqFile);
 		_logger.info("pac file for N: " + pacNSeqFile);
 		_logger.info("pac index file: " + pacIndexFile);

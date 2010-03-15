@@ -34,5 +34,10 @@ public interface GenomeSequence {
 
 	public int length();
 
+	/**
+	 * @param index
+	 *            index on the genome sequence (0-origin)
+	 * @return
+	 */
 	public char charAt(int index);
 }
