@@ -44,11 +44,7 @@ public class SAMEntry {
 	public String mrnm; // mate reference name
 	public int iSize;
 	public String seq;
-	public int qual;
-	public Tag tag;
-
-	public static class Tag {
-		public Properties _;
-	}
+	public String qual;
+	public Properties tag;
 
 }

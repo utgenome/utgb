@@ -24,12 +24,20 @@
 //--------------------------------------
 package org.utgenome.format.sam;
 
+import java.io.StringReader;
+import java.io.StringWriter;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.xerial.lens.Lens;
+import org.xerial.lens.ObjectHandler;
 import org.xerial.util.FileResource;
+import org.xerial.util.log.Logger;
 
 public class SAM2SilkReaderTest {
+
+	private static Logger _logger = Logger.getLogger(SAM2SilkReaderTest.class);
 
 	@Before
 	public void setUp() throws Exception {
@@ -41,8 +49,15 @@ public class SAM2SilkReaderTest {
 
 	@Test
 	public void toSilkTest() throws Exception {
+		StringWriter w = new StringWriter();
 		SAM2SilkReader r = new SAM2SilkReader(FileResource.open(SAM2SilkReaderTest.class, "chr21.sam"));
-		r.convert(System.out);
+		r.convert(w);
+		_logger.info(w.toString());
 
+		Lens.findFromSilk(new StringReader(w.toString()), "record", SAMEntry.class, new ObjectHandler<SAMEntry>() {
+			public void handle(SAMEntry input) throws Exception {
+				_logger.info(Lens.toSilk(input));
+			}
+		});
 	}
 }

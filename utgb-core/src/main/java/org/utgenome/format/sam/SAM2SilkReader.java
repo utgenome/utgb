@@ -26,7 +26,9 @@ package org.utgenome.format.sam;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.io.Writer;
 
 import net.sf.samtools.SAMFileReader;
 import net.sf.samtools.SAMRecord;
@@ -49,7 +51,10 @@ public class SAM2SilkReader {
 	}
 
 	public void convert(OutputStream out) {
+		convert(new OutputStreamWriter(out));
+	}
 
+	public void convert(Writer out) {
 		SilkWriter w = new SilkWriter(out);
 		w.preamble();
 		w.preamble("schema record(qname, flag, rname, start, end, mapq, cigar, mrnm, mpos, isize, seq, qual, tag, vtype, tag*)");
