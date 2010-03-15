@@ -60,8 +60,14 @@ public class CompactFASTATest {
 	@Test
 	public void sequence() throws Exception {
 		CompactFASTA c = new CompactFASTA("target/sample.fa");
-		GenomeSequence seq = c.getSequence("chr1", 0, 100);
-		assertEquals("NNNNNNACGGATTCTTGCTATATANTTACTTACCCGTAGTCTAGAGATCTTTCCAATATCGTCT", seq.toString());
+		GenomeSequence seq = c.getSequence("chr1", 0, 20);
+		assertEquals("NNNNNNACGGATTCTTGCTA", seq.toString());
+		assertEquals(20, seq.length());
+		GenomeSequence seqFull = c.getSequence("chr1");
+		assertEquals("NNNNNNACGGATTCTTGCTATATANTTACTTACCCGTAGTCTAGAGATCTTTCCAATATCGTCT", seqFull.toString());
+
+		GenomeSequence seq2 = c.getSequence("chr2", 10, 15);
+		assertEquals("CTAAA", seq2.toString());
 	}
 
 }

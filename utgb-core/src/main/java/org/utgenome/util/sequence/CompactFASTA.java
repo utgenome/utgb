@@ -46,9 +46,9 @@ public class CompactFASTA {
 	public final static String PAC_N_FILE_SUFFIX = ".pacn";
 	public final static String PAC_INDEX_FILE_SUFFIX = ".i.silk";
 
-	private HashMap<String, CompactACGTIndex> indexTable = new HashMap<String, CompactACGTIndex>();
-	private RandomAccessFile packedFASTA;
-	private RandomAccessFile packedFASTA_N;
+	private final HashMap<String, CompactACGTIndex> indexTable = new HashMap<String, CompactACGTIndex>();
+	private final RandomAccessFile packedFASTA;
+	private final RandomAccessFile packedFASTA_N;
 
 	public CompactFASTA(String fastaFile) throws XerialException, IOException {
 		File f = new File(fastaFile);
@@ -71,29 +71,35 @@ public class CompactFASTA {
 	}
 
 	/**
-	 * Retrieves a genome sequence of the specified range
+	 * Retrieves a genome sequence of the specified range [start, end)
 	 * 
 	 * @param chr
 	 *            sequence name
 	 * @param start
-	 *            start position on genome (0-origin)
+	 *            start position on the genome (0-origin)
 	 * @param end
 	 *            end position on genome (0-origin, exclusive)
-	 * @return
+	 * @return genome sequence of the specified range, or null if no entry found for the given sequence name
 	 * @throws IOException
 	 * @throws UTGBException
 	 */
 	public GenomeSequence getSequence(String chr, int start, int end) throws IOException, UTGBException {
+		if (!indexTable.containsKey(chr))
+			return null;
+		CompactACGTIndex index = indexTable.get(chr);
+		return getSequence(index, start, end);
+	}
+
+	GenomeSequence getSequence(CompactACGTIndex index, int start, int end) throws IOException, UTGBException {
+		if (index == null)
+			throw new IllegalArgumentException("index must not be null");
+
 		if (start > end) {
 			int tmp = end;
 			end = start;
 			start = tmp;
 		}
 
-		if (!indexTable.containsKey(chr))
-			return null;
-
-		CompactACGTIndex index = indexTable.get(chr);
 		int length = end - start;
 		if (length > index.length)
 			length = (int) (index.length - start);
@@ -109,13 +115,18 @@ public class CompactFASTA {
 		packedFASTA_N.seek(pacN_lowerBound);
 		packedFASTA_N.read(seqNBuf);
 		return new CompactACGT(seqBuf, seqNBuf, length, start % 4);
+
 	}
 
-	public GenomeSequence getSequence(String chr) throws IOException, UTGBException {
+	public GenomeSequence getSequence(String chr, int start) throws IOException, UTGBException {
 		if (!indexTable.containsKey(chr))
 			return null;
 		CompactACGTIndex index = indexTable.get(chr);
-		return getSequence(chr, 0, (int) index.length);
+		return getSequence(index, start, (int) index.length);
+	}
+
+	public GenomeSequence getSequence(String chr) throws IOException, UTGBException {
+		return getSequence(chr, 0);
 	}
 
 }
