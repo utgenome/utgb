@@ -79,6 +79,12 @@ public class CompactFASTAGenerator {
 
 	public void packFASTA(String fastaFilePrefix, InputStream inputFASTA) throws IOException {
 
+		File work = new File(workDir);
+		if (!work.exists()) {
+			_logger.info("create a directory: " + work);
+			work.mkdirs();
+		}
+
 		String fileName = new File(fastaFilePrefix).getName();
 		//String baseName = FileType.removeFileExt(fileName);
 
