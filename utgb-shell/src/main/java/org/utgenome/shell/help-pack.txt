@@ -1,0 +1,3 @@
+usage: pack [option] (input FASTA file (.fa, .fa.tar.gz )) 
+
+Create a pack file (2-bit binary) of the input FASTA sequences.
