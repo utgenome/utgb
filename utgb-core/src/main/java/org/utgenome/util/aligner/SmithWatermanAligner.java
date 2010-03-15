@@ -37,16 +37,16 @@ public class SmithWatermanAligner {
 	public static class Alignment {
 		public final String cigar;
 		public final int score;
-		public final String a1;
 		public final int pos; // 1-based leftmost position of the clipped sequence
-		public final String a2;
+		public final String rseq; // reference sequence
+		public final String qseq; // query sequence
 
-		public Alignment(String cigar, int score, String a1, int pos, String a2) {
+		public Alignment(String cigar, int score, String rseq, int pos, String qseq) {
 			this.cigar = cigar;
 			this.score = score;
-			this.a1 = a1;
 			this.pos = pos;
-			this.a2 = a2;
+			this.rseq = rseq;
+			this.qseq = qseq;
 		}
 	}
 
@@ -88,11 +88,21 @@ public class SmithWatermanAligner {
 
 	}
 
-	public Alignment align(String seq1, String seq2) {
-		return align(new StringWrapper(seq1), new StringWrapper(seq2));
+	/**
+	 * Wrap the input string as {@link GenomeSequence}
+	 * 
+	 * @param seq
+	 * @return
+	 */
+	public static GenomeSequence wrap(String seq) {
+		return new StringWrapper(seq);
 	}
 
-	public <Seq extends GenomeSequence> Alignment align(Seq seq1, Seq seq2) {
+	public Alignment align(String seq1, String seq2) {
+		return align(wrap(seq1), wrap(seq2));
+	}
+
+	public <Seq1 extends GenomeSequence, Seq2 extends GenomeSequence> Alignment align(Seq1 seq1, Seq2 seq2) {
 
 		final int N = seq1.length() + 1;
 		final int M = seq2.length() + 1;

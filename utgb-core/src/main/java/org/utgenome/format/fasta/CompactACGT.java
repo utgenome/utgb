@@ -24,6 +24,9 @@
 //--------------------------------------
 package org.utgenome.format.fasta;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import org.utgenome.UTGBErrorCode;
 import org.utgenome.UTGBException;
 
@@ -70,6 +73,17 @@ public class CompactACGT implements GenomeSequence {
 		}
 	}
 
+	public static CompactACGT createFromString(String seq) throws IOException, UTGBException {
+
+		ByteArrayOutputStream seqOut = new ByteArrayOutputStream();
+		ByteArrayOutputStream nSeqOut = new ByteArrayOutputStream();
+		CompactACGTWriter w = new CompactACGTWriter(seqOut, nSeqOut);
+		w.append(seq);
+		w.close();
+
+		return new CompactACGT(seqOut.toByteArray(), nSeqOut.toByteArray(), seq.length(), 0);
+	}
+
 	public int length() {
 		return length;
 	}
@@ -90,6 +104,7 @@ public class CompactACGT implements GenomeSequence {
 		return ACGT[c];
 	}
 
+	@Override
 	public String toString() {
 		StringBuilder buf = new StringBuilder();
 		for (int i = 0; i < length; i++) {
