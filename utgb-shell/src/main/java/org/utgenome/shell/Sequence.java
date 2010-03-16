@@ -24,10 +24,14 @@
 //--------------------------------------
 package org.utgenome.shell;
 
+/**
+ * Retrieve the genome sequence from the pack file
+ * 
+ * @author leo
+ * 
+ */
 public class Sequence {
 
+	private String packFilePrefix;
+
 }
-
-
-
-
