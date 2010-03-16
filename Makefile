@@ -14,3 +14,5 @@ release:
 	mvn release:perform
 
 
+clean:
+	mvn clean

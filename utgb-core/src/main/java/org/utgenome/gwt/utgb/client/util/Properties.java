@@ -70,7 +70,7 @@ public class Properties extends HashMap<String, String> {
 	}
 
 	public String get(String key) {
-		return (String) super.get(key);
+		return super.get(key);
 	}
 
 	/**
@@ -85,13 +85,13 @@ public class Properties extends HashMap<String, String> {
 	 */
 	public String get(String key, String defaultValue) {
 		if (containsKey(key))
-			return (String) get(key);
+			return get(key);
 		else
 			return defaultValue;
 	}
 
 	public int getInt(String key) {
-		return Integer.parseInt((String) super.get(key));
+		return Integer.parseInt(super.get(key));
 	}
 
 	/**
@@ -107,8 +107,9 @@ public class Properties extends HashMap<String, String> {
 	}
 
 	public float getFloat(String key) {
-		return Float.parseFloat((String) super.get(key));
+		return Float.parseFloat(super.get(key));
 	}
+
 	/**
 	 * Gets the float value associated with the given key. If any corresponding value is not found, returns the given
 	 * default value
