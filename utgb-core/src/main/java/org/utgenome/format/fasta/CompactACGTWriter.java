@@ -61,6 +61,16 @@ public class CompactACGTWriter {
 	public CompactACGTWriter(OutputStream seqOut, OutputStream nSeqOut) {
 		this.seqOut = seqOut;
 		this.nSeqOut = nSeqOut;
+
+		clearBuffer();
+	}
+
+	private void clearBuffer() {
+		for (int i = 0; i < seqBuffer.length; ++i)
+			seqBuffer[i] = 0;
+
+		for (int i = 0; i < nSeqBuffer.length; ++i)
+			nSeqBuffer[i] = 0;
 	}
 
 	public long getSequenceLength() {
@@ -87,10 +97,11 @@ public class CompactACGTWriter {
 
 	private void append2bit(byte code) throws IOException {
 
-		if (index + 1 >= BUFFER_SIZE * 4) {
+		if (index >= BUFFER_SIZE * 4) {
 			// dump the buffer 
 			seqOut.write(seqBuffer, 0, BUFFER_SIZE);
 			nSeqOut.write(nSeqBuffer, 0, BUFFER_SIZE / 2);
+			clearBuffer();
 			index = 0;
 		}
 
@@ -99,10 +110,10 @@ public class CompactACGTWriter {
 
 		if (code >= 4) {
 			code = (byte) rand.nextInt(4);
-			nSeqBuffer[index / 8] |= 0x01 << (7 - (index % 8));
+			nSeqBuffer[index / 8] |= (byte) (0x01 << (7 - (index % 8)));
 		}
 
-		seqBuffer[pos] |= code << ((3 - offset) * 2);
+		seqBuffer[pos] |= (byte) (code << (6 - offset * 2));
 		index++;
 		length++;
 	}

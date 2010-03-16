@@ -31,9 +31,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.utgenome.format.fasta.CompactFASTA;
-import org.utgenome.format.fasta.CompactFASTAGenerator;
-import org.utgenome.format.fasta.GenomeSequence;
 import org.xerial.util.FileResource;
 import org.xerial.util.log.Logger;
 
@@ -44,8 +41,6 @@ public class CompactFASTATest {
 
 	@BeforeClass
 	public static void init() throws Exception {
-		CompactFASTAGenerator g = new CompactFASTAGenerator();
-		g.packFASTA(FileResource.find(CompactFASTATest.class, "sample.fa"));
 	}
 
 	@AfterClass
@@ -62,6 +57,10 @@ public class CompactFASTATest {
 
 	@Test
 	public void sequence() throws Exception {
+		CompactFASTAGenerator g = new CompactFASTAGenerator();
+		g.setWorkDir(workDir);
+		g.packFASTA(FileResource.find(CompactFASTATest.class, "sample.fa"));
+
 		CompactFASTA c = new CompactFASTA("target/sample.fa");
 		GenomeSequence seq = c.getSequence("chr1", 0, 20);
 		assertEquals("NNNNNNACGGATTCTTGCTA", seq.toString());
@@ -71,6 +70,18 @@ public class CompactFASTATest {
 
 		GenomeSequence seq2 = c.getSequence("chr2", 10, 15);
 		assertEquals("CTAAA", seq2.toString());
+	}
+
+	@Test
+	public void chrM() throws Exception {
+		CompactFASTAGenerator g = new CompactFASTAGenerator();
+		g.setWorkDir(workDir);
+		g.packFASTA(FileResource.find(CompactFASTATest.class, "chrM.fa"));
+
+		CompactFASTA c = new CompactFASTA("target/chrM.fa");
+		GenomeSequence s = c.getSequence("chrM");
+		_logger.info(s.toString());
+
 	}
 
 }
