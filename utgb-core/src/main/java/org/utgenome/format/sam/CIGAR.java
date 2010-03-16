@@ -25,6 +25,7 @@
 package org.utgenome.format.sam;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.utgenome.UTGBErrorCode;
 import org.utgenome.UTGBException;
@@ -121,6 +122,10 @@ public class CIGAR {
 
 	public Element get(int index) {
 		return cigar.get(index);
+	}
+
+	public List<Element> getElements() {
+		return cigar;
 	}
 
 	public String toCIGARString() {

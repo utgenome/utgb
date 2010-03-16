@@ -33,7 +33,6 @@ import java.util.HashMap;
 
 import org.utgenome.UTGBException;
 import org.xerial.core.XerialException;
-import org.xerial.util.FileType;
 
 /**
  * CompactFASTA is a packed FASTA file
@@ -51,17 +50,17 @@ public class CompactFASTA {
 	private final RandomAccessFile packedFASTA;
 	private final RandomAccessFile packedFASTA_N;
 
-	public CompactFASTA(String fastaFile) throws XerialException, IOException {
-		File f = new File(fastaFile);
-		String prefix = FileType.removeFileExt(f.getName());
+	public CompactFASTA(String fastaFilePrefix) throws XerialException, IOException {
+		File f = new File(fastaFilePrefix);
+		//String prefix = FileType.removeFileExt(f.getName());
 		String fileDir = f.getParent();
-		File indexFile = new File(fileDir, prefix + PAC_INDEX_FILE_SUFFIX);
+		File indexFile = new File(fastaFilePrefix + PAC_INDEX_FILE_SUFFIX);
 		for (CompactACGTIndex each : CompactACGTIndex.load(new BufferedReader(new FileReader(indexFile)))) {
 			indexTable.put(each.name, each);
 		}
 
-		File pacFile = new File(fileDir, prefix + PAC_FILE_SUFFIX);
-		File pacNFile = new File(fileDir, prefix + PAC_N_FILE_SUFFIX);
+		File pacFile = new File(fastaFilePrefix + PAC_FILE_SUFFIX);
+		File pacNFile = new File(fastaFilePrefix + PAC_N_FILE_SUFFIX);
 		packedFASTA = new RandomAccessFile(pacFile, "r");
 		packedFASTA_N = new RandomAccessFile(pacNFile, "r");
 	}
@@ -115,7 +114,7 @@ public class CompactFASTA {
 		packedFASTA.read(seqBuf);
 		packedFASTA_N.seek(pacN_lowerBound);
 		packedFASTA_N.read(seqNBuf);
-		return new CompactACGT(seqBuf, seqNBuf, length, start % 4);
+		return new CompactACGT(seqBuf, seqNBuf, length, (int) bStart % 4);
 
 	}
 

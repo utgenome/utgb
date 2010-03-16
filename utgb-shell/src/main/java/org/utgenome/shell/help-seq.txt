@@ -1,0 +1,8 @@
+usage: seq (packed fasta file prefix) (chr:start-end)
+
+Extract the genome sequence of the specified location from the 
+packed FASTA file. To create a pac file, use 'utgb pack' command.
+
+
+
+

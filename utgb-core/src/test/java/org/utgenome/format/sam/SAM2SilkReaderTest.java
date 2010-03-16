@@ -24,12 +24,18 @@
 //--------------------------------------
 package org.utgenome.format.sam;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringWriter;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.xerial.core.XerialException;
 import org.xerial.lens.Lens;
 import org.xerial.lens.ObjectHandler;
 import org.xerial.util.FileResource;
+import org.xerial.util.StringUtil;
 import org.xerial.util.log.Logger;
 
 public class SAM2SilkReaderTest {
@@ -47,6 +53,25 @@ public class SAM2SilkReaderTest {
 	@Test
 	public void toSilkTest() throws Exception {
 		Lens.findFromSilk(new SAM2SilkReader(FileResource.open(SAM2SilkReaderTest.class, "chr21.sam")), "record", SAMEntry.class,
+				new ObjectHandler<SAMEntry>() {
+					public void handle(SAMEntry input) throws Exception {
+						_logger.info(Lens.toSilk(input));
+					}
+				});
+	}
+
+	@Test
+	public void bssSAM() throws XerialException, IOException {
+		StringWriter w = new StringWriter();
+		BufferedReader b = new BufferedReader(new SAM2SilkReader(FileResource.open(SAM2SilkReaderTest.class, "bss-align.sam")));
+		String line;
+		while ((line = b.readLine()) != null) {
+			w.append(line);
+			w.append(StringUtil.NEW_LINE);
+		}
+		_logger.info(w.toString());
+
+		Lens.findFromSilk(new SAM2SilkReader(FileResource.open(SAM2SilkReaderTest.class, "bss-align.sam")), "record", SAMEntry.class,
 				new ObjectHandler<SAMEntry>() {
 					public void handle(SAMEntry input) throws Exception {
 						_logger.info(Lens.toSilk(input));
