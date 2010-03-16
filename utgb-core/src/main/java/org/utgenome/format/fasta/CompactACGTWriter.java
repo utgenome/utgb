@@ -51,7 +51,7 @@ public class CompactACGTWriter {
 
 	private final OutputStream seqOut;
 	private final OutputStream nSeqOut;
-	private final int BUFFER_SIZE = 1024;
+	private final int BUFFER_SIZE = 4096;
 	private final byte[] seqBuffer = new byte[BUFFER_SIZE];
 	private final byte[] nSeqBuffer = new byte[BUFFER_SIZE / 2];
 	private int index = 0;
