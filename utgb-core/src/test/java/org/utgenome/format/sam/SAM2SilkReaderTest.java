@@ -24,9 +24,6 @@
 //--------------------------------------
 package org.utgenome.format.sam;
 
-import java.io.StringReader;
-import java.io.StringWriter;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,15 +46,11 @@ public class SAM2SilkReaderTest {
 
 	@Test
 	public void toSilkTest() throws Exception {
-		StringWriter w = new StringWriter();
-		SAM2SilkReader r = new SAM2SilkReader(FileResource.open(SAM2SilkReaderTest.class, "chr21.sam"));
-		r.convert(w);
-		_logger.info(w.toString());
-
-		Lens.findFromSilk(new StringReader(w.toString()), "record", SAMEntry.class, new ObjectHandler<SAMEntry>() {
-			public void handle(SAMEntry input) throws Exception {
-				_logger.info(Lens.toSilk(input));
-			}
-		});
+		Lens.findFromSilk(new SAM2SilkReader(FileResource.open(SAM2SilkReaderTest.class, "chr21.sam")), "record", SAMEntry.class,
+				new ObjectHandler<SAMEntry>() {
+					public void handle(SAMEntry input) throws Exception {
+						_logger.info(Lens.toSilk(input));
+					}
+				});
 	}
 }
