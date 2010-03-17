@@ -66,7 +66,7 @@ public class Sequence extends UTGBShellCommand {
 
 		int start = 0;
 		if (sStart != null)
-			start = Integer.parseInt(sStart);
+			start = Integer.parseInt(sStart) - 1;
 		int end = Integer.MAX_VALUE;
 		if (sEnd != null)
 			end = Integer.parseInt(sEnd);

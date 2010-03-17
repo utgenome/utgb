@@ -104,12 +104,18 @@ public class CompactFASTA {
 		if (length > index.length)
 			length = (int) (index.length - start);
 
-		byte[] seqBuf = new byte[length / 4 + 1];
-		byte[] seqNBuf = new byte[length / 8 + 1];
-
 		long bStart = start + index.offset;
+		long bEnd = bStart + length;
 		long pac_lowerBound = bStart / 4;
+		long pac_upperBound = bEnd / 4 + (bEnd % 4 != 0 ? 1 : 0);
 		long pacN_lowerBound = bStart / 8;
+		long pacN_upperBound = bEnd / 8 + (bEnd % 8 != 0 ? 1 : 0);
+
+		//     s-------e 
+		// |--------|------]
+		byte[] seqBuf = new byte[(int) (pac_upperBound - pac_lowerBound)];
+		byte[] seqNBuf = new byte[(int) (pacN_upperBound - pacN_lowerBound)];
+
 		packedFASTA.seek(pac_lowerBound);
 		packedFASTA.read(seqBuf);
 		packedFASTA_N.seek(pacN_lowerBound);

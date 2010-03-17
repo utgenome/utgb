@@ -64,12 +64,13 @@ public class CompactACGT implements GenomeSequence {
 		this.offset = offset;
 
 		// assertion
-		if ((this.sequence.length * BYTE / CODE_SIZE - offset) <= length) {
-			throw new UTGBException(UTGBErrorCode.INVALID_INPUT, String.format("packed array is shorter than the specified length: %d < %d", sequence.length,
-					length));
+		if ((this.sequence.length * (BYTE / CODE_SIZE)) - offset < length) {
+			throw new UTGBException(UTGBErrorCode.INVALID_INPUT, String.format("packed array is shorter than the specified length: %d (offset=%d) < %d",
+					sequence.length * (BYTE / CODE_SIZE), offset, length));
 		}
-		if ((this.sequenceMask.length * BYTE - offset) <= length) {
-			throw new UTGBException(UTGBErrorCode.INVALID_INPUT, String.format("invalid mask binary"));
+		if ((this.sequenceMask.length * BYTE - offset) < length) {
+			throw new UTGBException(UTGBErrorCode.INVALID_INPUT, String.format("invalid mask binary: buf size=%d (offset=%d), length=%d", sequenceMask.length,
+					offset, length));
 		}
 	}
 
