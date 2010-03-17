@@ -57,6 +57,17 @@ public class SmithWatermanAlignerTest {
 	}
 
 	@Test
+	public void softClip() throws Exception {
+		Config conf = new Config();
+		conf.GAPOPEN_PENALTY = 2;
+
+		SmithWatermanAligner sw = new SmithWatermanAligner(conf);
+		Alignment alignment = sw.align("CACGATCAGACCGATACGTCCGA", "ATCTTTCGATCAGAGACCGATAgggcgcg");
+
+		_logger.info(Lens.toSilk(alignment));
+	}
+
+	@Test
 	public void alignUsingPackFile() throws Exception {
 
 		CompactACGT seq = CompactACGT.createFromString("CACGATCAGACCGATACGTCCGA");

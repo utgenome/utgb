@@ -191,13 +191,26 @@ public class SmithWatermanAligner {
 			cigar.append("S");
 		}
 		boolean toContinue = true;
-		for (int x = maxX, y = maxY; toContinue;) {
+
+		int x = N - 1;
+		int y = M - 1;
+
+		while (x > maxX) {
+			a1.append(seq1.charAt(x - 1));
+			x--;
+		}
+		while (y > maxY) {
+			a2.append(seq2.charAt(y - 1));
+			y--;
+		}
+
+		for (x = maxX, y = maxY; toContinue;) {
 			switch (trace[x][y]) {
 			case DIAGONAL:
 				cigar.append("M");
 				a1.append(seq1.charAt(x - 1));
 				a2.append(seq2.charAt(y - 1));
-				leftMostPos = x;
+				leftMostPos = x - 1;
 				x--;
 				y--;
 				break;
@@ -205,7 +218,7 @@ public class SmithWatermanAligner {
 				cigar.append("D");
 				a1.append("-");
 				a2.append(seq2.charAt(y - 1));
-				leftMostPos = x;
+				leftMostPos = x - 1;
 				x--;
 				break;
 			case UP:
@@ -216,9 +229,20 @@ public class SmithWatermanAligner {
 				break;
 			case NONE:
 				toContinue = false;
-				for (int i = y; i >= 1; --i) {
-					cigar.append("S");
+				while (x >= 1 || y >= 1) {
+					if (y >= 1) {
+						cigar.append("S");
+						a1.append(x >= 1 ? seq1.charAt(x - 1) : ' ');
+						a2.append(Character.toLowerCase(seq2.charAt(y - 1)));
+					}
+					else {
+						a1.append(x >= 1 ? seq1.charAt(x - 1) : ' ');
+						a2.append(' ');
+					}
+					x--;
+					y--;
 				}
+
 				break;
 			}
 		}
