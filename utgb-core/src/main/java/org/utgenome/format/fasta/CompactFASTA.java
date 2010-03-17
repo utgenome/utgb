@@ -26,6 +26,8 @@ package org.utgenome.format.fasta;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -47,12 +49,18 @@ public class CompactFASTA {
 	public final static String PAC_INDEX_FILE_SUFFIX = ".i.silk";
 
 	private final HashMap<String, CompactACGTIndex> indexTable = new HashMap<String, CompactACGTIndex>();
-	private final RandomAccessFile packedFASTA;
-	private final RandomAccessFile packedFASTA_N;
+
+	private final String fastaFilePrefix;
+	private final PacFileAccess access;
 
 	public CompactFASTA(String fastaFilePrefix) throws XerialException, IOException {
+		this(fastaFilePrefix, false);
+	}
+
+	private CompactFASTA(String fastaFilePrefix, boolean loadIntoMemory) throws XerialException, IOException {
+		this.fastaFilePrefix = fastaFilePrefix;
+
 		File f = new File(fastaFilePrefix);
-		//String prefix = FileType.removeFileExt(f.getName());
 		String fileDir = f.getParent();
 		File indexFile = new File(fastaFilePrefix + PAC_INDEX_FILE_SUFFIX);
 		for (CompactACGTIndex each : CompactACGTIndex.load(new BufferedReader(new FileReader(indexFile)))) {
@@ -61,13 +69,18 @@ public class CompactFASTA {
 
 		File pacFile = new File(fastaFilePrefix + PAC_FILE_SUFFIX);
 		File pacNFile = new File(fastaFilePrefix + PAC_N_FILE_SUFFIX);
-		packedFASTA = new RandomAccessFile(pacFile, "r");
-		packedFASTA_N = new RandomAccessFile(pacNFile, "r");
+		if (!loadIntoMemory)
+			access = new OnDiskAccess(pacFile, pacNFile);
+		else
+			access = new OnMemoryBuffer(pacFile, pacNFile);
+	}
+
+	public static CompactFASTA loadIntoMemory(String fastaFilePrefix) throws XerialException, IOException {
+		return new CompactFASTA(fastaFilePrefix, true);
 	}
 
 	public void close() throws IOException {
-		packedFASTA.close();
-		packedFASTA_N.close();
+		access.close();
 	}
 
 	/**
@@ -116,10 +129,8 @@ public class CompactFASTA {
 		byte[] seqBuf = new byte[(int) (pac_upperBound - pac_lowerBound)];
 		byte[] seqNBuf = new byte[(int) (pacN_upperBound - pacN_lowerBound)];
 
-		packedFASTA.seek(pac_lowerBound);
-		packedFASTA.read(seqBuf);
-		packedFASTA_N.seek(pacN_lowerBound);
-		packedFASTA_N.read(seqNBuf);
+		access.readSeq(pac_lowerBound, seqBuf);
+		access.readNSeq(pacN_lowerBound, seqNBuf);
 		return new CompactACGT(seqBuf, seqNBuf, length, (int) bStart % 4);
 
 	}
@@ -133,6 +144,78 @@ public class CompactFASTA {
 
 	public GenomeSequence getSequence(String chr) throws IOException, UTGBException {
 		return getSequence(chr, 0);
+	}
+
+	public interface PacFileAccess {
+		public void readSeq(long cursor, byte[] buf) throws IOException;
+
+		public void readNSeq(long cursor, byte[] buf) throws IOException;
+
+		public void close() throws IOException;
+	}
+
+	public class OnDiskAccess implements PacFileAccess {
+		private final RandomAccessFile packedFASTA;
+		private final RandomAccessFile packedFASTA_N;
+
+		public OnDiskAccess(File pacFile, File pacNFile) throws FileNotFoundException {
+			packedFASTA = new RandomAccessFile(pacFile, "r");
+			packedFASTA_N = new RandomAccessFile(pacNFile, "r");
+		}
+
+		public void close() throws IOException {
+			if (packedFASTA != null)
+				packedFASTA.close();
+			if (packedFASTA_N != null)
+				packedFASTA_N.close();
+		}
+
+		public void readNSeq(long cursor, byte[] buf) throws IOException {
+			packedFASTA_N.seek(cursor);
+			packedFASTA_N.read(buf);
+		}
+
+		public void readSeq(long cursor, byte[] buf) throws IOException {
+			packedFASTA.seek(cursor);
+			packedFASTA.read(buf);
+		}
+
+	}
+
+	public class OnMemoryBuffer implements PacFileAccess {
+		byte[] pac;
+		byte[] nPac;
+
+		public OnMemoryBuffer(File pacFile, File pacNFile) throws IOException {
+			long pacSize = pacFile.length();
+			long nPacSize = pacNFile.length();
+
+			// maximum: 4 * 2GB = 8G bases  
+			pac = new byte[(int) pacSize];
+			nPac = new byte[(int) nPacSize];
+
+			// read sequences
+			FileInputStream f = new FileInputStream(pacFile);
+			f.read(pac);
+			f.close();
+
+			FileInputStream fn = new FileInputStream(pacNFile);
+			fn.read(nPac);
+			fn.close();
+		}
+
+		public void readSeq(long cursor, byte[] buf) throws IOException {
+			System.arraycopy(pac, (int) cursor, buf, 0, buf.length);
+		}
+
+		public void readNSeq(long cursor, byte[] buf) throws IOException {
+			System.arraycopy(nPac, (int) cursor, buf, 0, buf.length);
+		}
+
+		public void close() throws IOException {
+			// nothing to do
+		}
+
 	}
 
 }
