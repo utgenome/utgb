@@ -73,6 +73,23 @@ public class CompactFASTATest {
 	}
 
 	@Test
+	public void sequenceOnMemory() throws Exception {
+		CompactFASTAGenerator g = new CompactFASTAGenerator();
+		g.setWorkDir(workDir);
+		g.packFASTA(FileResource.find(CompactFASTATest.class, "sample.fa"));
+
+		CompactFASTA c = CompactFASTA.loadIntoMemory("target/sample.fa");
+		GenomeSequence seq = c.getSequence("chr1", 0, 20);
+		assertEquals("NNNNNNACGGATTCTTGCTA", seq.toString());
+		assertEquals(20, seq.length());
+		GenomeSequence seqFull = c.getSequence("chr1");
+		assertEquals("NNNNNNACGGATTCTTGCTATATANTTACTTACCCGTAGTCTAGAGATCTTTCCAATATCGTCT", seqFull.toString());
+
+		GenomeSequence seq2 = c.getSequence("chr2", 10, 15);
+		assertEquals("CTAAA", seq2.toString());
+	}
+
+	@Test
 	public void chrM() throws Exception {
 		CompactFASTAGenerator g = new CompactFASTAGenerator();
 		g.setWorkDir(workDir);
@@ -80,7 +97,19 @@ public class CompactFASTATest {
 
 		CompactFASTA c = new CompactFASTA("target/chrM.fa");
 		GenomeSequence s = c.getSequence("chrM");
-		_logger.info(s.toString());
+		_logger.debug(s.toString());
+
+	}
+
+	@Test
+	public void chrMOnMemory() throws Exception {
+		CompactFASTAGenerator g = new CompactFASTAGenerator();
+		g.setWorkDir(workDir);
+		g.packFASTA(FileResource.find(CompactFASTATest.class, "chrM.fa"));
+
+		CompactFASTA c = CompactFASTA.loadIntoMemory("target/chrM.fa");
+		GenomeSequence s = c.getSequence("chrM");
+		_logger.debug(s.toString());
 
 	}
 
