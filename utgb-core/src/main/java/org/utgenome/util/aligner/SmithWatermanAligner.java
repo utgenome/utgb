@@ -58,6 +58,11 @@ public class SmithWatermanAligner {
 		public int MATCH_SCORE = 1;
 		public int MISMATCH_PENALTY = 3;
 		public int GAPOPEN_PENALTY = 5;
+		/**
+		 * for BSS alignment
+		 */
+		public boolean BSS_ALIGNMENT = true;
+		public int BSS_CT_MISMATCH_PENALTY = 0;
 	}
 
 	private final Config config;
@@ -139,8 +144,13 @@ public class SmithWatermanAligner {
 				int S, I, D;
 				if (c1 == c2)
 					S = score[x - 1][y - 1] + config.MATCH_SCORE;
-				else
-					S = score[x - 1][y - 1] - config.MISMATCH_PENALTY;
+				else {
+					if (config.BSS_ALIGNMENT && (c1 == 'c' && c2 == 't')) {
+						S = score[x - 1][y - 1] - config.BSS_CT_MISMATCH_PENALTY;
+					}
+					else
+						S = score[x - 1][y - 1] - config.MISMATCH_PENALTY;
+				}
 
 				I = score[x][y - 1] - config.GAPOPEN_PENALTY;
 				D = score[x - 1][y] - config.GAPOPEN_PENALTY;
@@ -200,7 +210,7 @@ public class SmithWatermanAligner {
 			x--;
 		}
 		while (y > maxY) {
-			a2.append(seq2.charAt(y - 1));
+			a2.append(Character.toLowerCase(seq2.charAt(y - 1)));
 			y--;
 		}
 
