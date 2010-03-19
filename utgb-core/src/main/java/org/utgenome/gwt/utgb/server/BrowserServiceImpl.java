@@ -31,6 +31,7 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
@@ -47,6 +48,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.utgenome.UTGBException;
+import org.utgenome.format.fasta.CompactFASTA;
+import org.utgenome.format.sam.SAM2SilkReader;
 import org.utgenome.format.wig.WIGDatabaseReader;
 import org.utgenome.gwt.utgb.client.BrowserService;
 import org.utgenome.gwt.utgb.client.bean.DatabaseEntry;
@@ -56,10 +59,10 @@ import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.ChrRange;
 import org.utgenome.gwt.utgb.client.bio.Gene;
 import org.utgenome.gwt.utgb.client.bio.Locus;
+import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.bio.WigGraphData;
 import org.utgenome.gwt.utgb.client.track.bean.SearchResult;
 import org.utgenome.gwt.utgb.client.track.bean.TrackBean;
-import org.utgenome.gwt.utgb.client.track.lib.WIGGraphCanvasTrack;
 import org.utgenome.gwt.utgb.server.app.ChromosomeMap.Comparator4ChrName;
 import org.utgenome.gwt.utgb.server.util.WebApplicationResource;
 import org.xerial.core.XerialException;
@@ -72,6 +75,8 @@ import org.xerial.db.sql.sqlite.SQLiteAccess;
 import org.xerial.db.sql.sqlite.SQLiteCatalog;
 import org.xerial.json.JSONArray;
 import org.xerial.json.JSONObject;
+import org.xerial.lens.Lens;
+import org.xerial.lens.ObjectHandler;
 import org.xerial.util.StopWatch;
 import org.xerial.util.bean.BeanHandler;
 import org.xerial.util.bean.BeanUtil;
@@ -563,4 +568,27 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 		return wigDataList;
 	}
 
+	public List<SAMRead> getSAMReadList(String readFileName, String refSeqFileName) {
+		final ArrayList<SAMRead> readDataList = new ArrayList<SAMRead>();
+
+		try
+		{
+			_logger.info(WebTrackBase.getProjectRootPath() + "/" +readFileName);
+			_logger.info(WebTrackBase.getProjectRootPath() + "/" +refSeqFileName);
+			final CompactFASTA cf = new CompactFASTA(WebTrackBase.getProjectRootPath() + "/" +refSeqFileName);
+
+			Lens.findFromSilk(new SAM2SilkReader(new FileReader(new File(WebTrackBase.getProjectRootPath() + "/" +readFileName))),
+					"record", SAMRead.class, new ObjectHandler<SAMRead>() {
+				public void handle(SAMRead input) throws Exception {
+					input.refSeq = cf.getSequence(input.rname, input.start-1, input.end).toString();				
+					_logger.info(Lens.toSilk(input));
+					readDataList.add(input);
+				}
+			});		
+		}
+		catch (Exception e) {
+			_logger.error(e);
+		}
+		return readDataList;
+	}	
 }

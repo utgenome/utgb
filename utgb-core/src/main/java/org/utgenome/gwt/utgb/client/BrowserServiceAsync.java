@@ -33,6 +33,7 @@ import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.ChrRange;
 import org.utgenome.gwt.utgb.client.bio.Gene;
 import org.utgenome.gwt.utgb.client.bio.Locus;
+import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.bio.WigGraphData;
 import org.utgenome.gwt.utgb.client.track.bean.SearchResult;
 import org.utgenome.gwt.utgb.client.track.bean.TrackBean;
@@ -73,4 +74,6 @@ public interface BrowserServiceAsync extends RemoteService {
 	public void getDBEntry(String dbGroup, AsyncCallback<List<DatabaseEntry>> callback);
 
 	public void getWigDataList(String fileName, long windowWidth, ChrLoc location, AsyncCallback<List<WigGraphData>> callback);
+
+	public void getSAMReadList(String readFileName, String refSeqFileName, AsyncCallback<List<SAMRead>> callback);
 }
