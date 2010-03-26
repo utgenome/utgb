@@ -226,6 +226,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.xerial</groupId>
+      <artifactId>xerial-core</artifactId>
+      <version>1.0.23-SNAPSHOT</version>
+    </dependency>
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.7</version>

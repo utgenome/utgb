@@ -110,12 +110,6 @@
 
     <dependency>
       <groupId>org.xerial</groupId>
-      <artifactId>xerial-core</artifactId>
-      <version>1.0.21</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.xerial</groupId>
       <artifactId>xerial-storage</artifactId>
       <version>1.0.5</version>
     </dependency>
