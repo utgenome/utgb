@@ -19,7 +19,7 @@
 <booleanAttribute key="org.eclipse.jdt.launching.DEFAULT_CLASSPATH" value="false"/>
 <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.6.0_17"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.google.gwt.dev.DevMode"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-startupUrl utgb/browser.html?view=wig-graph-track.xml org.utgenome.gwt.utgb.UTGBEntry"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-startupUrl utgb/browser.html?view=sam-track.xml org.utgenome.gwt.utgb.UTGBEntry"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="utgb-core"/>
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx512m -Dxerial.loglevel=debug -Dgwt-hosted-mode=true -Dutgb.env=development"/>
 </launchConfiguration>

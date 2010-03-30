@@ -1,0 +1,26 @@
+<trackGroup className="org.utgenome.gwt.utgb.client.track.TrackGroup" name="root">
+  <property key="name">root</property>
+  <groupProperties>
+    <property key="revision">hg17</property>
+    <property key="species">human</property>
+    <property key="target">chr22</property>
+    <trackWindow start="1" end="100" width="800"/>
+  </groupProperties>
+  <track className="org.utgenome.gwt.utgb.client.track.lib.NavigatorTrack" name="UTGB Navigator" height="41" pack="true">
+      <property key="sequenceList">[{"species":"human", "revision":["hg18","hg17"]},{"species":"medaka", "revision":["version1.0", "version0.9"]}]</property>
+  </track>
+  <track className="org.utgenome.gwt.utgb.client.track.lib.SequenceRulerTrack" name="Sequence Overview" height="14" pack="true">
+    <property key="leftMargin">100</property>
+  </track>
+  <track className="org.utgenome.gwt.utgb.client.track.lib.RulerTrack" name="Ruler" height="14" pack="true">
+    <property key="leftMargin">100</property>
+  </track>
+
+  <track className="org.utgenome.gwt.utgb.client.track.lib.SAMTrack" name="SAM Track" height="500" pack="true">
+    	<property key="readFileName">db/bss-align.sam</property>
+    	<property key="refSeqFileName">db/mm9.fa</property>
+    	<property key="coloMode">nucleotide</property>
+    	<property key="isC2T">true</property>    	
+  </track>
+  
+</trackGroup>

@@ -16,22 +16,54 @@
 //--------------------------------------
 // utgb-core Project
 //
-// Read.java
-// Since: 2009/04/27
+// SAMRead.java
+// Since: 2010/03/15
 //
 // $URL$ 
 // $Author$
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.bio;
 
+import java.io.Serializable;
+//import java.util.Properties;
+import org.utgenome.gwt.utgb.client.util.Properties;
+
 /**
  * Genome Read data
  * 
- * @author leo
+ * @author yoshimura
  * 
  */
-public class SAMRead {
-	public static enum Strand {
+public class SAMRead implements Serializable{
+	//schema record(qname, flag, rname, start, end, mapq, cigar, mrnm, mpos, isize, seq, qual, tag*)
+	public String qname;
+	public int flag;
+	public String rname;
+	public int start;
+	public int end;
+	public int mapq;
+	public String cigar;
+	public String mrnm; // mate reference name
+	public int iSize;
+	public String seq;
+	public String qual;
+	public Properties tag;
+	public String refSeq;
+	
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("flag=" + flag);
+		sb.append(", mapq=" + mapq);
+		sb.append(", cigar=" + cigar);
+		sb.append(", iSize=" + iSize);
+		sb.append(", qual=\"" + qual + "\"");
+		sb.append(", tag=" + tag);
+		
+		return sb.toString();
+	}
+	
+/*	public static enum Strand {
 		FORWARD, REVERSE
 	}
 
@@ -58,6 +90,6 @@ public class SAMRead {
 
 	public SAMRead() {
 
-	}
+	}*/
 
 }
