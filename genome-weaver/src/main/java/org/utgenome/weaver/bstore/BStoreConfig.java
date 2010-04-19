@@ -24,6 +24,7 @@
 //--------------------------------------
 package org.utgenome.weaver.bstore;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,21 +34,35 @@ import java.util.List;
  * @author leo
  * 
  */
-public class BStoreConfig
-{
-    public static class LocalRepo
-    {
-        public String path;
+public class BStoreConfig {
+
+    /**
+     * Search paths for storage
+     * 
+     * <ol>
+     * <li>{CURRENT_DIR}/.utgb/b-store
+     * <li>$HOME/.utgb/b-store
+     * <li>(remote repository URLs specified in the config file)
+     * </ol>
+     * 
+     * @author leo
+     * 
+     */
+    public static class LocalRepo {
+        public String path = defaultPath();
+
+        private static String defaultPath() {
+            return new File(System.getProperty("user.home"), ".utgb/b-store").getPath();
+        }
     }
 
-    public static class RemoteRepo
-    {
+    public static class RemoteRepo {
         public String url;
     }
 
-    public String           version          = "1.0";
-
-    public LocalRepo        localRepository  = new LocalRepo();
+    public String version = "1.0";
+    public String user;
+    public LocalRepo localRepository = new LocalRepo();
     public List<RemoteRepo> remoteRepository = new ArrayList<RemoteRepo>();
 
 }
