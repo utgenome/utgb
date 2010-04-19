@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------------------
- *  Copyright 2008 utgenome.org
+ *  Copyright 2010 utgenome.org
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,30 +16,35 @@
 //--------------------------------------
 // genome-weaver Project
 //
-// Repository.java
-// Since: 2010/04/17
+// UniqueIDTest.java
+// Since: Apr 19, 2010
 //
 // $URL$ 
 // $Author$
 //--------------------------------------
 package org.utgenome.weaver.bstore;
 
+import static org.junit.Assert.*;
 
-/**
- * Repository
- * 
- * @author leo
- * 
- */
-public class Repository
+import org.junit.Test;
+import org.xerial.lens.Lens;
+import org.xerial.util.log.Logger;
+
+public class UniqueIDTest
 {
-    public final static String version = "1.0";
-    public final String        name;
-    public final String        user;
+    private static Logger _logger = Logger.getLogger(UniqueIDTest.class);
 
-    public Repository(String name, String user) {
-        this.name = name;
-        this.user = user;
+    @Test
+    public void str() throws Exception {
+        Repository r = new Repository("my repo", "Taro L. Saito <leo@xerial.org>");
+        UniqueID u = UniqueID.createID(Lens.toSilk(r));
+
+        assertEquals(UniqueID.ID_PREFIX_LENGTH, u.getPrefix().length() / 2);
+        assertEquals(UniqueID.ID_LENGTH, u.getFullID().length() / 2);
+        assertTrue(u.getFullID().startsWith(u.getPrefix()));
+
+        UniqueID u2 = UniqueID.createID(Lens.toSilk(r));
+        assertEquals(u.getPrefix(), u2.getPrefix());
+        assertEquals(u.getFullID(), u2.getFullID());
     }
-
 }
