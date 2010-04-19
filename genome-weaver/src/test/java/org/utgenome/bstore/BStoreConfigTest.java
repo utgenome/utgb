@@ -16,25 +16,27 @@
 //--------------------------------------
 // genome-weaver Project
 //
-// BStoreEntrySet.java
+// BStoreConfigTest.java
 // Since: Apr 19, 2010
 //
 // $URL$ 
 // $Author$
 //--------------------------------------
-package org.utgenome.weaver.bstore;
+package org.utgenome.bstore;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.junit.Test;
+import org.utgenome.bstore.BStoreConfig;
+import org.xerial.lens.Lens;
+import org.xerial.util.log.Logger;
 
-/**
- * Set of B-Store entries
- * 
- * @author leo
- * 
- */
-public class BStoreEntrySet
+public class BStoreConfigTest
 {
-    public final List<BStoreEntry> entry = new ArrayList<BStoreEntry>();
+    private static Logger _logger = Logger.getLogger(BStoreConfigTest.class);
 
+    @Test
+    public void config() throws Exception {
+
+        BStoreConfig config = new BStoreConfig();
+        _logger.info(Lens.toSilk(config));
+    }
 }

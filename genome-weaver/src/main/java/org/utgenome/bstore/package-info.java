@@ -16,26 +16,14 @@
 //--------------------------------------
 // genome-weaver Project
 //
-// BStore.java
-// Since: Apr 19, 2010
+// UniqueID.java
+// Since: 2010/04/17
 //
 // $URL$ 
-// $Author$
+// $Author$n
 //--------------------------------------
-package org.utgenome.weaver.bstore;
-
-import java.io.InputStream;
-
 /**
- * Biological Data Repository (B-Store)
- * 
- * @author leo
- * 
+ * B-Store: Biological Data Repository
  */
-public class BStore
-{
-    public InputStream get(UniqueID id) {
+package org.utgenome.bstore;
 
-        return null;
-    }
-}

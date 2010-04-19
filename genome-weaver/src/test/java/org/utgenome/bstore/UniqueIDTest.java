@@ -22,11 +22,13 @@
 // $URL$ 
 // $Author$
 //--------------------------------------
-package org.utgenome.weaver.bstore;
+package org.utgenome.bstore;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+import org.utgenome.bstore.Repository;
+import org.utgenome.bstore.UniqueID;
 import org.xerial.lens.Lens;
 import org.xerial.util.log.Logger;
 

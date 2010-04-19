@@ -22,7 +22,7 @@
 // $URL$ 
 // $Author$
 //--------------------------------------
-package org.utgenome.weaver.bstore;
+package org.utgenome.bstore;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

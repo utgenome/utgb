@@ -16,42 +16,53 @@
 //--------------------------------------
 // genome-weaver Project
 //
-// BStoreEntry.java
+// BStoreConfig.java
 // Since: Apr 19, 2010
 //
 // $URL$ 
 // $Author$
 //--------------------------------------
-package org.utgenome.weaver.bstore;
+package org.utgenome.bstore;
 
-import java.util.Date;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * B-Store's entry information
+ * B-store configuration
  * 
  * @author leo
  * 
  */
-public class BStoreEntry
-{
-    public final String path;
-    public final String user;
-    public final Date   date;
+public class BStoreConfig {
 
-    private BStoreEntry(String path, String user) {
-        this.path = path;
-        this.user = user;
-        this.date = new Date();
+    /**
+     * Search paths for storage
+     * 
+     * <ol>
+     * <li>{CURRENT_DIR}/.utgb/b-store
+     * <li>$HOME/.utgb/b-store
+     * <li>(remote repository URLs specified in the config file)
+     * </ol>
+     * 
+     * @author leo
+     * 
+     */
+    public static class LocalRepo {
+        public String path = defaultPath();
+
+        private static String defaultPath() {
+            return new File(System.getProperty("user.home"), ".utgb/b-store").getPath();
+        }
     }
 
-    private BStoreEntry(String path, String user, Date date) {
-        this.path = path;
-        this.user = user;
-        this.date = date;
+    public static class RemoteRepo {
+        public String url;
     }
 
-    public static BStoreEntry createNewFile(String path, String user) {
-        return new BStoreEntry(path, user);
-    }
+    public String version = "1.0";
+    public String user;
+    public LocalRepo localRepository = new LocalRepo();
+    public List<RemoteRepo> remoteRepository = new ArrayList<RemoteRepo>();
 
 }
