@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------------------
- *  Copyright 2008 utgenome.org
+ *  Copyright 2010 utgenome.org
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,29 +16,14 @@
 //--------------------------------------
 // genome-weaver Project
 //
-// Repository.java
+// UniqueID.java
 // Since: 2010/04/17
 //
 // $URL$ 
-// $Author$
+// $Author$n
 //--------------------------------------
+/**
+ * B-Store: Biological Data Repository
+ */
 package org.utgenome.weaver.bstore;
 
-/**
- * Repository
- * 
- * @author leo
- * 
- */
-public class Repository
-{
-    public final static String version = "1.0";
-    public final String        name;
-    public final String        owner;
-
-    public Repository(String name, String owner) {
-        this.name = name;
-        this.owner = owner;
-    }
-
-}

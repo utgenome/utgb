@@ -62,7 +62,7 @@ public class UniqueID implements Comparable<UniqueID>
             for (; digestInputStream.read() >= 0;) {
 
             }
-            ByteArrayOutputStream sha1out = new ByteArrayOutputStream();
+            ByteArrayOutputStream sha1out = new ByteArrayOutputStream(ID_PREFIX_LENGTH);
             sha1out.write(digest.digest());
             return sha1out.toByteArray();
         }

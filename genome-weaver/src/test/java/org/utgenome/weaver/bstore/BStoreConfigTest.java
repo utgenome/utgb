@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------------------
- *  Copyright 2008 utgenome.org
+ *  Copyright 2010 utgenome.org
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,29 +16,26 @@
 //--------------------------------------
 // genome-weaver Project
 //
-// Repository.java
-// Since: 2010/04/17
+// BStoreConfigTest.java
+// Since: Apr 19, 2010
 //
 // $URL$ 
 // $Author$
 //--------------------------------------
 package org.utgenome.weaver.bstore;
 
-/**
- * Repository
- * 
- * @author leo
- * 
- */
-public class Repository
+import org.junit.Test;
+import org.xerial.lens.Lens;
+import org.xerial.util.log.Logger;
+
+public class BStoreConfigTest
 {
-    public final static String version = "1.0";
-    public final String        name;
-    public final String        owner;
+    private static Logger _logger = Logger.getLogger(BStoreConfigTest.class);
 
-    public Repository(String name, String owner) {
-        this.name = name;
-        this.owner = owner;
+    @Test
+    public void config() throws Exception {
+
+        BStoreConfig config = new BStoreConfig();
+        _logger.info(Lens.toSilk(config));
     }
-
 }

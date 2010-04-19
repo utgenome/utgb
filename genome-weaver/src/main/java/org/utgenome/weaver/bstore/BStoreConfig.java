@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------------------
- *  Copyright 2008 utgenome.org
+ *  Copyright 2010 utgenome.org
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,29 +16,38 @@
 //--------------------------------------
 // genome-weaver Project
 //
-// Repository.java
-// Since: 2010/04/17
+// BStoreConfig.java
+// Since: Apr 19, 2010
 //
 // $URL$ 
 // $Author$
 //--------------------------------------
 package org.utgenome.weaver.bstore;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Repository
+ * B-store configuration
  * 
  * @author leo
  * 
  */
-public class Repository
+public class BStoreConfig
 {
-    public final static String version = "1.0";
-    public final String        name;
-    public final String        owner;
-
-    public Repository(String name, String owner) {
-        this.name = name;
-        this.owner = owner;
+    public static class LocalRepo
+    {
+        public String path;
     }
+
+    public static class RemoteRepo
+    {
+        public String url;
+    }
+
+    public String           version          = "1.0";
+
+    public LocalRepo        localRepository  = new LocalRepo();
+    public List<RemoteRepo> remoteRepository = new ArrayList<RemoteRepo>();
 
 }
