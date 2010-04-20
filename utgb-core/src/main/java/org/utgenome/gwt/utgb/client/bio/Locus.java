@@ -70,7 +70,7 @@ public class Locus implements Serializable, Comparable<Locus> {
 		this.name = name;
 	}
 
-	public long getStart() {
+	public int getStart() {
 		return start;
 	}
 
@@ -92,7 +92,7 @@ public class Locus implements Serializable, Comparable<Locus> {
 			return start;
 	}
 
-	public long getEnd() {
+	public int getEnd() {
 		return end;
 	}
 
