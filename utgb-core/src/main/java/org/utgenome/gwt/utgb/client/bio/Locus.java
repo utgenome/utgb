@@ -46,6 +46,7 @@ public class Locus implements Serializable, Comparable<Locus> {
 	int end = -1;
 	String strand = "?";
 	String color = null;
+	int score = 0;
 
 	public Locus() {
 	}
@@ -125,6 +126,14 @@ public class Locus implements Serializable, Comparable<Locus> {
 
 	public void setCoordinate(String chr) {
 		setChr(chr);
+	}
+
+	public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
 	}
 
 	public int compareTo(Locus other) {

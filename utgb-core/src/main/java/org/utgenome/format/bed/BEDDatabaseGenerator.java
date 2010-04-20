@@ -34,9 +34,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-//import org.utgenome.shell.db.Gene;
-import org.utgenome.format.bed.BED2SilkReader;
-import org.utgenome.gwt.utgb.server.app.BEDViewer.BEDGene;
+import org.utgenome.gwt.utgb.client.bio.Gene;
 import org.utgenome.gwt.utgb.server.app.BEDViewer.BEDTrack;
 import org.xerial.core.XerialException;
 import org.xerial.lens.Lens;
@@ -84,15 +82,14 @@ public class BEDDatabaseGenerator {
 			stat.executeUpdate("drop table if exists gene");
 			stat.executeUpdate("create table track (object blob)");
 
-			stat.executeUpdate("create table gene (coordinate text, start integer, end integer, " +
-												  "name text, score integer, strand text, cds text, " +
-												  "exon text, color text)");
-			
+			stat.executeUpdate("create table gene (coordinate text, start integer, end integer, " + "name text, score integer, strand text, cds text, "
+					+ "exon text, color text)");
+
 			stat.executeUpdate("create index gene_index on gene (coordinate, start)");
 
 			p1 = conn.prepareStatement("insert into track values(?)");
 
-	 		p2 = conn.prepareStatement("insert into gene values(?, ?, ?, ?, ?, ?, ?, ?, ?)");
+			p2 = conn.prepareStatement("insert into gene values(?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 		}
 
@@ -122,19 +119,19 @@ public class BEDDatabaseGenerator {
 			}
 		}
 
-		public void addGene(BEDGene gene) {
+		public void addGene(Gene gene) {
 			// store gene data to db
 			try {
-				p2.setString(1, gene.coordinate);
+				p2.setString(1, gene.getChr());
 				p2.setLong(2, gene.getStart());
 				p2.setLong(3, gene.getEnd());
 				p2.setString(4, gene.getName());
-				p2.setInt(5, gene.score);
+				p2.setInt(5, gene.getScore());
 				p2.setString(6, gene.getStrand());
 				p2.setString(7, gene.getCDS().toString());
 				p2.setString(8, gene.getExon().toString());
 				p2.setString(9, gene.getColor());
-				
+
 				p2.execute();
 			}
 			catch (Exception e) {

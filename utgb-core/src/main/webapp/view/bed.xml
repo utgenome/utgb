@@ -20,6 +20,15 @@
   <track className="org.utgenome.gwt.utgb.client.track.lib.RulerTrack" name="Ruler" height="14" pack="true">
     <property key="leftMargin">100</property>
   </track>
+  
+  <track className="org.utgenome.gwt.utgb.client.track.lib.BEDTrack" name="BED Track" pack="true">
+   <property key="type">image</property>
+   <property key="leftMargin">100</property>
+   <property key="trackBaseURL">utgb-core/BEDViewer</property>
+   <!-- this track reads BED data from db/sample.bed -->
+   <property key="fileName">db/sample.bed</property>
+ </track>
+  
   <track className="org.utgenome.gwt.utgb.client.track.lib.BEDCanvasTrack" name="BED Canvas" pack="true">
     <property key="fileName">db/sample.bed</property>
   </track>
