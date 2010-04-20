@@ -9,6 +9,7 @@
   <packaging>pom</packaging>
  
   <modules>
+	<module>utgb-themes</module>
     <module>utgb-core</module>
     <module>utgb-shell</module>
   </modules>
@@ -176,6 +177,14 @@
     </extensions>
 
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <configuration>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+	  
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
