@@ -54,6 +54,7 @@ public class BEDTrack extends GenomeTrack {
 
 	public BEDTrack() {
 		super("BED Track");
+		trackBaseURL = "utgb-core/BEDViewer";
 	}
 
 	@Override

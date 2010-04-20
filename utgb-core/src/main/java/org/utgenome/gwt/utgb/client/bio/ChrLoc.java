@@ -30,4 +30,13 @@ public class ChrLoc implements IsSerializable {
 	public long start;
 	public long end;
 	public String target;
+
+	public ChrLoc() {
+	}
+
+	public ChrLoc(String target, long start, long end) {
+		this.target = target;
+		this.start = start;
+		this.end = end;
+	}
 }

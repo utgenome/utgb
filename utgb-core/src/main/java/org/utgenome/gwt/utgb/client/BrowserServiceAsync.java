@@ -76,4 +76,7 @@ public interface BrowserServiceAsync extends RemoteService {
 	public void getWigDataList(String fileName, long windowWidth, ChrLoc location, AsyncCallback<List<WigGraphData>> callback);
 
 	public void getSAMReadList(String readFileName, String refSeqFileName, AsyncCallback<List<SAMRead>> callback);
+
+	public void getBEDEntryList(String bedPath, ChrLoc location, AsyncCallback<List<Gene>> callback);
+
 }

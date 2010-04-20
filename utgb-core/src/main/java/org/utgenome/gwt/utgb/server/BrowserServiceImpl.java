@@ -63,6 +63,7 @@ import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.bio.WigGraphData;
 import org.utgenome.gwt.utgb.client.track.bean.SearchResult;
 import org.utgenome.gwt.utgb.client.track.bean.TrackBean;
+import org.utgenome.gwt.utgb.server.app.BEDViewer;
 import org.utgenome.gwt.utgb.server.app.ChromosomeMap.Comparator4ChrName;
 import org.utgenome.gwt.utgb.server.util.WebApplicationResource;
 import org.xerial.core.XerialException;
@@ -586,5 +587,9 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 			_logger.error(e);
 		}
 		return readDataList;
+	}
+
+	public List<Gene> getBEDEntryList(String bedPath, ChrLoc location) {
+		return BEDViewer.query(bedPath, location);
 	}
 }

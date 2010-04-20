@@ -38,7 +38,6 @@ import org.utgenome.gwt.utgb.client.bio.WigGraphData;
 import org.utgenome.gwt.utgb.client.track.bean.SearchResult;
 import org.utgenome.gwt.utgb.client.track.bean.TrackBean;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -86,4 +85,7 @@ public interface BrowserService extends RemoteService {
 	public List<WigGraphData> getWigDataList(String fileName, long windowWidth, ChrLoc location);
 
 	public List<SAMRead> getSAMReadList(String readFileName, String refSeqFileName);
+
+	public List<Gene> getBEDEntryList(String bedPath, ChrLoc location);
+
 }
