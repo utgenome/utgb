@@ -34,6 +34,7 @@ import java.io.InputStream;
  */
 public class BStore
 {
+
     public InputStream get(UniqueID id) {
 
         return null;
