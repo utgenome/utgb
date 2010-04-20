@@ -17,6 +17,7 @@
  
   <modules>
 	<module>theme-default</module>
+	<module>theme-mac</module>
   </modules>
 
   <scm>
