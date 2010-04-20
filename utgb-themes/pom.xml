@@ -11,7 +11,7 @@
   <groupId>org.utgenome.theme</groupId>
   <artifactId>utgb-themes</artifactId>
   <name>UTGB Themes</name>
-  <version>1.0</version>
+  <version>1.3.2-SNAPSHOT</version>
   <description>UTGB Theme Collection</description>
   <packaging>pom</packaging>
  

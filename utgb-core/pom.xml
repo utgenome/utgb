@@ -109,7 +109,7 @@
                 <artifactItem>
                   <groupId>org.utgenome.theme</groupId>
                   <artifactId>theme-default</artifactId>
-                  <version>1.0</version>
+                  <version>${project.version}</version>
                   <type>jar</type>
                 </artifactItem>
               </artifactItems>
