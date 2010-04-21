@@ -64,6 +64,8 @@ public class TrackFactorySetup {
 		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.GenomeTrack", org.utgenome.gwt.utgb.client.track.lib.GenomeTrack.factory());
 		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.DASTrack", org.utgenome.gwt.utgb.client.track.lib.DASTrack.factory());
 		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.BEDTrack", org.utgenome.gwt.utgb.client.track.lib.BEDTrack.factory());
+		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.BEDCanvasTrack", org.utgenome.gwt.utgb.client.track.lib.BEDCanvasTrack
+				.factory());
 		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.RulerTrack", org.utgenome.gwt.utgb.client.track.lib.RulerTrack.factory());
 		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.scmd.CharacteristicShapeTrack",
 				org.utgenome.gwt.utgb.client.track.lib.scmd.CharacteristicShapeTrack.factory());
@@ -97,11 +99,10 @@ public class TrackFactorySetup {
 		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.DBSelectTrack", org.utgenome.gwt.utgb.client.track.lib.DBSelectTrack
 				.factory());
 
-		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.WIGGraphCanvasTrack", 
+		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.WIGGraphCanvasTrack",
 				org.utgenome.gwt.utgb.client.track.lib.WIGGraphCanvasTrack.factory());
 
-		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.SAMTrack", 
-				org.utgenome.gwt.utgb.client.track.lib.SAMTrack.factory());
+		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.SAMTrack", org.utgenome.gwt.utgb.client.track.lib.SAMTrack.factory());
 
 		TrackFactoryHolder.addTrackGroupFactory("org.utgenome.gwt.utgb.client.track.lib.debug.DrosophilaTrackGroup",
 				org.utgenome.gwt.utgb.client.track.lib.debug.DrosophilaTrackGroup.factory());

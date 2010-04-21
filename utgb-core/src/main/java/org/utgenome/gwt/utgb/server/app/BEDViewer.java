@@ -42,6 +42,7 @@ import org.utgenome.format.bed.BED2SilkReader;
 import org.utgenome.graphics.GeneCanvas;
 import org.utgenome.graphics.GenomeWindow;
 import org.utgenome.gwt.utgb.client.bio.CDS;
+import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.Exon;
 import org.utgenome.gwt.utgb.client.bio.Gene;
 import org.utgenome.gwt.utgb.server.WebTrackBase;
@@ -50,135 +51,103 @@ import org.xerial.db.sql.sqlite.SQLiteAccess;
 import org.xerial.lens.Lens;
 import org.xerial.util.log.Logger;
 
+/**
+ * BED viewer
+ * 
+ * @author leo
+ * 
+ */
 public class BEDViewer extends WebTrackBase implements Serializable {
 
-	/**
-     * 
-     */
 	private static final long serialVersionUID = 1L;
 
 	private static Logger _logger = Logger.getLogger(BEDViewer.class);
 
-	private String species = "human";
-	private String revision = "hg18";
-	private String name = "chr22";
-	private long start = 1;
-	private long end = 1000000;
-	private int width = 700;
-	private String fileName;
+	public String species = "human";
+	public String revision = "hg18";
+	public String name = "chr22";
+	public int start = 1;
+	public int end = 1000000;
+	public int width = 700;
+	public String fileName;
 
-	private List<Gene> geneList = new ArrayList<Gene>();
-
-	@SuppressWarnings("unchecked")
 	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		BED2SilkReader in = null;
+		List<Gene> geneList = query(fileName, new ChrLoc(name, start, end));
 
-		long sqlStart = end >= start ? start : end;
-		long sqlEnd = end >= start ? end : start;
+		String suffix = getActionSuffix(request);
+
+		if (suffix != null && suffix.equals("silk")) {
+			response.setContentType("text/plain");
+			response.getWriter().print(Lens.toSilk(geneList));
+		}
+		else {
+			GeneCanvas geneCanvas = new GeneCanvas(width, 300, new GenomeWindow(start, end));
+			geneCanvas.draw(geneList);
+
+			response.setContentType("image/png");
+			geneCanvas.toPNG(response.getOutputStream());
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public static List<Gene> query(String bedPath, final ChrLoc location) {
+
+		final ArrayList<Gene> geneList = new ArrayList<Gene>();
+		long sqlStart = location.end >= location.start ? location.start : location.end;
+		long sqlEnd = location.end >= location.start ? location.end : location.start;
 
 		try {
-
-			File input = new File(getProjectRootPath(), fileName);
+			File input = new File(getProjectRootPath(), bedPath);
 			File dbInput = new File(input.getAbsolutePath() + ".sqlite");
 			if (dbInput.exists()) {
 				// use db
 				SQLiteAccess dbAccess = new SQLiteAccess(dbInput.getAbsolutePath());
 
 				String sql = createSQLStatement("select start, end, name, score, strand, cds, exon, color from gene "
-						+ "where coordinate = '$1' and start <= $2 and end >= $3", name, sqlEnd, sqlStart);
+						+ "where coordinate = '$1' and start <= $2 and end >= $3", location.target, sqlEnd, sqlStart);
 
 				if (_logger.isDebugEnabled())
 					_logger.debug(sql);
+
 				dbAccess.query(sql, new ResultSetHandler() {
 					@Override
 					public Object handle(ResultSet rs) throws SQLException {
-						BEDGene gene = new BEDGene();
-						gene.coordinate = name;
-						gene.setStart(rs.getInt(1));
-						gene.setEnd(rs.getInt(2));
-
-						gene.setName(rs.getString(3));
-						gene.score = rs.getInt(4);
-						gene.setStrand(rs.getString(5));
-
-						ArrayList<long[]> regionList = readRegions(rs.getString(6));
-						for (long[] region : regionList) {
-							CDS cds = new CDS(region[0], region[1]);
-							gene.addCDS(cds);
-						}
-
-						regionList = readRegions(rs.getString(7));
-						for (long[] region : regionList) {
-							Exon exon = new Exon(region[0], region[1]);
-							gene.addExon(exon);
-						}
-
-						gene.setColor(rs.getString(8));
-
-						geneList.add(gene);
+						geneList.add(BEDGene.createFromResultSet(location.target, rs));
 						return null;
-					}
-
-					private ArrayList<long[]> readRegions(String string) {
-						ArrayList<long[]> res = new ArrayList<long[]>();
-
-						StringTokenizer st = new StringTokenizer(string, "[] ,");
-						while (st.hasMoreTokens()) {
-							String str = st.nextToken();
-
-							// get start of region
-							if (str.startsWith("(")) {
-								long[] region = new long[2];
-								region[0] = Long.valueOf(str.substring(1)).longValue();
-
-								// get end of region
-								while (st.hasMoreTokens()) {
-									str = st.nextToken();
-									if (str.endsWith(")")) {
-										region[1] = Long.valueOf(str.substring(0, str.length() - 1)).longValue();
-										res.add(region);
-										break;
-									}
-								}
-							}
-						}
-						return res;
 					}
 				});
 			}
 			else {
 				// use raw text
-				in = new BED2SilkReader(new FileReader(input));
-				BEDQuery query = new BEDQuery(name, start, end);
-
-				Lens.loadSilk(query, in);
-
+				BED2SilkReader in = null;
+				try {
+					in = new BED2SilkReader(new FileReader(input));
+					BEDQuery query = new BEDQuery(geneList, location.target, sqlStart, sqlEnd);
+					Lens.loadSilk(query, in);
+				}
+				finally {
+					if (in != null)
+						in.close();
+				}
 			}
-
-			GeneCanvas geneCanvas = new GeneCanvas(width, 300, new GenomeWindow(start, end));
-			geneCanvas.draw(geneList);
-
-			response.setContentType("image/png");
-			geneCanvas.toPNG(response.getOutputStream());
-
 		}
 		catch (Exception e) {
 			_logger.error(e);
 		}
-		finally {
-			if (in != null)
-				in.close();
-		}
+
+		return geneList;
 	}
 
-	public class BEDQuery {
+	public static class BEDQuery {
 		private String coordinate;
 		private long start;
 		private long end;
+		private final List<Gene> geneList;
 
-		public BEDQuery(String coordinate, long start, long end) {
+		public BEDQuery(List<Gene> geneList, String coordinate, long start, long end) {
+			this.geneList = geneList;
 			this.coordinate = coordinate;
 			this.start = end >= start ? start : end;
 			this.end = end >= start ? end : start;
@@ -186,11 +155,11 @@ public class BEDViewer extends WebTrackBase implements Serializable {
 
 		public BEDTrack track;
 
-		public void addGene(BEDGene gene) {
+		public void addGene(Gene gene) {
 			long geneStart = gene.getEnd() >= gene.getStart() ? gene.getStart() : gene.getEnd();
 			long geneEnd = gene.getEnd() >= gene.getStart() ? gene.getEnd() : gene.getStart();
 
-			if (gene.coordinate.equals(coordinate) && (start <= geneEnd) && (end >= geneStart)) {
+			if (gene.getChr().equals(coordinate) && (start <= geneEnd) && (end >= geneStart)) {
 				geneList.add(gene);
 			}
 		}
@@ -230,47 +199,65 @@ public class BEDViewer extends WebTrackBase implements Serializable {
 		 * 
 		 */
 		private static final long serialVersionUID = 1L;
-		public String coordinate;
-		public int score;
 
-		// public void addCDS(CDS cds)
-		// {
-		// this.cdsList.add(cds);
-		// }
-		//		
-		// public void addExon(Exon exon)
-		// {
-		// this.exon.add(exon);
-		// }
+		public static Gene createFromResultSet(String chr, ResultSet rs) throws SQLException {
+			Gene gene = new Gene();
+			gene.setChr(chr);
+			gene.setStart(rs.getInt(1));
+			gene.setEnd(rs.getInt(2));
+
+			gene.setName(rs.getString(3));
+			gene.setScore(rs.getInt(4));
+			gene.setStrand(rs.getString(5));
+
+			ArrayList<long[]> regionList = readRegions(rs.getString(6));
+			for (long[] region : regionList) {
+				CDS cds = new CDS(region[0], region[1]);
+				gene.addCDS(cds);
+			}
+
+			regionList = readRegions(rs.getString(7));
+			for (long[] region : regionList) {
+				Exon exon = new Exon(region[0], region[1]);
+				gene.addExon(exon);
+			}
+
+			gene.setColor(rs.getString(8));
+
+			return gene;
+		}
+
+		private static ArrayList<long[]> readRegions(String string) {
+			ArrayList<long[]> res = new ArrayList<long[]>();
+
+			StringTokenizer st = new StringTokenizer(string, "[] ,");
+			while (st.hasMoreTokens()) {
+				String str = st.nextToken();
+
+				// get start of region
+				if (str.startsWith("(")) {
+					long[] region = new long[2];
+					region[0] = Long.valueOf(str.substring(1)).longValue();
+
+					// get end of region
+					while (st.hasMoreTokens()) {
+						str = st.nextToken();
+						if (str.endsWith(")")) {
+							region[1] = Long.valueOf(str.substring(0, str.length() - 1)).longValue();
+							res.add(region);
+							break;
+						}
+					}
+				}
+			}
+			return res;
+		}
+
 		@Override
 		public String toString() {
-			// TODO Auto-generated method stub
-			return String.format("%s: %s:%d-%d\t%s\t%s\t%s\t%s\t%d", getName(), coordinate, getStart(), getEnd(), getStrand(), getCDS(), getExon(), getColor(),
-					score);
+			return String.format("%s: %s:%d-%d\t%s\t%s\t%s\t%s", getName(), getChr(), getStart(), getEnd(), getStrand(), getCDS(), getExon(), getColor());
+
 		}
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public void setStart(long start) {
-		this.start = start;
-	}
-
-	public void setEnd(long end) {
-		this.end = end;
-	}
-
-	public void setWidth(int width) {
-		this.width = width;
-	}
-
-	public void setRevision(String revision) {
-		this.revision = revision;
-	}
-
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
 }

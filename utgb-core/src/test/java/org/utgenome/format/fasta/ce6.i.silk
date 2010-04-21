@@ -1,0 +1,30 @@
+%silk(version:1.0)
+%schema sequence(name, description, length, offset)
+-sequence(name:chrI)
+  -description: chrI
+  -length: 15072421
+  -offset: 0
+-sequence(name:chrII)
+  -description: chrII
+  -length: 15279323
+  -offset: 15072421
+-sequence(name:chrIII)
+  -description: chrIII
+  -length: 13783681
+  -offset: 30351744
+-sequence(name:chrIV)
+  -description: chrIV
+  -length: 17493785
+  -offset: 44135425
+-sequence(name:chrM)
+  -description: chrM
+  -length: 13794
+  -offset: 61629210
+-sequence(name:chrV)
+  -description: chrV
+  -length: 20919568
+  -offset: 61643004
+-sequence(name:chrX)
+  -description: chrX
+  -length: 17718854
+  -offset: 82562572

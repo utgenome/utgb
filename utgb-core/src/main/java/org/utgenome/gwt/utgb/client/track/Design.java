@@ -48,12 +48,14 @@ public class Design {
 	public static int TRACK_BORDER_V = 101;
 	public static int TRACK_BORDER_H = 102;
 
-	public static String IMAGE_NOT_AVAILABLE = "image/na.png";
-	public static String IMAGE_GENE = "image/gene.png";
-	public static String IMAGE_RULER_TICK = "image/ruler-tick.gif";
-	public static String IMAGE_TRANSPARENT = "image/transparent.gif";
-	public static String IMAGE_DELETE_BUTTON = "image/tree_closed.gif";
-	public static String IMAGE_NOW_LOADING = "image/loading4.gif";
+	public static String PREFIX = "theme/image/";
+
+	public static String IMAGE_NOT_AVAILABLE = PREFIX + "na.png";
+	public static String IMAGE_GENE = PREFIX + "gene.png";
+	public static String IMAGE_RULER_TICK = PREFIX + "ruler-tick.gif";
+	public static String IMAGE_TRANSPARENT = PREFIX + "transparent.gif";
+	public static String IMAGE_DELETE_BUTTON = PREFIX + "tree_closed.gif";
+	public static String IMAGE_NOW_LOADING = PREFIX + "loading4.gif";
 
 	private static HashMap<Integer, IconImage> _iconTable = new HashMap<Integer, IconImage>();
 
@@ -67,17 +69,17 @@ public class Design {
 		Image.prefetch(IMAGE_NOW_LOADING);
 
 		// track frame icon
-		addIcon(ICON_UNKNOWN, new IconImage("image/transparent.gif", "image/transparent.gif"));
-		addIcon(ICON_CONFIG, new IconImage("image/track-config.gif", "image/track-config-w.gif"));
-		addIcon(ICON_PACK, new IconImage("image/track-pack.gif", "image/track-pack-w.gif"));
-		addIcon(ICON_UNPACK, new IconImage("image/track-unpack.gif", "image/track-unpack.gif"));
-		addIcon(ICON_HIDE, new IconImage("image/track-hide.gif", "image/track-hide-w.gif"));
-		addIcon(ICON_SHOW, new IconImage("image/track-open.gif", "image/track-open-w.gif"));
-		addIcon(ICON_CLOSE, new IconImage("image/track-close.gif", "image/track-close-w.gif"));
+		addIcon(ICON_UNKNOWN, new IconImage(PREFIX + "transparent.gif", PREFIX + "transparent.gif"));
+		addIcon(ICON_CONFIG, new IconImage(PREFIX + "track-config.gif", PREFIX + "track-config-w.gif"));
+		addIcon(ICON_PACK, new IconImage(PREFIX + "track-pack.gif", PREFIX + "track-pack-w.gif"));
+		addIcon(ICON_UNPACK, new IconImage(PREFIX + "track-unpack.gif", PREFIX + "track-unpack.gif"));
+		addIcon(ICON_HIDE, new IconImage(PREFIX + "track-hide.gif", PREFIX + "track-hide-w.gif"));
+		addIcon(ICON_SHOW, new IconImage(PREFIX + "track-open.gif", PREFIX + "track-open-w.gif"));
+		addIcon(ICON_CLOSE, new IconImage(PREFIX + "track-close.gif", PREFIX + "track-close-w.gif"));
 
 		// track frame
-		addIcon(TRACK_BORDER_V, new IconImage("image/dragbar.png", "image/dragbar_active.png"));
-		addIcon(TRACK_BORDER_H, new IconImage("image/resizebar.png", "image/resizebar_active.png"));
+		addIcon(TRACK_BORDER_V, new IconImage(PREFIX + "dragbar.png", PREFIX + "dragbar_active.png"));
+		addIcon(TRACK_BORDER_H, new IconImage(PREFIX + "resizebar.png", PREFIX + "resizebar_active.png"));
 	}
 
 	public static void addIcon(int iconType, IconImage icon) {

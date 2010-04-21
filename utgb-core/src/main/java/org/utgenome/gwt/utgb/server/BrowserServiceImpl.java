@@ -63,6 +63,7 @@ import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.bio.WigGraphData;
 import org.utgenome.gwt.utgb.client.track.bean.SearchResult;
 import org.utgenome.gwt.utgb.client.track.bean.TrackBean;
+import org.utgenome.gwt.utgb.server.app.BEDViewer;
 import org.utgenome.gwt.utgb.server.app.ChromosomeMap.Comparator4ChrName;
 import org.utgenome.gwt.utgb.server.util.WebApplicationResource;
 import org.xerial.core.XerialException;
@@ -78,7 +79,6 @@ import org.xerial.json.JSONObject;
 import org.xerial.lens.Lens;
 import org.xerial.lens.ObjectHandler;
 import org.xerial.util.StopWatch;
-import org.xerial.util.bean.BeanHandler;
 import org.xerial.util.bean.BeanUtil;
 import org.xerial.util.log.Logger;
 
@@ -327,7 +327,7 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 		return in;
 	}
 
-	static class BeanRetriever<T> implements BeanHandler<T> {
+	static class BeanRetriever<T> implements ObjectHandler<T> {
 		private ArrayList<T> geneList = new ArrayList<T>();
 
 		public BeanRetriever() {
@@ -353,7 +353,7 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 			BufferedReader reader = openURL(serviceURI);
 
 			BeanRetriever<Gene> geneRetriever = new BeanRetriever<Gene>();
-			BeanUtil.loadJSON(reader, Gene.class, geneRetriever);
+			Lens.findFromJSON(reader, "gene", Gene.class, geneRetriever);
 			return geneRetriever.getResult();
 		}
 		catch (Exception e) {
@@ -434,7 +434,7 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 							chrRanges.maxLength = Math.max(chrRanges.maxLength, chrLoc.end - chrLoc.start);
 
 							BufferedImage image = new BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB);
-							Graphics2D g = (Graphics2D) image.createGraphics();
+							Graphics2D g = image.createGraphics();
 							Font f = new Font("SansSerif", Font.PLAIN, 10);
 							g.setFont(f);
 							FontMetrics fontMetrics = g.getFontMetrics();
@@ -551,13 +551,11 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 		return result;
 	}
 
-	public List<WigGraphData> getWigDataList(String fileName, long windowWidth, ChrLoc location)
-	{
+	public List<WigGraphData> getWigDataList(String fileName, long windowWidth, ChrLoc location) {
 		ArrayList<WigGraphData> wigDataList = null;
 
-		try
-		{
-			WIGDatabaseReader reader = new WIGDatabaseReader(WebTrackBase.getProjectRootPath() + "/" +fileName);
+		try {
+			WIGDatabaseReader reader = new WIGDatabaseReader(WebTrackBase.getProjectRootPath() + "/" + fileName);
 			wigDataList = reader.getWigDataList(windowWidth, location.target, location.start, location.end);
 			reader.close();
 		}
@@ -571,24 +569,27 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 	public List<SAMRead> getSAMReadList(String readFileName, String refSeqFileName) {
 		final ArrayList<SAMRead> readDataList = new ArrayList<SAMRead>();
 
-		try
-		{
-			_logger.info(WebTrackBase.getProjectRootPath() + "/" +readFileName);
-			_logger.info(WebTrackBase.getProjectRootPath() + "/" +refSeqFileName);
-			final CompactFASTA cf = new CompactFASTA(WebTrackBase.getProjectRootPath() + "/" +refSeqFileName);
+		try {
+			_logger.info(WebTrackBase.getProjectRootPath() + "/" + readFileName);
+			_logger.info(WebTrackBase.getProjectRootPath() + "/" + refSeqFileName);
+			final CompactFASTA cf = new CompactFASTA(WebTrackBase.getProjectRootPath() + "/" + refSeqFileName);
 
-			Lens.findFromSilk(new SAM2SilkReader(new FileReader(new File(WebTrackBase.getProjectRootPath() + "/" +readFileName))),
-					"record", SAMRead.class, new ObjectHandler<SAMRead>() {
-				public void handle(SAMRead input) throws Exception {
-					input.refSeq = cf.getSequence(input.rname, input.start-1, input.end).toString();				
-					_logger.info(Lens.toSilk(input));
-					readDataList.add(input);
-				}
-			});		
+			Lens.findFromSilk(new SAM2SilkReader(new FileReader(new File(WebTrackBase.getProjectRootPath() + "/" + readFileName))), "record", SAMRead.class,
+					new ObjectHandler<SAMRead>() {
+						public void handle(SAMRead input) throws Exception {
+							input.refSeq = cf.getSequence(input.rname, input.start - 1, input.end).toString();
+							_logger.info(Lens.toSilk(input));
+							readDataList.add(input);
+						}
+					});
 		}
 		catch (Exception e) {
 			_logger.error(e);
 		}
 		return readDataList;
-	}	
+	}
+
+	public List<Gene> getBEDEntryList(String bedPath, ChrLoc location) {
+		return BEDViewer.query(bedPath, location);
+	}
 }

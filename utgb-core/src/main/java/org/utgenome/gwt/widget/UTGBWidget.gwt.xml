@@ -9,7 +9,6 @@
     <inherits name="com.google.gwt.user.UserAgent"/>
     <inherits name='com.google.gwt.widgetideas.GWTCanvas'/>
 
-   <stylesheet src="theme/default/utgb.css"/>
-
+   <stylesheet src="theme/style/utgb.css"/>
 
 </module>

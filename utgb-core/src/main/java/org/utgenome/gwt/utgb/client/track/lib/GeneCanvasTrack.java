@@ -30,7 +30,7 @@ import java.util.List;
 import org.utgenome.gwt.utgb.client.GenomeBrowser;
 import org.utgenome.gwt.utgb.client.bio.Gene;
 import org.utgenome.gwt.utgb.client.bio.Locus;
-import org.utgenome.gwt.utgb.client.canvas.GenomeCanvas;
+import org.utgenome.gwt.utgb.client.canvas.GWTGenomeCanvas;
 import org.utgenome.gwt.utgb.client.canvas.LocusClickHandler;
 import org.utgenome.gwt.utgb.client.track.Track;
 import org.utgenome.gwt.utgb.client.track.TrackBase;
@@ -93,7 +93,7 @@ public class GeneCanvasTrack extends TrackBase {
 	}
 
 	private FlexTable layoutTable = new FlexTable();
-	private GenomeCanvas geneCanvas = new GenomeCanvas();
+	private GWTGenomeCanvas geneCanvas = new GWTGenomeCanvas();
 
 	public Widget getWidget() {
 		return layoutTable;

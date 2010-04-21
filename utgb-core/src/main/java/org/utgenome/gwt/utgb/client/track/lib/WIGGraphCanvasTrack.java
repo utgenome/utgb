@@ -29,7 +29,7 @@ import java.util.List;
 import org.utgenome.gwt.utgb.client.GenomeBrowser;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.WigGraphData;
-import org.utgenome.gwt.utgb.client.canvas.GenomeCanvas;
+import org.utgenome.gwt.utgb.client.canvas.GWTGenomeCanvas;
 import org.utgenome.gwt.utgb.client.db.datatype.BooleanType;
 import org.utgenome.gwt.utgb.client.db.datatype.FloatType;
 import org.utgenome.gwt.utgb.client.db.datatype.StringType;
@@ -108,7 +108,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 	}
 
 	private final FlexTable layoutTable = new FlexTable();
-	private final GenomeCanvas geneCanvas = new GenomeCanvas();
+	private final GWTGenomeCanvas geneCanvas = new GWTGenomeCanvas();
 
 	private final AbsolutePanel labelPanel = new AbsolutePanel();
 

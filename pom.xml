@@ -9,6 +9,7 @@
   <packaging>pom</packaging>
  
   <modules>
+	<module>utgb-themes</module>
     <module>utgb-core</module>
     <module>utgb-shell</module>
   </modules>
@@ -177,6 +178,14 @@
 
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <configuration>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+	  
+      <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
 	  <!-- Use JDK 1.5 until Java6 for Mac OS X is released -->
@@ -228,7 +237,7 @@
     <dependency>
       <groupId>org.xerial</groupId>
       <artifactId>xerial-core</artifactId>
-      <version>1.0.23-SNAPSHOT</version>
+      <version>1.0.23</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

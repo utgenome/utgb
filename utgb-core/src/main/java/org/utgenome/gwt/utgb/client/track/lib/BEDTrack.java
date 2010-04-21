@@ -33,102 +33,71 @@ import org.utgenome.gwt.utgb.client.track.TrackGroup;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.util.Properties;
 
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.Frame;
-
 /**
  * BEDTrack is for visualizing data that can be located on BDE Format Data.
  * 
  * @author yoshimura
  * 
  */
-public class BEDTrack extends GenomeTrack
-{
+public class BEDTrack extends GenomeTrack {
 
-    protected String fileName = null;
+	protected String fileName = null;
 
-    public static TrackFactory factory()
-    {
-        return new TrackFactory() {
-            public Track newInstance()
-            {
-                return new BEDTrack();
-            }
-        };
-    }
+	public static TrackFactory factory() {
+		return new TrackFactory() {
+			@Override
+			public Track newInstance() {
+				return new BEDTrack();
+			}
+		};
+	}
 
-    private class ContentFrame extends Frame
-    {
-        @Override
-        protected void onLoad()
-        {}
+	public BEDTrack() {
+		super("BED Track");
+		trackBaseURL = "utgb-core/BEDViewer";
+	}
 
-        @Override
-        public void onBrowserEvent(Event event)
-        {
+	@Override
+	protected String getTrackURL() {
+		Coordinate c = getCoordinate();
 
-            if (event.getTypeInt() == Event.ONCHANGE)
-            {
-                TrackFrame frame = getFrame();
-                if (frame != null)
-                {
-                    frame.loadingDone();
-                }
-            }
-        }
-    }
+		Properties p = new Properties();
+		TrackWindow w = getTrackGroup().getTrackWindow();
+		p.add("start", w.getStartOnGenome());
+		p.add("end", w.getEndOnGenome());
+		p.add("width", w.getWindowWidth() - leftMargin);
+		p.add("fileName", fileName);
 
-    public BEDTrack()
-    {
-        super("BED Track");
-    }
+		return c.getTrackURL(trackBaseURL, p);
+	}
 
-    protected String getTrackURL()
-    {
-        Coordinate c = getCoordinate();
+	@Override
+	public void setUp(TrackFrame trackFrame, TrackGroup group) {
+		super.setUp(trackFrame, group);
 
-        Properties p = new Properties();
-        TrackWindow w = getTrackGroup().getTrackWindow();
-        p.add("start", w.getStartOnGenome());
-        p.add("end", w.getEndOnGenome());
-        p.add("width", w.getWindowWidth() - leftMargin);
-        p.add("fileName", fileName);
+		config.addConfigParameter("File Name", new StringType("fileName"), fileName);
+	}
 
-        return c.getTrackURL(trackBaseURL, p);
-    }
+	@Override
+	public void onChangeTrackConfig(TrackConfigChange change) {
+		super.onChangeTrackConfig(change);
 
-    @Override
-    public void setUp(TrackFrame trackFrame, TrackGroup group)
-    {
-        super.setUp(trackFrame, group);
+		if (change.contains("fileName")) {
+			fileName = change.getValue("fileName");
+			draw();
+		}
+	}
 
-        config.addConfigParameter("File Name", new StringType("fileName"), fileName);
-    }
+	@Override
+	public void saveProperties(Properties saveData) {
+		super.saveProperties(saveData);
+		saveData.add("fileName", fileName);
+	}
 
-    @Override
-    public void onChangeTrackConfig(TrackConfigChange change)
-    {
-        super.onChangeTrackConfig(change);
-
-        if (change.contains("fileName"))
-        {
-            fileName = change.getValue("fileName");
-            draw();
-        }
-    }
-
-    @Override
-    public void saveProperties(Properties saveData)
-    {
-        super.saveProperties(saveData);
-        saveData.add("fileName", fileName);
-    }
-
-    @Override
-    public void restoreProperties(Properties properties)
-    {
-        super.restoreProperties(properties);
-        fileName = properties.get("fileName", fileName);
-    }
+	@Override
+	public void restoreProperties(Properties properties) {
+		super.restoreProperties(properties);
+		fileName = properties.get("fileName", fileName);
+	}
 
 }

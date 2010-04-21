@@ -98,6 +98,11 @@ public class GeneCanvas {
 		public int getYOffset() {
 			return yOffset;
 		}
+
+		@Override
+		public String toString() {
+			return "yOffset=" + yOffset;
+		}
 	}
 
 	public void setThresholdGenes(int thresholdGeneNames) {
@@ -241,7 +246,7 @@ public class GeneCanvas {
 	public void draw(Gene gene, List<Exon> exonList, CDS cds, int yPosition) {
 		// assumption: exonList are sorted
 
-		drawGeneRect(gene.getStart(), gene.getEnd(), yPosition, getGeneColor(gene));
+		drawGeneRect(gene.getViewStart(), gene.getViewEnd(), yPosition, getGeneColor(gene));
 
 		//GWT.log("exon: ", null);
 		for (Exon e : exonList) {
