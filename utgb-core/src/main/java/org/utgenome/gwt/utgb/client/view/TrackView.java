@@ -33,23 +33,39 @@ public class TrackView implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public String species;
-	public String revision;
-	public String target;
-	public Window window;
+	public TrackGroup trackGroup = new TrackGroup();
 	public ArrayList<Track> track = new ArrayList<Track>();
 
+	//public Map<TrackGroup, Track> trackGroup_track = new HashMap<TrackGroup, Track>();
+
 	public TrackView() {
+	}
+
+	public static class TrackGroup implements Serializable {
+		private static final long serialVersionUID = 1L;
+
+		public int id;
+		public String species;
+		public String revision;
+		public String target;
+		public Window window;
 	}
 
 	public static class Track implements Serializable {
 		private static final long serialVersionUID = 1L;
 
+		public TrackGroup trackGroup;
+
 		public String name;
 		public int height;
 		public boolean pack;
-		public String javaClass;
-		public Properties _ = new Properties();
+
+		/**
+		 * A java class for displaying the track. The underscore (_) is necessary to differenciate this parameter name
+		 * from from Java's keyword, <i>class</i>
+		 */
+		public String class_;
+		public Properties property = new Properties();
 
 	}
 
