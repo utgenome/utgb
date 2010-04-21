@@ -347,7 +347,7 @@ public class GWTGenomeCanvas extends Composite {
 		int maxOffset = createLayout(geneList);
 
 		int h = geneHeight + geneMargin;
-		int height = maxOffset * h;
+		int height = (maxOffset + 1) * h;
 
 		setPixelSize(windowWidth, height);
 
@@ -406,7 +406,8 @@ public class GWTGenomeCanvas extends Composite {
 	public void draw(Gene gene, List<Exon> exonList, CDS cds, int yPosition) {
 		// assumuption: exonList are sorted
 
-		drawGeneRect(gene.getStart(), gene.getEnd(), yPosition, getGeneColor(gene));
+		Color c = getGeneColor(gene);
+		drawGeneRect(pixelPositionOnWindow(gene.getStart()), pixelPositionOnWindow(gene.getEnd()), yPosition, c);
 
 		//GWT.log("exon: ", null);
 		for (Exon e : exonList) {
@@ -448,34 +449,40 @@ public class GWTGenomeCanvas extends Composite {
 	}
 
 	public Color getExonColor(Gene g) {
-		if (g.getStrand().equals("+")) {
-			//return new Color("#3686AA");
-			return new Color("#d80067");
-		}
-		else {
-			//return new Color("#AA8636");
-			return new Color("#0067d8");
-		}
+		return hexValue2Color(getExonColorText(g), 0.3f);
+		//
+		//		if (g.getStrand().equals("+")) {
+		//			//return new Color("#3686AA");
+		//			return new Color("#d80067");
+		//		}
+		//		else {
+		//			//return new Color("#AA8636");
+		//			return new Color("#0067d8");
+		//		}
 	}
 
 	public Color getCDSColor(Locus g) {
-		if (g.getStrand().equals("+")) {
-			//return new Color("#F7B357");
-			return new Color("#ED9DB9");
-		}
-		else {
-			//return new Color("#57B3F7");
-			return new Color("#9DB9ED");
-		}
+		return hexValue2Color(getExonColorText(g), 0.5f);
+		//
+		//		if (g.getStrand().equals("+")) {
+		//			//return new Color("#F7B357");
+		//			return new Color("#ED9DB9");
+		//		}
+		//		else {
+		//			//return new Color("#57B3F7");
+		//			return new Color("#9DB9ED");
+		//		}
 	}
 
 	public Color getIntronColor(Gene g) {
-		if (g.getStrand().equals("+")) {
-			return new Color("#ED9DB9");
-		}
-		else {
-			return new Color("#9DB9ED");
-		}
+		return hexValue2Color(getExonColorText(g), 0.5f);
+		//
+		//		if (g.getStrand().equals("+")) {
+		//			return new Color("#ED9DB9");
+		//		}
+		//		else {
+		//			return new Color("#9DB9ED");
+		//		}
 	}
 
 	public void draw(Locus gene, int yPosition) {
@@ -528,10 +535,8 @@ public class GWTGenomeCanvas extends Composite {
 			boxWidth = 1;
 
 		canvas.setFillStyle(c);
-		if (!reverse)
-			canvas.fillRect(drawPosition(x1), y, boxWidth, geneHeight);
-		else
-			canvas.fillRect(drawPosition(x2), y, boxWidth, geneHeight);
+		double drawX = drawPosition(reverse ? x2 : x1);
+		canvas.fillRect(drawX, y, boxWidth, geneHeight);
 	}
 
 	private int indentHeight = 0;
@@ -541,7 +546,6 @@ public class GWTGenomeCanvas extends Composite {
 	private boolean isLog = false;
 
 	public void drawWigGraph(WigGraphData data, Color color) {
-		// TODO Auto-generated method stub
 		long span = 1;
 		if (data.getTrack().containsKey("span")) {
 			span = Long.parseLong(data.getTrack().get("span"));

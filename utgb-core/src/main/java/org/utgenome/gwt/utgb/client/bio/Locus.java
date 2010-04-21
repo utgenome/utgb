@@ -92,6 +92,10 @@ public class Locus implements Serializable, Comparable<Locus> {
 	}
 
 	private void correctInterval() {
+		// do not swap start and end when one of them is undefined
+		if (start == -1 || end == -1)
+			return;
+
 		if (start > end) {
 			int tmp = start;
 			start = end;
