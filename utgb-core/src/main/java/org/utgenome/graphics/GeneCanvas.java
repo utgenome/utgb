@@ -126,8 +126,8 @@ public class GeneCanvas {
 
 		for (Locus l : locusList) {
 
-			int x1 = l.getViewStart();
-			int x2 = l.getViewEnd();
+			int x1 = l.getStart();
+			int x2 = l.getEnd();
 
 			if (drawLabel) {
 				int width = fontMetrics.stringWidth(l.getName()) + gapWidth;
@@ -246,7 +246,7 @@ public class GeneCanvas {
 	public void draw(Gene gene, List<Exon> exonList, CDS cds, int yPosition) {
 		// assumption: exonList are sorted
 
-		drawGeneRect(gene.getViewStart(), gene.getViewEnd(), yPosition, getGeneColor(gene));
+		drawGeneRect(gene.getStart(), gene.getEnd(), yPosition, getGeneColor(gene));
 
 		//GWT.log("exon: ", null);
 		for (Exon e : exonList) {

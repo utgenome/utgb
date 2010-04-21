@@ -55,6 +55,7 @@ public class ChromosomeMap extends WebTrackBase {
 	public ChromosomeMap() {
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
@@ -116,19 +117,19 @@ public class ChromosomeMap extends WebTrackBase {
 			//drawBlastResult(canvas);
 
 			// draw cytoband
-			if(displayType.equals("compact")){
+			if (displayType.equals("compact")) {
 				canvas.setChromHeight(7);
 				canvas.setChromMargin(3);
 			}
-			else if(displayType.equals("rotate")){
+			else if (displayType.equals("rotate")) {
 				canvas.setRotate();
 				canvas.setPixelHeight(300);
 			}
-			else{
+			else {
 				canvas.setChromHeight(10);
 				canvas.setChromMargin(10);
 			}
-			
+
 			canvas.setLighter(true);
 			canvas.draw(cytoBandList);
 
@@ -147,7 +148,7 @@ public class ChromosomeMap extends WebTrackBase {
 					//_logger.info(Lens.toJSON(result));
 
 					for (ReadLocus each : result)
-						canvas.drawMapping(each.target, each.getViewStart(), each.getViewEnd(), each.getStrand());
+						canvas.drawMapping(each.target, each.getStart(), each.getEnd(), each.getStrand());
 				}
 			}
 			response.setContentType("image/png");

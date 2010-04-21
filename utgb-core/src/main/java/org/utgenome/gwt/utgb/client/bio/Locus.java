@@ -27,7 +27,9 @@ package org.utgenome.gwt.utgb.client.bio;
 import java.io.Serializable;
 
 /**
- * Locus on a genome sequence
+ * Locus on a genome sequence.
+ * 
+ * The interval (start, end) in this class is ensured to be start <= end.
  * 
  * @author leo
  * 
@@ -40,8 +42,8 @@ public class Locus implements Serializable, Comparable<Locus> {
 	/**
 	 * 
 	 */
-	String name = "locus";
-	String chr = "";
+	String name;
+	String chr;
 	int start = -1; // 1-origin
 	int end = -1;
 	String strand = "?";
@@ -57,14 +59,14 @@ public class Locus implements Serializable, Comparable<Locus> {
 	}
 
 	public Locus(int start, int end) {
-		this.start = start;
-		this.end = end;
+		this(null, start, end);
 	}
 
 	public Locus(String name, int start, int end) {
 		this.name = name;
 		this.start = start;
 		this.end = end;
+		correctInterval();
 	}
 
 	public String getName() {
@@ -75,34 +77,40 @@ public class Locus implements Serializable, Comparable<Locus> {
 		this.name = name;
 	}
 
+	/**
+	 * Get the start position of the locus. (start <= end)
+	 * 
+	 * @return the start position
+	 */
 	public int getStart() {
 		return start;
 	}
 
 	public void setStart(int start) {
 		this.start = start;
+		correctInterval();
 	}
 
-	public int getViewStart() {
-		if (start <= end)
-			return start;
-		else
-			return end;
+	private void correctInterval() {
+		if (start > end) {
+			int tmp = start;
+			start = end;
+			end = tmp;
+		}
 	}
 
-	public int getViewEnd() {
-		if (start <= end)
-			return end;
-		else
-			return start;
-	}
-
+	/**
+	 * Get the end position of the locus (start <= end)
+	 * 
+	 * @return the end position
+	 */
 	public int getEnd() {
 		return end;
 	}
 
 	public void setEnd(int end) {
 		this.end = end;
+		correctInterval();
 	}
 
 	public String getStrand() {
@@ -142,7 +150,7 @@ public class Locus implements Serializable, Comparable<Locus> {
 	}
 
 	public int compareTo(Locus other) {
-		long diff = this.getViewStart() - other.getViewStart();
+		long diff = this.getStart() - other.getEnd();
 		if (diff == 0) {
 			return this.hashCode() - other.hashCode();
 		}
@@ -151,10 +159,10 @@ public class Locus implements Serializable, Comparable<Locus> {
 	}
 
 	public boolean hasOverlap(Locus other) {
-		long s1 = getViewStart();
-		long e1 = getViewEnd();
-		long s2 = other.getViewStart();
-		long e2 = other.getViewEnd();
+		long s1 = getStart();
+		long e1 = getEnd();
+		long s2 = other.getStart();
+		long e2 = other.getEnd();
 
 		return s1 <= e2 && s2 <= e1;
 	}

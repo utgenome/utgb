@@ -176,8 +176,8 @@ public class GWTGenomeCanvas extends Composite {
 			int y2 = y1 + geneHeight;
 
 			if (y1 <= y && y <= y2) {
-				int x1 = pixelPositionOnWindow(g.getViewStart()) - xBorder;
-				int x2 = pixelPositionOnWindow(g.getViewEnd()) + xBorder;
+				int x1 = pixelPositionOnWindow(g.getStart()) - xBorder;
+				int x2 = pixelPositionOnWindow(g.getEnd()) + xBorder;
 				if (x1 <= x && x <= x2)
 					return g;
 			}
@@ -296,8 +296,8 @@ public class GWTGenomeCanvas extends Composite {
 
 		for (Locus l : locusList) {
 
-			int x1 = l.getViewStart();
-			int x2 = l.getViewEnd();
+			int x1 = l.getStart();
+			int x2 = l.getEnd();
 
 			List<LocusLayout> activeLocus = locusLayout.rangeQuery(x1, Integer.MAX_VALUE, x2);
 
@@ -357,8 +357,8 @@ public class GWTGenomeCanvas extends Composite {
 			public void visit(LocusLayout gl) {
 				gl.yOffset = gl.yOffset * h;
 				Gene g = (Gene) gl.getLocus();
-				int gx = pixelPositionOnWindow(g.getViewStart());
-				int gx2 = pixelPositionOnWindow(g.getViewEnd());
+				int gx = pixelPositionOnWindow(g.getStart());
+				int gx2 = pixelPositionOnWindow(g.getEnd());
 
 				int geneWidth = gx2 - gx;
 				if (geneWidth <= 10) {
@@ -479,8 +479,8 @@ public class GWTGenomeCanvas extends Composite {
 	}
 
 	public void draw(Locus gene, int yPosition) {
-		int gx = pixelPositionOnWindow(gene.getViewStart());
-		int gx2 = pixelPositionOnWindow(gene.getViewEnd());
+		int gx = pixelPositionOnWindow(gene.getStart());
+		int gx2 = pixelPositionOnWindow(gene.getEnd());
 
 		//canvas.setGlobalAlpha(0.5f);
 		drawGeneRect(gx, gx2, yPosition, getCDSColor(gene));
@@ -488,8 +488,8 @@ public class GWTGenomeCanvas extends Composite {
 	}
 
 	public void draw(Gene gene, int yPosition) {
-		int gx = pixelPositionOnWindow(gene.getViewStart());
-		int gx2 = pixelPositionOnWindow(gene.getViewEnd());
+		int gx = pixelPositionOnWindow(gene.getStart());
+		int gx2 = pixelPositionOnWindow(gene.getEnd());
 
 		//canvas.setGlobalAlpha(0.5f);
 		drawGeneRect(gx, gx2, yPosition, getGeneColor(gene));

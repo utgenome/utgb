@@ -88,7 +88,7 @@ public class BSSReadView extends WebTrackBase {
 		public String toAlignmentView() {
 			final int w = 50;
 			StringBuilder buf = new StringBuilder();
-			buf.append(String.format("query: %s (length=%d, %s:%s-%s strand:%s)", getName(), queryLength, target, getViewStart(), getViewEnd(), getStrand()));
+			buf.append(String.format("query: %s (length=%d, %s:%s-%s strand:%s)", getName(), queryLength, target, getStart(), getEnd(), getStrand()));
 			buf.append(StringUtil.NEW_LINE);
 			buf.append(String.format("       similarity:%.0f%%, query coverage=%.0f%%, e-value=%s, bit score=%s", similarity, queryCoverage, evalue, bitScore));
 			buf.append(StringUtil.NEW_LINE);
@@ -125,6 +125,7 @@ public class BSSReadView extends WebTrackBase {
 
 	}
 
+	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		response.setContentType("text/plain");
