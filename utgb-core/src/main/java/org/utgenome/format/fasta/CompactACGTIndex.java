@@ -32,6 +32,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.utgenome.gwt.utgb.client.bio.CytoBand;
 import org.xerial.core.XerialException;
 import org.xerial.lens.Lens;
 import org.xerial.lens.ObjectHandler;
@@ -70,6 +71,10 @@ public class CompactACGTIndex {
 		Lens.findFromSilk(indexFile, "sequence", CompactACGTIndex.class, holder);
 
 		return holder.index;
+	}
+
+	public CytoBand toCyteBand() {
+		return new CytoBand(name, 1, length, null, null);
 	}
 
 }

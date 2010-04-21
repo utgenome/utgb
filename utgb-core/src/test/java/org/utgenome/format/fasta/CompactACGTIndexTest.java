@@ -33,8 +33,7 @@ import java.util.List;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.utgenome.format.fasta.CompactACGTIndex;
-import org.utgenome.format.fasta.CompactFASTAGenerator;
+import org.utgenome.gwt.utgb.client.bio.CytoBand;
 import org.xerial.lens.Lens;
 import org.xerial.util.FileResource;
 import org.xerial.util.log.Logger;
@@ -58,9 +57,23 @@ public class CompactACGTIndexTest {
 
 	@Test
 	public void load() throws Exception {
-		List<CompactACGTIndex> index = CompactACGTIndex.load(new FileReader(new File(workDir, "sample.index.silk")));
+		List<CompactACGTIndex> index = CompactACGTIndex.load(new FileReader(new File(workDir, "sample.fa.i.silk")));
 		assertEquals(3, index.size());
 		_logger.info(Lens.toSilk(index));
+
+	}
+
+	@Test
+	public void toCytoBand() throws Exception {
+		List<CompactACGTIndex> index = CompactACGTIndex.load(new FileReader(new File(workDir, "sample.fa.i.silk")));
+		assertEquals(3, index.size());
+
+		for (CompactACGTIndex each : index) {
+			CytoBand c = each.toCyteBand();
+			assertEquals(1, c.getStart());
+			assertEquals(c.getEnd(), each.length);
+			assertEquals(each.name, c.getChrom());
+		}
 
 	}
 
