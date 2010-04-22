@@ -61,14 +61,13 @@ public class TrackViewTest {
 		TrackView v = Lens.loadSilk(TrackView.class, FileResource.find(TrackViewTest.class, "default-view.silk"));
 		assertNotNull(v);
 
-		assertEquals("human", v.trackGroup.species);
-		assertEquals("hg19", v.trackGroup.revision);
-		assertEquals("chr1", v.trackGroup.target);
-		TrackView.Window w = v.trackGroup.window;
+		assertEquals("human:hg19", v.trackGroup.coordinate.ref);
+		assertEquals("chr1", v.trackGroup.coordinate.chr);
+		TrackView.Coordinate w = v.trackGroup.coordinate;
 
 		assertEquals(1, w.start);
 		assertEquals(100000, w.end);
-		assertEquals(800, w.width);
+		assertEquals(800, w.pixelWidth);
 
 		assertEquals(7, v.track.size());
 
@@ -77,7 +76,7 @@ public class TrackViewTest {
 		assertEquals(41, t.height);
 		assertEquals(true, t.pack);
 		assertEquals("org.utgenome.gwt.utgb.client.track.lib.NavigatorTrack", t.class_);
-		assertEquals(true, t.property.containsKey("sequenceList"));
+		assertEquals(true, t.property.containsKey("sequence list"));
 
 		_logger.info("\n" + Lens.toSilk(v));
 

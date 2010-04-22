@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * For reading view.xml files used utgb 1.3.x.
+ * For reading view.xml files used in UTGB 1.3.x.
  * 
  * @author leo
  * 
