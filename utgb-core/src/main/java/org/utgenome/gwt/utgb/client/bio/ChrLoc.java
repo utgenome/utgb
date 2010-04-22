@@ -27,14 +27,14 @@ package org.utgenome.gwt.utgb.client.bio;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class ChrLoc implements IsSerializable {
-	public long start;
-	public long end;
+	public int start;
+	public int end;
 	public String target;
 
 	public ChrLoc() {
 	}
 
-	public ChrLoc(String target, long start, long end) {
+	public ChrLoc(String target, int start, int end) {
 		this.target = target;
 		this.start = start;
 		this.end = end;

@@ -176,8 +176,8 @@ public class WIGGraphCanvasTrack extends TrackBase {
 			float tempMaxValue = maxValue;
 
 			// get graph x-range
-			long s = w.getStartOnGenome();
-			long e = w.getEndOnGenome();
+			int s = w.getStartOnGenome();
+			int e = w.getEndOnGenome();
 			int width = w.getWindowWidth() - leftMargin;
 
 			geneCanvas.clear();
@@ -262,8 +262,8 @@ public class WIGGraphCanvasTrack extends TrackBase {
 
 	public void update(TrackWindow newWindow) {
 		// retrieve gene data from the API
-		long s = newWindow.getStartOnGenome();
-		long e = newWindow.getEndOnGenome();
+		int s = newWindow.getStartOnGenome();
+		int e = newWindow.getEndOnGenome();
 		TrackGroupProperty prop = getTrackGroup().getPropertyReader();
 		String target = prop.getProperty(UTGBProperty.TARGET);
 		ChrLoc l = new ChrLoc();

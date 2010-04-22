@@ -414,7 +414,7 @@ public class TrackGroup implements TrackEntry, Comparable<TrackGroup>, HasFactor
 	 * @param startOnGenome
 	 * @param endOnGenome
 	 */
-	public void setTrackWindowLocation(long startOnGenome, long endOnGenome) {
+	public void setTrackWindowLocation(int startOnGenome, int endOnGenome) {
 		_trackGroupProperty.setTrackWindow(startOnGenome, endOnGenome);
 	}
 

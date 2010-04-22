@@ -109,8 +109,8 @@ public class OldUTGBFrameCommandImpl implements FrameCommand {
 
 			final TrackWindow trackWindow = trackGroup.getTrackWindow();
 
-			final long newStartIndex = trackWindow.getStartOnGenome() + step;
-			final long newEndIndex = trackWindow.getEndOnGenome() + step;
+			final int newStartIndex = trackWindow.getStartOnGenome() + step;
+			final int newEndIndex = trackWindow.getEndOnGenome() + step;
 
 			trackGroup.setTrackWindowLocation(newStartIndex, newEndIndex);
 		}
@@ -128,15 +128,15 @@ public class OldUTGBFrameCommandImpl implements FrameCommand {
 
 			final TrackWindow trackWindow = trackGroup.getTrackWindow();
 
-			final long oldStartIndex = trackWindow.getStartOnGenome();
-			final long oldEndIndex = trackWindow.getEndOnGenome();
+			final int oldStartIndex = trackWindow.getStartOnGenome();
+			final int oldEndIndex = trackWindow.getEndOnGenome();
 
-			final long oldCenterIndex = (oldStartIndex + oldEndIndex) / 2;
+			final int oldCenterIndex = (oldStartIndex + oldEndIndex) / 2;
 
-			final long step = centerIndex - oldCenterIndex;
+			final int step = centerIndex - oldCenterIndex;
 
-			final long newStartIndex = oldStartIndex + step;
-			final long newEndIndex = oldEndIndex + step;
+			final int newStartIndex = oldStartIndex + step;
+			final int newEndIndex = oldEndIndex + step;
 
 			trackGroup.setTrackWindowLocation(newStartIndex, newEndIndex);
 		}
@@ -154,20 +154,20 @@ public class OldUTGBFrameCommandImpl implements FrameCommand {
 
 			final TrackWindow trackWindow = trackGroup.getTrackWindow();
 
-			final long oldStartIndex = trackWindow.getStartOnGenome();
-			final long oldEndIndex = trackWindow.getEndOnGenome();
+			final int oldStartIndex = trackWindow.getStartOnGenome();
+			final int oldEndIndex = trackWindow.getEndOnGenome();
 
-			final long oldCenterIndex = (oldStartIndex + oldEndIndex) / 2;
+			final int oldCenterIndex = (oldStartIndex + oldEndIndex) / 2;
 
-			final long step = width / 2;
+			final int step = width / 2;
 
-			final long _diff = oldEndIndex - oldStartIndex;
+			final int _diff = oldEndIndex - oldStartIndex;
 			final boolean isPlus = _diff >= 0;
 
 			final int coeff = isPlus ? +1 : -1;
 
-			final long newStartIndex = oldCenterIndex - coeff * step;
-			final long newEndIndex = oldCenterIndex + coeff * step;
+			final int newStartIndex = oldCenterIndex - coeff * step;
+			final int newEndIndex = oldCenterIndex + coeff * step;
 
 			trackGroup.setTrackWindowLocation(newStartIndex, newEndIndex);
 		}
@@ -179,8 +179,8 @@ public class OldUTGBFrameCommandImpl implements FrameCommand {
 
 			final TrackWindow trackWindow = trackGroup.getTrackWindow();
 
-			final long oldStartIndex = trackWindow.getStartOnGenome();
-			final long oldEndIndex = trackWindow.getEndOnGenome();
+			final int oldStartIndex = trackWindow.getStartOnGenome();
+			final int oldEndIndex = trackWindow.getEndOnGenome();
 
 			trackGroup.setTrackWindowLocation(oldEndIndex, oldStartIndex);
 		}

@@ -36,13 +36,13 @@ import org.utgenome.gwt.utgb.client.util.xml.XMLWriter;
  */
 public class TrackWindowImpl implements TrackWindow {
 	private int windowWidth = 700;
-	private long startIndexOnGenome = 0;
-	private long endIndexOnGenome = 10000;
+	private int startIndexOnGenome = 0;
+	private int endIndexOnGenome = 10000;
 
 	public TrackWindowImpl() {
 	}
 
-	public TrackWindowImpl(int windowWidth, long startIndexOnGenome, long endIndexOnGenome) {
+	public TrackWindowImpl(int windowWidth, int startIndexOnGenome, int endIndexOnGenome) {
 		super();
 		this.windowWidth = windowWidth;
 		this.startIndexOnGenome = startIndexOnGenome;
@@ -50,7 +50,7 @@ public class TrackWindowImpl implements TrackWindow {
 	}
 
 	// @see org.utgenome.gwt.utgb.client.track.TrackWindow#calcXPositionOnWindow(int)
-	public int calcXPositionOnWindow(long indexOnGenome) {
+	public int calcXPositionOnWindow(int indexOnGenome) {
 		double v = (indexOnGenome - startIndexOnGenome) * (double) windowWidth;
 		double v2 = v / (double) (endIndexOnGenome - startIndexOnGenome);
 		return (int) v2;
@@ -61,11 +61,11 @@ public class TrackWindowImpl implements TrackWindow {
 		return (double) windowWidth / (double) (endIndexOnGenome - startIndexOnGenome);
 	}
 
-	public void setStartOnGenome(long startOnGenome) {
+	public void setStartOnGenome(int startOnGenome) {
 		this.startIndexOnGenome = (startOnGenome > 0) ? startOnGenome : 1;
 	}
 
-	public void setEndOnGenome(long endOnGenome) {
+	public void setEndOnGenome(int endOnGenome) {
 		this.endIndexOnGenome = (endOnGenome > 0) ? endOnGenome : (this.startIndexOnGenome > 0 ? this.startIndexOnGenome : 1);
 	}
 
@@ -75,16 +75,16 @@ public class TrackWindowImpl implements TrackWindow {
 	}
 
 	// @see org.utgenome.gwt.utgb.client.track.TrackWindow#getStartOnGenome()
-	public long getStartOnGenome() {
+	public int getStartOnGenome() {
 		return startIndexOnGenome;
 	}
 
 	// @see org.utgenome.gwt.utgb.client.track.TrackWindow#getEndOnGenome()
-	public long getEndOnGenome() {
+	public int getEndOnGenome() {
 		return endIndexOnGenome;
 	}
 
-	public long getWidth() {
+	public int getWidth() {
 		if (startIndexOnGenome <= endIndexOnGenome)
 			return endIndexOnGenome - startIndexOnGenome;
 		else
@@ -101,7 +101,7 @@ public class TrackWindowImpl implements TrackWindow {
 		setEndOnGenome(newWindow.getEndOnGenome());
 	}
 
-	public int calcGenomePosition(long xOnWindow) {
+	public int calcGenomePosition(int xOnWindow) {
 		if (getStartOnGenome() <= getEndOnGenome()) {
 			double genomeLengthPerBit = (double) (endIndexOnGenome - startIndexOnGenome) / (double) windowWidth;
 			return (int) (startIndexOnGenome + (double) xOnWindow * genomeLengthPerBit);
@@ -126,7 +126,7 @@ public class TrackWindowImpl implements TrackWindow {
 		return getStartOnGenome() > getEndOnGenome();
 	}
 
-	public TrackWindow newWindow(long newStartOnGenome, long newEndOnGenome) {
+	public TrackWindow newWindow(int newStartOnGenome, int newEndOnGenome) {
 		return new TrackWindowImpl(this.windowWidth, newStartOnGenome, newEndOnGenome);
 	}
 

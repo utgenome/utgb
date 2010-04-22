@@ -133,7 +133,7 @@ public class TrackGroupPropertyImpl implements TrackGroupProperty, TrackGroupPro
 		notifyTheChange(notifyPropChange ? new TrackPropertyChangeImpl(this, properties.keySet()) : null, newWindow);
 	}
 
-	public void setTrackWindow(long startOnGenome, long endOnGenome) {
+	public void setTrackWindow(int startOnGenome, int endOnGenome) {
 		_trackWindow.setStartOnGenome(startOnGenome);
 		_trackWindow.setEndOnGenome(endOnGenome);
 		notifyTheChange(null, _trackWindow);

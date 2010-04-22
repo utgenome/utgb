@@ -42,7 +42,7 @@ public interface TrackGroupPropertyWriter {
 	 * @param startOnGenome
 	 * @param endOnGenome
 	 */
-	public void setTrackWindow(long startOnGenome, long endOnGenome);
+	public void setTrackWindow(int startOnGenome, int endOnGenome);
 
 	/**
 	 * @param windowSize

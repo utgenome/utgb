@@ -67,11 +67,11 @@ public class ScrollButtonTrack extends TrackBase {
 
 			public void onClick(ClickEvent e) {
 				TrackWindow window = getTrackGroup().getTrackWindow();
-				long genomeRange = window.getEndOnGenome() - window.getStartOnGenome();
+				int genomeRange = window.getEndOnGenome() - window.getStartOnGenome();
 				if (genomeRange < 0)
 					genomeRange = -genomeRange;
 
-				long offset = (long) (genomeRange * ((double) movePercentageOnWindow / 100.0));
+				int offset = (int) (genomeRange * ((double) movePercentageOnWindow / 100.0));
 				getTrackGroup().getPropertyWriter().setTrackWindow(window.getStartOnGenome() + offset, window.getEndOnGenome() + offset);
 			}
 		}

@@ -424,8 +424,8 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 						public Object handle(ResultSet rs) throws SQLException {
 							ChrLoc chrLoc = new ChrLoc();
 							chrLoc.target = rs.getString(1);
-							chrLoc.start = rs.getLong(2);
-							chrLoc.end = rs.getLong(3);
+							chrLoc.start = rs.getInt(2);
+							chrLoc.end = rs.getInt(3);
 
 							chrRanges.ranges.add(chrLoc);
 							if (_logger.isDebugEnabled())

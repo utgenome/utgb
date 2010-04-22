@@ -39,14 +39,14 @@ public interface TrackWindow {
 	 * @param indexOnGenome
 	 * @return relative X position in a window (0 origin).
 	 */
-	public int calcXPositionOnWindow(long indexOnGenome);
+	public int calcXPositionOnWindow(int indexOnGenome);
 
 	/**
 	 * @param xOnWindow
 	 *            calculate the genome index of a given x position in the current window
 	 * @return genome position
 	 */
-	public int calcGenomePosition(long xOnWindow);
+	public int calcGenomePosition(int xOnWindow);
 
 	/**
 	 * @return pixel length / (genome end - genome start);
@@ -61,17 +61,17 @@ public interface TrackWindow {
 	/**
 	 * @return the sequence width
 	 */
-	public long getWidth();
+	public int getWidth();
 
 	/**
 	 * @return start position on the genome currently displayed in the window
 	 */
-	public long getStartOnGenome();
+	public int getStartOnGenome();
 
 	/**
 	 * @return end position on the genome currently displayed in the window
 	 */
-	public long getEndOnGenome();
+	public int getEndOnGenome();
 
 	public void toXML(XMLWriter xmlWriter);
 
@@ -79,5 +79,5 @@ public interface TrackWindow {
 
 	public boolean isReverseStrand();
 
-	public TrackWindow newWindow(long newStartOnGenome, long newEndOnGenome);
+	public TrackWindow newWindow(int newStartOnGenome, int newEndOnGenome);
 }

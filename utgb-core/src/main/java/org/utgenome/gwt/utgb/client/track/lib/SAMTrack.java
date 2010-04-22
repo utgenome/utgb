@@ -38,9 +38,7 @@ import org.utgenome.gwt.utgb.client.track.TrackConfig;
 import org.utgenome.gwt.utgb.client.track.TrackConfigChange;
 import org.utgenome.gwt.utgb.client.track.TrackFrame;
 import org.utgenome.gwt.utgb.client.track.TrackGroup;
-import org.utgenome.gwt.utgb.client.track.TrackGroupProperty;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
-import org.utgenome.gwt.utgb.client.track.UTGBProperty;
 import org.utgenome.gwt.utgb.client.track.impl.TrackWindowImpl;
 import org.utgenome.gwt.utgb.client.ui.FormLabel;
 import org.utgenome.gwt.utgb.client.util.Properties;
@@ -65,24 +63,24 @@ import com.google.gwt.user.client.ui.Widget;
 public class SAMTrack extends TrackBase {
 	private final boolean isDebug = true;
 	private boolean isC2T = false;
-	
+
 	protected TrackConfig config = new TrackConfig(this);
 	protected String readFileName = null;
 	protected String refSeqFileName = null;
 	protected String colorMode = "nucleotide";
-	
+
 	private final FlexTable layoutTable = new FlexTable();
 	private final SAMCanvas samCanvas = new SAMCanvas();
 	private final AbsolutePanel labelPanel = new AbsolutePanel();
 	private final ListBox readListBox = new ListBox();
-	
+
 	private int height = 500;
 	private int leftMargin = 100;
 	private int labelWidth = 100;
-	
+
 	private List<SAMRead> readDataList;
 	private String choosedReadName = new String();
-	
+
 	public static TrackFactory factory() {
 		return new TrackFactory() {
 			public Track newInstance() {
@@ -99,19 +97,19 @@ public class SAMTrack extends TrackBase {
 		layoutTable.setCellSpacing(0);
 		layoutTable.setBorderWidth(0);
 		layoutTable.setWidth("100%");
-//		layoutTable.getCellFormatter().setWidth(0, 0, leftMargin + "px");
+		//		layoutTable.getCellFormatter().setWidth(0, 0, leftMargin + "px");
 		layoutTable.setWidget(1, 0, labelPanel);
-//		layoutTable.setWidget(0, 1, readListBox);
+		//		layoutTable.setWidget(0, 1, readListBox);
 		layoutTable.setWidget(1, 1, samCanvas);
-		
+
 		// Set the value in the text box when the user selects a date
 		readListBox.addChangeHandler(new ChangeHandler() {
-		      public void onChange(ChangeEvent e) {
-		        choosedReadName = readDataList.get(readListBox.getSelectedIndex()).qname;
+			public void onChange(ChangeEvent e) {
+				choosedReadName = readDataList.get(readListBox.getSelectedIndex()).qname;
 				getFrame().setNowLoading();
 				DeferredCommand.addCommand(new UpdateCommand(readDataList));
-		      }
-		    });
+			}
+		});
 	}
 
 	public Widget getWidget() {
@@ -128,7 +126,7 @@ public class SAMTrack extends TrackBase {
 		colorModeDomain.addValueList(new Value("base quality"));
 		config.addConfigParameter("Color Mode", new StringType("colorMode", colorModeDomain), colorMode);
 		samCanvas.setWindow(group.getTrackWindow(), leftMargin);
-		
+
 		update(group.getTrackWindow());
 	}
 
@@ -144,23 +142,23 @@ public class SAMTrack extends TrackBase {
 
 			height = getDefaultWindowHeight();
 			// get graph x-range
-			long s = w.getStartOnGenome();
-			long e = w.getEndOnGenome();
+			int s = w.getStartOnGenome();
+			int e = w.getEndOnGenome();
 			int width = w.getWindowWidth() - leftMargin;
 
 			labelPanel.clear();
-			for(SAMRead temp : readDataList){
+			for (SAMRead temp : readDataList) {
 				FormLabel tempLabel = new FormLabel(temp.qname);
-				labelPanel.add(tempLabel,0,0);
+				labelPanel.add(tempLabel, 0, 0);
 				labelWidth = tempLabel.getOffsetWidth() > labelWidth ? tempLabel.getOffsetWidth() : labelWidth;
 				labelPanel.remove(tempLabel);
 
 				tempLabel = new FormLabel(temp.rname);
-				labelPanel.add(tempLabel,0,0);
+				labelPanel.add(tempLabel, 0, 0);
 				labelWidth = tempLabel.getOffsetWidth() > labelWidth ? tempLabel.getOffsetWidth() : labelWidth;
 				labelPanel.remove(tempLabel);
 
-				if(samCanvas.getReadWidth(temp.cigar) > width)
+				if (samCanvas.getReadWidth(temp.cigar) > width)
 					width = samCanvas.getReadWidth(temp.cigar);
 			}
 			labelPanel.setPixelSize(labelWidth, height);
@@ -170,22 +168,22 @@ public class SAMTrack extends TrackBase {
 			samCanvas.setC2T(isC2T);
 			samCanvas.setColorMode(colorMode);
 
-//	        if(isDebug)GWT.log("choosed : " + choosedReadName, null);
-	        
+			//	        if(isDebug)GWT.log("choosed : " + choosedReadName, null);
+
 			// draw data graph
-	        int count = 0;
-	        for(SAMRead read : readList){
-//	        	if(read.qname.equals(choosedReadName)){
-	        		samCanvas.drawSAMRead(count, read);
-	        		samCanvas.drawLabelPanel(count, read, labelPanel, leftMargin);
-	        		count++;
-//	        	}
-	        }
-//			refresh();
+			int count = 0;
+			for (SAMRead read : readList) {
+				//	        	if(read.qname.equals(choosedReadName)){
+				samCanvas.drawSAMRead(count, read);
+				samCanvas.drawLabelPanel(count, read, labelPanel, leftMargin);
+				count++;
+				//	        	}
+			}
+			//			refresh();
 			getFrame().loadingDone();
 		}
 	}
-	
+
 	public void update(TrackWindow newWindow) {
 
 		getFrame().setNowLoading();
@@ -200,29 +198,31 @@ public class SAMTrack extends TrackBase {
 			public void onSuccess(List<SAMRead> dataList) {
 				readDataList = dataList;
 				readListBox.clear();
-				
+
 				for (SAMRead read : dataList) {
-					if (isDebug) GWT.log("read : " + read.qname , null);
-					
+					if (isDebug)
+						GWT.log("read : " + read.qname, null);
+
 					readListBox.addItem(read.qname);
-					if (choosedReadName.isEmpty()) choosedReadName = read.qname;
+					if (choosedReadName.isEmpty())
+						choosedReadName = read.qname;
 				}
 				readListBox.setVisibleItemCount(1);
 				DeferredCommand.addCommand(new UpdateCommand(readDataList));
 			}
 		});
 	}
-	
+
 	public void onChangeTrackWindow(TrackWindow newWindow) {
-//		samCanvas.setWindow(newWindow, leftMargin);
+		//		samCanvas.setWindow(newWindow, leftMargin);
 	}
-	
+
 	public void onChangeTrackConfig(TrackConfigChange change) {
 		boolean isUpdate = false;
 
 		if (isDebug) {
-			for(String key : change.getChangedParamSet()){
-				GWT.log("Change : " + key+" : " + change.getValue(key), null);
+			for (String key : change.getChangedParamSet()) {
+				GWT.log("Change : " + key + " : " + change.getValue(key), null);
 			}
 		}
 
@@ -271,7 +271,7 @@ public class SAMTrack extends TrackBase {
 
 		}
 	}
-	
+
 	public TrackConfig getConfig() {
 		return config;
 	}

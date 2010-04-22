@@ -222,7 +222,7 @@ public class RibbonRuler extends Composite {
 		canvas.setLineWidth(0.5f);
 		canvas.setGlobalAlpha(1f);
 		canvas.setStrokeStyle(new Color("#EEDDDD"));
-		for (long s = (window.getStartOnGenome() / 10) * 10; s < window.getEndOnGenome(); s += 10L) {
+		for (int s = (window.getStartOnGenome() / 10) * 10; s < window.getEndOnGenome(); s += 10L) {
 
 			if (s <= 0)
 				s = 1;

@@ -118,13 +118,13 @@ public class NavigatorTrack extends TrackBase {
 
 	public static void scroll(TrackGroup group, double movePercentageOnWindow) {
 		TrackWindow window = group.getTrackWindow();
-		long genomeRange = window.getEndOnGenome() - window.getStartOnGenome() + 1;
+		int genomeRange = window.getEndOnGenome() - window.getStartOnGenome() + 1;
 		boolean isPlusStrand = true;
 		if (genomeRange < 0) {
 			genomeRange = -genomeRange;
 			isPlusStrand = false;
 		}
-		long offset = (int) (genomeRange * ((double) movePercentageOnWindow / 100.0));
+		int offset = (int) (genomeRange * ((double) movePercentageOnWindow / 100.0));
 		if (!isPlusStrand)
 			offset = -offset;
 
@@ -140,14 +140,14 @@ public class NavigatorTrack extends TrackBase {
 
 	public static void zoom(TrackGroup group, int scaleDiff) {
 		TrackWindow currentWindow = group.getTrackWindow();
-		long start = currentWindow.getStartOnGenome();
-		long end = currentWindow.getEndOnGenome();
+		int start = currentWindow.getStartOnGenome();
+		int end = currentWindow.getEndOnGenome();
 
-		long windowSize = end - start;
+		int windowSize = end - start;
 		if (windowSize < 0)
 			windowSize = -windowSize;
 
-		windowSize = (long) Math.pow(10L, Math.round(Math.log(windowSize) / Math.log(10)));
+		windowSize = (int) Math.pow(10L, Math.round(Math.log(windowSize) / Math.log(10)));
 
 		if (scaleDiff > 0) {
 			for (int i = 0; i < scaleDiff; ++i)
@@ -158,22 +158,22 @@ public class NavigatorTrack extends TrackBase {
 				windowSize /= 10;
 		}
 
-		zoom(group, windowSize);
+		zoomWindow(group, windowSize);
 	}
 
-	public static void zoom(TrackGroup group, long windowSize) {
+	public static void zoomWindow(TrackGroup group, int windowSize) {
 		TrackWindow currentWindow = group.getTrackWindow();
-		long start = currentWindow.getStartOnGenome();
-		long end = currentWindow.getEndOnGenome();
+		int start = currentWindow.getStartOnGenome();
+		int end = currentWindow.getEndOnGenome();
 
-		long middle = (start + end) / 2;
+		int middle = (start + end) / 2;
 
 		if (windowSize <= 100)
 			windowSize = 100;
 		if (windowSize >= 100000000)
 			windowSize = 100000000;
 
-		long half = windowSize / 2;
+		int half = windowSize / 2;
 		if (start <= end)
 			group.setTrackWindowLocation(middle - half + 1, middle + half);
 		else
@@ -200,9 +200,9 @@ public class NavigatorTrack extends TrackBase {
 		}
 
 		class ZoomButton extends Button implements ClickHandler {
-			long windowSize;
+			int windowSize;
 
-			public ZoomButton(String label, long windowSize) {
+			public ZoomButton(String label, int windowSize) {
 				super(label);
 				this.windowSize = windowSize;
 				setStyleName("scrollbutton");
@@ -210,7 +210,7 @@ public class NavigatorTrack extends TrackBase {
 			}
 
 			public void onClick(ClickEvent e) {
-				zoom(getTrackGroup(), windowSize);
+				zoomWindow(getTrackGroup(), windowSize);
 			}
 		}
 

@@ -190,16 +190,16 @@ public class KeywordSearchTrack extends TrackBase {
 
 			TrackWindow win = getTrackGroup().getTrackWindow();
 
-			long width = win.getEndOnGenome() - win.getStartOnGenome();
-			long left = e.getStart();
-			long right = e.getEnd();
+			int width = win.getEndOnGenome() - win.getStartOnGenome();
+			int left = e.getStart();
+			int right = e.getEnd();
 			if (width < 0) {
 				width = -width;
 			}
 
 			// locate the new window so that the target region will be at 20% from the left side 
-			long newLeft = left - (long) (width * 0.3);
-			long newRight = right + (long) (width * 0.3);
+			int newLeft = left - (int) (width * 0.3);
+			int newRight = right + (int) (width * 0.3);
 
 			try {
 				writer.setProperyChangeNotifaction(false);

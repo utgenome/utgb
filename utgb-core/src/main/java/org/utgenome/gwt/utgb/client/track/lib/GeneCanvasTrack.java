@@ -103,8 +103,8 @@ public class GeneCanvasTrack extends TrackBase {
 	public void draw() {
 		TrackWindow w = getTrackGroup().getTrackWindow();
 
-		long s = w.getStartOnGenome();
-		long e = w.getEndOnGenome();
+		int s = w.getStartOnGenome();
+		int e = w.getEndOnGenome();
 		int width = w.getWindowWidth() - 100;
 
 		geneCanvas.clear();

@@ -79,14 +79,14 @@ public class OldUTGBTrackGroup extends TrackGroup {
 			private GETMethodURL GET_TARGET_LENGTH_URL = GETMethodURL
 					.newInstance("http://medaka3.gi.k.u-tokyo.ac.jp/~ssksn/browser_web_api/getTargetLength.php");
 
-			private final long correctIndex(final long inputIndex) {
-				long _index = Math.max(inputIndex, 1);
+			private final int correctIndex(final int inputIndex) {
+				int _index = Math.max(inputIndex, 1);
 				_index = Math.min(_index, currentTargetLength);
 
 				return _index;
 			}
 
-			public void setTrackWindow(long startOnGenome, long endOnGenome) {
+			public void setTrackWindow(int startOnGenome, int endOnGenome) {
 				super.setTrackWindow(correctIndex(startOnGenome), correctIndex(endOnGenome));
 			}
 

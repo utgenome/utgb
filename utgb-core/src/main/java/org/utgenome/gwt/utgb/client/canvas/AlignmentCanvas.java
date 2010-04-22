@@ -313,8 +313,8 @@ public class AlignmentCanvas extends Composite {
 
 			// move to the clicked location
 			String target = alignment.getTargetName();
-			long start = alignment.getTargetStart();
-			long end = alignment.getTargetEnd();
+			int start = alignment.getTargetStart();
+			int end = alignment.getTargetEnd();
 
 			TrackGroupPropertyWriter writer = parentTrack.getTrackGroup().getPropertyWriter();
 			try {

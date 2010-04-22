@@ -130,8 +130,8 @@ public class BSSCanvasTrack extends TrackBase {
 		public void execute() {
 			TrackWindow w = getTrackGroup().getTrackWindow();
 
-			long s = w.getStartOnGenome();
-			long e = w.getEndOnGenome();
+			int s = w.getStartOnGenome();
+			int e = w.getEndOnGenome();
 			int width = w.getWindowWidth() - 100;
 
 			geneCanvas.clear();
@@ -146,8 +146,8 @@ public class BSSCanvasTrack extends TrackBase {
 
 	public void update(TrackWindow newWindow) {
 		// retrieve gene data from the API
-		long s = newWindow.getStartOnGenome();
-		long e = newWindow.getEndOnGenome();
+		int s = newWindow.getStartOnGenome();
+		int e = newWindow.getEndOnGenome();
 		TrackGroupProperty prop = getTrackGroup().getPropertyReader();
 		String dbGroup = prop.getProperty("dbGroup");
 		String dbName = prop.getProperty("dbName");

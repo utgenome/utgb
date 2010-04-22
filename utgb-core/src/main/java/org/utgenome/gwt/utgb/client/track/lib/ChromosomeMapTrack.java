@@ -152,7 +152,7 @@ public class ChromosomeMapTrack extends TrackBase {
 
 			private ChrLoc getGenomeRange(int x, int y) {
 				ChrLoc chrLoc = new ChrLoc();
-				long viewWidth = getTrackGroup().getTrackWindow().getWidth();
+				int viewWidth = getTrackGroup().getTrackWindow().getWidth();
 
 				int windowWidth;
 				int index;
@@ -172,7 +172,7 @@ public class ChromosomeMapTrack extends TrackBase {
 
 				chrLoc.target = chrRange.ranges.get(index).target;
 
-				chrLoc.start = (long) ((x - chrNameWidth) * chrRange.maxLength / (double) windowWidth) - (viewWidth / 2);
+				chrLoc.start = (int) ((x - chrNameWidth) * chrRange.maxLength / (double) windowWidth) - (viewWidth / 2);
 				if (chrLoc.start <= 0) {
 					chrLoc.start = 1;
 				}

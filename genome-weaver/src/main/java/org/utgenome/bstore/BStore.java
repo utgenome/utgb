@@ -32,10 +32,10 @@ import java.io.InputStream;
  * @author leo
  * 
  */
-public class BStore
-{
+public class BStore {
     public InputStream get(UniqueID id) {
 
         return null;
     }
+
 }

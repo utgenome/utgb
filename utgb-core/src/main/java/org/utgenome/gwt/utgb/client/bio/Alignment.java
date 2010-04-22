@@ -44,22 +44,22 @@ public class Alignment implements IsSerializable {
 	// query sequence
 	private String queryName;
 	private int querySize;
-	private long queryStart;
-	private long queryEnd;
+	private int queryStart;
+	private int queryEnd;
 
 	// target sequence
 	private String targetName;
 	private int targetSize;
-	private long targetStart;
-	private long targetEnd;
+	private int targetStart;
+	private int targetEnd;
 
 	private String strand; // "+" or "-"
 
 	// alignment blocks
 	private int blockCount = 0;
 	private ArrayList<Integer> blockSizeList = new ArrayList<Integer>();
-	private ArrayList<Long> queryStartList = new ArrayList<Long>();
-	private ArrayList<Long> targetStartList = new ArrayList<Long>();
+	private ArrayList<Integer> queryStartList = new ArrayList<Integer>();
+	private ArrayList<Integer> targetStartList = new ArrayList<Integer>();
 
 	public int getNumMatch() {
 		return numMatch;
@@ -121,7 +121,7 @@ public class Alignment implements IsSerializable {
 		return queryStart;
 	}
 
-	public void setQueryStart(long queryStart) {
+	public void setQueryStart(int queryStart) {
 		this.queryStart = queryStart;
 	}
 
@@ -129,7 +129,7 @@ public class Alignment implements IsSerializable {
 		return queryEnd;
 	}
 
-	public void setQueryEnd(long queryEnd) {
+	public void setQueryEnd(int queryEnd) {
 		this.queryEnd = queryEnd;
 	}
 
@@ -141,19 +141,19 @@ public class Alignment implements IsSerializable {
 		this.targetName = targetName;
 	}
 
-	public long getTargetStart() {
+	public int getTargetStart() {
 		return targetStart;
 	}
 
-	public void setTargetStart(long targetStart) {
+	public void setTargetStart(int targetStart) {
 		this.targetStart = targetStart;
 	}
 
-	public long getTargetEnd() {
+	public int getTargetEnd() {
 		return targetEnd;
 	}
 
-	public void setTargetEnd(long targetEnd) {
+	public void setTargetEnd(int targetEnd) {
 		this.targetEnd = targetEnd;
 	}
 
@@ -181,11 +181,11 @@ public class Alignment implements IsSerializable {
 		return blockSizeList;
 	}
 
-	public ArrayList<Long> getQueryStarts() {
+	public ArrayList<Integer> getQueryStarts() {
 		return queryStartList;
 	}
 
-	public ArrayList<Long> getTargetStarts() {
+	public ArrayList<Integer> getTargetStarts() {
 		return targetStartList;
 	}
 
@@ -193,11 +193,11 @@ public class Alignment implements IsSerializable {
 		this.blockSizeList.add(blockSize);
 	}
 
-	public void addQueryStarts(long queryStart) {
+	public void addQueryStarts(int queryStart) {
 		this.queryStartList.add(queryStart);
 	}
 
-	public void addTargetStarts(long targetStart) {
+	public void addTargetStarts(int targetStart) {
 		this.targetStartList.add(targetStart);
 	}
 
