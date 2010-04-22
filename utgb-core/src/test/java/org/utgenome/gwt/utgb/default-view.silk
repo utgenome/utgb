@@ -1,17 +1,18 @@
 %silk(version:1.0)
-%schema track group(id[key], revision, species, target, window(start, end, width))
-%schema track(name, height, pack, class, property)
-%schema (track group, track) 
+%schema Track Group (id:key, property:map, Coordinate)
+%schema Coordinate (ref, chr, start:int, end:int, pixel width:int)
+%schema Track (name, height:int, pack:boolean, class, property:map)
+%schema (Track Group, Track*)
 
 -track group
  -id: 1
- -revision: hg19
- -species:  human
- -target:   chr1
- -window
+ -coordinate
+  -ref: human:hg19
+  -chr: chr1
   -start:1
-  -end:100000
-  -width:800
+  -end:  100000
+  -ribbon: 100000M
+  -pixel width: 800
 
 # tracks to be displayed
 -track
@@ -21,11 +22,8 @@
  -pack:true
  -class: org.utgenome.gwt.utgb.client.track.lib.NavigatorTrack
  -property
-  -sequenceList>
-   [
-    {"species":"human", "revision":["hg18", "hg17"]},
-    {"species":"medaka", "revision":["version1.0", "version0.9"]}
-   ]
+  -sequence list>
+   [ "human:hg19", "human:hg18", "human:hg17", "medaka:version1.0", "medaka:version0.9" ]
 
    
 -track

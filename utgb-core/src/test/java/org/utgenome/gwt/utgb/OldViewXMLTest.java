@@ -28,6 +28,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.utgenome.gwt.utgb.client.view.OldViewXML;
+import org.utgenome.gwt.utgb.client.view.TrackView;
 import org.xerial.lens.Lens;
 import org.xerial.util.FileResource;
 import org.xerial.util.log.Logger;
@@ -48,5 +49,10 @@ public class OldViewXMLTest {
 	public void load() throws Exception {
 		OldViewXML ov = Lens.loadXML(OldViewXML.class, FileResource.open(OldViewXMLTest.class, "bed.xml"));
 		_logger.info(Lens.toSilk(ov));
+
+		TrackView tv = ov.toTrackView();
+		_logger.info(Lens.toSilk(tv));
+
 	}
+
 }

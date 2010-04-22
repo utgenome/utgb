@@ -29,6 +29,12 @@ import java.util.ArrayList;
 
 import org.utgenome.gwt.utgb.client.util.Properties;
 
+/**
+ * view definition of tracks
+ * 
+ * @author leo
+ * 
+ */
 public class TrackView implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -41,20 +47,39 @@ public class TrackView implements Serializable {
 	public TrackView() {
 	}
 
+	/**
+	 * Track Group is a set of tracks that share the same coordinate
+	 * 
+	 * @author leo
+	 * 
+	 */
 	public static class TrackGroup implements Serializable {
 		private static final long serialVersionUID = 1L;
 
+		/**
+		 * ID of this track group
+		 */
 		public int id;
+		/**
+		 * Java class name of this track group. The underscore (_) is necessary to differentiate this parameter name
+		 * from the same name Java keyword, <i>class</i>
+		 */
 		public String class_;
-		public String species;
-		public String revision;
-		public String target;
-		public Window window;
+
+		/**
+		 * 
+		 */
+		public Coordinate coordinate;
+
+		public Properties property = new Properties();
 	}
 
 	public static class Track implements Serializable {
 		private static final long serialVersionUID = 1L;
 
+		/**
+		 * belonging track group
+		 */
 		public TrackGroup trackGroup;
 
 		public String name;
@@ -62,21 +87,51 @@ public class TrackView implements Serializable {
 		public boolean pack;
 
 		/**
-		 * A java class for displaying the track. The underscore (_) is necessary to differenciate this parameter name
-		 * from from Java's keyword, <i>class</i>
+		 * Java class name of this track. The underscore (_) is necessary to differentiate this parameter name from the
+		 * same name Java keyword, <i>class</i>
 		 */
 		public String class_;
 		public Properties property = new Properties();
 
 	}
 
-	public static class Window implements Serializable {
+	/**
+	 * Coordinate system
+	 * 
+	 * @author leo
+	 * 
+	 */
+	public static class Coordinate implements Serializable {
 
 		private static final long serialVersionUID = 1L;
 
-		public long start;
-		public long end;
-		public int width;
+		/**
+		 * reference sequence name
+		 */
+		public String ref;
+		/**
+		 * name of chromosome, contig, scaffold, etc.
+		 */
+		public String chr;
+
+		/**
+		 * 1-based start position (inclusive)
+		 */
+		public int start;
+		/**
+		 * 1-based end position (inclusive)
+		 */
+		public int end;
+
+		/**
+		 * ribbon string showing in/del states
+		 */
+		public String ribbon;
+
+		/**
+		 * pixel width of the track window
+		 */
+		public int pixelWidth;
 	}
 
 }

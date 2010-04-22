@@ -41,17 +41,42 @@ public class OldViewXML {
 	}
 
 	public static class TrackGroup {
+
 		public String className;
-		public List<Prop> groupProperties = new ArrayList<Prop>();
+
+		public GroupProperties groupProperties = new GroupProperties();
 		public List<Prop> property = new ArrayList<Prop>();
 		public List<Track> track = new ArrayList<Track>();
+
+		public String getProperty(String key) {
+			for (Prop p : groupProperties.property) {
+				if (p.key != null && p.key.equals(key)) {
+					return p.value;
+				}
+			}
+			return null;
+		}
+
+	}
+
+	public static class GroupProperties {
+		public List<Prop> property = new ArrayList<Prop>();
+		public TrackWindow trackWindow = new TrackWindow();
+	}
+
+	public static class TrackWindow {
+		public int start;
+		public int end;
+		public int width;
 	}
 
 	public static class Track {
+
+		public String name;
 		public String className;
 		public int height;
 		public boolean pack;
-		public String name;
+
 		public List<Prop> property = new ArrayList<Prop>();
 	}
 
@@ -60,8 +85,38 @@ public class OldViewXML {
 	public TrackView toTrackView() {
 		TrackView v = new TrackView();
 		v.trackGroup.class_ = trackGroup.className;
+		v.trackGroup.id = 1;
+
+		// coordinate
+		TrackView.Coordinate c = new TrackView.Coordinate();
+		c.chr = trackGroup.getProperty("target");
+
+		c.start = trackGroup.groupProperties.trackWindow.start;
+		c.end = trackGroup.groupProperties.trackWindow.end;
+		c.ref = String.format("%s:%s", trackGroup.getProperty("species"), trackGroup.getProperty("revision"));
+
+		c.pixelWidth = trackGroup.groupProperties.trackWindow.width;
+
+		v.trackGroup.coordinate = c;
+
+		//
+		for (Prop p : trackGroup.property) {
+			v.trackGroup.property.put(p.key, p.value);
+		}
+
+		for (Track each : trackGroup.track) {
+			TrackView.Track t = new TrackView.Track();
+			t.name = each.name;
+			t.height = each.height;
+			t.pack = each.pack;
+			t.class_ = each.className;
+			for (Prop p : each.property) {
+				t.property.put(p.key, p.value);
+			}
+
+			v.track.add(t);
+		}
 
 		return v;
 	}
-
 }
