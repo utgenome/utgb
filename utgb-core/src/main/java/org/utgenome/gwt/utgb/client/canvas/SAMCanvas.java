@@ -181,7 +181,6 @@ public class SAMCanvas extends Composite {
 					if(temp == 'I'){
 						readc = read.seq.charAt(readi++);
 						refc = '*';
-						refi--;
 					}
 					else if(temp == 'S'){
 						refc = ' ';
