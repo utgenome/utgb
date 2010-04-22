@@ -45,6 +45,7 @@ public class TrackView implements Serializable {
 		private static final long serialVersionUID = 1L;
 
 		public int id;
+		public String class_;
 		public String species;
 		public String revision;
 		public String target;
