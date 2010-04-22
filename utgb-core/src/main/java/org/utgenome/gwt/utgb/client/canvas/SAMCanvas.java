@@ -137,8 +137,8 @@ public class SAMCanvas extends Composite {
 		
 		if(isDebug) {
 			GWT.log("draw read : " + read.qname, null);
-			GWT.log("ref  : " + read.seq, null);
-			GWT.log("read : " + read.refSeq, null);
+			GWT.log("read  : " + read.seq, null);
+			GWT.log("ref   : " + read.refSeq, null);
 			GWT.log("CIGAR : " + read.cigar, null);
 		}
 
@@ -220,8 +220,9 @@ public class SAMCanvas extends Composite {
 					if(refc != ' '&& refc!= '*'){
 						canvas.fillRect(position * fontWidth + 3, _HEIGHT * (count * _OFFSET + 1), fontWidth, 1);
 						String indent = String.valueOf(read.start + refi - 1);
-						if((read.start + refi - 1) % (int)(Math.ceil(indent.length() / 10.0) * 10) == 0){
-							canvas.fillRect((position + 0.5) * fontWidth + 2, _HEIGHT * (count * _OFFSET + 1) - 3, 1, 5);
+						if((read.start + refi - 1) % (int)(Math.ceil(indent.length() / 5.0) * 5) == 0){
+							canvas.fillRect((position + 0.5) * fontWidth + 2, _HEIGHT * (count *
+									_OFFSET + 1) - 3, 1, 5);
 							for(int j = 0; j < indent.length(); j++)
 								canvas.drawImage(fontPanel[0], ((int) indent.charAt(j)) * fontWidth, 0, fontWidth, fontHeight, (position + j) * fontWidth + 2, _HEIGHT * (count * _OFFSET), fontWidth, fontHeight);
 						}

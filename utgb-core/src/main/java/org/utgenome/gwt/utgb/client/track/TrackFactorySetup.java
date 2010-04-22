@@ -103,6 +103,7 @@ public class TrackFactorySetup {
 				org.utgenome.gwt.utgb.client.track.lib.WIGGraphCanvasTrack.factory());
 
 		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.SAMTrack", org.utgenome.gwt.utgb.client.track.lib.SAMTrack.factory());
+		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.SAMQueryTrack", org.utgenome.gwt.utgb.client.track.lib.SAMQueryTrack.factory());
 
 		TrackFactoryHolder.addTrackGroupFactory("org.utgenome.gwt.utgb.client.track.lib.debug.DrosophilaTrackGroup",
 				org.utgenome.gwt.utgb.client.track.lib.debug.DrosophilaTrackGroup.factory());
