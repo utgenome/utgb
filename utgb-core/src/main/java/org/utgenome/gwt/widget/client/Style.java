@@ -285,6 +285,12 @@ public class Style {
 		set(w, "textAlign", value);
 	}
 
+	public static void trimOverflowedText(Widget w) {
+		set(w, "textOverflow", "ellipsis");
+		set(w, "overflow", "hidden");
+		set(w, "whiteSpace", "nowrap");
+	}
+
 	/**
 	 * Set CSS style
 	 * 
