@@ -24,10 +24,11 @@
 //--------------------------------------
 package org.utgenome.gwt.ribbon.client.ui;
 
-import com.google.gwt.user.client.DOM;
+import org.utgenome.gwt.utgb.client.ui.FixedWidthLabel;
+import org.utgenome.gwt.widget.client.Style;
+
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.widgetideas.graphics.client.Color;
 import com.google.gwt.widgetideas.graphics.client.GWTCanvas;
 
@@ -66,14 +67,15 @@ public class WeaverCanvas extends Composite {
 		mainPanel.add(canvas2, 0, 0);
 		mainPanel.add(canvas1, 0, 0);
 
-		Label l = new Label("Hello World. Nice to meet you. Welcome to UTGB Toolkit");
-		l.setPixelSize(200, 19);
-		//l.setStyleName("label");
-		DOM.setStyleAttribute(l.getElement(), "backgroundImage", "url(utgb-core/transparent?color=3E5A77&opacity=0.7)");
-		DOM.setStyleAttribute(l.getElement(), "textOverflow", "ellipsis");
-		DOM.setStyleAttribute(l.getElement(), "overflow", "hidden");
-		DOM.setStyleAttribute(l.getElement(), "whiteSpace", "nowrap");
-		DOM.setStyleAttribute(l.getElement(), "display", "block");
+		FixedWidthLabel l = new FixedWidthLabel("Hello World. Nice to meet you. Welcome to UTGB Toolkit", 200);
+		Style.semiTransparentBackground(l, "3E5A77", 0.8f);
+		//		l.setPixelSize(200, 19);
+		//		//l.setStyleName("label");
+		//		DOM.setStyleAttribute(l.getElement(), "backgroundImage", "url(utgb-core/transparent?color=3E5A77&opacity=0.7)");
+		//		DOM.setStyleAttribute(l.getElement(), "textOverflow", "ellipsis");
+		//		DOM.setStyleAttribute(l.getElement(), "overflow", "hidden");
+		//		DOM.setStyleAttribute(l.getElement(), "whiteSpace", "nowrap");
+		//		DOM.setStyleAttribute(l.getElement(), "display", "block");
 		//DOM.setStyleAttribute(l.getElement(), "color", "white");
 
 		mainPanel.add(l, 10, 10);

@@ -49,9 +49,11 @@ public class RoundCircle extends RequestHandlerBase {
 
 	private static Logger _logger = Logger.getLogger(RoundCircle.class);
 
-	private String color = "666666";
-	private int size = 4; // radius of the circle
+	public String color = "666666";
+	public int size = 4; // radius of the circle
+	public float opacity = 1f;
 
+	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		if (size <= 0)
 			size = 1;
@@ -63,26 +65,9 @@ public class RoundCircle extends RequestHandlerBase {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		Ellipse2D circle = new Ellipse2D.Double(0, 0, canvasSize, canvasSize);
 
-		g.setColor(GraphicUtil.parseColor(color));
+		g.setColor(GraphicUtil.parseColor(color, (int) (255 * opacity)));
 		g.fill(circle);
 
 		GraphicUtil.writeImage(circleImage, "png", response);
 	}
-
-	public String getColor() {
-		return color;
-	}
-
-	public void setColor(String color) {
-		this.color = color;
-	}
-
-	public int getSize() {
-		return size;
-	}
-
-	public void setSize(int size) {
-		this.size = size;
-	}
-
 }

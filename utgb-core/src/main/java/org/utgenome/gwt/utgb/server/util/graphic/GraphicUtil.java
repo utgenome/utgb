@@ -55,7 +55,7 @@ public class GraphicUtil {
 	 */
 	public static BufferedImage getTransparentBufferedImage(int width, int height) {
 		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g = (Graphics2D) image.createGraphics();
+		Graphics2D g = image.createGraphics();
 
 		g.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f));
 		g.fill(new Rectangle2D.Double(0, 0, width, height));

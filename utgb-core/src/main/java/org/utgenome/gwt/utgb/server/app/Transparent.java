@@ -6,7 +6,6 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.server.app;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -17,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.utgenome.gwt.utgb.server.WebTrackBase;
+import org.utgenome.gwt.utgb.server.util.graphic.GraphicUtil;
 import org.xerial.util.log.Logger;
 
 /**
@@ -40,11 +40,7 @@ public class Transparent extends WebTrackBase {
 		BufferedImage b = new BufferedImage(w, w, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = b.createGraphics();
 
-		if (color == null || color.length() != 6)
-			color = "000000";
-
-		int code = Integer.parseInt(color.substring(1), 16);
-		g.setColor(new Color((code >> 32) & 0xFF, (code >> 16) & 0xFF, code & 0xFF, (int) (255 * opacity)));
+		g.setColor(GraphicUtil.parseColor(color, (int) (255 * opacity)));
 		g.fillRect(0, 0, w, w);
 		response.setContentType("image/png");
 		ImageIO.write(b, "png", response.getOutputStream());

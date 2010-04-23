@@ -24,72 +24,32 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.ui;
 
+import org.utgenome.gwt.widget.client.Style;
+
 import com.google.gwt.user.client.ui.Label;
 
 /**
  * A text label that fits a specified with
+ * 
  * @author leo
- *
+ * 
  */
-public class FixedWidthLabel extends Label
-{
+public class FixedWidthLabel extends Label {
 	private int width;
-	private String originalText = "";
 
 	public FixedWidthLabel(int width) {
 		this("", width);
 	}
-	
-	public FixedWidthLabel(String text, int width)
-	{
+
+	public FixedWidthLabel(String text, int width) {
 		super(text);
-		this.originalText = text;
+		this.setTitle(text);
+
 		this.width = width;
-		
-		CSS.nowrap(this);
-	}
-	
-	
 
-	protected void onLoad() {
-		adjustTextSize();
+		if (width > 0)
+			setWidth(width + "px");
+		Style.trimOverflowedText(this);
 	}
-	
 
-	protected void adjustTextSize()
-	{
-		int currentWidth = getOffsetWidth();
-		if(currentWidth > width)
-		{
-			// retrieves the currently displayed text
-			String currentText = super.getText();
-			int length = currentText.length();
-
-			length /= 2;
-			if(length < 0)
-				length = 0;
-			String shrinkedText = currentText.substring(0, length) + "...";
-			if(!shrinkedText.equals(currentText))
-			{
-				// change the label text
-				super.setText(shrinkedText);
-				adjustTextSize();
-			}
-		}
-	}
-	
-	public void setText(String text) {
-		originalText = text;
-		super.setText(text);
-		adjustTextSize();
-	}
-	
-	public String getText() {
-		return originalText;
-	}
-	
 }
-
-
-
-

@@ -295,7 +295,7 @@ public class Style {
 	 * Make the background of the widget semi-transparent color
 	 * 
 	 * @param colorCode
-	 *            Hex RGB coror code
+	 *            Hex RGB color code
 	 */
 	public static void semiTransparentBackground(Widget w, String colorCode, float alpha) {
 		backgroundImage(w, "utgb-core/transparent?color=" + colorCode + "&opacity=" + alpha);
