@@ -16,7 +16,7 @@
 
   <properties>
     <gwt.module>utgb</gwt.module>
-    <gwt.version>2.0.0</gwt.version>
+    <gwt.version>2.0.3</gwt.version>
     <gwt.jvmargs />
   </properties>
 

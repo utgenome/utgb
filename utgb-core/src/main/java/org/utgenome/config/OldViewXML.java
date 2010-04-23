@@ -22,10 +22,12 @@
 // $URL$ 
 // $Author$
 //--------------------------------------
-package org.utgenome.gwt.utgb.client.view;
+package org.utgenome.config;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.utgenome.gwt.utgb.client.view.TrackView;
 
 /**
  * For reading view.xml files used in UTGB 1.3.x.

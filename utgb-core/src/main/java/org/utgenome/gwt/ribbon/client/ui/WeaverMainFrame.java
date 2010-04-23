@@ -16,43 +16,20 @@
 //--------------------------------------
 // utgb-core Project
 //
-// OldViewXMLTest.java
-// Since: 2010/04/22
+// WeaverFrame.java
+// Since: Apr 23, 2010
 //
 // $URL$ 
 // $Author$
 //--------------------------------------
-package org.utgenome.gwt.utgb;
+package org.utgenome.gwt.ribbon.client.ui;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.utgenome.gwt.utgb.client.view.OldViewXML;
-import org.utgenome.gwt.utgb.client.view.TrackView;
-import org.xerial.lens.Lens;
-import org.xerial.util.FileResource;
-import org.xerial.util.log.Logger;
-
-public class OldViewXMLTest {
-
-	private static Logger _logger = Logger.getLogger(OldViewXMLTest.class);
-
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	@After
-	public void tearDown() throws Exception {
-	}
-
-	@Test
-	public void load() throws Exception {
-		OldViewXML ov = Lens.loadXML(OldViewXML.class, FileResource.open(OldViewXMLTest.class, "bed.xml"));
-		_logger.info(Lens.toSilk(ov));
-
-		TrackView tv = ov.toTrackView();
-		_logger.info(Lens.toSilk(tv));
-
-	}
+/**
+ * Main frame of the genome weaver
+ * 
+ * @author leo
+ * 
+ */
+public class WeaverMainFrame {
 
 }
