@@ -25,6 +25,7 @@
 package org.utgenome.gwt.ribbon.client.ui;
 
 import org.utgenome.gwt.utgb.client.ui.FixedWidthLabel;
+import org.utgenome.gwt.utgb.client.ui.RoundCornerFrame;
 import org.utgenome.gwt.widget.client.Style;
 
 import com.google.gwt.user.client.ui.AbsolutePanel;
@@ -67,8 +68,13 @@ public class WeaverCanvas extends Composite {
 		mainPanel.add(canvas2, 0, 0);
 		mainPanel.add(canvas1, 0, 0);
 
+		RoundCornerFrame f = new RoundCornerFrame("3E5A77", 0.8f, 4);
 		FixedWidthLabel l = new FixedWidthLabel("Hello World. Nice to meet you. Welcome to UTGB Toolkit", 200);
-		Style.semiTransparentBackground(l, "3E5A77", 0.8f);
+		Style.fontSize(l, 12);
+		Style.fontColor(l, "white");
+		//Style.semiTransparentBackground(l, "3E5A77", 0.8f);
+		f.setWidget(l);
+
 		//		l.setPixelSize(200, 19);
 		//		//l.setStyleName("label");
 		//		DOM.setStyleAttribute(l.getElement(), "backgroundImage", "url(utgb-core/transparent?color=3E5A77&opacity=0.7)");
@@ -78,7 +84,7 @@ public class WeaverCanvas extends Composite {
 		//		DOM.setStyleAttribute(l.getElement(), "display", "block");
 		//DOM.setStyleAttribute(l.getElement(), "color", "white");
 
-		mainPanel.add(l, 10, 10);
+		mainPanel.add(f, 10, 10);
 
 		initWidget(mainPanel);
 	}

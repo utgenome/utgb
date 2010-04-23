@@ -39,7 +39,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class TrackFrame extends Composite implements Frame {
 
 	private final HorizontalPanel layoutFrame = new HorizontalPanel();
-	private final FrameBorder frameBorder = new FrameBorder("999999", 2, FrameBorder.NORTH | FrameBorder.SOUTH | FrameBorder.WEST);
+	private final RoundCornerFrame frameBorder = new RoundCornerFrame("999999", 2, RoundCornerFrame.NORTH | RoundCornerFrame.SOUTH | RoundCornerFrame.WEST);
 	private final AbsolutePanel titleFrame = new AbsolutePanel();
 	private final HorizontalPanel iconFrame = new HorizontalPanel(); 
 	

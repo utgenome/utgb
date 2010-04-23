@@ -98,7 +98,7 @@ public class WindowBox extends PopupPanel implements SourcesWindowEvents {
  */
 class WindowImpl extends Composite {
 	private final WindowBox _window;
-	private final FrameBorder _windowFrame;
+	private final RoundCornerFrame _windowFrame;
 	private final WindowNavigationBar _navigationBar;
 	private int _currentWindowWidth = -1;
 	private int _currentWindowHeight = -1;
@@ -108,7 +108,7 @@ class WindowImpl extends Composite {
 	public WindowImpl(WindowBox window) {
 		this._window = window;
 		_navigationBar = new WindowNavigationBar(_window);
-		this._windowFrame = new FrameBorder("CCCCFF");
+		this._windowFrame = new RoundCornerFrame("CCCCFF");
 		this._windowFrame.setPixelSize(200, 300);
 		// _windowFrame.add(_navigationBar, 0, 0);
 		// _windowFrame.add(_window.getContent(), 0, 20);
