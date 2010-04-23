@@ -24,14 +24,29 @@
 //--------------------------------------
 package org.utgenome.gwt.ribbon.client;
 
+import org.utgenome.gwt.ribbon.client.ui.WeaverCanvas;
+
+import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.RootPanel;
 
 public class RibbonBrowser implements EntryPoint {
 
 	public void onModuleLoad() {
-		// TODO Auto-generated method stub
-		Window.alert("hello");
-	}
 
+		final WeaverCanvas wc = new WeaverCanvas();
+
+		RootPanel.get("utgb-main").add(wc);
+
+		Animation a = new Animation() {
+
+			@Override
+			protected void onUpdate(double arg0) {
+				wc.move();
+			}
+		};
+
+		a.run(1000);
+
+	}
 }
