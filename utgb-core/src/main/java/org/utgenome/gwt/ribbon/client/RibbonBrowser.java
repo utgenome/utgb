@@ -46,7 +46,7 @@ public class RibbonBrowser implements EntryPoint {
 			}
 		};
 
-		a.run(1000);
+		a.run(10000);
 
 	}
 }

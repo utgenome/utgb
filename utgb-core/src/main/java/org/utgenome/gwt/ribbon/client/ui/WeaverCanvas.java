@@ -51,25 +51,19 @@ public class WeaverCanvas extends Composite {
 		canvas1 = new GWTCanvas(width, height);
 		canvas2 = new GWTCanvas(width, height);
 
-		canvas1.setFillStyle(new Color(0, 0, 0, 0f));
-		canvas1.fillRect(0, 0, width, height);
-		canvas2.setFillStyle(new Color(0, 0, 0, 0f));
-		canvas2.fillRect(0, 0, width, height);
-
 		CanvasGradient gr = canvas1.createRadialGradient(45, 45, 10, 52, 50, 30);
-		gr.addColorStop(0, new Color(255, 0, 0));
-		gr.addColorStop(1, new Color(0, 0, 255));
+		gr.addColorStop(0, new Color(0xA7, 0XD3, 0x0C));
+		gr.addColorStop(0.9f, new Color(0x01, 0x9F, 0x62, 0f));
+		gr.addColorStop(1, new Color("rgba(1,159,98,0)"));
 		canvas1.setFillStyle(gr);
 		//canvas1.setFillStyle(new Color(200, 150, 150));
-		canvas1.rect(10, 50, 100, 200);
-		canvas1.fill();
+		canvas1.fillRect(0, 0, 150, 150);
 
-		canvas2.setFillStyle(new Color(100, 100, 200, 0.8f));
-		canvas2.rect(30, 20, 200, 150);
-		canvas2.fill();
+		canvas2.setFillStyle(new Color(100, 200, 250, 0.8f));
+		canvas2.fillRect(30, 20, 200, 150);
 
-		mainPanel.add(canvas1, 0, 0);
 		mainPanel.add(canvas2, 0, 0);
+		mainPanel.add(canvas1, 0, 0);
 
 		initWidget(mainPanel);
 	}
@@ -78,9 +72,14 @@ public class WeaverCanvas extends Composite {
 
 	public void move() {
 		mainPanel.clear();
-		pos += 1;
-		mainPanel.add(canvas1, 0, 0);
-		mainPanel.add(canvas2, pos, pos);
+		pos += 2;
+		mainPanel.add(canvas2, 0, 0);
+		mainPanel.add(canvas1, pos, pos);
+
+	}
+
+	public void fade() {
+
 	}
 
 }
