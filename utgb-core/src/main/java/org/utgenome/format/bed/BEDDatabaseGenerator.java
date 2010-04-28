@@ -85,15 +85,14 @@ public class BEDDatabaseGenerator {
 			stat.executeUpdate("create table gene (coordinate text, start integer, end integer, " + "name text, score integer, strand text, cds text, "
 					+ "exon text, color text)");
 
-			stat.executeUpdate("create index gene_index on gene (coordinate, start)");
-
 			p1 = conn.prepareStatement("insert into track values(?)");
-
 			p2 = conn.prepareStatement("insert into gene values(?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 		}
 
 		public void dispose() throws SQLException {
+
+			stat.executeUpdate("create index gene_index on gene (coordinate, start)");
 
 			conn.commit();
 

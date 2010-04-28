@@ -106,7 +106,7 @@ public class BEDViewer extends WebTrackBase implements Serializable {
 				SQLiteAccess dbAccess = new SQLiteAccess(dbInput.getAbsolutePath());
 
 				String sql = createSQLStatement("select start, end, name, score, strand, cds, exon, color from gene "
-						+ "where coordinate = '$1' and start <= $2 and end >= $3", location.target, sqlEnd, sqlStart);
+						+ "where coordinate = '$1' and ((start between $2 and $3) or (start <= $2 and end >= $3))", location.target, sqlEnd, sqlStart);
 
 				if (_logger.isDebugEnabled())
 					_logger.debug(sql);
