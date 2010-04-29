@@ -65,7 +65,8 @@ public class GWTGenomeCanvas extends Composite {
 	private long startIndexOnGenome = 1;
 	private long endIndexOnGenome = 1000;
 
-	private int geneHeight = 9;
+	private final int DEFAULT_GENE_HEIGHT = 9;
+	private int geneHeight = DEFAULT_GENE_HEIGHT;
 	private int geneMargin = 2;
 
 	private boolean reverse = false;
@@ -258,6 +259,8 @@ public class GWTGenomeCanvas extends Composite {
 		}
 		labels.clear();
 
+		showLabels = true;
+
 		if (popup != null)
 			popup.removeFromParent();
 	}
@@ -299,51 +302,66 @@ public class GWTGenomeCanvas extends Composite {
 	}
 
 	private int estimiateLabelWidth(Locus l) {
-		int labelWidth = l.getName() != null ? (int) (l.getName().length() * geneHeight * 0.7) : 0;
-		if (labelWidth > 100)
-			labelWidth = 100;
+		int labelWidth = l.getName() != null ? (int) (l.getName().length() * geneHeight * 0.9) : 0;
+		if (labelWidth > 150)
+			labelWidth = 150;
 		return labelWidth;
 	}
 
 	<T extends Locus> int createLayout(List<T> locusList) {
+
 		int maxYOffset = 0;
-		locusLayout.clear();
+		boolean showLabelsFlag = locusList.size() < 500;
+		boolean toContinue = false;
 
-		showLabels = locusList.size() < 500;
+		do {
+			toContinue = false;
+			maxYOffset = 0;
+			locusLayout.clear();
 
-		for (Locus l : locusList) {
+			for (Locus l : locusList) {
 
-			int x1 = pixelPositionOnWindow(l.getStart());
-			int x2 = pixelPositionOnWindow(l.getEnd());
+				int x1 = pixelPositionOnWindow(l.getStart());
+				int x2 = pixelPositionOnWindow(l.getEnd());
 
-			if (showLabels) {
-				int labelWidth = estimiateLabelWidth(l);
-				if (x1 - labelWidth > 0)
-					x1 -= labelWidth;
-				else
-					x2 += labelWidth;
+				if (showLabelsFlag) {
+					int labelWidth = estimiateLabelWidth(l);
+					if (x1 - labelWidth > 0)
+						x1 -= labelWidth;
+					else
+						x2 += labelWidth;
+				}
+
+				List<LocusLayout> activeLocus = locusLayout.rangeQuery(x1, Integer.MAX_VALUE, x2);
+
+				HashSet<Integer> filledY = new HashSet<Integer>();
+				// overlap test
+				for (LocusLayout al : activeLocus) {
+					filledY.add(al.yOffset);
+				}
+
+				int blankY = 0;
+				for (; filledY.contains(blankY); blankY++) {
+				}
+
+				locusLayout.insert(new LocusLayout(l, blankY), x2, x1);
+
+				if (blankY > maxYOffset) {
+					maxYOffset = blankY;
+					if (showLabelsFlag && maxYOffset > 30) {
+						showLabelsFlag = false;
+						toContinue = true;
+						break;
+					}
+				}
 			}
-
-			List<LocusLayout> activeLocus = locusLayout.rangeQuery(x1, Integer.MAX_VALUE, x2);
-
-			HashSet<Integer> filledY = new HashSet<Integer>();
-			// overlap test
-			for (LocusLayout al : activeLocus) {
-				filledY.add(al.yOffset);
-			}
-
-			int blankY = 0;
-			for (; filledY.contains(blankY); blankY++) {
-			}
-
-			locusLayout.insert(new LocusLayout(l, blankY), x2, x1);
-
-			if (blankY > maxYOffset)
-				maxYOffset = blankY;
 		}
+		while (toContinue);
 
 		if (maxYOffset <= 0)
 			maxYOffset = 1;
+
+		showLabels = showLabelsFlag;
 		return maxYOffset;
 	}
 
@@ -370,6 +388,12 @@ public class GWTGenomeCanvas extends Composite {
 	public void drawGene(List<Gene> geneList) {
 
 		int maxOffset = createLayout(geneList);
+		if (maxOffset > 30) {
+			geneHeight = 2;
+		}
+		else {
+			geneHeight = DEFAULT_GENE_HEIGHT;
+		}
 
 		int h = geneHeight + geneMargin;
 		int height = (maxOffset + 1) * h;
