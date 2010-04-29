@@ -59,6 +59,7 @@ public class GeneCanvasTrack extends TrackBase {
 
 	private final static String KEY_DATA_SOURCE_URI = "data.uri";
 	private String dataSourceURI = "http://utgenome.org/api/refseq";
+	private int leftMargin = 0;
 
 	private ArrayList<Gene> genes = new ArrayList<Gene>();
 
@@ -77,7 +78,8 @@ public class GeneCanvasTrack extends TrackBase {
 		layoutTable.setBorderWidth(0);
 		layoutTable.setCellPadding(0);
 		layoutTable.setCellSpacing(0);
-		layoutTable.getCellFormatter().setWidth(0, 0, "100px");
+		if (leftMargin > 0)
+			layoutTable.getCellFormatter().setWidth(0, 0, leftMargin + "px");
 		layoutTable.setWidget(0, 1, geneCanvas);
 
 		//layoutTable.setHeight(300 + "px");
@@ -105,7 +107,7 @@ public class GeneCanvasTrack extends TrackBase {
 
 		int s = w.getStartOnGenome();
 		int e = w.getEndOnGenome();
-		int width = w.getWindowWidth() - 100;
+		int width = w.getWindowWidth() - leftMargin;
 
 		geneCanvas.clear();
 		geneCanvas.setWindow(new TrackWindowImpl(width, s, e));
@@ -185,11 +187,13 @@ public class GeneCanvasTrack extends TrackBase {
 	@Override
 	public void saveProperties(Properties saveData) {
 		saveData.add(KEY_DATA_SOURCE_URI, dataSourceURI);
+		saveData.add("leftMargin", leftMargin);
 	}
 
 	@Override
 	public void restoreProperties(Properties properties) {
 		dataSourceURI = properties.get(KEY_DATA_SOURCE_URI, "http://utgenome.org/api/refseq");
+		leftMargin = properties.getInt("leftMargin", leftMargin);
 	}
 
 }

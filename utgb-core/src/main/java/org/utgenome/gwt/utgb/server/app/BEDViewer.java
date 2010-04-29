@@ -112,7 +112,7 @@ public class BEDViewer extends WebTrackBase implements Serializable {
 				dbAccess.query(sql, new ResultSetHandler() {
 					@Override
 					public Object handle(ResultSet rs) throws SQLException {
-						geneList.add(BEDGene.createFromResultSet(location.target, rs));
+						geneList.add(new Gene(BEDGene.createFromResultSet(location.target, rs)));
 						return null;
 					}
 				});
