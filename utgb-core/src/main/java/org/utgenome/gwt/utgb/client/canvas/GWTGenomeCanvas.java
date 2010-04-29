@@ -24,6 +24,7 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.canvas;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -34,6 +35,7 @@ import org.utgenome.gwt.utgb.client.bio.Locus;
 import org.utgenome.gwt.utgb.client.bio.WigGraphData;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.ui.CSS;
+import org.utgenome.gwt.utgb.client.ui.FixedWidthLabel;
 import org.utgenome.gwt.utgb.client.ui.FormLabel;
 import org.utgenome.gwt.widget.client.Style;
 
@@ -46,6 +48,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.widgetideas.graphics.client.Color;
 import com.google.gwt.widgetideas.graphics.client.GWTCanvas;
 
@@ -74,6 +77,8 @@ public class GWTGenomeCanvas extends Composite {
 	private GeneNamePopup popup = new GeneNamePopup(null);
 	private LocusClickHandler handler = null;
 	private PrioritySearchTree<LocusLayout> locusLayout = new PrioritySearchTree<LocusLayout>();
+	private boolean showLabels = true;
+	private List<Widget> labels = new ArrayList<Widget>();
 
 	public GWTGenomeCanvas() {
 		initWidget();
@@ -168,9 +173,7 @@ public class GWTGenomeCanvas extends Composite {
 		int x = getXOnCanvas(event);
 		int y = getYOnCanvas(event);
 
-		int xOnGenome = calcGenomePosition(x);
-
-		for (LocusLayout gl : locusLayout.rangeQuery(xOnGenome, Integer.MAX_VALUE, xOnGenome)) {
+		for (LocusLayout gl : locusLayout.rangeQuery(x, Integer.MAX_VALUE, x)) {
 			Locus g = gl.getLocus();
 			int y1 = gl.getYOffset();
 			int y2 = y1 + geneHeight;
@@ -250,6 +253,11 @@ public class GWTGenomeCanvas extends Composite {
 		canvas.clear();
 		locusLayout.clear();
 
+		for (Widget w : labels) {
+			w.removeFromParent();
+		}
+		labels.clear();
+
 		if (popup != null)
 			popup.removeFromParent();
 	}
@@ -294,10 +302,20 @@ public class GWTGenomeCanvas extends Composite {
 		int maxYOffset = 0;
 		locusLayout.clear();
 
+		showLabels = locusList.size() < 500;
+
 		for (Locus l : locusList) {
 
-			int x1 = l.getStart();
-			int x2 = l.getEnd();
+			int x1 = pixelPositionOnWindow(l.getStart());
+			int x2 = pixelPositionOnWindow(l.getEnd());
+
+			if (showLabels) {
+				int labelWidth = l.getName() != null ? l.getName().length() * geneHeight : 0;
+				if (x1 - labelWidth > 0)
+					x1 -= labelWidth;
+				else
+					x2 += labelWidth;
+			}
 
 			List<LocusLayout> activeLocus = locusLayout.rangeQuery(x1, Integer.MAX_VALUE, x2);
 
@@ -368,6 +386,31 @@ public class GWTGenomeCanvas extends Composite {
 					CDS cds = g.getCDS().size() > 0 ? g.getCDS().get(0) : null;
 					draw(g, g.getExon(), cds, gl.getYOffset());
 				}
+
+				if (showLabels) {
+					String n = g.getName();
+					if (n != null) {
+						int width = n.length() * geneHeight;
+						if (width > 100)
+							width = 100;
+						FixedWidthLabel label = new FixedWidthLabel(n, width);
+						Style.fontSize(label, geneHeight);
+						Style.fontColor(label, getExonColorText(g));
+
+						Style.verticalAlign(label, "middle");
+
+						if (gx - width < 0) {
+							Style.textAlign(label, "left");
+							panel.add(label, gx2 + 1, gl.getYOffset() - 1);
+						}
+						else {
+							Style.textAlign(label, "right");
+							panel.add(label, gx - width - 1, gl.getYOffset() - 1);
+						}
+						labels.add(label);
+					}
+				}
+
 			}
 
 		});

@@ -26,6 +26,7 @@ package org.utgenome.gwt.utgb.client.track;
 
 import org.utgenome.gwt.utgb.client.ui.Icon;
 import org.utgenome.gwt.utgb.client.ui.IconImage;
+import org.utgenome.gwt.widget.client.Style;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -62,7 +63,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class TrackFrame extends SimplePanel {
 	public static final int SCROLLBAR_WIDTH = 25;
-	public static final int INFOPANEL_WIDTH = 180;
+	public static final int INFOPANEL_WIDTH = 150;
 	private static IconImage _dragBarIcon = Design.getIconImage(Design.TRACK_BORDER_V);
 	private static IconImage _resizeBarIcon = Design.getIconImage(Design.TRACK_BORDER_H);
 
@@ -416,6 +417,8 @@ public class TrackFrame extends SimplePanel {
 			_trackLabel.setText(info.getTrackName());
 			_trackLabel.setTitle(info.getDescription());
 			_trackLabel.setStyleName("track-label");
+			_trackLabel.setWidth("100px");
+			Style.trimOverflowedText(_trackLabel);
 			String linkURL = info.getLinkURL();
 			if (linkURL.length() > 0) {
 				_trackLabel.setHTML("<a href=\"" + linkURL + "\" target=\"_blank\">" + info.getTrackName() + "</a>");
