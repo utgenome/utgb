@@ -298,6 +298,13 @@ public class GWTGenomeCanvas extends Composite {
 
 	}
 
+	private int estimiateLabelWidth(Locus l) {
+		int labelWidth = l.getName() != null ? (int) (l.getName().length() * geneHeight * 0.7) : 0;
+		if (labelWidth > 100)
+			labelWidth = 100;
+		return labelWidth;
+	}
+
 	<T extends Locus> int createLayout(List<T> locusList) {
 		int maxYOffset = 0;
 		locusLayout.clear();
@@ -310,7 +317,7 @@ public class GWTGenomeCanvas extends Composite {
 			int x2 = pixelPositionOnWindow(l.getEnd());
 
 			if (showLabels) {
-				int labelWidth = l.getName() != null ? l.getName().length() * geneHeight : 0;
+				int labelWidth = estimiateLabelWidth(l);
 				if (x1 - labelWidth > 0)
 					x1 -= labelWidth;
 				else
@@ -390,9 +397,8 @@ public class GWTGenomeCanvas extends Composite {
 				if (showLabels) {
 					String n = g.getName();
 					if (n != null) {
-						int width = n.length() * geneHeight;
-						if (width > 100)
-							width = 100;
+						int width = estimiateLabelWidth(g);
+
 						FixedWidthLabel label = new FixedWidthLabel(n, width);
 						Style.fontSize(label, geneHeight);
 						Style.fontColor(label, getExonColorText(g));
