@@ -62,7 +62,7 @@ public class GWTGenomeCanvas extends Composite {
 	private long startIndexOnGenome = 1;
 	private long endIndexOnGenome = 1000;
 
-	private int geneHeight = 6;
+	private int geneHeight = 7;
 	private int geneMargin = 1;
 
 	private boolean reverse = false;
@@ -374,24 +374,21 @@ public class GWTGenomeCanvas extends Composite {
 
 	}
 
-	public Color hexValue2Color(String hex, float offset) {
-		int r_value = Integer.parseInt(hex.substring(1, 3), 16);
-		int g_value = Integer.parseInt(hex.substring(3, 5), 16);
-		int b_value = Integer.parseInt(hex.substring(5, 7), 16);
-		return new Color(colorOffset(r_value, offset), colorOffset(g_value, offset), colorOffset(b_value, offset));
+	public Color getGeneColor(Locus l) {
+		return getGeneColor(l, 1f);
 	}
 
-	public int colorOffset(int color, float offset) {
-		return (int) (color + ((255 - color) * offset));
+	public Color getGeneColor(Locus l, float alpha) {
+		String hex = getExonColorText(l);
+		int r = Integer.parseInt(hex.substring(1, 3), 16);
+		int g = Integer.parseInt(hex.substring(3, 5), 16);
+		int b = Integer.parseInt(hex.substring(5, 7), 16);
+		return new Color(r, g, b, alpha);
 	}
 
-	public Color getGeneColor(Locus g) {
-		return hexValue2Color(getExonColorText(g), 0.7f);
-	}
-
-	public String getExonColorText(Locus g) {
+	private String getExonColorText(Locus g) {
 		if (g.getColor() == null) {
-			if (g.getStrand().equals("+")) {
+			if (g.isSense()) {
 				return "#d80067";
 			}
 			else {
@@ -404,40 +401,56 @@ public class GWTGenomeCanvas extends Composite {
 	}
 
 	public void draw(Gene gene, List<Exon> exonList, CDS cds, int yPosition) {
-		// assumuption: exonList are sorted
+		// assume that exonList are sorted
 
-		Color c = getGeneColor(gene);
-		drawGeneRect(pixelPositionOnWindow(gene.getStart()), pixelPositionOnWindow(gene.getEnd()), yPosition, c);
-
-		//GWT.log("exon: ", null);
-		for (Exon e : exonList) {
-			draw(gene, e, cds, yPosition);
+		if (exonList.isEmpty()) {
+			Color c = getGeneColor(gene);
+			drawGeneRect(pixelPositionOnWindow(gene.getStart()), pixelPositionOnWindow(gene.getEnd()), yPosition, c);
 		}
 
-		// draw arrow between exons
+		for (Exon e : exonList) {
+			drawExon(gene, e, cds, yPosition);
+		}
+
+		canvas.saveContext();
+		canvas.setFillStyle(getGeneColor(gene, 0.7f));
+		canvas.setStrokeStyle(getGeneColor(gene, 0.7f));
+		canvas.setLineWidth(0.5f);
+
+		// draw the arrow between exons
+		boolean isSense = gene.isSense() ? !reverse : reverse;
+		double arrowHeight = geneHeight / 2.0 + 0.5;
+
 		for (int i = 0; i < exonList.size() - 1; i++) {
 			Exon prev = exonList.get(i);
 			Exon next = exonList.get(i + 1);
 
 			int x1 = pixelPositionOnWindow(prev.getEnd());
 			int x2 = pixelPositionOnWindow(next.getStart());
-			float yAxis = yPosition + (geneHeight / 2);
-			float xMiddle = (x1 + x2) / 2;
-			//GWT.log("exon  :(" + prev.getEnd() + "-" + next.getStart() + ")", null);
-			//GWT.log("canvas:(" + x1 + ", " + xMiddle + ", " + x2 + ")", null);
+			float yAxis = yPosition + (geneHeight / 2) + 0.5f;
 
-			int range = x2 - x1;
-
-			canvas.setLineWidth(0.5f);
-			canvas.setStrokeStyle(getExonColor(gene));
+			canvas.saveContext();
 			canvas.beginPath();
-
-			canvas.moveTo(drawPosition(x1 + 0.5f), yAxis + 0.5f);
-			if (range > 10)
-				canvas.lineTo(drawPosition(xMiddle), yPosition);
-			canvas.lineTo(drawPosition(x2 - 0.5f), yAxis + 0.5f);
+			canvas.moveTo(drawPosition(x1 + 0.5f), yAxis);
+			canvas.lineTo(drawPosition(x2 - 0.5f), yAxis);
 			canvas.stroke();
+			canvas.restoreContext();
+
+			for (int x = x1; x + 4 <= x2; x += 5) {
+				canvas.saveContext();
+				canvas.translate(drawPosition(x + 2.0f), (double) yPosition + arrowHeight);
+				if (!isSense)
+					canvas.rotate(Math.PI);
+				canvas.beginPath();
+				canvas.moveTo(-2.0f, -arrowHeight + 0.5f);
+				canvas.lineTo(1.5f, 0);
+				canvas.lineTo(-2.0f, arrowHeight - 0.5f);
+				canvas.stroke();
+				canvas.restoreContext();
+			}
+
 		}
+		canvas.restoreContext();
 
 	}
 
@@ -449,69 +462,34 @@ public class GWTGenomeCanvas extends Composite {
 	}
 
 	public Color getExonColor(Gene g) {
-		return hexValue2Color(getExonColorText(g), 0.3f);
-		//
-		//		if (g.getStrand().equals("+")) {
-		//			//return new Color("#3686AA");
-		//			return new Color("#d80067");
-		//		}
-		//		else {
-		//			//return new Color("#AA8636");
-		//			return new Color("#0067d8");
-		//		}
+		return getGeneColor(g, 0.7f);
 	}
 
 	public Color getCDSColor(Locus g) {
-		return hexValue2Color(getExonColorText(g), 0.5f);
-		//
-		//		if (g.getStrand().equals("+")) {
-		//			//return new Color("#F7B357");
-		//			return new Color("#ED9DB9");
-		//		}
-		//		else {
-		//			//return new Color("#57B3F7");
-		//			return new Color("#9DB9ED");
-		//		}
-	}
-
-	public Color getIntronColor(Gene g) {
-		return hexValue2Color(getExonColorText(g), 0.5f);
-		//
-		//		if (g.getStrand().equals("+")) {
-		//			return new Color("#ED9DB9");
-		//		}
-		//		else {
-		//			return new Color("#9DB9ED");
-		//		}
+		return getGeneColor(g);
 	}
 
 	public void draw(Locus gene, int yPosition) {
 		int gx = pixelPositionOnWindow(gene.getStart());
 		int gx2 = pixelPositionOnWindow(gene.getEnd());
 
-		//canvas.setGlobalAlpha(0.5f);
 		drawGeneRect(gx, gx2, yPosition, getCDSColor(gene));
-		//canvas.setGlobalAlpha(1f);
 	}
 
 	public void draw(Gene gene, int yPosition) {
 		int gx = pixelPositionOnWindow(gene.getStart());
 		int gx2 = pixelPositionOnWindow(gene.getEnd());
 
-		//canvas.setGlobalAlpha(0.5f);
 		drawGeneRect(gx, gx2, yPosition, getGeneColor(gene));
-		//canvas.setGlobalAlpha(1f);
 	}
 
-	public void draw(Gene gene, Exon exon, CDS cds, int yPosition) {
+	public void drawExon(Gene gene, Exon exon, CDS cds, int yPosition) {
 		int ex = pixelPositionOnWindow(exon.getStart());
 		int ex2 = pixelPositionOnWindow(exon.getEnd());
 
 		drawGeneRect(ex, ex2, yPosition, getExonColor(gene));
 
-		int exonStart = ex;
-		int exonEnd = ex2;
-
+		// draw CDS
 		if (cds != null) {
 			int cx = pixelPositionOnWindow(cds.getStart());
 			int cx2 = pixelPositionOnWindow(cds.getEnd());
@@ -530,13 +508,17 @@ public class GWTGenomeCanvas extends Composite {
 
 	public void drawGeneRect(int x1, int x2, int y, Color c) {
 
-		long boxWidth = x2 - x1;
+		float boxWidth = x2 - x1 - 0.5f;
 		if (boxWidth <= 0)
-			boxWidth = 1;
+			boxWidth = 1f;
 
-		canvas.setFillStyle(c);
+		canvas.saveContext();
 		double drawX = drawPosition(reverse ? x2 : x1);
+		canvas.setFillStyle(Color.WHITE);
 		canvas.fillRect(drawX, y, boxWidth, geneHeight);
+		canvas.setFillStyle(c);
+		canvas.fillRect(drawX, y, boxWidth, geneHeight);
+		canvas.restoreContext();
 	}
 
 	private int indentHeight = 0;

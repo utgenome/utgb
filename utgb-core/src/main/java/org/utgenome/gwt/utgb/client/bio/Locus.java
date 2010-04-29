@@ -39,23 +39,27 @@ public class Locus implements Serializable, Comparable<Locus> {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	/**
-	 * 
-	 */
+
 	String name;
-	String chr;
 	int start = -1; // 1-origin
 	int end = -1;
-	String strand = "?";
+	String strand = "+";
 	String color = null;
-	int score = 0;
 
 	@Override
 	public String toString() {
-		return "name:" + name + ", chr:" + chr + ", start:" + start + ", end:" + end + ", strand=" + strand;
+		return "name:" + name + ", start:" + start + ", end:" + end + ", strand=" + strand;
 	}
 
 	public Locus() {
+	}
+
+	public Locus(Locus other) {
+		this.name = other.name;
+		this.start = other.start;
+		this.end = other.end;
+		this.strand = other.strand;
+		this.color = other.color;
 	}
 
 	public Locus(int start, int end) {
@@ -121,6 +125,14 @@ public class Locus implements Serializable, Comparable<Locus> {
 		return strand;
 	}
 
+	public boolean isSense() {
+		return "+".equals(strand);
+	}
+
+	public boolean isAntiSense() {
+		return "-".equals(strand);
+	}
+
 	public void setStrand(String strand) {
 		this.strand = strand;
 	}
@@ -131,26 +143,6 @@ public class Locus implements Serializable, Comparable<Locus> {
 
 	public void setColor(String color) {
 		this.color = color;
-	}
-
-	public String getChr() {
-		return chr;
-	}
-
-	public void setChr(String chr) {
-		this.chr = chr;
-	}
-
-	public void setCoordinate(String chr) {
-		setChr(chr);
-	}
-
-	public int getScore() {
-		return score;
-	}
-
-	public void setScore(int score) {
-		this.score = score;
 	}
 
 	public int compareTo(Locus other) {

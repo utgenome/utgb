@@ -32,18 +32,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.utgenome.format.bed.BED2SilkReader;
+import org.utgenome.format.bed.BEDGene;
 import org.utgenome.graphics.GeneCanvas;
 import org.utgenome.graphics.GenomeWindow;
-import org.utgenome.gwt.utgb.client.bio.CDS;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
-import org.utgenome.gwt.utgb.client.bio.Exon;
 import org.utgenome.gwt.utgb.client.bio.Gene;
 import org.utgenome.gwt.utgb.server.WebTrackBase;
 import org.xerial.db.sql.ResultSetHandler;
@@ -155,12 +153,12 @@ public class BEDViewer extends WebTrackBase implements Serializable {
 
 		public BEDTrack track;
 
-		public void addGene(Gene gene) {
+		public void addGene(BEDGene gene) {
 			long geneStart = gene.getEnd() >= gene.getStart() ? gene.getStart() : gene.getEnd();
 			long geneEnd = gene.getEnd() >= gene.getStart() ? gene.getEnd() : gene.getStart();
 
-			if (gene.getChr().equals(coordinate) && (start <= geneEnd) && (end >= geneStart)) {
-				geneList.add(gene);
+			if (coordinate.equals(gene.coordinate) && (start <= geneEnd) && (end >= geneStart)) {
+				geneList.add(new Gene(gene));
 			}
 		}
 	}
@@ -190,73 +188,6 @@ public class BEDViewer extends WebTrackBase implements Serializable {
 					.format(
 							"track:name=%s, description=%s, visibility=%d, color=%s, itemRgb=%s, useScore=%d, group=%s, priority=%s, db=%s, offset=%d, url=%s, htmlUrl=%s\n",
 							name, description, visibility, color, itemRgb, useScore, group, priority, db, offset, url, htmlUrl);
-		}
-	}
-
-	public static class BEDGene extends Gene implements Serializable {
-
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-
-		public static Gene createFromResultSet(String chr, ResultSet rs) throws SQLException {
-			Gene gene = new Gene();
-			gene.setChr(chr);
-			gene.setStart(rs.getInt(1));
-			gene.setEnd(rs.getInt(2));
-
-			gene.setName(rs.getString(3));
-			gene.setScore(rs.getInt(4));
-			gene.setStrand(rs.getString(5));
-
-			ArrayList<long[]> regionList = readRegions(rs.getString(6));
-			for (long[] region : regionList) {
-				CDS cds = new CDS(region[0], region[1]);
-				gene.addCDS(cds);
-			}
-
-			regionList = readRegions(rs.getString(7));
-			for (long[] region : regionList) {
-				Exon exon = new Exon(region[0], region[1]);
-				gene.addExon(exon);
-			}
-
-			gene.setColor(rs.getString(8));
-
-			return gene;
-		}
-
-		private static ArrayList<long[]> readRegions(String string) {
-			ArrayList<long[]> res = new ArrayList<long[]>();
-
-			StringTokenizer st = new StringTokenizer(string, "[] ,");
-			while (st.hasMoreTokens()) {
-				String str = st.nextToken();
-
-				// get start of region
-				if (str.startsWith("(")) {
-					long[] region = new long[2];
-					region[0] = Long.valueOf(str.substring(1)).longValue();
-
-					// get end of region
-					while (st.hasMoreTokens()) {
-						str = st.nextToken();
-						if (str.endsWith(")")) {
-							region[1] = Long.valueOf(str.substring(0, str.length() - 1)).longValue();
-							res.add(region);
-							break;
-						}
-					}
-				}
-			}
-			return res;
-		}
-
-		@Override
-		public String toString() {
-			return String.format("%s: %s:%d-%d\t%s\t%s\t%s\t%s", getName(), getChr(), getStart(), getEnd(), getStrand(), getCDS(), getExon(), getColor());
-
 		}
 	}
 

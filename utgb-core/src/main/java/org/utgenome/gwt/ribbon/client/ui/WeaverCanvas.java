@@ -30,6 +30,9 @@ import org.utgenome.gwt.widget.client.Style;
 
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.widgetideas.graphics.client.Color;
 import com.google.gwt.widgetideas.graphics.client.GWTCanvas;
 
@@ -64,9 +67,33 @@ public class WeaverCanvas extends Composite {
 
 		canvas2.setFillStyle(new Color(100, 200, 250));
 		canvas2.fillRect(30, 20, 200, 150);
+		canvas2.setFillStyle(new Color(200, 50, 240, 0.4f));
+		canvas2.fillRect(130, 40, 150, 40);
 
 		mainPanel.add(canvas2, 0, 0);
 		mainPanel.add(canvas1, 0, 0);
+
+		TabPanel tabPanel = new TabPanel();
+
+		RoundCornerFrame tab1 = new RoundCornerFrame("336699", 0.8f, 4);
+		RoundCornerFrame tab2 = new RoundCornerFrame("336699", 0.8f, 4);
+		tab2.setFrameColor("336699", 0.3f);
+
+		Label tl = new Label("Track Groups");
+		Style.fontColor(tl, "white");
+		Style.bold(tl);
+		Style.nowrap(tl);
+		Label tl2 = new Label("Tracks");
+		Style.fontColor(tl2, "white");
+		Style.bold(tl2);
+		Style.nowrap(tl2);
+
+		tab1.setWidget(tl);
+		tab2.setWidget(tl2);
+		tabPanel.add(new SimplePanel(), tab1);
+		tabPanel.add(new SimplePanel(), tab2);
+
+		mainPanel.add(tabPanel, 100, 100);
 
 		RoundCornerFrame f = new RoundCornerFrame("3E5A77", 0.8f, 4);
 		FixedWidthLabel l = new FixedWidthLabel("Hello World. Nice to meet you. Welcome to UTGB Toolkit", 200);

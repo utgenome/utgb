@@ -34,7 +34,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import org.utgenome.gwt.utgb.client.bio.Gene;
 import org.utgenome.gwt.utgb.server.app.BEDViewer.BEDTrack;
 import org.xerial.core.XerialException;
 import org.xerial.lens.Lens;
@@ -64,6 +63,8 @@ public class BEDDatabaseGenerator {
 	}
 
 	public static class DBBuilder {
+
+		int geneCount = 0;
 
 		Connection conn;
 		PreparedStatement p1;
@@ -118,20 +119,25 @@ public class BEDDatabaseGenerator {
 			}
 		}
 
-		public void addGene(Gene gene) {
+		public void addGene(BEDGene gene) {
 			// store gene data to db
 			try {
-				p2.setString(1, gene.getChr());
+				p2.setString(1, gene.coordinate);
 				p2.setLong(2, gene.getStart());
 				p2.setLong(3, gene.getEnd());
 				p2.setString(4, gene.getName());
-				p2.setInt(5, gene.getScore());
+				p2.setInt(5, gene.score);
 				p2.setString(6, gene.getStrand());
 				p2.setString(7, gene.getCDS().toString());
 				p2.setString(8, gene.getExon().toString());
 				p2.setString(9, gene.getColor());
 
 				p2.execute();
+
+				geneCount++;
+				if ((geneCount % 10000) == 0)
+					_logger.info(String.format("added %d entries.", geneCount));
+
 			}
 			catch (Exception e) {
 				_logger.error(e);

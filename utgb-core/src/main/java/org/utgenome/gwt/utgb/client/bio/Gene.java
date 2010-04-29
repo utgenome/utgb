@@ -46,6 +46,12 @@ public class Gene extends Locus implements Serializable {
 	public Gene() {
 	}
 
+	public Gene(Gene other) {
+		super(other);
+		this.exonList = other.exonList;
+		this.cdsList = other.cdsList;
+	}
+
 	public Gene(int start, int end) {
 		super(start, end);
 	}

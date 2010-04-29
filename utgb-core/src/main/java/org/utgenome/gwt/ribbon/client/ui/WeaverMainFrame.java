@@ -24,12 +24,41 @@
 //--------------------------------------
 package org.utgenome.gwt.ribbon.client.ui;
 
+import org.utgenome.gwt.utgb.client.ui.RoundCornerFrame;
+
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DockPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
+
 /**
  * Main frame of the genome weaver
  * 
  * @author leo
  * 
  */
-public class WeaverMainFrame {
+public class WeaverMainFrame extends Composite {
 
+	public class TrackListPanel extends VerticalPanel {
+
+		public TrackListPanel() {
+
+		}
+
+	}
+
+	private DockPanel mainPanel = new DockPanel();
+	private TrackListPanel trackListPanel = new TrackListPanel();
+	private SimplePanel trackPanel = new SimplePanel();
+
+	public WeaverMainFrame() {
+
+		mainPanel.add(trackListPanel, DockPanel.EAST);
+
+		RoundCornerFrame f = new RoundCornerFrame("#6699CC", 0.8f, 4);
+		f.setWidget(trackPanel);
+		mainPanel.add(f, DockPanel.CENTER);
+
+		initWidget(mainPanel);
+	}
 }

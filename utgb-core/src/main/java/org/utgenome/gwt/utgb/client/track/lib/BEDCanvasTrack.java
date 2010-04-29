@@ -64,6 +64,8 @@ public class BEDCanvasTrack extends TrackBase {
 
 	protected TrackConfig config = new TrackConfig(this);
 	private String fileName;
+	private String clickURLtemplate = "http://www.ncbi.nlm.nih.gov/entrez/viewer.fcgi?val=%q";
+	private int leftMargin = 0;
 
 	private ArrayList<Gene> genes = new ArrayList<Gene>();
 
@@ -82,17 +84,14 @@ public class BEDCanvasTrack extends TrackBase {
 		layoutTable.setBorderWidth(0);
 		layoutTable.setCellPadding(0);
 		layoutTable.setCellSpacing(0);
-		layoutTable.getCellFormatter().setWidth(0, 0, "100px");
 		layoutTable.setWidget(0, 1, geneCanvas);
-
-		//layoutTable.setHeight(300 + "px");
-
-		//CSS.border(geneCanvas, 2, "solid", "cyan");
 
 		geneCanvas.setLocusClickHandler(new LocusClickHandler() {
 			public void onClick(Locus locus) {
-				String url = "http://www.ncbi.nlm.nih.gov/entrez/viewer.fcgi?val=" + locus.getName();
-				Window.open(url, "ncbi", "");
+				String url = clickURLtemplate;
+				if (url.contains("%q") && locus.getName() != null)
+					url = url.replace("%q", locus.getName());
+				Window.open(url, "locus", "");
 			}
 		});
 	}
@@ -110,7 +109,10 @@ public class BEDCanvasTrack extends TrackBase {
 
 		int s = w.getStartOnGenome();
 		int e = w.getEndOnGenome();
-		int width = w.getWindowWidth() - 100;
+		int width = w.getWindowWidth() - leftMargin;
+
+		if (leftMargin > 0)
+			layoutTable.getCellFormatter().setWidth(0, 0, leftMargin + "px");
 
 		geneCanvas.clear();
 		geneCanvas.setWindow(new TrackWindowImpl(width, s, e));
@@ -194,12 +196,15 @@ public class BEDCanvasTrack extends TrackBase {
 	@Override
 	public void saveProperties(Properties saveData) {
 		saveData.add("fileName", fileName);
-
+		saveData.add("clickURL", clickURLtemplate);
+		saveData.add("leftMargin", leftMargin);
 	}
 
 	@Override
 	public void restoreProperties(Properties properties) {
 		fileName = properties.get("fileName", fileName);
+		clickURLtemplate = properties.get("clickURL", clickURLtemplate);
+		leftMargin = properties.getInt("leftMargin", leftMargin);
 	}
 
 }
