@@ -109,7 +109,7 @@ public class GeneCanvasTrack extends TrackBase {
 
 		geneCanvas.clear();
 		geneCanvas.setWindow(new TrackWindowImpl(width, s, e));
-		geneCanvas.draw(genes);
+		geneCanvas.drawGene(genes);
 
 		getFrame().loadingDone();
 	}
