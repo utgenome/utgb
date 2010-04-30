@@ -110,24 +110,7 @@
   </scm>
 
   <dependencies>
-  	
-  	<!-- GWT dev -->
-	<dependency>
-		<groupId>com.google.gwt</groupId>
-		<artifactId>gwt-dev</artifactId>
-		<version>${gwt.version}</version>
-		<scope>provided</scope>
-	</dependency>
-
-
-	<!-- Maven Embedder -->
-	<dependency>
-		<groupId>org.apache.maven</groupId>
-		<artifactId>apache-maven</artifactId>
-		<version>${maven.version}</version>
-		<type>pom</type>
-	</dependency>
-
+    
     <dependency>
       <groupId>org.utgenome</groupId>
       <artifactId>utgb-core</artifactId>

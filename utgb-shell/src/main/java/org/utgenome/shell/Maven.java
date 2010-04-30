@@ -28,10 +28,13 @@ import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.Date;
 import java.util.Properties;
 import java.util.Map.Entry;
@@ -40,21 +43,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.maven.cli.CLIManager;
-import org.apache.maven.cli.MavenCli;
-import org.apache.maven.execution.DefaultMavenExecutionRequest;
-import org.apache.maven.execution.MavenExecutionRequest;
-import org.apache.maven.execution.MavenExecutionResult;
-import org.apache.maven.model.building.ModelProcessor;
 import org.apache.tools.bzip2.CBZip2InputStream;
 import org.apache.tools.tar.TarEntry;
 import org.apache.tools.tar.TarInputStream;
-import org.codehaus.plexus.ContainerConfiguration;
-import org.codehaus.plexus.DefaultContainerConfiguration;
-import org.codehaus.plexus.DefaultPlexusContainer;
-import org.codehaus.plexus.classworlds.ClassWorld;
-import org.codehaus.plexus.classworlds.realm.ClassRealm;
+import org.xerial.core.XerialException;
+import org.xerial.lens.Lens;
+import org.xerial.silk.SilkWriter;
 import org.xerial.util.FileResource;
 import org.xerial.util.StringUtil;
 import org.xerial.util.log.Logger;
@@ -79,6 +73,11 @@ public class Maven extends UTGBShellCommand {
 			return new File(utgbHome, "maven").exists();
 	}
 
+	private static class MavenArchiveInfo {
+		public long extracted = -1;
+		public String mavenFolder;
+	}
+
 	/**
 	 * Extract the Maven binary from the archive inside the JAR
 	 * 
@@ -94,11 +93,41 @@ public class Maven extends UTGBShellCommand {
 		if (!mavenFolder.exists())
 			mavenFolder.mkdirs();
 
+		MavenArchiveInfo archiveInfo = new MavenArchiveInfo();
+		File mavenArchiveInfoFile = new File(mavenFolderName, "maven-archive.silk");
+		if (mavenArchiveInfoFile.exists()) {
+			try {
+				Lens.loadSilk(archiveInfo, new FileReader(mavenArchiveInfoFile));
+			}
+			catch (XerialException e) {
+				_logger.error(e);
+			}
+		}
+
 		String mavenBinParentFolder = null;
 
 		URL mavenArchive = FileResource.find("org.utgenome.shell.archive", "apache-maven-" + MAVEN_VERSION + "-bin.tar.bz2");
 
-		BufferedInputStream bufferedInputStream = new BufferedInputStream(mavenArchive.openStream());
+		URLConnection openConnection = mavenArchive.openConnection();
+		long archiveDate = openConnection.getLastModified();
+
+		if (archiveInfo.extracted > archiveDate) {
+			if (archiveInfo.mavenFolder != null) {
+				File mavenFolderWithVersion = new File(mavenFolder, archiveInfo.mavenFolder);
+				if (mavenFolderWithVersion.exists()) {
+					if (new File(mavenFolderWithVersion, "bin/mvn").exists()) {
+						_logger.info("Maven is already installed.");
+						// already extracted
+						return mavenFolderWithVersion.getAbsolutePath();
+					}
+				}
+			}
+		}
+
+		_logger.info("Extracting Maven binaries...");
+
+		String relativePathOfMavenArchiveFolder = null;
+		BufferedInputStream bufferedInputStream = new BufferedInputStream(openConnection.getInputStream());
 		try {
 			// read two bytes "BZ"
 			bufferedInputStream.read();
@@ -111,7 +140,8 @@ public class Maven extends UTGBShellCommand {
 				Date modTime = nextEntry.getModTime();
 
 				if (name.endsWith("/bin/mvn")) {
-					mavenBinParentFolder = new File(mavenFolderName, name.replace("/bin/mvn", "")).getAbsolutePath();
+					relativePathOfMavenArchiveFolder = name.replace("/bin/mvn", "");
+					mavenBinParentFolder = new File(mavenFolderName, relativePathOfMavenArchiveFolder).getAbsolutePath();
 				}
 
 				File extractedFile = new File(mavenFolder, name);
@@ -165,6 +195,16 @@ public class Maven extends UTGBShellCommand {
 			bufferedInputStream.close();
 		}
 
+		// write archive info
+		archiveInfo.mavenFolder = relativePathOfMavenArchiveFolder;
+		archiveInfo.extracted = new Date().getTime();
+
+		SilkWriter silk = new SilkWriter(new FileWriter(mavenArchiveInfoFile));
+		silk.preamble();
+		silk.node("archive").toSilk(archiveInfo);
+		silk.endDocument();
+		silk.close();
+
 		return mavenBinParentFolder;
 	}
 
@@ -195,13 +235,13 @@ public class Maven extends UTGBShellCommand {
 	}
 
 	public static void runMaven(String arg, File workingDir) throws UTGBShellException {
-		// runMaven(arg.split("[\\s]+"), workingDir);
-		runEmbeddedMaven(arg.split("[\\s]+"), workingDir);
+		runMaven(arg.split("[\\s]+"), workingDir);
+		// runEmbeddedMaven(arg.split("[\\s]+"), workingDir);
 	}
 
 	public static void runMaven(String[] args) throws UTGBShellException {
-		// runMaven(args, null);
-		runEmbeddedMaven(args, null);
+		runMaven(args, null);
+		// runEmbeddedMaven(args, null);
 	}
 
 	private static abstract class ProcessOutputReader implements Runnable {
@@ -363,72 +403,6 @@ public class Maven extends UTGBShellCommand {
 
 	public String getOneLinerDescription() {
 		return "execute maven tasks";
-	}
-
-	public static void runEmbeddedMaven(String[] args, File workDir) throws UTGBShellException {
-
-		try {
-			// 
-			// 
-			//
-
-			// ContainerConfiguration conf = new DefaultContainerConfiguration().setClassWorld(cw).setName("maven");
-			// DefaultPlexusContainer container = new DefaultPlexusContainer(conf);
-			// org.apache.maven.Maven maven = container.lookup(org.apache.maven.Maven.class);
-			//			
-			//
-			// // MavenExecutionResult result = maven.execute(request);
-
-			File utgbHome = new File(System.getProperty("user.home"), ".utgb");
-			File utgbShellJAR = new File(utgbHome, "lib/utgb-shell-standalone.jar");
-			if (!utgbShellJAR.exists())
-				throw new IllegalStateException(utgbShellJAR + " is not found");
-
-			ClassLoader clo = Thread.currentThread().getContextClassLoader();
-			ClassWorld classWorld = new ClassWorld("plexus.core", clo);
-			ClassRealm utgbRealm = classWorld.newRealm("utgb");
-			utgbRealm.addURL(utgbShellJAR.toURI().toURL());
-
-			ContainerConfiguration cc = new DefaultContainerConfiguration();
-			cc.setClassWorld(classWorld);
-			cc.setName("embedder");
-			DefaultPlexusContainer plexus = new DefaultPlexusContainer(cc);
-			org.apache.maven.Maven maven = plexus.lookup(org.apache.maven.Maven.class);
-			ModelProcessor modelProcessor = plexus.lookup(ModelProcessor.class);
-
-			CLIManager cliManager = new CLIManager();
-			CommandLine cl = cliManager.parse(args);
-			if (cl.hasOption(CLIManager.HELP)) {
-				cliManager.displayHelp(System.out);
-				return;
-			}
-
-			MavenExecutionRequest request = new DefaultMavenExecutionRequest();
-			request.setUserSettingsFile(MavenCli.DEFAULT_USER_SETTINGS_FILE).setGlobalSettingsFile(MavenCli.DEFAULT_GLOBAL_SETTINGS_FILE).setPom(
-					modelProcessor.locatePom(workDir)).setBaseDirectory(workDir).setGoals(cl.getArgList());
-
-			MavenExecutionResult ret = maven.execute(request);
-			if (ret.hasExceptions()) {
-				throw new UTGBShellException("Maven execution failed: " + ret.getExceptions());
-			}
-
-			// // ClassLoader pcl = cl.getParent();
-			// // utgbRealm.importFrom(cl, "org.codehaus.plexus.classworlds");
-			// // utgbRealm.importFrom(cl, "org.apache.maven");
-			//
-			// MavenCli mavenCli = new MavenCli(classWorld);
-			// int ret = mavenCli.doMain(args, workDir == null ? System.getProperty("user.dir") :
-			// workDir.getAbsolutePath(), System.out, System.err);
-			// if (ret != 0)
-			// throw new UTGBShellException("Maven execution failed: " + ret);
-		}
-		catch (UTGBShellException e) {
-			throw e;
-		}
-		catch (Exception e) {
-			throw new UTGBShellException(e);
-		}
-
 	}
 
 }
