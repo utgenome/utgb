@@ -302,7 +302,7 @@ public class GWTGenomeCanvas extends Composite {
 	}
 
 	private int estimiateLabelWidth(Locus l) {
-		int labelWidth = l.getName() != null ? (int) (l.getName().length() * geneHeight * 0.9) : 0;
+		int labelWidth = l.getName() != null ? (int) (l.getName().length() * DEFAULT_GENE_HEIGHT * 0.9) : 0;
 		if (labelWidth > 150)
 			labelWidth = 150;
 		return labelWidth;
