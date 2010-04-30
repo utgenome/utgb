@@ -16,3 +16,7 @@ release:
 
 clean:
 	mvn clean
+
+
+update-version:
+	mvn release:update-versions -DautoVersionSubmodules=true
