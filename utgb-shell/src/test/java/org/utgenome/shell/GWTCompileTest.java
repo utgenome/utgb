@@ -16,21 +16,19 @@
 //--------------------------------------
 // utgb-shell Project
 //
-// MavenTest.java
-// Since: Jan 11, 2008
+// GWTCompileTest.java
+// Since: 2010/04/30
 //
 // $URL$ 
 // $Author$
 //--------------------------------------
 package org.utgenome.shell;
 
-import static org.junit.Assert.assertNotNull;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class MavenTest {
+public class GWTCompileTest {
 
 	@Before
 	public void setUp() throws Exception {
@@ -41,14 +39,8 @@ public class MavenTest {
 	}
 
 	@Test
-	public void testRunMaven() throws UTGBShellException {
-		Maven.runMaven("--help");
-	}
-
-	@Test
-	public void extractMaven() throws Exception {
-		String mvnCommand = Maven.getMavenBinary();
-		assertNotNull(mvnCommand);
+	public void runTest() throws Exception {
+		UTGBShell.runCommand(new String[] { "gwt-compile" });
 	}
 
 }

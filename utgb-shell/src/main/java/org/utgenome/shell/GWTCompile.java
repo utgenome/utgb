@@ -16,39 +16,42 @@
 //--------------------------------------
 // utgb-shell Project
 //
-// MavenTest.java
-// Since: Jan 11, 2008
+// GWTCompile.java
+// Since: 2010/04/30
 //
 // $URL$ 
 // $Author$
 //--------------------------------------
 package org.utgenome.shell;
 
-import static org.junit.Assert.assertNotNull;
+import org.utgenome.shell.Maven.CommandExecutor;
+import org.xerial.util.log.Logger;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+public class GWTCompile extends UTGBShellCommand {
 
-public class MavenTest {
+	private static Logger _logger = Logger.getLogger(GWTCompile.class);
 
-	@Before
-	public void setUp() throws Exception {
+	@Override
+	public void execute(String[] args) throws Exception {
+
+		Maven.runMaven("-q dependency:build-classpath -Dmdep.outputFile=target/classpath");
+
+		_logger.info("executing java task...");
+
+		CommandExecutor exec = new CommandExecutor();
+		exec.execCommand("java -version", null, null);
+
+		_logger.info("done.");
 	}
 
-	@After
-	public void tearDown() throws Exception {
+	@Override
+	public String getOneLinerDescription() {
+		return "(beta) compile GWT codes (Java) into JavaScript ones";
 	}
 
-	@Test
-	public void testRunMaven() throws UTGBShellException {
-		Maven.runMaven("--help");
-	}
-
-	@Test
-	public void extractMaven() throws Exception {
-		String mvnCommand = Maven.getMavenBinary();
-		assertNotNull(mvnCommand);
+	@Override
+	public String name() {
+		return "gwt-compile";
 	}
 
 }

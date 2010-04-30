@@ -41,8 +41,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.maven.cli.MavenCli;
-import org.apache.maven.execution.DefaultMavenExecutionRequest;
-import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.tools.bzip2.CBZip2InputStream;
 import org.apache.tools.tar.TarEntry;
 import org.apache.tools.tar.TarInputStream;
@@ -60,9 +58,7 @@ public class Maven extends UTGBShellCommand {
 
 	private static Logger _logger = Logger.getLogger(Maven.class);
 
-	private static String MAVEN_VERSION = "2.2.1";
-
-	// private static String MAVEN_VERSION = "3.0-beta-1";
+	private static String MAVEN_VERSION = "3.0-beta-1";
 
 	public static boolean isMavenInstalled() {
 		String utgbHome = System.getProperty("utgb.home");
@@ -188,13 +184,13 @@ public class Maven extends UTGBShellCommand {
 	}
 
 	public static void runMaven(String arg, File workingDir) throws UTGBShellException {
-		// runMaven(arg.split("[\\s]+"), workingDir);
-		runEmbeddedMaven(arg.split("[\\s]+"), workingDir);
+		runMaven(arg.split("[\\s]+"), workingDir);
+		// runEmbeddedMaven(arg.split("[\\s]+"), workingDir);
 	}
 
 	public static void runMaven(String[] args) throws UTGBShellException {
-		// runMaven(args, null);
-		runEmbeddedMaven(args, null);
+		runMaven(args, null);
+		// runEmbeddedMaven(args, null);
 	}
 
 	private static abstract class ProcessOutputReader implements Runnable {
@@ -285,7 +281,7 @@ public class Maven extends UTGBShellCommand {
 
 	}
 
-	private static String[] prepareEnvironmentVariables(File mavenHome) {
+	public static String[] prepareEnvironmentVariables(File mavenHome) {
 		Properties env = new Properties();
 		for (Entry<String, String> eachEnv : System.getenv().entrySet()) {
 			env.setProperty(eachEnv.getKey(), eachEnv.getValue());
@@ -360,16 +356,29 @@ public class Maven extends UTGBShellCommand {
 
 	public static void runEmbeddedMaven(String[] args, File workDir) throws UTGBShellException {
 
-		MavenExecutionRequest request = new DefaultMavenExecutionRequest();
-		request.setBaseDirectory(workDir);
-		// CLIManager cliManager = new CLIManager();
-		// CommandLine cl = cliManager.parse(args);
-		// ClassWorld cw = new ClassWorld("plexux.core", Thread.currentThread().getContextClassLoader());
-		MavenCli maven = new MavenCli();
+		try {
+			// MavenExecutionRequest request = new DefaultMavenExecutionRequest();
+			// request.setBaseDirectory(workDir);
+			//
+			// ClassWorld cw = new ClassWorld("plexux.core", Thread.currentThread().getContextClassLoader());
+			// ContainerConfiguration conf = new DefaultContainerConfiguration().setClassWorld(cw).setName("maven");
+			// DefaultPlexusContainer container = new DefaultPlexusContainer(conf);
+			// org.apache.maven.Maven maven = container.lookup(org.apache.maven.Maven.class);
+			//			
+			//
+			// CLIManager cliManager = new CLIManager();
+			// CommandLine cl = cliManager.parse(args);
+			// cl.getArgList();
+			// MavenExecutionResult result = maven.execute(request);
 
-		int ret = maven.doMain(args, workDir == null ? null : workDir.getAbsolutePath(), System.out, System.err);
-		if (ret != 0)
-			throw new UTGBShellException("Maven execution failed: " + ret);
+			MavenCli mavenCli = new MavenCli();
+			int ret = mavenCli.doMain(args, workDir == null ? null : workDir.getAbsolutePath(), System.out, System.err);
+			if (ret != 0)
+				throw new UTGBShellException("Maven execution failed: " + ret);
+		}
+		catch (Exception e) {
+			throw new UTGBShellException(e);
+		}
 
 	}
 
