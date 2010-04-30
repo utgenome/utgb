@@ -313,7 +313,7 @@ public class Maven extends UTGBShellCommand {
 			}
 			catch (InterruptedException e) {
 				_logger.error(e);
-				return 1;
+				return 0;
 			}
 			finally {
 				dispose();

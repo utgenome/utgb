@@ -273,12 +273,6 @@
       <artifactId>utgb-core</artifactId>
       <version>\${utgb.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.utgenome</groupId>
-      <artifactId>utgb-shell</artifactId>
-      <version>\${utgb.version}</version>
-      <scope>test</scope>
-    </dependency>
     
 	<!-- Servlet API -->    
     <dependency>
