@@ -84,6 +84,16 @@ public class ServerTest {
 
 		UTGBShell.runCommand(new String[] { "action", "-d", projectPath, "hello" });
 		UTGBShell.runCommand(new String[] { "compile", "-d", projectPath });
+	}
+
+	@Test
+	public void server() throws Exception {
+		// UTGBShell.main(new String[] { "gwt", "-d", new File(tmpDir, appName).getAbsolutePath() });
+
+		final String projectPath = new File(tmpDir, appName).getAbsolutePath();
+
+		UTGBShell.runCommand(new String[] { "action", "-d", projectPath, "hello" });
+		UTGBShell.runCommand(new String[] { "compile", "-d", projectPath });
 
 		ExecutorService es = Executors.newFixedThreadPool(1);
 		es.submit(new Callable<Void>() {

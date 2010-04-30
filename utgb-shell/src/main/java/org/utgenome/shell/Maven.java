@@ -40,6 +40,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.maven.cli.MavenCli;
+import org.apache.maven.execution.DefaultMavenExecutionRequest;
+import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.tools.bzip2.CBZip2InputStream;
 import org.apache.tools.tar.TarEntry;
 import org.apache.tools.tar.TarInputStream;
@@ -58,6 +61,8 @@ public class Maven extends UTGBShellCommand {
 	private static Logger _logger = Logger.getLogger(Maven.class);
 
 	private static String MAVEN_VERSION = "2.2.1";
+
+	// private static String MAVEN_VERSION = "3.0-beta-1";
 
 	public static boolean isMavenInstalled() {
 		String utgbHome = System.getProperty("utgb.home");
@@ -183,11 +188,36 @@ public class Maven extends UTGBShellCommand {
 	}
 
 	public static void runMaven(String arg, File workingDir) throws UTGBShellException {
-		runMaven(arg.split("[\\s]+"), workingDir);
+		// runMaven(arg.split("[\\s]+"), workingDir);
+		runEmbeddedMaven(arg.split("[\\s]+"), workingDir);
 	}
 
 	public static void runMaven(String[] args) throws UTGBShellException {
-		runMaven(args, null);
+		// runMaven(args, null);
+		runEmbeddedMaven(args, null);
+	}
+
+	private static abstract class ProcessOutputReader implements Runnable {
+		private final BufferedReader reader;
+
+		public ProcessOutputReader(InputStream in) {
+			reader = new BufferedReader(new InputStreamReader(in));
+		}
+
+		public abstract void output(String line);
+
+		public void run() {
+			try {
+				String line;
+				while ((line = reader.readLine()) != null) {
+					output(line);
+				}
+			}
+			catch (IOException e) {
+				// If the process is already terminated, IOException (bad file descriptor) might be reported.
+				_logger.debug(e);
+			}
+		}
 	}
 
 	public static class CommandExecutor {
@@ -195,29 +225,6 @@ public class Maven extends UTGBShellCommand {
 		Process proc = null;
 		Future<?> stdoutReader;
 		Future<?> stderrReader;
-
-		private static abstract class ProcessOutputReader implements Runnable {
-			private final BufferedReader reader;
-
-			public ProcessOutputReader(InputStream in) {
-				reader = new BufferedReader(new InputStreamReader(in));
-			}
-
-			public abstract void output(String line);
-
-			public void run() {
-				try {
-					String line;
-					while ((line = reader.readLine()) != null) {
-						output(line);
-					}
-				}
-				catch (IOException e) {
-					// If the process is already terminated, IOException (bad file descriptor) might be reported.
-					_logger.debug(e);
-				}
-			}
-		}
 
 		private void dispose() {
 			if (proc != null) {
@@ -278,6 +285,29 @@ public class Maven extends UTGBShellCommand {
 
 	}
 
+	private static String[] prepareEnvironmentVariables(File mavenHome) {
+		Properties env = new Properties();
+		for (Entry<String, String> eachEnv : System.getenv().entrySet()) {
+			env.setProperty(eachEnv.getKey(), eachEnv.getValue());
+		}
+		if (!env.contains("JAVA_HOME") || env.getProperty("JAVA_HOME").contains("jre")) {
+			env.setProperty("JAVA_HOME", System.getProperty("java.home"));
+		}
+		if (mavenHome != null && !env.contains("M2_HOME")) {
+			env.setProperty("M2_HOME", mavenHome.getAbsolutePath());
+		}
+
+		String[] envp = new String[env.size()];
+		int index = 0;
+		for (Object each : env.keySet()) {
+			String key = each.toString();
+			envp[index++] = String.format("%s=%s", key, env.getProperty(key));
+		}
+
+		_logger.trace("environment variables: " + env);
+		return envp;
+	}
+
 	public static int runMaven(String[] args, File workingDir) throws UTGBShellException {
 
 		try {
@@ -295,25 +325,7 @@ public class Maven extends UTGBShellCommand {
 			_logger.debug("Maven binary: " + mavenBinary);
 			File mavenHome = new File(mavenBinary).getParentFile().getParentFile();
 
-			Properties env = new Properties();
-			for (Entry<String, String> eachEnv : System.getenv().entrySet()) {
-				env.setProperty(eachEnv.getKey(), eachEnv.getValue());
-			}
-			if (!env.contains("JAVA_HOME") || env.getProperty("JAVA_HOME").contains("jre")) {
-				env.setProperty("JAVA_HOME", System.getProperty("java.home"));
-			}
-			if (!env.contains("M2_HOME")) {
-				env.setProperty("M2_HOME", mavenHome.getAbsolutePath());
-			}
-
-			String[] envp = new String[env.size()];
-			int index = 0;
-			for (Object each : env.keySet()) {
-				String key = each.toString();
-				envp[index++] = String.format("%s=%s", key, env.getProperty(key));
-			}
-
-			_logger.trace("environment variables: " + env);
+			String[] envp = prepareEnvironmentVariables(mavenHome);
 
 			String cmdLineFormat = System.getProperty("os.name").contains("Windows") ? "\"%s\" %s" : "%s %s";
 			int returnCode = CommandExecutor.exec(String.format(cmdLineFormat, mavenBinary, StringUtil.join(args, " ")), envp, workingDir);
@@ -344,6 +356,21 @@ public class Maven extends UTGBShellCommand {
 
 	public String getOneLinerDescription() {
 		return "execute maven tasks";
+	}
+
+	public static void runEmbeddedMaven(String[] args, File workDir) throws UTGBShellException {
+
+		MavenExecutionRequest request = new DefaultMavenExecutionRequest();
+		request.setBaseDirectory(workDir);
+		// CLIManager cliManager = new CLIManager();
+		// CommandLine cl = cliManager.parse(args);
+		// ClassWorld cw = new ClassWorld("plexux.core", Thread.currentThread().getContextClassLoader());
+		MavenCli maven = new MavenCli();
+
+		int ret = maven.doMain(args, workDir == null ? null : workDir.getAbsolutePath(), System.out, System.err);
+		if (ret != 0)
+			throw new UTGBShellException("Maven execution failed: " + ret);
+
 	}
 
 }
