@@ -38,7 +38,6 @@ import java.util.List;
 import org.apache.catalina.Context;
 import org.apache.catalina.Engine;
 import org.apache.catalina.LifecycleException;
-import org.apache.catalina.connector.Connector;
 import org.apache.catalina.core.StandardHost;
 import org.apache.catalina.startup.Embedded;
 import org.apache.catalina.startup.HostConfig;
@@ -246,16 +245,16 @@ public class TomcatServer {
 
 		// Tell the embedded server about the connector
 		InetAddress nullAddr = null;
-		Connector connector = embeddedTomcat.createConnector(nullAddr, configuration.getPort(), false);
-		connector.setEnableLookups(true);
+		org.apache.catalina.connector.Connector conn = embeddedTomcat.createConnector(nullAddr, configuration.getPort(), false);
+		conn.setEnableLookups(true);
 		// connector.setProxyPort(configuration.getAjp13port());
-		embeddedTomcat.addConnector(connector);
+		embeddedTomcat.addConnector(conn);
 
 		// Add AJP13 connector
 		// <Connector port="8009" protocol="AJP/1.3" redirectPort="8443" />
 
 		try {
-			Connector ajp13connector = new Connector("org.apache.jk.server.JkCoyoteHandler");
+			org.apache.catalina.connector.Connector ajp13connector = new org.apache.catalina.connector.Connector("org.apache.jk.server.JkCoyoteHandler");
 			ajp13connector.setPort(configuration.getAjp13port());
 			ajp13connector.setProtocol("AJP/1.3");
 			ajp13connector.setRedirectPort(8443);

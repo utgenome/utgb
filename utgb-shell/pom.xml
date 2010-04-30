@@ -15,7 +15,8 @@
 
   <properties>
     <revision>$Revision$</revision>
-    <tomcat.version>6.0.18</tomcat.version>
+    <tomcat.version>6.0.26</tomcat.version>
+    <maven.version>3.0-beta-1</maven.version>
   </properties>
 
   <build>
@@ -122,8 +123,9 @@
 	<!-- Maven Embedder -->
 	<dependency>
 		<groupId>org.apache.maven</groupId>
-		<artifactId>maven-embedder</artifactId>
-		<version>3.0-beta-1</version>
+		<artifactId>apache-maven</artifactId>
+		<version>${maven.version}</version>
+		<type>pom</type>
 	</dependency>
 
     <dependency>

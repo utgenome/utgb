@@ -40,10 +40,21 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.maven.cli.CLIManager;
 import org.apache.maven.cli.MavenCli;
+import org.apache.maven.execution.DefaultMavenExecutionRequest;
+import org.apache.maven.execution.MavenExecutionRequest;
+import org.apache.maven.execution.MavenExecutionResult;
+import org.apache.maven.model.building.ModelProcessor;
 import org.apache.tools.bzip2.CBZip2InputStream;
 import org.apache.tools.tar.TarEntry;
 import org.apache.tools.tar.TarInputStream;
+import org.codehaus.plexus.ContainerConfiguration;
+import org.codehaus.plexus.DefaultContainerConfiguration;
+import org.codehaus.plexus.DefaultPlexusContainer;
+import org.codehaus.plexus.classworlds.ClassWorld;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.xerial.util.FileResource;
 import org.xerial.util.StringUtil;
 import org.xerial.util.log.Logger;
@@ -184,13 +195,13 @@ public class Maven extends UTGBShellCommand {
 	}
 
 	public static void runMaven(String arg, File workingDir) throws UTGBShellException {
-		runMaven(arg.split("[\\s]+"), workingDir);
-		// runEmbeddedMaven(arg.split("[\\s]+"), workingDir);
+		// runMaven(arg.split("[\\s]+"), workingDir);
+		runEmbeddedMaven(arg.split("[\\s]+"), workingDir);
 	}
 
 	public static void runMaven(String[] args) throws UTGBShellException {
-		runMaven(args, null);
-		// runEmbeddedMaven(args, null);
+		// runMaven(args, null);
+		runEmbeddedMaven(args, null);
 	}
 
 	private static abstract class ProcessOutputReader implements Runnable {
@@ -357,24 +368,62 @@ public class Maven extends UTGBShellCommand {
 	public static void runEmbeddedMaven(String[] args, File workDir) throws UTGBShellException {
 
 		try {
-			// MavenExecutionRequest request = new DefaultMavenExecutionRequest();
-			// request.setBaseDirectory(workDir);
+			// 
+			// 
 			//
-			// ClassWorld cw = new ClassWorld("plexux.core", Thread.currentThread().getContextClassLoader());
+
 			// ContainerConfiguration conf = new DefaultContainerConfiguration().setClassWorld(cw).setName("maven");
 			// DefaultPlexusContainer container = new DefaultPlexusContainer(conf);
 			// org.apache.maven.Maven maven = container.lookup(org.apache.maven.Maven.class);
 			//			
 			//
-			// CLIManager cliManager = new CLIManager();
-			// CommandLine cl = cliManager.parse(args);
-			// cl.getArgList();
-			// MavenExecutionResult result = maven.execute(request);
+			// // MavenExecutionResult result = maven.execute(request);
 
-			MavenCli mavenCli = new MavenCli();
-			int ret = mavenCli.doMain(args, workDir == null ? null : workDir.getAbsolutePath(), System.out, System.err);
-			if (ret != 0)
-				throw new UTGBShellException("Maven execution failed: " + ret);
+			File utgbHome = new File(System.getProperty("user.home"), ".utgb");
+			File utgbShellJAR = new File(utgbHome, "lib/utgb-shell-standalone.jar");
+			if (!utgbShellJAR.exists())
+				throw new IllegalStateException(utgbShellJAR + " is not found");
+
+			ClassLoader clo = Thread.currentThread().getContextClassLoader();
+			ClassWorld classWorld = new ClassWorld("plexus.core", clo);
+			ClassRealm utgbRealm = classWorld.newRealm("utgb");
+			utgbRealm.addURL(utgbShellJAR.toURI().toURL());
+
+			ContainerConfiguration cc = new DefaultContainerConfiguration();
+			cc.setClassWorld(classWorld);
+			cc.setName("embedder");
+			DefaultPlexusContainer plexus = new DefaultPlexusContainer(cc);
+			org.apache.maven.Maven maven = plexus.lookup(org.apache.maven.Maven.class);
+			ModelProcessor modelProcessor = plexus.lookup(ModelProcessor.class);
+
+			CLIManager cliManager = new CLIManager();
+			CommandLine cl = cliManager.parse(args);
+			if (cl.hasOption(CLIManager.HELP)) {
+				cliManager.displayHelp(System.out);
+				return;
+			}
+
+			MavenExecutionRequest request = new DefaultMavenExecutionRequest();
+			request.setUserSettingsFile(MavenCli.DEFAULT_USER_SETTINGS_FILE).setGlobalSettingsFile(MavenCli.DEFAULT_GLOBAL_SETTINGS_FILE).setPom(
+					modelProcessor.locatePom(workDir)).setBaseDirectory(workDir).setGoals(cl.getArgList());
+
+			MavenExecutionResult ret = maven.execute(request);
+			if (ret.hasExceptions()) {
+				throw new UTGBShellException("Maven execution failed: " + ret.getExceptions());
+			}
+
+			// // ClassLoader pcl = cl.getParent();
+			// // utgbRealm.importFrom(cl, "org.codehaus.plexus.classworlds");
+			// // utgbRealm.importFrom(cl, "org.apache.maven");
+			//
+			// MavenCli mavenCli = new MavenCli(classWorld);
+			// int ret = mavenCli.doMain(args, workDir == null ? System.getProperty("user.dir") :
+			// workDir.getAbsolutePath(), System.out, System.err);
+			// if (ret != 0)
+			// throw new UTGBShellException("Maven execution failed: " + ret);
+		}
+		catch (UTGBShellException e) {
+			throw e;
 		}
 		catch (Exception e) {
 			throw new UTGBShellException(e);
