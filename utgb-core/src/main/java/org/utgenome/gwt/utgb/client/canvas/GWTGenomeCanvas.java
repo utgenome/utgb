@@ -234,7 +234,7 @@ public class GWTGenomeCanvas extends Composite {
 
 	public int pixelPositionOnWindow(long indexOnGenome) {
 		double v = (indexOnGenome - startIndexOnGenome) * (double) windowWidth;
-		double v2 = v / (endIndexOnGenome - startIndexOnGenome);
+		double v2 = v / (endIndexOnGenome - startIndexOnGenome + 1);
 		return (int) v2;
 	}
 

@@ -98,7 +98,7 @@ class Ruler {
 	public void updateTickUnit(int windowWidth, long s, long e) {
 		// update tick unit
 		e++;
-		long range = (e > s) ? e - s : s - e;
+		long range = (e > s) ? e - s + 1 : s - e + 1;
 		if (range <= 0)
 			range = 1;
 		tickRangeOnGenome = suitableTickRangeOnGenome(range);
@@ -116,7 +116,7 @@ class Ruler {
 		assert (s <= e);
 		panel.setSize(windowWidth + "px", RULER_HEIGHT + "px");
 		e++;
-		long range = (e > s) ? e - s : s - e;
+		long range = (e > s) ? e - s + 1 : s - e + 1;
 		if (range <= 0)
 			range = 1;
 

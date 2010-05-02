@@ -1,5 +1,5 @@
 
-.PHONY: install test release
+.PHONY: install test release-prepare release-perform
 
 
 install:
@@ -9,9 +9,13 @@ install:
 test: install
 	mvn test
 
-release:
-	mvn release:prepare
-	mvn release:perform
+
+RELEASE_OPT="-DlocalCheckout=true -DconnectionUrl=scm:hg:default"
+release-prepare:
+	mvn release:prepare $(RELEASE_OPT) 
+
+release-perform:
+	mvn release:perform $(RELEASE_OPT)
 
 
 clean:
