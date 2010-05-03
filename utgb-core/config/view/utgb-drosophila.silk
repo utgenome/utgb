@@ -1,0 +1,118 @@
+-track group
+  -id: 1
+  -class: org.utgenome.gwt.utgb.client.track.TrackGroup
+  -coordinate
+    -ref: drosophila:R4.1
+    -chr: 2L
+    -start: 0
+    -end: 100000
+    -pixel width: 600
+  -property
+    -name: UTGB Drosophila
+-track
+  -name: Tool Box
+  -height: 0
+  -pack: false
+  -class: org.utgenome.gwt.utgb.client.track.lib.ToolBoxTrack
+-track
+  -name: Scroll Button
+  -height: 0
+  -pack: false
+  -class: org.utgenome.gwt.utgb.client.track.lib.ScrollButtonTrack
+-track
+  -name: Species
+  -height: 0
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.SpeciesSelectTrack
+  -property
+    -targetProperty: species
+    -valueList: ["human","drosophila","medaka","monoshigeobata"]
+    -selectedValue: drosophila
+-track
+  -name: Revision
+  -height: 0
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.RevisionSelectTrack
+  -property
+    -targetProperty: revision
+    -valueList: ["R4.1","R5.1"]
+    -selectedValue: R4.1
+-track
+  -name: Target
+  -height: 0
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.TargetSelectTrack
+  -property
+    -targetProperty: target
+    -valueList: ["2L","2R","3L","3R","4","X","U"]
+    -selectedValue: 2L
+-track
+  -name: 5'SAGE Dme
+  -height: 0
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.LegacyTrack
+  -property
+    -revision: R4.1
+    -species: drosophila
+    -name: 5'SAGE Dme
+    -baseURL: http://dev.utgenome.org/~utgb/api/browserview/default/easytrack/easygenetrack.php/dbtype=dbaccess/trackname=5pSageDme/tracktype=gene
+    -target: 2L
+    -offset: 0
+-track
+  -name: 5'SAGE Dmw
+  -height: 0
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.LegacyTrack
+  -property
+    -revision: R4.1
+    -species: drosophila
+    -name: 5'SAGE Dmw
+    -baseURL: http://dev.utgenome.org/~utgb/api/browserview/default/easytrack/easygenetrack.php/dbtype=dbaccess/trackname=5pSageDmw/tracktype=gene
+    -target: 2L
+    -offset: 0
+-track
+  -name: FlyBase CDS
+  -height: 0
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.LegacyTrack
+  -property
+    -revision: R4.1
+    -species: drosophila
+    -name: FlyBase CDS
+    -baseURL: http://dev.utgenome.org/~utgb/api/browserview/default/easytrack/easygenetrack.php/dbtype=dbaccess/trackname=FlyBaseCDS/tracktype=gene
+    -target: 2L
+    -offset: 0
+-track
+  -name: FlyBase Transcript
+  -height: 0
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.LegacyTrack
+  -property
+    -revision: R4.1
+    -species: drosophila
+    -name: FlyBase Transcript
+    -baseURL: http://dev.utgenome.org/~utgb/api/browserview/default/easytrack/easygenetrack.php/dbtype=dbaccess/trackname=FlyBaseTranscript/tracktype=gene
+    -target: 2L
+    -offset: 0
+-track
+  -name: FlyBase GSVector
+  -height: 0
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.LegacyTrack
+  -property
+    -revision: R4.1
+    -species: drosophila
+    -name: FlyBase GSVector
+    -baseURL: http://dev.utgenome.org/~utgb/api/browserview/default/easytrack/easygenetrack.php/dbtype=dbaccess/trackname=GSvector/tracktype=gene
+    -target: 2L
+    -offset: 0
+-track
+  -name: Debug Toolbox
+  -height: 0
+  -pack: false
+  -class: org.utgenome.gwt.utgb.client.track.lib.debug.DebugToolBoxTrack
+-track
+  -name: Load and Store Track
+  -height: 0
+  -pack: false
+  -class: org.utgenome.gwt.utgb.client.track.lib.LoadAndStoreTrack

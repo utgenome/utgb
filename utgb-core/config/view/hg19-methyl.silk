@@ -1,0 +1,93 @@
+-track group
+  -id: 1
+  -class: org.utgenome.gwt.utgb.client.track.TrackGroup
+  -coordinate
+    -ref: human:hg19
+    -chr: chr21
+    -start: 11013222
+    -end: 11023222
+    -pixel width: 700
+  -property
+    -name: human
+-track
+  -name: UTGB Navigator
+  -height: 41
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.NavigatorTrack
+  -property
+    -sequenceList: [{"species":"human", "revision":["hg19","hg18","hg17"]},{"species":"mouse", "revision":["mm9"]},{"species":"drosophila", "revision":["dm3"]}]
+-track
+  -name: Keyword Search
+  -height: 0
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.KeywordSearchTrack
+  -property
+    -keyword.examples: ["Scaffold number (e.g. scaffold123)","GenBank accession number (e.g. BJ013363)","UniGene cluster identifier (e.g. Ola.5710)","Clone number (e.g. MF01SSA159G06)"]
+    -species.scope: any
+-track
+  -name: DB Selector
+  -height: 0
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.DBSelectTrack
+  -property
+    -favoriteGroup: ["org/utgenome/leo/bss/20091119/bss_all", "org/utgenome/leo/bss/20091014/bss_all"]
+-track
+  -name: Chromosome Map
+  -height: 0
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.ChromosomeMapTrack
+  -property
+    -displayType: rotate
+    -trackBaseURL: utgb-core/ChromosomeMap
+    -type: image
+-track
+  -name: Sequence Overview
+  -height: 14
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.SequenceRulerTrack
+  -property
+    -leftMargin: 100
+    -ruler.length: 300000000
+-track
+  -name: Ruler
+  -height: 14
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.RulerTrack
+  -property
+    -leftMargin: 100
+-track
+  -name: Refseq Genes
+  -height: 0
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.GeneCanvasTrack
+  -property
+    -changeParamOnClick: refseq.query
+    -openURLOnClick: http://www.ncbi.nlm.nih.gov/entrez/viewer.fcgi?val=%q
+-track
+  -name: Sequence
+  -height: 0
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.GenomeTrack
+  -property
+    -trackBaseURL: utgb-core/Sequence.png?%q
+    -leftMargin: 100
+    -type: image
+-track
+  -name: BSS 454 Reads
+  -height: 0
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.BSSCanvasTrack
+  -property
+    -changeParamOnClick: bss.query
+-track
+  -name: BSS Read Alignment
+  -height: 200
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.GenomeTrack
+  -property
+    -queryParams: bss.query,dbGroup,dbName
+    -monitorWindowChange: false
+    -monitorCoordinateChange: false
+    -trackBaseURL: utgb-core/BSSReadView
+    -leftMargin: 0
+    -type: frame

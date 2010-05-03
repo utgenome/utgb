@@ -1,0 +1,37 @@
+-track group
+  -id: 1
+  -class: org.utgenome.gwt.utgb.client.track.TrackGroup
+  -coordinate
+    -ref: human:hg17
+    -chr: chr1
+    -start: 1
+    -end: 1000
+    -pixel width: 700
+  -property
+    -name: root
+-track
+  -name: Tool Box
+  -height: 14
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.ToolBoxTrack
+-track
+  -name: UTGB Navigator
+  -height: 41
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.NavigatorTrack
+  -property
+    -speciesList: ["human"]
+-track
+  -name: Sequence Ruler
+  -height: 21
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.SequenceRulerTrack
+  -property
+    -leftMargin: 100
+-track
+  -name: Track Ruler
+  -height: 21
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.RulerTrack
+  -property
+    -leftMargin: 100

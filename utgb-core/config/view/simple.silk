@@ -1,0 +1,43 @@
+-track group
+  -id: 1
+  -class: org.utgenome.gwt.utgb.client.track.TrackGroup
+  -coordinate
+    -ref: human:hg17
+    -chr: chr22
+    -start: 29870562
+    -end: 29922562
+    -pixel width: 800
+  -property
+    -name: root
+-track
+  -name: UTGB Navigator
+  -height: 41
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.NavigatorTrack
+  -property
+    -sequenceList: [{"species":"human", "revision":["hg18","hg17"]},{"species":"medaka", "revision":["version1.0", "version0.9"]}]
+-track
+  -name: Sequence Overview
+  -height: 14
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.SequenceRulerTrack
+  -property
+    -leftMargin: 100
+-track
+  -name: Ruler
+  -height: 14
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.RulerTrack
+  -property
+    -leftMargin: 100
+-track
+  -name: Refseq
+  -height: 0
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.old.OldUTGBTrack
+  -property
+    -descriptionXMLURL: ["http://dev.utgenome.org/~utgb/human/tracks/hg17/refseq.xml"]
+-track
+  -height: 0
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.GeneCanvasTrack

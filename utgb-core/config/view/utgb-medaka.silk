@@ -1,0 +1,47 @@
+-track group
+  -id: 1
+  -class: org.utgenome.gwt.utgb.client.track.TrackGroup
+  -coordinate
+    -ref: medaka:version1.0
+    -chr: scaffold1
+    -start: 1
+    -end: 100
+    -pixel width: 800
+  -property
+    -name: root
+-track
+  -name: UTGB Navigator
+  -height: 41
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.NavigatorTrack
+  -property
+    -sequenceList: [{"species":"medaka", "revision":["version1.0", "version0.9"]}]
+-track
+  -name: Keyword Search
+  -height: 0
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.KeywordSearchTrack
+  -property
+    -keyword.examples: ["Scaffold number (e.g. scaffold123)","GenBank accession number (e.g. BJ013363)","UniGene cluster identifier (e.g. Ola.5710)","Clone number (e.g. MF01SSA159G06)"]
+-track
+  -name: Sequence Overview
+  -height: 14
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.SequenceRulerTrack
+  -property
+    -leftMargin: 100
+    -ruler.length: 10000
+-track
+  -name: Ruler
+  -height: 14
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.RulerTrack
+  -property
+    -leftMargin: 100
+-track
+  -name: predictedNucleosomePosition
+  -height: 40
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.old.OldUTGBTrack
+  -property
+    -descriptionXMLURL: ["http://medaka3.gi.k.u-tokyo.ac.jp/~ssksn/nucleosome_position_tracks/common/nucleosome_position_description.xml"]

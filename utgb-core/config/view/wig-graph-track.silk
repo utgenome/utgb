@@ -1,0 +1,49 @@
+-track group
+  -id: 1
+  -class: org.utgenome.gwt.utgb.client.track.TrackGroup
+  -coordinate
+    -ref: human:hg19
+    -chr: chr19
+    -start: 59307000
+    -end: 59314000
+    -pixel width: 700
+  -property
+    -name: human
+-track
+  -name: UTGB Navigator
+  -height: 41
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.NavigatorTrack
+  -property
+    -sequenceList: [{"species":"human", "revision":["hg19","hg18","hg17"]},{"species":"mouse", "revision":["mm9"]},{"species":"drosophila", "revision":["dm3"]}]
+-track
+  -name: Keyword Search
+  -height: 0
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.KeywordSearchTrack
+  -property
+    -keyword.examples: ["Scaffold number (e.g. scaffold123)","GenBank accession number (e.g. BJ013363)","UniGene cluster identifier (e.g. Ola.5710)","Clone number (e.g. MF01SSA159G06)"]
+    -species.scope: any
+-track
+  -name: Sequence Overview
+  -height: 14
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.SequenceRulerTrack
+  -property
+    -leftMargin: 100
+-track
+  -name: Ruler
+  -height: 14
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.RulerTrack
+  -property
+    -leftMargin: 100
+-track
+  -name: WIG Graph Track Demo
+  -height: 100
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.WIGGraphCanvasTrack
+  -property
+    -isLog: true
+    -fileName: db/sample.wig.sqlite
+    -maxValue: 1200

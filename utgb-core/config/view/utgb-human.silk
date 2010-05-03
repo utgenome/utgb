@@ -1,0 +1,65 @@
+-track group
+  -id: 1
+  -class: org.utgenome.gwt.utgb.client.track.TrackGroup
+  -coordinate
+    -ref: human:hg17
+    -chr: chr1
+    -start: 1
+    -end: 1000
+    -pixel width: 700
+  -property
+    -name: root
+-track
+  -name: Tool Box
+  -height: 14
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.ToolBoxTrack
+-track
+  -name: UTGB Navigator
+  -height: 41
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.NavigatorTrack
+  -property
+    -sequenceList: [{"species":"human", "revision":["hg18", "hg17"]}]
+-track
+  -name: Sequence Ruler
+  -height: 21
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.SequenceRulerTrack
+  -property
+    -leftMargin: 100
+-track
+  -name: Track Ruler
+  -height: 21
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.RulerTrack
+  -property
+    -leftMargin: 100
+-track
+  -name: Base Color
+  -height: 21
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.LegacyTrack
+  -property
+    -revision: hg17
+    -baseURL: http://human.utgenome.org/utgb-human/base-color/subsequence.png?database=human:hg17
+    -offset: 0
+-track
+  -height: 16
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.old.OldUTGBTrack
+  -property
+    -descriptionXMLURL: ["http://dev.utgenome.org/~utgb/human/tracks/hg17/gwt/refseq.xml"]
+-track
+  -height: 16
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.old.OldUTGBTrack
+  -property
+    -descriptionXMLURL: ["http://dev.utgenome.org/~utgb/human/tracks/hg17/gwt/refseqUniq.xml"]
+-track
+  -name: Solid Sample
+  -height: 16
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.old.OldUTGBTrack
+  -property
+    -descriptionXMLURL: ["http://dev.utgenome.org/~utgb/human/tracks/hg17/SolidSample.xml"]

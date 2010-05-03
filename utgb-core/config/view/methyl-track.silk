@@ -1,0 +1,86 @@
+-track group
+  -id: 1
+  -class: org.utgenome.gwt.utgb.client.track.TrackGroup
+  -coordinate
+    -ref: medaka:version1.0
+    -chr: scaffold1
+    -start: 1
+    -end: 10000
+    -pixel width: 800
+  -property
+    -name: root
+-track
+  -name: UTGB Navigator
+  -height: 41
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.NavigatorTrack
+  -property
+    -sequenceList: [{"species":"medaka", "revision":["version1.0"]}]
+-track
+  -name: Keyword Search
+  -height: 0
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.KeywordSearchTrack
+  -property
+    -keyword.examples: ["Scaffold number (e.g. scaffold123)","GenBank accession number (e.g. BJ013363)","UniGene cluster identifier (e.g. Ola.5710)","Clone number (e.g. MF01SSA159G06)"]
+-track
+  -name: Sequence Overview
+  -height: 14
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.SequenceRulerTrack
+  -property
+    -leftMargin: 100
+    -ruler.length: 1000000
+-track
+  -name: Ruler
+  -height: 14
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.RulerTrack
+  -property
+    -leftMargin: 100
+-track
+  -name: Blastura Methylation
+  -height: 100
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.GenomeTrack
+  -property
+    -trackBaseURL: utgb-core/MethylViewer?db=blastura&%q
+    -leftMargin: 100
+    -type: image
+-track
+  -name: Liver Methylation
+  -height: 100
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.GenomeTrack
+  -property
+    -trackBaseURL: utgb-core/MethylViewer?db=liver&%q
+    -leftMargin: 100
+    -type: image
+-track
+  -name: predictedNucleosomePosition
+  -height: 40
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.old.OldUTGBTrack
+  -property
+    -descriptionXMLURL: ["http://medaka3.gi.k.u-tokyo.ac.jp/~ssksn/nucleosome_position_tracks/common/nucleosome_position_description.xml"]
+-track
+  -name: GC content Track
+  -height: 30
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.old.OldUTGBTrack
+  -property
+    -descriptionXMLURL: ["http://utgenome.org/UTGBMedaka/description/GCContent.xml"]
+-track
+  -name: BaseColor
+  -height: 0
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.old.OldUTGBRulerTrack
+  -property
+    -descriptionXMLURL: ["http://medaka3.gi.k.u-tokyo.ac.jp/~ssksn/descriptions/basecolortrack.xml"]
+-track
+  -name: HNI Alignment
+  -height: 0
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.old.OldUTGBTrack
+  -property
+    -descriptionXMLURL: ["http://medaka3.utgenome.org/~ssksn/HNI_SNPs/v1.0/HNI_SNPs_description.xml","http://medaka3.utgenome.org/~ssksn/HNI_SNPs/v0.9/HNI_SNPs_description.xml"]
