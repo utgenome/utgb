@@ -37,11 +37,14 @@ import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.bio.WigGraphData;
 import org.utgenome.gwt.utgb.client.track.bean.SearchResult;
 import org.utgenome.gwt.utgb.client.track.bean.TrackBean;
+import org.utgenome.gwt.utgb.client.view.TrackView;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 
 public interface BrowserServiceAsync extends RemoteService {
+
+	public void getTrackView(String viewName, AsyncCallback<TrackView> view);
 
 	public void getHTTPContent(String url, AsyncCallback<String> callback);
 

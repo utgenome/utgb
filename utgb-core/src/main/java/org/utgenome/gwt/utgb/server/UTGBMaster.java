@@ -98,12 +98,17 @@ public class UTGBMaster implements ServletContextListener {
 		return master.config;
 	}
 
-	protected static UTGBConfig loadUTGBConfig() throws UTGBException {
-
-		// load the configuration file
+	public static String getProjectRootFolder() throws UTGBException {
 		String projectRootFolder = (String) getVariable("projectRoot");
 		if (projectRootFolder == null)
 			throw new UTGBException("not in the project root folder, or a file 'config/common.silk' is not found");
+		return projectRootFolder;
+	}
+
+	protected static UTGBConfig loadUTGBConfig() throws UTGBException {
+
+		// load the configuration file
+		String projectRootFolder = getProjectRootFolder();
 
 		String env = (String) getVariable("environment");
 		if (env == null) {

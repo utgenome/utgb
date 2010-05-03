@@ -52,6 +52,8 @@ import org.utgenome.format.fasta.CompactFASTA;
 import org.utgenome.format.sam.SAM2SilkReader;
 import org.utgenome.format.wig.WIGDatabaseReader;
 import org.utgenome.gwt.utgb.client.BrowserService;
+import org.utgenome.gwt.utgb.client.UTGBClientErrorCode;
+import org.utgenome.gwt.utgb.client.UTGBClientException;
 import org.utgenome.gwt.utgb.client.bean.DatabaseEntry;
 import org.utgenome.gwt.utgb.client.bean.track.TrackDescription;
 import org.utgenome.gwt.utgb.client.bio.AlignmentResult;
@@ -63,6 +65,7 @@ import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.bio.WigGraphData;
 import org.utgenome.gwt.utgb.client.track.bean.SearchResult;
 import org.utgenome.gwt.utgb.client.track.bean.TrackBean;
+import org.utgenome.gwt.utgb.client.view.TrackView;
 import org.utgenome.gwt.utgb.server.app.BEDViewer;
 import org.utgenome.gwt.utgb.server.app.ChromosomeMap.Comparator4ChrName;
 import org.utgenome.gwt.utgb.server.util.WebApplicationResource;
@@ -112,6 +115,30 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 		 * _connectionPool = new ConnectionPoolImpl(SQLite.driverName, SQLite.getDatabaseAddress("mock/tracklist.db"));
 		 * _dbAccess = new DatabaseAccess(_connectionPool); _query = new SQLiteAccess(_dbAccess);
 		 */
+	}
+
+	private static String sanitizeViewName(String name) {
+		return name.replaceAll("\\.", "");
+	}
+
+	public TrackView getTrackView(String viewName) throws UTGBClientException {
+
+		File viewFile = new File("config/view", sanitizeViewName(viewName) + ".silk");
+		try {
+			File viewFilePath = new File(UTGBMaster.getProjectRootFolder(), viewFile.getPath());
+			_logger.info(String.format("loading view:" + viewFilePath));
+			if (!viewFilePath.exists())
+				throw new UTGBClientException(UTGBClientErrorCode.MISSING_FILES, String.format("%s is not found", viewFile));
+
+			TrackView v = Lens.loadSilk(TrackView.class, new FileReader(viewFilePath));
+			return v;
+		}
+		catch (UTGBException e) {
+			throw new UTGBClientException(UTGBClientErrorCode.NOT_IN_PROJECT_ROOT, String.format("not in the project root"));
+		}
+		catch (Exception e) {
+			throw new UTGBClientException(UTGBClientErrorCode.PARSE_ERROR, String.format("parse error (%s): ", e));
+		}
 	}
 
 	public String getDataModelParameter(String amoebaQuery) {

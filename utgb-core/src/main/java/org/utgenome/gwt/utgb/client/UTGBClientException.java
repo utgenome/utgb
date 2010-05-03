@@ -28,51 +28,53 @@ import java.io.Serializable;
 
 /**
  * @author leo
- *
+ * 
  */
-public class UTGBClientException extends Exception implements Serializable
-{
+public class UTGBClientException extends Exception implements Serializable {
 
-    /**
+	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
+	private UTGBClientErrorCode errorCode = UTGBClientErrorCode.UNKNOWN;
+
 	/**
      * 
      */
-    public UTGBClientException()
-    {
-        super();
-    }
+	public UTGBClientException() {
+		super();
+	}
 
-    /**
-     * @param message
-     * @param cause
-     */
-    public UTGBClientException(String message, Throwable cause)
-    {
-        super(message, cause);
-    }
+	/**
+	 * @param message
+	 * @param cause
+	 */
+	public UTGBClientException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    /**
-     * @param message
-     */
-    public UTGBClientException(String message)
-    {
-        super(message);
-    }
+	/**
+	 * @param message
+	 */
+	public UTGBClientException(String message) {
+		super(message);
+	}
 
-    /**
-     * @param cause
-     */
-    public UTGBClientException(Throwable cause)
-    {
-        super(cause);
-    }
+	/**
+	 * @param cause
+	 */
+	public UTGBClientException(Throwable cause) {
+		super(cause);
+	}
+
+	public UTGBClientException(UTGBClientErrorCode code, String message) {
+		super(message);
+		this.errorCode = code;
+	}
+
+	public UTGBClientErrorCode getErrorCode() {
+		return this.errorCode;
+	}
 
 }
-
-
-
-
