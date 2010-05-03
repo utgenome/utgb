@@ -1,12 +1,5 @@
-usage: action [option] ACTION_PATH
+usage: upgrade 
 
-Add a new action handler. For example, when the package in the config/track-config.xml is 'myapp',   
+Upgrading your UTGB project. 
+
  
- > utgb action Hello 
-
-creates a new action handler myapp/app/Hello.java in src/main/java folder.  
-
-You can use a path notation to specify the action handler name 
- > utgb-shell add-action admin/Login 
-to create a file, myapp/app/admin/Login.java. 
-

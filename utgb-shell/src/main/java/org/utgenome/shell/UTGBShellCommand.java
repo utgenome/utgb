@@ -70,6 +70,10 @@ public abstract class UTGBShellCommand implements Comparable<UTGBShellCommand> {
 		return null;
 	};
 
+	public File getProjectRoot() {
+		return new File(globalOption.projectDir);
+	}
+
 	public boolean isInProjectRoot() {
 		return isInProjectRoot(globalOption.projectDir);
 	}

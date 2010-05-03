@@ -24,10 +24,11 @@
 //--------------------------------------
 package org.utgenome.config;
 
+import java.io.StringReader;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.utgenome.config.OldViewXML;
 import org.utgenome.gwt.utgb.client.view.TrackView;
 import org.xerial.lens.Lens;
 import org.xerial.util.FileResource;
@@ -48,11 +49,12 @@ public class OldViewXMLTest {
 	@Test
 	public void load() throws Exception {
 		OldViewXML ov = Lens.loadXML(OldViewXML.class, FileResource.open(OldViewXMLTest.class, "bed.xml"));
-		_logger.info(Lens.toSilk(ov));
 
 		TrackView tv = ov.toTrackView();
-		_logger.info(Lens.toSilk(tv));
+		String silk = Lens.toSilk(tv);
 
+		TrackView tv2 = Lens.loadSilk(TrackView.class, new StringReader(silk));
+		_logger.info(Lens.toSilk(tv2));
 	}
 
 }
