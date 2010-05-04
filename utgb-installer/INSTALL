@@ -1,0 +1,21 @@
+
+To sign the generated JAR file, you need to describe the following settings in your $HOME/.m2/settings.xml file
+
+  <profiles>
+	<profile>
+	  <id>myks</id>
+	  <properties>
+        <ks.alias>utgb</ks.alias>
+        <ks.keystore>(key store location)</ks.keystore>
+        <ks.storepass>(key store pass)</ks.storepass>
+        <ks.keypass>(key pass)</ks.keypass>
+      </properties>
+	</profile>
+  </profiles>
+
+Deploy the project artifact with -P option (profile selector)
+
+> mvn deploy -P myks
+
+
+
