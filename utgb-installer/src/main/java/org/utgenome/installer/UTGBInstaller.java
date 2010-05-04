@@ -64,7 +64,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
-import javax.swing.ProgressMonitor;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
@@ -155,19 +154,12 @@ public class UTGBInstaller {
 	class GUIPanel {
 
 		final JFrame f = new JFrame();
-		final JLabel iLabel = new JLabel(installationFolder);
-		final JButton iButton = new JButton("Change");
-		final JButton next = new JButton("Install >");
-		final JTextPane console = new JTextPane();
-		final JScrollPane consolePane = new JScrollPane(console);
 
-		final JTabbedPane tabPane = new JTabbedPane(JTabbedPane.TOP);
-		final JPanel statusPanel = new JPanel();
-		final JLabel statusMessage = new JLabel();
+		// progress bar
 		final JProgressBar progressBar = new JProgressBar();
 
-		StyledDocument log;
-		ProgressMonitor pm;
+		// version selector
+		private StyledDocument log;
 
 		private ExecutorService exec = Executors.newFixedThreadPool(1);
 
@@ -175,14 +167,11 @@ public class UTGBInstaller {
 			buildGUI();
 		}
 
-		public void buildGUI() {
+		public JPanel buildInstallPanel() {
 
-			f.setTitle("UTGB Toolkit");
-
-			ImageIcon imageIcon = new ImageIcon(FileResource.find(UTGBInstaller.class, "utgb-icon.png"));
-			f.setIconImage(imageIcon.getImage());
-
-			// track project folder
+			final JButton iButton = new JButton("Change");
+			final JButton next = new JButton("Install >");
+			final JLabel iLabel = new JLabel(installationFolder);
 
 			JPanel iPanel = new JPanel();
 			iPanel.setLayout(new BoxLayout(iPanel, BoxLayout.LINE_AXIS));
@@ -233,35 +222,16 @@ public class UTGBInstaller {
 			buttonPanel.add(next);
 			buttonPanel.add(cancel);
 
-			// console panel
-			consolePane.setPreferredSize(new Dimension(600, 200));
-			consolePane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-			log = console.getStyledDocument();
-
-			_logger.setLogWriter(new LogWriter() {
-
-				public void log(Logger logger, LogLevel logLevel, Object message) throws IOException {
-					if (message == null)
-						return;
-					try {
-						String logMessage = message.toString();
-						statusMessage.setText(logMessage);
-						log.insertString(log.getLength(), String.format("[%s] %s\n", logger.getLoggerShortName(), logMessage), null);
-						console.setCaretPosition(log.getLength());
-					}
-					catch (BadLocationException e) {
-						System.err.println(e);
-					}
-				}
-
-			});
-
 			// install panel layout
 			JPanel installPanel = new JPanel();
 			installPanel.setLayout(new BoxLayout(installPanel, BoxLayout.Y_AXIS));
 			installPanel.add(iPanel);
 			installPanel.add(buttonPanel);
 
+			return installPanel;
+		}
+
+		public JPanel buildShellPanel() {
 			// shell panel
 			JPanel shellPanel = new JPanel();
 			GridBagLayout gridbag = new GridBagLayout();
@@ -306,60 +276,117 @@ public class UTGBInstaller {
 			JTextField commandLineBox = new JTextField();
 			shellPanel.add(commandLineBox, c);
 
+			return shellPanel;
+		}
+
+		public void buildGUI() {
+
+			f.setTitle("UTGB Toolkit");
+
+			ImageIcon imageIcon = new ImageIcon(FileResource.find(UTGBInstaller.class, "utgb-icon.png"));
+			f.setIconImage(imageIcon.getImage());
+
+			// Build install panel
+			JPanel installPanel = buildInstallPanel();
+			JPanel shellPanel = buildShellPanel();
+
 			// set tab panel
+			final JTabbedPane tabPane = new JTabbedPane(JTabbedPane.TOP);
 			tabPane.addTab("Install", installPanel);
 			tabPane.addTab("Shell", shellPanel);
 
-			// status panel
-			statusPanel.setLayout(new GridBagLayout());
-			c.anchor = GridBagConstraints.WEST;
-			c.fill = GridBagConstraints.NONE;
-			c.weightx = 0.0;
-			c.gridy = 0;
-			c.gridx = 0;
-			statusPanel.add(statusMessage, c);
-			c.anchor = GridBagConstraints.EAST;
-			c.fill = GridBagConstraints.NONE;
-			c.weightx = 1.0;
-			c.gridy = 0;
-			c.gridx = 1;
-			statusPanel.add(progressBar, c);
+			final JTextPane console = new JTextPane();
+			final JScrollPane consolePane = new JScrollPane(console);
+			{
+				// console panel
+				consolePane.setPreferredSize(new Dimension(600, 200));
+				consolePane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+				log = console.getStyledDocument();
 
-			// layout panel
-			JPanel layoutPanel = new JPanel();
-			//layoutPanel.setLayout(new BoxLayout(layoutPanel, BoxLayout.Y_AXIS));
-			layoutPanel.setLayout(new GridBagLayout());
-			c.anchor = GridBagConstraints.PAGE_START;
-			c.fill = GridBagConstraints.BOTH;
-			c.weightx = 1.0;
-			c.weighty = 0.0;
-			c.gridy = 0;
-			c.gridx = 0;
-			layoutPanel.add(tabPane, c);
-			c.anchor = GridBagConstraints.CENTER;
-			c.fill = GridBagConstraints.BOTH;
-			c.weightx = 1.0;
-			c.weighty = 1.0;
-			c.gridy = 1;
-			c.gridx = 0;
-			layoutPanel.add(consolePane, c);
-			c.anchor = GridBagConstraints.PAGE_END;
-			c.fill = GridBagConstraints.BOTH;
-			c.weightx = 1.0;
-			c.weighty = 0.0;
-			c.gridy = 2;
-			c.gridx = 0;
-			layoutPanel.add(statusPanel, c);
+			}
 
+			final JPanel statusPanel = new JPanel();
+			{
+				// status panel
+				final JLabel statusMessage = new JLabel();
+
+				statusPanel.setLayout(new GridBagLayout());
+				GridBagConstraints c = new GridBagConstraints();
+				c.anchor = GridBagConstraints.WEST;
+				c.fill = GridBagConstraints.NONE;
+				c.weightx = 0.0;
+				c.gridy = 0;
+				c.gridx = 0;
+				statusPanel.add(Box.createHorizontalStrut(2));
+				c.anchor = GridBagConstraints.WEST;
+				c.fill = GridBagConstraints.NONE;
+				c.weightx = 0.0;
+				c.gridy = 0;
+				c.gridx = 1;
+				statusPanel.add(statusMessage, c);
+				c.anchor = GridBagConstraints.EAST;
+				c.fill = GridBagConstraints.NONE;
+				c.weightx = 1.0;
+				c.gridy = 0;
+				c.gridx = 2;
+				statusPanel.add(progressBar, c);
+
+				_logger.setLogWriter(new LogWriter() {
+
+					public void log(Logger logger, LogLevel logLevel, Object message) throws IOException {
+						if (message == null)
+							return;
+						try {
+							String logMessage = message.toString();
+							statusMessage.setText(logMessage);
+							log.insertString(log.getLength(), String.format("[%s] %s\n", logger.getLoggerShortName(), logMessage), null);
+							console.setCaretPosition(log.getLength());
+						}
+						catch (BadLocationException e) {
+							System.err.println(e);
+						}
+					}
+
+				});
+			}
+
+			JPanel layoutPanel;
+			{
+				// layout panel 
+				layoutPanel = new JPanel();
+				//layoutPanel.setLayout(new BoxLayout(layoutPanel, BoxLayout.Y_AXIS));
+				layoutPanel.setLayout(new GridBagLayout());
+				GridBagConstraints c = new GridBagConstraints();
+				c.anchor = GridBagConstraints.PAGE_START;
+				c.fill = GridBagConstraints.BOTH;
+				c.weightx = 1.0;
+				c.weighty = 0.0;
+				c.gridy = 0;
+				c.gridx = 0;
+				layoutPanel.add(tabPane, c);
+				c.anchor = GridBagConstraints.CENTER;
+				c.fill = GridBagConstraints.BOTH;
+				c.weightx = 1.0;
+				c.weighty = 1.0;
+				c.gridy = 1;
+				c.gridx = 0;
+				layoutPanel.add(consolePane, c);
+				c.anchor = GridBagConstraints.PAGE_END;
+				c.fill = GridBagConstraints.BOTH;
+				c.weightx = 1.0;
+				c.weighty = 0.0;
+				c.gridy = 2;
+				c.gridx = 0;
+				layoutPanel.add(statusPanel, c);
+			}
+
+			// display the panel
 			f.add(layoutPanel);
-
 			f.pack();
-
 			f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 			f.setLocation((int) d.getWidth() / 4, (int) d.getHeight() / 4);
 			f.setVisible(true);
-
 		}
 
 		/**
@@ -413,7 +440,6 @@ public class UTGBInstaller {
 
 				// Download the jar file
 				int jarSize = conn.getContentLength();
-				pm = new ProgressMonitor(f, String.format("Downloading UTGB Toolkit verison %s ...", m.release), "", 0, jarSize);
 				progressBar.setMaximum(jarSize);
 				progressBar.setValue(0);
 				progressBar.setStringPainted(true);
@@ -504,6 +530,12 @@ public class UTGBInstaller {
 		public String groupID;
 		public String artifactID;
 		public String release;
+
+		public Versions versions = new Versions();
+
+		public static class Versions {
+			public ArrayList<String> version = new ArrayList<String>();
+		}
 
 		public String getStandaloneJAR() {
 			return String.format("%s/%s-%s-standalone.jar", release, artifactID, release);
