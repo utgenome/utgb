@@ -327,10 +327,29 @@ public class UTGBInstaller {
 
 			// layout panel
 			JPanel layoutPanel = new JPanel();
-			layoutPanel.setLayout(new BoxLayout(layoutPanel, BoxLayout.Y_AXIS));
-			layoutPanel.add(tabPane);
-			layoutPanel.add(consolePane);
-			layoutPanel.add(statusPanel);
+			//layoutPanel.setLayout(new BoxLayout(layoutPanel, BoxLayout.Y_AXIS));
+			layoutPanel.setLayout(new GridBagLayout());
+			c.anchor = GridBagConstraints.PAGE_START;
+			c.fill = GridBagConstraints.BOTH;
+			c.weightx = 1.0;
+			c.weighty = 0.0;
+			c.gridy = 0;
+			c.gridx = 0;
+			layoutPanel.add(tabPane, c);
+			c.anchor = GridBagConstraints.CENTER;
+			c.fill = GridBagConstraints.BOTH;
+			c.weightx = 1.0;
+			c.weighty = 1.0;
+			c.gridy = 1;
+			c.gridx = 0;
+			layoutPanel.add(consolePane, c);
+			c.anchor = GridBagConstraints.PAGE_END;
+			c.fill = GridBagConstraints.BOTH;
+			c.weightx = 1.0;
+			c.weighty = 0.0;
+			c.gridy = 2;
+			c.gridx = 0;
+			layoutPanel.add(statusPanel, c);
 
 			f.add(layoutPanel);
 
@@ -419,7 +438,7 @@ public class UTGBInstaller {
 					}
 					fout.close();
 					success = true;
-					_logger.info("Done: " + jarSize + " bytes");
+					_logger.info("Downloaded " + jarSize + " bytes");
 					progressBar.setValue(0);
 					progressBar.setStringPainted(false);
 
