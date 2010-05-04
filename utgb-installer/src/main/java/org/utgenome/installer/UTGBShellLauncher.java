@@ -57,7 +57,7 @@ public class UTGBShellLauncher {
 			utgbRealm = classWorld.newRealm("utgb", pcl);
 		}
 
-		utgbRealm.addURL(utgbShellJAR.toURL());
+		utgbRealm.addURL(utgbShellJAR.toURI().toURL());
 		utgbRealm.importFrom(cl, "org.codehaus.plexus.classworlds");
 
 		Launcher launcher = new Launcher();

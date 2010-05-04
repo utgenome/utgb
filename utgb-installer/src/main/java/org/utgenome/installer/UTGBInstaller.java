@@ -39,7 +39,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Writer;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -60,6 +59,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
@@ -75,6 +75,8 @@ import org.xerial.lens.Lens;
 import org.xerial.util.FileResource;
 import org.xerial.util.FileResource.FileInJarArchive;
 import org.xerial.util.io.VirtualFile;
+import org.xerial.util.log.LogLevel;
+import org.xerial.util.log.LogWriter;
 import org.xerial.util.log.Logger;
 import org.xerial.util.opt.Option;
 import org.xerial.util.opt.OptionParser;
@@ -160,6 +162,9 @@ public class UTGBInstaller {
 		final JScrollPane consolePane = new JScrollPane(console);
 
 		final JTabbedPane tabPane = new JTabbedPane(JTabbedPane.TOP);
+		final JPanel statusPanel = new JPanel();
+		final JLabel statusMessage = new JLabel();
+		final JProgressBar progressBar = new JProgressBar();
 
 		StyledDocument log;
 		ProgressMonitor pm;
@@ -233,28 +238,22 @@ public class UTGBInstaller {
 			consolePane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 			log = console.getStyledDocument();
 
-			_logger.setOutputWriter(new Writer() {
-				@Override
-				public void close() throws IOException {
+			_logger.setLogWriter(new LogWriter() {
 
-				}
-
-				@Override
-				public void flush() throws IOException {
-
-				}
-
-				@Override
-				public void write(char[] cbuf, int off, int len) throws IOException {
-
+				public void log(Logger logger, LogLevel logLevel, Object message) throws IOException {
+					if (message == null)
+						return;
 					try {
-						log.insertString(log.getLength(), new String(cbuf, off, len), null);
+						String logMessage = message.toString();
+						statusMessage.setText(logMessage);
+						log.insertString(log.getLength(), String.format("[%s] %s\n", logger.getLoggerShortName(), logMessage), null);
 						console.setCaretPosition(log.getLength());
 					}
 					catch (BadLocationException e) {
 						System.err.println(e);
 					}
 				}
+
 			});
 
 			// install panel layout
@@ -308,14 +307,30 @@ public class UTGBInstaller {
 			shellPanel.add(commandLineBox, c);
 
 			// set tab panel
-			tabPane.addTab("Shell", shellPanel);
 			tabPane.addTab("Install", installPanel);
+			tabPane.addTab("Shell", shellPanel);
+
+			// status panel
+			statusPanel.setLayout(new GridBagLayout());
+			c.anchor = GridBagConstraints.WEST;
+			c.fill = GridBagConstraints.NONE;
+			c.weightx = 0.0;
+			c.gridy = 0;
+			c.gridx = 0;
+			statusPanel.add(statusMessage, c);
+			c.anchor = GridBagConstraints.EAST;
+			c.fill = GridBagConstraints.NONE;
+			c.weightx = 1.0;
+			c.gridy = 0;
+			c.gridx = 1;
+			statusPanel.add(progressBar, c);
 
 			// layout panel
 			JPanel layoutPanel = new JPanel();
 			layoutPanel.setLayout(new BoxLayout(layoutPanel, BoxLayout.Y_AXIS));
 			layoutPanel.add(tabPane);
 			layoutPanel.add(consolePane);
+			layoutPanel.add(statusPanel);
 
 			f.add(layoutPanel);
 
@@ -377,17 +392,16 @@ public class UTGBInstaller {
 						parentFolder.mkdirs();
 				}
 
-				// download jar
+				// Download the jar file
 				int jarSize = conn.getContentLength();
-				pm = new ProgressMonitor(f, "Downloading UTGB Toolkit", "", 0, jarSize);
-				pm.setMillisToDecideToPopup(0);
-				pm.setMillisToPopup(0);
-				pm.setProgress(0);
+				pm = new ProgressMonitor(f, String.format("Downloading UTGB Toolkit verison %s ...", m.release), "", 0, jarSize);
+				progressBar.setMaximum(jarSize);
+				progressBar.setValue(0);
+				progressBar.setStringPainted(true);
 
 				boolean success = false;
 				try {
-
-					_logger.info("downloading UTGB Toolkit");
+					_logger.info(String.format("Downloading UTGB Toolkit verison %s ...", m.release));
 					File tmp = File.createTempFile(localJAR.getName(), ".download.tmp");
 					tmp.deleteOnExit();
 
@@ -401,14 +415,13 @@ public class UTGBInstaller {
 						readTotal += readBytes;
 						fout.write(buf, 0, readBytes);
 
-						pm.setProgress(readTotal);
-						if (pm.isCanceled()) {
-							throw new Exception("cancelled");
-						}
+						progressBar.setValue(readTotal);
 					}
 					fout.close();
 					success = true;
-					_logger.info("download done: " + jarSize + " bytes");
+					_logger.info("Done: " + jarSize + " bytes");
+					progressBar.setValue(0);
+					progressBar.setStringPainted(false);
 
 					copyFile(new BufferedInputStream(new FileInputStream(tmp)), localJAR);
 
@@ -429,11 +442,12 @@ public class UTGBInstaller {
 								Runtime.getRuntime().exec(new String[] { "chmod", "755", target.getAbsolutePath() }).waitFor();
 							}
 							catch (Throwable e) {
+								throw new Exception(e);
 							}
 						}
 					}
 
-					_logger.info("installation completed.");
+					_logger.info("Installation completed.");
 				}
 				catch (Exception e) {
 					_logger.error(e);
@@ -506,7 +520,7 @@ public class UTGBInstaller {
 		for (Enumeration<JarEntry> entryEnum = jf.entries(); entryEnum.hasMoreElements();) {
 			JarEntry jarEntry = entryEnum.nextElement();
 
-			String physicalURL = "jar:" + jarFile.toURL() + "!/" + jarEntry.getName();
+			String physicalURL = "jar:" + jarFile.toURI().toURL() + "!/" + jarEntry.getName();
 			URL jarFileURL = new URL(physicalURL);
 
 			String logicalName = extractLogicalName(packagePath, jarEntry.getName());
