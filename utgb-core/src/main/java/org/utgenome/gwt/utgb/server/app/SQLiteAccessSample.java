@@ -57,7 +57,7 @@ public class SQLiteAccessSample extends RequestHandlerBase {
 	public void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		ArrayList<String> speciesList = new ArrayList<String>();
 		try {
-			// this will load database file from utgb-core/resource folder
+			// this will load database file specified in config/development.silk file 
 			DatabaseAccess sqlite = UTGBMaster.getDatabaseAccess("legacy-track");
 			List<String> queryResult = sqlite.singleColumnQuery("select distinct species from tracks order by species", "species", String.class);
 			_logger.debug("species: " + queryResult);

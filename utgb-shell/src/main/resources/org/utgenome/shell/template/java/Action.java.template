@@ -37,8 +37,8 @@ public class $actionClass$ extends WebTrackBase
     // public String species;   /* human, mouse, etc. */
     // public String revision;  /* hg19, mm9 ... */
     // public String name;	    /* chr1, chr2, ... */
-    // public long start;       /* start position on the genome */
-    // public long end;         /* end position on the genome (inclusive) */ 
+    // public int start;       /* start position on the genome */
+    // public int end;         /* end position on the genome (inclusive) */ 
     // public int width;        /* track pixel width */
 	
 	/**

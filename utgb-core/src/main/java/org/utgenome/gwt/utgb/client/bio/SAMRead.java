@@ -25,7 +25,7 @@
 package org.utgenome.gwt.utgb.client.bio;
 
 import java.io.Serializable;
-//import java.util.Properties;
+
 import org.utgenome.gwt.utgb.client.util.Properties;
 
 /**
@@ -34,7 +34,7 @@ import org.utgenome.gwt.utgb.client.util.Properties;
  * @author yoshimura
  * 
  */
-public class SAMRead implements Serializable{
+public class SAMRead implements Serializable {
 	//schema record(qname, flag, rname, start, end, mapq, cigar, mrnm, mpos, isize, seq, qual, tag*)
 	public String qname;
 	public int flag;
@@ -48,48 +48,28 @@ public class SAMRead implements Serializable{
 	public String seq;
 	public String qual;
 	public Properties tag;
+
 	public String refSeq;
-	
+
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		
+
 		sb.append("flag=" + flag);
 		sb.append(", mapq=" + mapq);
 		sb.append(", cigar=" + cigar);
 		sb.append(", iSize=" + iSize);
 		sb.append(", qual=\"" + qual + "\"");
 		sb.append(", tag=" + tag);
-		
+
 		return sb.toString();
 	}
-	
-/*	public static enum Strand {
-		FORWARD, REVERSE
+
+	public boolean isSense() {
+		return (flag & SAMReadFlag.FLAG_STRAND_OF_QUERY) == 0;
 	}
 
-	public static final int FLAG_PAIRED_READ = 0x001;
-	public static final int FLAG_MAPPED_IN_A_PROPER_PAIR = 0x002;
-	public static final int FLAG_QUERY_IS_UNMAPPED = 0x004;
-	public static final int FLAG_MATE_IS_UNMAPPED = 0x008;
-	public static final int FLAG_STRAND_OF_QUERY = 0x0010;
-	public static final int FLAG_STRAND_OF_MATE = 0x0020;
-	public static final int FLAG_IS_FIRST_READ = 0x0040;
-	public static final int FLAG_IS_SECOND_READ = 0x0080;
-	public static final int FLAG_NOT_PRIMARY = 0x0100;
-	public static final int FLAG_FAILS_QUALITY_CHECK = 0x0200;
-	public static final int FLAG_PCR_OR_OPTICAL_DUPLICATE = 0x0400;
-
-	public Strand strand;
-
-	public String seq;
-	public String cigar;
-	public int pos;
-	public int mPos;
-
-	public int isize;
-
-	public SAMRead() {
-
-	}*/
+	public boolean isAntiSense() {
+		return (flag & SAMReadFlag.FLAG_STRAND_OF_QUERY) == 1;
+	}
 
 }

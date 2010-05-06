@@ -34,9 +34,6 @@ public class FontPanel extends WebTrackBase {
 	private static final long serialVersionUID = 1L;
 	private static Logger _logger = Logger.getLogger(FontPanel.class);
 
-	static {
-	}
-
 	public FontPanel() {
 
 	}

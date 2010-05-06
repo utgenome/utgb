@@ -52,7 +52,7 @@ public class BStoreConfig {
         public String path = defaultPath();
 
         private static String defaultPath() {
-            return new File(System.getProperty("user.home"), ".utgb/b-store").getPath();
+            return new File(System.getProperty("user.home"), ".utgb/bstore").getPath();
         }
     }
 

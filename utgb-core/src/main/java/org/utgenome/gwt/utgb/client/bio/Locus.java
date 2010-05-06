@@ -26,10 +26,15 @@ package org.utgenome.gwt.utgb.client.bio;
 
 import java.io.Serializable;
 
+import org.utgenome.gwt.utgb.client.util.Properties;
+
 /**
  * Locus on a genome sequence.
  * 
  * The interval (start, end) in this class is ensured to be start <= end.
+ * 
+ * The range specified in this Locus is [start, end) (inclusive, exclusive). For example, when start = 1, end = 5, [1,
+ * 5), this locus contains 1, 2, 3 and 4.
  * 
  * @author leo
  * 
@@ -41,10 +46,18 @@ public class Locus implements Serializable, Comparable<Locus> {
 	private static final long serialVersionUID = 1L;
 
 	String name;
-	int start = -1; // 1-origin
-	int end = -1;
+	int start = -1; // 1-origin (inclusive, -1 means undefined value)
+	int end = -1; // 1-origin (exclusive, -1 means undefined value)
 	String strand = "+";
 	String color = null;
+	public Properties properties;
+
+	public boolean hasProperties() {
+		if (properties == null)
+			return false;
+		else
+			return !properties.isEmpty();
+	}
 
 	@Override
 	public String toString() {

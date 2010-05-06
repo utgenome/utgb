@@ -1,5 +1,4 @@
-package org.utgenome.format;
-
 /**
  * parsers for various data formats
  */
+package org.utgenome.format;

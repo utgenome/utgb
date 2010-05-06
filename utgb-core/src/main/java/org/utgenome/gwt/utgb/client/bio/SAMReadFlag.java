@@ -16,50 +16,32 @@
 //--------------------------------------
 // utgb-core Project
 //
-// FASTASequence.java
-// Since: 2009/01/15
+// SAMReadFlag.java
+// Since: May 6, 2010
 //
 // $URL$ 
 // $Author$
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.bio;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 /**
- * Genome sequence
+ * Flag bits of SAM reads
  * 
  * @author leo
  * 
  */
-public class FASTASequence implements IsSerializable {
+public class SAMReadFlag {
 
-	String description = "";
-	String sequence = "";
-	String name = "";
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public String getSequence() {
-		return sequence;
-	}
-
-	public void setSequence(String sequence) {
-		this.sequence = sequence;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
+	public static final int FLAG_PAIRED_READ = 0x001;
+	public static final int FLAG_MAPPED_IN_A_PROPER_PAIR = 0x002;
+	public static final int FLAG_QUERY_IS_UNMAPPED = 0x004;
+	public static final int FLAG_MATE_IS_UNMAPPED = 0x008;
+	public static final int FLAG_STRAND_OF_QUERY = 0x0010;
+	public static final int FLAG_STRAND_OF_MATE = 0x0020;
+	public static final int FLAG_IS_FIRST_READ = 0x0040;
+	public static final int FLAG_IS_SECOND_READ = 0x0080;
+	public static final int FLAG_NOT_PRIMARY = 0x0100;
+	public static final int FLAG_FAILS_QUALITY_CHECK = 0x0200;
+	public static final int FLAG_PCR_OR_OPTICAL_DUPLICATE = 0x0400;
 
 }

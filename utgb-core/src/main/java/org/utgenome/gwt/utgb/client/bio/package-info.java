@@ -23,9 +23,13 @@
 // $Author$
 //--------------------------------------
 /**
- * Biological data objects, such as Gene, Exon, Locus on genomes, etc. 
- * The objects defined in this package is used as standard data structure 
- * for manipulating biological data through web actions, objects stored in databases, etc. 
+ * Biological data objects for Google Web Toolkit RPC (Remote Procedure Call).
+ * This package includes standard biological data objects, such as Gene, Exon, Locus on genomes, etc.
+ *  
+ * The objects defined in this package is used as data structure 
+ * for manipulating biological data through web actions, objects stored in databases, etc.
+ * 
+ *  
  * @author leo
  */
 package org.utgenome.gwt.utgb.client.bio;

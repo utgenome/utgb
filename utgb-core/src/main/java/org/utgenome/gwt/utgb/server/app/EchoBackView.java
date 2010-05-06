@@ -37,7 +37,7 @@ public class EchoBackView extends WebTrackBase {
 
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd-HHmmss");
 		String timeStamp = formatter.format(new Date(time));
-		String fileName = "utgb-view-" + timeStamp + ".xml";
+		String fileName = "utgb-view-" + timeStamp + ".silk";
 		response.setContentType("application/octet-stream");
 		response.addHeader("Content-disposition", "attachment; filename=\"" + fileName + "\"");
 
