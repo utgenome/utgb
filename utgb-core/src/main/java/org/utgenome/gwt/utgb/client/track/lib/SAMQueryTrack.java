@@ -144,8 +144,8 @@ public class SAMQueryTrack extends TrackBase {
 
 			height = getDefaultWindowHeight();
 			// get graph x-range
-			long s = w.getStartOnGenome();
-			long e = w.getEndOnGenome();
+			int s = w.getStartOnGenome();
+			int e = w.getEndOnGenome();
 			int width = w.getWindowWidth() - leftMargin;
 
 			labelPanel.clear();
