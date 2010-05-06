@@ -249,7 +249,7 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>2.2</version>
         <configuration>
-          <doctitle>UTGB Toolkit ${utgb.version}</doctitle>
+          <doctitle>UTGB Toolkit ${project.version}</doctitle>
           <aggregate>true</aggregate>
           <locale>en_US</locale>
 <!--          <stylesheetfile>${basedir}/javadoc.css</stylesheetfile> -->
