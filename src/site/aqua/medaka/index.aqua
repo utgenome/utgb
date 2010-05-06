@@ -3,7 +3,7 @@
 [Medaka_hd_rR.jpg] 
 
 == Genome Browser
-*{b|New! 2008 May} UTGB {i|Medaka} Browser is available: http://utgenome.org/UTGBMedaka [images/logo_small.gif]
+*{b|New! 2008 May} UTGB {i|Medaka} Browser is available: http://utgenome.org/UTGBMedaka
 
 == Online Mapping
 <html>
@@ -30,7 +30,7 @@ function getID() {
 <DIV align=center>
 <TABLE width=400>
   <FORM name="mapping" method=post action=http://157.82.238.56/webapp/onlineMapping/Mapping>
-  <INPUT value=http://medaka.utgenome.org type=hidden name=baseurl> 
+  <INPUT value=http://utgenome.org/UTGBMedaka type=hidden name=baseurl> 
   <TBODY>
   <TR>
     <TD class=noclor align=middle>
@@ -90,10 +90,10 @@ function getID() {
 
 == Information
 * [news.html News & Recent Changes]
-* [http://medaka3.gi.k.u-tokyo.ac.jp/~kobayashi/FAQ/index.html FAQ]
-* UTGB Medaka is developed at [http://mlab.cb.k.u-tokyo.ac.jp/index_eng.html Morishita Laboratory]
+* [faq.html FAQ]
+* UTGB Medaka is developed at [http://mlab.cb.k.u-tokyo.ac.jp/en/ Morishita Laboratory]
 === Supports
-** If you have feature requests or find some errors in our browser, please post reports to [http://groups.google.com/group/utgb-users the UTGB public discussion forum].
+* If you have feature requests or find some errors in our browser, please post reports to [http://groups.google.com/group/utgb-users the UTGB public discussion forum].
 
 == Browser Screenshot
 [snapshot.png]
