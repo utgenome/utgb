@@ -28,6 +28,7 @@ import org.utgenome.gwt.utgb.client.track.bean.TrackBean;
 import org.utgenome.gwt.utgb.client.track.lib.ToolBoxTrack;
 import org.utgenome.gwt.utgb.client.util.Properties;
 import org.utgenome.gwt.utgb.client.util.xml.XMLWriter;
+import org.utgenome.gwt.utgb.client.view.TrackView;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Widget;
@@ -50,8 +51,8 @@ import com.google.gwt.xml.client.Node;
  * <li>Initialize your track in the {@link #setUp(TrackFrame, TrackGroup)} method, which is automatically called by the
  * track group to which your track belongs.</li>
  * <li>Use {@link #getFrame()}, to interact with {@link TrackFrame} surrounding your track.</li>
- * <li>Use {@link #getTrackGroup()} to retrieve shared properties (e.g., {@link TrackGroupProperty},
- * {@link TrackWindow} , etc.) among tracks within the currnt track group.</li>
+ * <li>Use {@link #getTrackGroup()} to retrieve shared properties (e.g., {@link TrackGroupProperty}, {@link TrackWindow}
+ * , etc.) among tracks within the currnt track group.</li>
  * <li>Override {@link #onChangeTrackGroupProperty(TrackGroupPropertyChange)} and
  * {@link #onChangeTrackWindow(TrackWindow)} to recieve changes on properties of the track group. These methods become
  * active only after {@link #setUp(TrackFrame, TrackGroup)} is called.</li>
@@ -267,6 +268,13 @@ public interface Track extends TrackEntry, TrackGroupPropertyChangeListener {
 	public void loadXML(Node trackNode);
 
 	public void load(TrackBean trackInfo);
+
+	/**
+	 * load the track parameters from the view definition
+	 * 
+	 * @param view
+	 */
+	public void loadView(TrackView.Track view);
 
 	/**
 	 * Override this method to save internal state of this track into a {@link Properties} object

@@ -27,22 +27,24 @@ package org.utgenome.format.bed;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.utgenome.gwt.utgb.server.app.BEDViewer.BEDQuery;
+import org.xerial.lens.Lens;
+import org.xerial.util.FileResource;
 
-public class BED2SilkReaderTest
-{
+public class BED2SilkReaderTest {
 
-    @Before
-    public void setUp() throws Exception
-    {}
+	@Before
+	public void setUp() throws Exception {
+	}
 
-    @After
-    public void tearDown() throws Exception
-    {}
+	@After
+	public void tearDown() throws Exception {
+	}
 
-    @Test
-    public void testGen() throws Exception
-    {
-
-    }
+	@Test
+	public void testGen() throws Exception {
+		BED2SilkReader r = new BED2SilkReader(FileResource.open(BED2SilkReaderTest.class, "sample.bed"));
+		BEDQuery q = Lens.loadSilk(BEDQuery.class, r);
+	}
 
 }

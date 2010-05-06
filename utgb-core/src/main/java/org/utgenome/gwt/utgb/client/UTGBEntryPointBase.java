@@ -38,6 +38,7 @@ import org.utgenome.gwt.utgb.client.track.UTGBProperty;
 import org.utgenome.gwt.utgb.client.util.BrowserInfo;
 import org.utgenome.gwt.utgb.client.util.Properties;
 import org.utgenome.gwt.utgb.client.util.StringUtil;
+import org.utgenome.gwt.utgb.client.view.TrackView;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -46,11 +47,6 @@ import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.http.client.Request;
-import com.google.gwt.http.client.RequestBuilder;
-import com.google.gwt.http.client.RequestCallback;
-import com.google.gwt.http.client.RequestException;
-import com.google.gwt.http.client.Response;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
@@ -145,7 +141,7 @@ public class UTGBEntryPointBase implements EntryPoint {
 			loadView(queryParam.get("view"));
 		}
 		else {
-			loadView("default-view.xml");
+			loadView("default-view");
 		}
 
 		RootPanel rootPanel = RootPanel.get("utgb-main");
@@ -162,37 +158,30 @@ public class UTGBEntryPointBase implements EntryPoint {
 	 * 
 	 * @param viewXMLPath
 	 */
-	public void loadView(String viewXMLURL) {
-		if (viewXMLURL.startsWith("http://")) {
-			GenomeBrowser.getService().getHTTPContent(viewXMLURL, new AsyncCallback<String>() {
-				public void onFailure(Throwable arg0) {
-					GWT.log("view retrieval failed", null);
-				}
+	public void loadView(String viewName) {
 
-				public void onSuccess(String view) {
-					updateView(view);
-				}
-			});
-		}
-		else {
-			String url = GWT.getModuleBaseURL() + "view/" + viewXMLURL;
-			RequestBuilder viewGetRequest = new RequestBuilder(RequestBuilder.GET, url);
-			viewGetRequest.setHeader("Cache-Control", "no-cache");
-			try {
-				viewGetRequest.sendRequest(null, new RequestCallback() {
-					public void onError(Request arg0, Throwable arg1) {
-						GWT.log("view retrieval failed", null);
-					}
+		GenomeBrowser.getService().getTrackView(viewName, new AsyncCallback<TrackView>() {
+			public void onFailure(Throwable e) {
 
-					public void onResponseReceived(Request req, Response resp) {
-						updateView(resp.getText());
-					}
-				});
 			}
-			catch (RequestException e) {
-				GWT.log(e.getMessage(), e);
+
+			public void onSuccess(TrackView v) {
+				try {
+					mainGroup = TrackLoader.createTrackGroup(v);
+
+					// apply the URL query parameters
+					String hash = BrowserInfo.getHash();
+					if (hash != null && hash.length() > 0)
+						hash = hash.substring(1);
+					setQueryParam(mainGroup, hash);
+					trackGroup.addTrackGroup(mainGroup);
+					mainGroup.addTrackGroupPropertyChangeListener(new URLRewriter(mainGroup));
+				}
+				catch (UTGBClientException e) {
+					GWT.log(e.getMessage(), e);
+				}
 			}
-		}
+		});
 
 	}
 
@@ -279,17 +268,6 @@ public class UTGBEntryPointBase implements EntryPoint {
 
 		return properties;
 
-	}
-
-	private void updateView(String viewXML) {
-		mainGroup = TrackLoader.createTrackGroupFromXML(viewXML);
-		// apply the URL query parameters
-		String hash = BrowserInfo.getHash();
-		if (hash != null && hash.length() > 0)
-			hash = hash.substring(1);
-		setQueryParam(mainGroup, hash);
-		trackGroup.addTrackGroup(mainGroup);
-		mainGroup.addTrackGroupPropertyChangeListener(new URLRewriter(mainGroup));
 	}
 
 	public void main() {

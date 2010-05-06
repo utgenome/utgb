@@ -42,10 +42,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import net.sf.samtools.SAMFileReader;
+import net.sf.samtools.SAMRecord;
+import net.sf.samtools.SAMRecord.SAMTagAndValue;
 
 import org.utgenome.UTGBException;
 import org.utgenome.format.fasta.CompactFASTA;
@@ -66,13 +71,12 @@ import org.utgenome.gwt.utgb.client.bio.WigGraphData;
 import org.utgenome.gwt.utgb.client.track.bean.SearchResult;
 import org.utgenome.gwt.utgb.client.track.bean.TrackBean;
 import org.utgenome.gwt.utgb.client.view.TrackView;
+import org.utgenome.gwt.utgb.client.util.Properties;
 import org.utgenome.gwt.utgb.server.app.BEDViewer;
 import org.utgenome.gwt.utgb.server.app.ChromosomeMap.Comparator4ChrName;
 import org.utgenome.gwt.utgb.server.util.WebApplicationResource;
 import org.xerial.core.XerialException;
 import org.xerial.db.DBException;
-import org.xerial.db.sql.ConnectionPool;
-import org.xerial.db.sql.DatabaseAccess;
 import org.xerial.db.sql.ResultSetHandler;
 import org.xerial.db.sql.SQLExpression;
 import org.xerial.db.sql.sqlite.SQLiteAccess;
@@ -104,17 +108,8 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 	 */
 	private static final long serialVersionUID = 1L;
 
-	SQLiteAccess _query;
-
-	DatabaseAccess _dbAccess;
-
-	ConnectionPool _connectionPool;
-
 	public BrowserServiceImpl() throws DBException {
-		/*
-		 * _connectionPool = new ConnectionPoolImpl(SQLite.driverName, SQLite.getDatabaseAddress("mock/tracklist.db"));
-		 * _dbAccess = new DatabaseAccess(_connectionPool); _query = new SQLiteAccess(_dbAccess);
-		 */
+
 	}
 
 	private static String sanitizeViewName(String name) {
@@ -123,21 +118,37 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 
 	public TrackView getTrackView(String viewName) throws UTGBClientException {
 
-		File viewFile = new File("config/view", sanitizeViewName(viewName) + ".silk");
-		try {
-			File viewFilePath = new File(UTGBMaster.getProjectRootFolder(), viewFile.getPath());
-			_logger.info(String.format("loading view:" + viewFilePath));
-			if (!viewFilePath.exists())
-				throw new UTGBClientException(UTGBClientErrorCode.MISSING_FILES, String.format("%s is not found", viewFile));
+		if (viewName.startsWith("http://")) {
+			_logger.info(String.format("loading view: ", viewName));
+			String view = getHTTPContent(viewName);
+			try {
+				TrackView v = Lens.loadSilk(TrackView.class, new BufferedReader(new InputStreamReader(new URL(viewName).openStream())));
+				return v;
+			}
+			catch (IOException e) {
+				throw new UTGBClientException(UTGBClientErrorCode.MISSING_FILES, "failed to retrieve view from " + viewName);
+			}
+			catch (XerialException e) {
+				throw new UTGBClientException(UTGBClientErrorCode.PARSE_ERROR, "parse error: " + e.getMessage());
+			}
+		}
+		else {
+			File viewFile = new File("config/view", sanitizeViewName(viewName) + ".silk");
+			try {
+				File viewFilePath = new File(UTGBMaster.getProjectRootFolder(), viewFile.getPath());
+				_logger.info(String.format("loading view:" + viewFilePath));
+				if (!viewFilePath.exists())
+					throw new UTGBClientException(UTGBClientErrorCode.MISSING_FILES, String.format("%s is not found", viewFile));
 
-			TrackView v = Lens.loadSilk(TrackView.class, new FileReader(viewFilePath));
-			return v;
-		}
-		catch (UTGBException e) {
-			throw new UTGBClientException(UTGBClientErrorCode.NOT_IN_PROJECT_ROOT, String.format("not in the project root"));
-		}
-		catch (Exception e) {
-			throw new UTGBClientException(UTGBClientErrorCode.PARSE_ERROR, String.format("parse error (%s): ", e));
+				TrackView v = Lens.loadSilk(TrackView.class, new FileReader(viewFilePath));
+				return v;
+			}
+			catch (UTGBException e) {
+				throw new UTGBClientException(UTGBClientErrorCode.NOT_IN_PROJECT_ROOT, String.format("not in the project root"));
+			}
+			catch (Exception e) {
+				throw new UTGBClientException(UTGBClientErrorCode.PARSE_ERROR, String.format("parse error (%s): ", e));
+			}
 		}
 	}
 
@@ -619,4 +630,72 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 	public List<Gene> getBEDEntryList(String bedPath, ChrLoc location) {
 		return BEDViewer.query(bedPath, location);
 	}
+
+	public List<SAMRead> querySAMReadList(String bamFileName, String indexFileName, String refSeqFileName, String rname, int start, int end) {
+		final ArrayList<SAMRead> readDataList = new ArrayList<SAMRead>();
+
+		try {
+			_logger.info(WebTrackBase.getProjectRootPath() + "/" + bamFileName);
+			_logger.info(WebTrackBase.getProjectRootPath() + "/" + indexFileName);
+			_logger.info(WebTrackBase.getProjectRootPath() + "/" + refSeqFileName);
+			final CompactFASTA cf = new CompactFASTA(WebTrackBase.getProjectRootPath() + "/" + refSeqFileName);
+
+			SAMFileReader reader = new SAMFileReader( new File(WebTrackBase.getProjectRootPath() + "/" + bamFileName),
+					new File(WebTrackBase.getProjectRootPath() + "/" + indexFileName));
+
+			StopWatch st1 = new StopWatch();
+			Iterator<SAMRecord> iterator = reader.query(rname, start, end, true);
+			_logger.info("st1:"+st1.getElapsedTime());
+
+			while (iterator.hasNext()){
+				SAMRecord record = iterator.next();
+				_logger.info(record.format());
+				
+				// convert SAMRecord to SAMRead
+				SAMRead read = new SAMRead();
+				read.qname = record.getReadName();
+				read.flag = record.getFlags();
+				read.rname = record.getReferenceName();
+				read.start = record.getAlignmentStart();
+				read.end = record.getAlignmentEnd();
+				read.mapq = record.getMappingQuality();
+				read.cigar = record.getCigarString();
+				read.mrnm = record.getMateReferenceName();
+				read.iSize = record.getInferredInsertSize();
+				read.seq = record.getReadString();
+				read.qual = record.getBaseQualityString();
+				read.tag = new Properties();
+				for (SAMTagAndValue tag : record.getAttributes()) {
+					read.tag.add(tag.tag, String.valueOf(tag.value));
+				}
+				// get refseq
+				read.refSeq = cf.getSequence(read.rname, read.start - 1, read.end).toString();
+
+				readDataList.add(read);
+			}
+		}
+		catch (Exception e) {
+			_logger.error(e);
+		}
+		return readDataList;
+	}
+
+	public String getRefSeq(String refSeqFileName, String rname, int start, int end){
+		_logger.info(rname + ":" + start + "-" + end);
+		String refSeq = null;
+		try {
+			_logger.info(WebTrackBase.getProjectRootPath() + "/" + refSeqFileName);
+			final CompactFASTA cf = new CompactFASTA(WebTrackBase.getProjectRootPath() + "/" + refSeqFileName);
+
+			if(end - start > 10000) end = start + 10000;
+				
+			refSeq = cf.getSequence(rname, start - 1, end).toString();
+			_logger.info(refSeq);
+		}
+		catch (Exception e) {
+			_logger.error(e);
+		}
+		return refSeq;
+	}
+
 }

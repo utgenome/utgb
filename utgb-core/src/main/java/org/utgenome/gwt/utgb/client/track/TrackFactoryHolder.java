@@ -26,6 +26,8 @@ package org.utgenome.gwt.utgb.client.track;
 
 import java.util.HashMap;
 
+import org.utgenome.gwt.utgb.client.UTGBClientErrorCode;
+import org.utgenome.gwt.utgb.client.UTGBClientException;
 import org.utgenome.gwt.utgb.client.track.HasFactory.TrackGroupFactory;
 import org.utgenome.gwt.utgb.client.track.Track.TrackFactory;
 
@@ -33,49 +35,43 @@ import org.utgenome.gwt.utgb.client.track.Track.TrackFactory;
  * 
  * @author leo
  */
-public class TrackFactoryHolder
-{
+public class TrackFactoryHolder {
 
-    /**
-     * Non-constractable
-     */
-    private TrackFactoryHolder()
-    {}
+	/**
+	 * Non-constractable
+	 */
+	private TrackFactoryHolder() {
+	}
 
-    private static HashMap<String, TrackFactory> trackFactoryTable = new HashMap<String, TrackFactory>();
-    private static HashMap<String, TrackGroupFactory> trackGroupFactoryTable = new HashMap<String, TrackGroupFactory>();
+	private static HashMap<String, TrackFactory> trackFactoryTable = new HashMap<String, TrackFactory>();
+	private static HashMap<String, TrackGroupFactory> trackGroupFactoryTable = new HashMap<String, TrackGroupFactory>();
 
-    static
-    {
-        TrackFactorySetup.initialize();
-    }
+	static {
+		TrackFactorySetup.initialize();
+	}
 
-    public static void addTrackFactory(String absoluteTrackClassName, TrackFactory factory)
-    {
-        trackFactoryTable.put(absoluteTrackClassName, factory);
-    }
+	public static void addTrackFactory(String absoluteTrackClassName, TrackFactory factory) {
+		trackFactoryTable.put(absoluteTrackClassName, factory);
+	}
 
-    public static void addTrackGroupFactory(String absoluteTrackGroupClassName, TrackGroupFactory factory)
-    {
-        trackGroupFactoryTable.put(absoluteTrackGroupClassName, factory);
-    }
+	public static void addTrackGroupFactory(String absoluteTrackGroupClassName, TrackGroupFactory factory) {
+		trackGroupFactoryTable.put(absoluteTrackGroupClassName, factory);
+	}
 
-    public static TrackFactory getTrackFactory(String name) throws UnknownTrackException
-    {
-        TrackFactory factory = trackFactoryTable.get(name);
-        if (factory == null)
-            throw new UnknownTrackException("unknown track name: " + name);
-        else
-            return factory;
-    }
+	public static TrackFactory getTrackFactory(String name) throws UTGBClientException {
+		TrackFactory factory = trackFactoryTable.get(name);
+		if (factory == null)
+			throw new UTGBClientException(UTGBClientErrorCode.UNKNOWN_TRACK, "unknown track name: " + name);
+		else
+			return factory;
+	}
 
-    public static TrackGroupFactory getTrackGroupFactory(String name) throws UnknownTrackException
-    {
-        TrackGroupFactory factory = trackGroupFactoryTable.get(name);
-        if (factory == null)
-            throw new UnknownTrackException("unknown track group: " + name);
-        else
-            return factory;
-    }
+	public static TrackGroupFactory getTrackGroupFactory(String name) throws UTGBClientException {
+		TrackGroupFactory factory = trackGroupFactoryTable.get(name);
+		if (factory == null)
+			throw new UTGBClientException(UTGBClientErrorCode.UNKNOWN_TRACK_GROUP, "unknown track group: " + name);
+		else
+			return factory;
+	}
 
 }

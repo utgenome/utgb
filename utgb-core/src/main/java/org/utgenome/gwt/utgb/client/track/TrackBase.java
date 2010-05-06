@@ -32,6 +32,7 @@ import org.utgenome.gwt.utgb.client.util.xml.DOMUtil;
 import org.utgenome.gwt.utgb.client.util.xml.XMLAttribute;
 import org.utgenome.gwt.utgb.client.util.xml.XMLUtil;
 import org.utgenome.gwt.utgb.client.util.xml.XMLWriter;
+import org.utgenome.gwt.utgb.client.view.TrackView;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
@@ -190,6 +191,26 @@ public abstract class TrackBase implements Track {
 
 	public boolean isTrackGroup() {
 		return false;
+	}
+
+	public void loadView(TrackView.Track view) {
+		getTrackInfo().setTrackName(view.name);
+		Properties p = new Properties();
+		p.putAll(view.property);
+		p.put("height", Integer.toString(view.height));
+		p.put("pack", Boolean.toString(view.pack));
+
+		restoreProperties(view.property);
+	}
+
+	public TrackView.Track toView() {
+		TrackView.Track t = new TrackView.Track();
+		t.name = getName();
+		t.height = getWidget().getOffsetHeight();
+		t.class_ = getClassName();
+		t.pack = _frame.isPacked();
+		saveProperties(t.property);
+		return t;
 	}
 
 	public String toXML() {
