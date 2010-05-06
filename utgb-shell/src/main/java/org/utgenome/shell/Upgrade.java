@@ -35,6 +35,7 @@ import org.utgenome.config.UTGBConfig;
 import org.utgenome.gwt.utgb.client.view.TrackView;
 import org.utgenome.shell.Create.ScaffoldFileFilter;
 import org.xerial.lens.Lens;
+import org.xerial.silk.SilkWriter;
 import org.xerial.util.FileType;
 import org.xerial.util.StringUtil;
 import org.xerial.util.log.Logger;
@@ -109,9 +110,10 @@ public class Upgrade extends UTGBShellCommand {
 					_logger.info(String.format("generating %s from %s", newViewFile, viewXML));
 					OldViewXML oldView = Lens.loadXML(OldViewXML.class, new FileReader(viewXML));
 					TrackView tv = oldView.toTrackView();
-					FileWriter out = new FileWriter(newViewFile);
-					out.append(Lens.toSilk(tv));
-					out.close();
+					SilkWriter silk = new SilkWriter(new FileWriter(newViewFile));
+					silk.preamble();
+					silk.toSilk(tv);
+					silk.close();
 				}
 			}
 		}

@@ -1,0 +1,71 @@
+-track group
+  -id: 1
+  -class: org.utgenome.gwt.utgb.client.track.TrackGroup
+  -coordinate
+    -ref: human:version1.0
+    -chr: chr1
+    -start: 1
+    -end: 100000
+    -pixel width: 700
+  -property
+    -name: root
+-track
+  -name: UTGB Navigator
+  -height: 41
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.NavigatorTrack
+  -property
+    -sequenceList: [{"species":"human", "revision":["hg18", "hg17"]},{"species":"medaka", "revision":["version1.0", "version0.9"]}]
+-track
+  -name: Sequence Overview
+  -height: 14
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.SequenceRulerTrack
+  -property
+    -leftMargin: 100
+-track
+  -name: Ruler
+  -height: 14
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.RulerTrack
+  -property
+    -leftMargin: 100
+-track
+  -name: DAS Track
+  -height: 0
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.DASTrack
+  -property
+    -dasBaseURL: http://www.ensembl.org/das/Homo_sapiens.NCBI36.transcript/
+    -trackBaseURL: utgb-core/DASViewer
+    -dasType: refGene
+    -leftMargin: 100
+    -type: image
+-track
+  -name: BED Track
+  -height: 0
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.BEDTrack
+  -property
+    -trackBaseURL: utgb-core/BEDViewer
+    -fileName: db/sample.bed
+    -leftMargin: 100
+    -type: image
+-track
+  -name: RefSeq Gene Demo
+  -height: 0
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.GenomeTrack
+  -property
+    -trackBaseURL: utgb-core/GeneViewer?%q
+    -leftMargin: 100
+    -type: image
+-track
+  -name: RefSeq Gene Table Demo
+  -height: 100
+  -pack: true
+  -class: org.utgenome.gwt.utgb.client.track.lib.GenomeTrack
+  -property
+    -trackBaseURL: utgb-core/GeneViewer.tab?%q
+    -leftMargin: 100
+    -type: frame
