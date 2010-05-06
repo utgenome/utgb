@@ -35,6 +35,8 @@ release-prepare:
 release-perform:
 	$(MVN) release:perform $(RELEASE_OPT)
 
+release-rollback:
+	$(MVN) release:rollback
 
 clean:
 	$(MVN) clean
