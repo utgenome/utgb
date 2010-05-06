@@ -40,5 +40,4 @@ public class SAMReader {
 	public static Iterable<SAMRecord> getSAMRecord(InputStream samFile) {
 		return new SAMFileReader(samFile);
 	}
-
 }
