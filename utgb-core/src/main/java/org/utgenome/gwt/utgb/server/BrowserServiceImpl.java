@@ -42,10 +42,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import net.sf.samtools.SAMFileReader;
+import net.sf.samtools.SAMRecord;
+import net.sf.samtools.SAMRecord.SAMTagAndValue;
 
 import org.utgenome.UTGBException;
 import org.utgenome.format.fasta.CompactFASTA;
@@ -66,6 +71,7 @@ import org.utgenome.gwt.utgb.client.bio.WigGraphData;
 import org.utgenome.gwt.utgb.client.track.bean.SearchResult;
 import org.utgenome.gwt.utgb.client.track.bean.TrackBean;
 import org.utgenome.gwt.utgb.client.view.TrackView;
+import org.utgenome.gwt.utgb.client.util.Properties;
 import org.utgenome.gwt.utgb.server.app.BEDViewer;
 import org.utgenome.gwt.utgb.server.app.ChromosomeMap.Comparator4ChrName;
 import org.utgenome.gwt.utgb.server.util.WebApplicationResource;
@@ -619,4 +625,72 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 	public List<Gene> getBEDEntryList(String bedPath, ChrLoc location) {
 		return BEDViewer.query(bedPath, location);
 	}
+
+	public List<SAMRead> querySAMReadList(String bamFileName, String indexFileName, String refSeqFileName, String rname, int start, int end) {
+		final ArrayList<SAMRead> readDataList = new ArrayList<SAMRead>();
+
+		try {
+			_logger.info(WebTrackBase.getProjectRootPath() + "/" + bamFileName);
+			_logger.info(WebTrackBase.getProjectRootPath() + "/" + indexFileName);
+			_logger.info(WebTrackBase.getProjectRootPath() + "/" + refSeqFileName);
+			final CompactFASTA cf = new CompactFASTA(WebTrackBase.getProjectRootPath() + "/" + refSeqFileName);
+
+			SAMFileReader reader = new SAMFileReader( new File(WebTrackBase.getProjectRootPath() + "/" + bamFileName),
+					new File(WebTrackBase.getProjectRootPath() + "/" + indexFileName));
+
+			StopWatch st1 = new StopWatch();
+			Iterator<SAMRecord> iterator = reader.query(rname, start, end, true);
+			_logger.info("st1:"+st1.getElapsedTime());
+
+			while (iterator.hasNext()){
+				SAMRecord record = iterator.next();
+				_logger.info(record.format());
+				
+				// convert SAMRecord to SAMRead
+				SAMRead read = new SAMRead();
+				read.qname = record.getReadName();
+				read.flag = record.getFlags();
+				read.rname = record.getReferenceName();
+				read.start = record.getAlignmentStart();
+				read.end = record.getAlignmentEnd();
+				read.mapq = record.getMappingQuality();
+				read.cigar = record.getCigarString();
+				read.mrnm = record.getMateReferenceName();
+				read.iSize = record.getInferredInsertSize();
+				read.seq = record.getReadString();
+				read.qual = record.getBaseQualityString();
+				read.tag = new Properties();
+				for (SAMTagAndValue tag : record.getAttributes()) {
+					read.tag.add(tag.tag, String.valueOf(tag.value));
+				}
+				// get refseq
+				read.refSeq = cf.getSequence(read.rname, read.start - 1, read.end).toString();
+
+				readDataList.add(read);
+			}
+		}
+		catch (Exception e) {
+			_logger.error(e);
+		}
+		return readDataList;
+	}
+
+	public String getRefSeq(String refSeqFileName, String rname, int start, int end){
+		_logger.info(rname + ":" + start + "-" + end);
+		String refSeq = null;
+		try {
+			_logger.info(WebTrackBase.getProjectRootPath() + "/" + refSeqFileName);
+			final CompactFASTA cf = new CompactFASTA(WebTrackBase.getProjectRootPath() + "/" + refSeqFileName);
+
+			if(end - start > 10000) end = start + 10000;
+				
+			refSeq = cf.getSequence(rname, start - 1, end).toString();
+			_logger.info(refSeq);
+		}
+		catch (Exception e) {
+			_logger.error(e);
+		}
+		return refSeq;
+	}
+
 }

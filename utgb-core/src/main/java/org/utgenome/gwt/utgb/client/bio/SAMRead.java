@@ -26,6 +26,7 @@ package org.utgenome.gwt.utgb.client.bio;
 
 import java.io.Serializable;
 //import java.util.Properties;
+
 import org.utgenome.gwt.utgb.client.util.Properties;
 
 /**

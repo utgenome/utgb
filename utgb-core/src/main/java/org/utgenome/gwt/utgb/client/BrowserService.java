@@ -91,4 +91,6 @@ public interface BrowserService extends RemoteService {
 
 	public List<Gene> getBEDEntryList(String bedPath, ChrLoc location);
 
+	public List<SAMRead> querySAMReadList(String bamFileName, String indexFileName, String refSeqFileName, String rname, int start, int end);
+	public String getRefSeq(String refSeqFileName, String rname, int start, int end);
 }
