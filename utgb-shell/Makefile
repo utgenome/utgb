@@ -35,9 +35,9 @@ $(ARCHIVE): $(JAVA)
 	$(MVN) package
 
 install: $(ARCHIVE) $(SCRIPT_DIR)/bin/utgb
-	mkdir -p $(PREFIX)	
+	mkdir -p "$(PREFIX)"
 	unzip -o $(ARCHIVE) -d target
-	cp -rp target/utgb/* $(PREFIX)
+	cp -rp target/utgb/* "$(PREFIX)"
 	rm -rf target/utgb
 
 dist:	
