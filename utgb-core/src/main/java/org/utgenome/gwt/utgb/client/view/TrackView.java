@@ -106,6 +106,11 @@ public class TrackView implements Serializable {
 		private static final long serialVersionUID = 1L;
 
 		/**
+		 * species name (optional)
+		 */
+		public String species;
+
+		/**
 		 * reference sequence name
 		 */
 		public String ref;

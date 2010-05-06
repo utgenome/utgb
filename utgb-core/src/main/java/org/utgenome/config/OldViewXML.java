@@ -91,11 +91,11 @@ public class OldViewXML {
 
 		// coordinate
 		TrackView.Coordinate c = new TrackView.Coordinate();
-		c.chr = trackGroup.getProperty("target");
-
 		c.start = trackGroup.groupProperties.trackWindow.start;
 		c.end = trackGroup.groupProperties.trackWindow.end;
-		c.ref = String.format("%s:%s", trackGroup.getProperty("species"), trackGroup.getProperty("revision"));
+		c.species = trackGroup.getProperty("species");
+		c.ref = trackGroup.getProperty("revision");
+		c.chr = trackGroup.getProperty("target");
 
 		c.pixelWidth = trackGroup.groupProperties.trackWindow.width;
 

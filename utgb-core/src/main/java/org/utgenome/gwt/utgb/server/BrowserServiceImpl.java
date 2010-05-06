@@ -71,8 +71,6 @@ import org.utgenome.gwt.utgb.server.app.ChromosomeMap.Comparator4ChrName;
 import org.utgenome.gwt.utgb.server.util.WebApplicationResource;
 import org.xerial.core.XerialException;
 import org.xerial.db.DBException;
-import org.xerial.db.sql.ConnectionPool;
-import org.xerial.db.sql.DatabaseAccess;
 import org.xerial.db.sql.ResultSetHandler;
 import org.xerial.db.sql.SQLExpression;
 import org.xerial.db.sql.sqlite.SQLiteAccess;
@@ -104,17 +102,8 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 	 */
 	private static final long serialVersionUID = 1L;
 
-	SQLiteAccess _query;
-
-	DatabaseAccess _dbAccess;
-
-	ConnectionPool _connectionPool;
-
 	public BrowserServiceImpl() throws DBException {
-		/*
-		 * _connectionPool = new ConnectionPoolImpl(SQLite.driverName, SQLite.getDatabaseAddress("mock/tracklist.db"));
-		 * _dbAccess = new DatabaseAccess(_connectionPool); _query = new SQLiteAccess(_dbAccess);
-		 */
+
 	}
 
 	private static String sanitizeViewName(String name) {
@@ -123,21 +112,37 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 
 	public TrackView getTrackView(String viewName) throws UTGBClientException {
 
-		File viewFile = new File("config/view", sanitizeViewName(viewName) + ".silk");
-		try {
-			File viewFilePath = new File(UTGBMaster.getProjectRootFolder(), viewFile.getPath());
-			_logger.info(String.format("loading view:" + viewFilePath));
-			if (!viewFilePath.exists())
-				throw new UTGBClientException(UTGBClientErrorCode.MISSING_FILES, String.format("%s is not found", viewFile));
+		if (viewName.startsWith("http://")) {
+			_logger.info(String.format("loading view: ", viewName));
+			String view = getHTTPContent(viewName);
+			try {
+				TrackView v = Lens.loadSilk(TrackView.class, new BufferedReader(new InputStreamReader(new URL(viewName).openStream())));
+				return v;
+			}
+			catch (IOException e) {
+				throw new UTGBClientException(UTGBClientErrorCode.MISSING_FILES, "failed to retrieve view from " + viewName);
+			}
+			catch (XerialException e) {
+				throw new UTGBClientException(UTGBClientErrorCode.PARSE_ERROR, "parse error: " + e.getMessage());
+			}
+		}
+		else {
+			File viewFile = new File("config/view", sanitizeViewName(viewName) + ".silk");
+			try {
+				File viewFilePath = new File(UTGBMaster.getProjectRootFolder(), viewFile.getPath());
+				_logger.info(String.format("loading view:" + viewFilePath));
+				if (!viewFilePath.exists())
+					throw new UTGBClientException(UTGBClientErrorCode.MISSING_FILES, String.format("%s is not found", viewFile));
 
-			TrackView v = Lens.loadSilk(TrackView.class, new FileReader(viewFilePath));
-			return v;
-		}
-		catch (UTGBException e) {
-			throw new UTGBClientException(UTGBClientErrorCode.NOT_IN_PROJECT_ROOT, String.format("not in the project root"));
-		}
-		catch (Exception e) {
-			throw new UTGBClientException(UTGBClientErrorCode.PARSE_ERROR, String.format("parse error (%s): ", e));
+				TrackView v = Lens.loadSilk(TrackView.class, new FileReader(viewFilePath));
+				return v;
+			}
+			catch (UTGBException e) {
+				throw new UTGBClientException(UTGBClientErrorCode.NOT_IN_PROJECT_ROOT, String.format("not in the project root"));
+			}
+			catch (Exception e) {
+				throw new UTGBClientException(UTGBClientErrorCode.PARSE_ERROR, String.format("parse error (%s): ", e));
+			}
 		}
 	}
 
