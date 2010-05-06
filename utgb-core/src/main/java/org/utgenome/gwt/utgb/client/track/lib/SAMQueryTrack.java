@@ -27,8 +27,6 @@ package org.utgenome.gwt.utgb.client.track.lib;
 import java.util.List;
 
 import org.utgenome.gwt.utgb.client.GenomeBrowser;
-import org.utgenome.gwt.utgb.client.UTGB;
-import org.utgenome.gwt.utgb.client.bio.Coordinate;
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.canvas.SAMCanvas;
 import org.utgenome.gwt.utgb.client.db.Value;
@@ -40,23 +38,16 @@ import org.utgenome.gwt.utgb.client.track.TrackConfig;
 import org.utgenome.gwt.utgb.client.track.TrackConfigChange;
 import org.utgenome.gwt.utgb.client.track.TrackFrame;
 import org.utgenome.gwt.utgb.client.track.TrackGroup;
-import org.utgenome.gwt.utgb.client.track.TrackGroupProperty;
-import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChange;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
-import org.utgenome.gwt.utgb.client.track.UTGBProperty;
 import org.utgenome.gwt.utgb.client.track.impl.TrackWindowImpl;
-import org.utgenome.gwt.utgb.client.ui.FormLabel;
 import org.utgenome.gwt.utgb.client.util.Properties;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -111,7 +102,6 @@ public class SAMQueryTrack extends TrackBase {
 		layoutTable.setWidth("100%");
 //		layoutTable.getCellFormatter().setWidth(0, 0, leftMargin + "px");
 		layoutTable.setWidget(1, 0, labelPanel);
-//		layoutTable.setWidget(0, 1, readListBox);
 		layoutTable.setWidget(1, 1, samCanvas);
 		
 	}
@@ -159,40 +149,25 @@ public class SAMQueryTrack extends TrackBase {
 			int width = w.getWindowWidth() - leftMargin;
 
 			labelPanel.clear();
-			for(SAMRead temp : readDataList){
-				FormLabel tempLabel = new FormLabel(temp.qname);
-				labelPanel.add(tempLabel,0,0);
-				labelWidth = tempLabel.getOffsetWidth() > labelWidth ? tempLabel.getOffsetWidth() : labelWidth;
-				labelPanel.remove(tempLabel);
-
-				tempLabel = new FormLabel(temp.rname);
-				labelPanel.add(tempLabel,0,0);
-				labelWidth = tempLabel.getOffsetWidth() > labelWidth ? tempLabel.getOffsetWidth() : labelWidth;
-				labelPanel.remove(tempLabel);
-
-				if(samCanvas.getReadWidth(temp.cigar) > width)
-					width = samCanvas.getReadWidth(temp.cigar);
-			}
-			labelPanel.setPixelSize(labelWidth, height);
+			labelPanel.setPixelSize(leftMargin, height);
 
 			samCanvas.clear();
 			samCanvas.setWindow(new TrackWindowImpl(width, s, e), leftMargin);
 			samCanvas.setC2T(isC2T);
 			samCanvas.setColorMode(colorMode);
 
-//	        if(isDebug)GWT.log("choosed : " + choosedReadName, null);
-	        
 			// draw data graph
-	        int count = 0;
-	        for(SAMRead read : readList){
-//	        	if(read.qname.equals(choosedReadName)){
-	        		samCanvas.drawSAMRead(count, read);
-	        		samCanvas.drawLabelPanel(count, read, labelPanel, leftMargin);
-	        		count++;
-//	        	}
-	        }
-//			refresh();
-			getFrame().loadingDone();
+//	        int count = 0;
+//	        for(SAMRead read : readList){
+//	        	samCanvas.drawSAMRead(count, read);
+//	        	samCanvas.drawLabelPanel(count, read, labelPanel, leftMargin);
+//	        	count++;
+//	        }
+        	samCanvas.drawSAMRead(readList);
+        	samCanvas.drawLabelPanel(readList, labelPanel, leftMargin);
+
+			refresh();
+        	getFrame().loadingDone();
 		}
 	}
 	

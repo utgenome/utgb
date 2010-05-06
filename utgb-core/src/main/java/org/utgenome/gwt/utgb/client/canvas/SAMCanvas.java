@@ -24,9 +24,12 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.canvas;
 
+import java.util.List;
+
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.track.impl.TrackWindowImpl;
+//import org.utgenome.gwt.utgb.client.ui.FixedWidthLabel;
 import org.utgenome.gwt.utgb.client.ui.FormLabel;
 
 import com.google.gwt.core.client.GWT;
@@ -144,6 +147,34 @@ public class SAMCanvas extends Composite {
 
 		if(fontPanel == null){
 			// get charactor images
+			if(isDebug) GWT.log("get images:"+count, null);
+			
+			ImageLoader.loadImages(new String[] { 
+					GWT.getModuleBaseURL() + "utgb-core/FontPanel?fontsize=9.5&color=0x000000" ,  // black
+					GWT.getModuleBaseURL() + "utgb-core/FontPanel?fontsize=9.5&color=0xe0a000" ,  // yellow
+					GWT.getModuleBaseURL() + "utgb-core/FontPanel?fontsize=9.5&color=0x0000ff" ,  // blue
+					GWT.getModuleBaseURL() + "utgb-core/FontPanel?fontsize=9.5&color=0x00a000" ,  // green
+					GWT.getModuleBaseURL() + "utgb-core/FontPanel?fontsize=9.5&color=0xff0000" }, // red
+					new ImageLoader.CallBack() {
+				public void onImagesLoaded(ImageElement[] imageElements) {
+					fontPanel = imageElements;
+					if(isDebug) GWT.log("draw images:"+count, null);
+					
+					drawSAMCanvas(count, read);
+				}
+			});
+		}
+		else {
+			drawSAMCanvas(count, read);			
+		}
+	}
+
+	public void drawSAMRead(final List<SAMRead> readList) {
+        windowHeight = readList.size() * (_HEIGHT * _OFFSET);
+		setPixelHeight(windowHeight);
+
+		if(fontPanel == null){
+			// get charactor images
 			if(isDebug) GWT.log("get images", null);
 			
 			ImageLoader.loadImages(new String[] { 
@@ -155,16 +186,31 @@ public class SAMCanvas extends Composite {
 					new ImageLoader.CallBack() {
 				public void onImagesLoaded(ImageElement[] imageElements) {
 					fontPanel = imageElements;
-					
-					drawSAMCanvas(count, read);
+					draw(readList);
 				}
 			});
 		}
 		else {
-			drawSAMCanvas(count, read);			
+			draw(readList);
 		}
 	}
 
+	private void draw(List<SAMRead> readList) {
+        int count = 0;
+
+        for(SAMRead read : readList){
+			if(isDebug) {
+				GWT.log("draw read : " + read.qname, null);
+				GWT.log("read  : " + read.seq, null);
+				GWT.log("ref   : " + read.refSeq, null);
+				GWT.log("CIGAR : " + read.cigar, null);
+			}
+
+			drawSAMCanvas(count, read);
+        	count++;
+        }
+	}
+	
 	public void drawSAMCanvas(int count, SAMRead read) {
 		StringBuilder num = new StringBuilder();
 		char readc, refc, diffc;
@@ -220,8 +266,7 @@ public class SAMCanvas extends Composite {
 						canvas.fillRect(position * fontWidth + 3, _HEIGHT * (count * _OFFSET + 1), fontWidth, 1);
 						String indent = String.valueOf(read.start + refi - 1);
 						if((read.start + refi - 1) % (int)(Math.ceil(indent.length() / 5.0) * 5) == 0){
-							canvas.fillRect((position + 0.5) * fontWidth + 2, _HEIGHT * (count *
-									_OFFSET + 1) - 3, 1, 5);
+							canvas.fillRect((position + 0.5) * fontWidth + 2, _HEIGHT * (count * _OFFSET + 1) - 3, 1, 5);
 							for(int j = 0; j < indent.length(); j++)
 								canvas.drawImage(fontPanel[0], ((int) indent.charAt(j)) * fontWidth, 0, fontWidth, fontHeight, (position + j) * fontWidth + 2, _HEIGHT * (count * _OFFSET), fontWidth, fontHeight);
 						}
@@ -249,18 +294,45 @@ public class SAMCanvas extends Composite {
 		panel.setHeight(windowHeight + "px");
 
 		// draw reference label
+//		FixedWidthLabel refSeqLabel = new FixedWidthLabel(read.rname, leftMargin);
 		FormLabel refSeqLabel = new FormLabel(read.rname);
 		refSeqLabel.setStyleName("search-label");
 		// draw read label
+//		FixedWidthLabel readLabel = new FixedWidthLabel(read.qname, leftMargin);
 		FormLabel readLabel = new FormLabel(read.qname);
 		readLabel.setStyleName("search-label");
 
 		panel.add(refSeqLabel);
-//		GWT.log(panel.getOffsetWidth() +":"+refSeqLabel.getOffsetWidth(), null);
 		panel.setWidgetPosition(refSeqLabel, 0, _HEIGHT * (count * _OFFSET + 1) + 5);
 		panel.add(readLabel);
-//		GWT.log(panel.getOffsetWidth() +":"+readLabel.getOffsetWidth(), null);
 		panel.setWidgetPosition(readLabel, 0, _HEIGHT * (count * _OFFSET + 3) -1);
+	}
+
+	public void drawLabelPanel(List<SAMRead> readList, AbsolutePanel panel, int leftMargin) {
+		panel.setHeight(windowHeight + "px");
+
+//		FixedWidthLabel[] refSeqLabel = new FixedWidthLabel[readList.size()];
+//		FixedWidthLabel[] readLabel = new FixedWidthLabel[readList.size()];
+
+		FormLabel[] refSeqLabel = new FormLabel[readList.size()];
+		FormLabel[] readLabel = new FormLabel[readList.size()];
+		
+		int count = 0;
+		for(SAMRead read : readList){
+			// draw reference label
+			refSeqLabel[count] = new FormLabel(read.rname);
+			refSeqLabel[count].setStyleName("search-label");
+			// draw read label
+			readLabel[count] = new FormLabel(read.qname);
+			readLabel[count].setStyleName("search-label");
+
+			panel.add(refSeqLabel[count]);
+			panel.setWidgetPosition(refSeqLabel[count], 0, _HEIGHT * (count * _OFFSET + 1) + 5);
+			panel.add(readLabel[count]);
+			panel.setWidgetPosition(readLabel[count], 0, _HEIGHT * (count * _OFFSET + 3) -1);
+			
+			count++;
+		}
 	}
 
 	private int getColorInt(char nucleotide){
