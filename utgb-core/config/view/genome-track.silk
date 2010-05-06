@@ -1,8 +1,10 @@
+%silk(version:1.0)
 -track group
   -id: 1
   -class: org.utgenome.gwt.utgb.client.track.TrackGroup
   -coordinate
-    -ref: human:hg18
+    -species: human
+    -ref: hg18
     -chr: chr1
     -start: 1
     -end: 100000

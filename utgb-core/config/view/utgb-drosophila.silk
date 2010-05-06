@@ -1,8 +1,10 @@
+%silk(version:1.0)
 -track group
   -id: 1
   -class: org.utgenome.gwt.utgb.client.track.TrackGroup
   -coordinate
-    -ref: drosophila:R4.1
+    -species: drosophila
+    -ref: R4.1
     -chr: 2L
     -start: 0
     -end: 100000
