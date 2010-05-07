@@ -247,10 +247,9 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.2</version>
+        <version>2.5</version>
         <configuration>
           <doctitle>UTGB Toolkit ${project.version}</doctitle>
-          <aggregate>true</aggregate>
           <locale>en_US</locale>
 <!--          <stylesheetfile>${basedir}/javadoc.css</stylesheetfile> -->
           <bottom><![CDATA[<a rel="license" href="http://creativecommons.org/licenses/by-sa/2.1/jp/"><img alt="Creative Commons License" border="0" src="http://creativecommons.org/images/public/somerights20.gif" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/2.1/jp/">Creative Commons Attribution-ShareAlike 2.1 Japan License</a>.<!--<rdf:RDF xmlns="http://web.resource.org/cc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"><Work rdf:about=""><dc:date>2005</dc:date><dc:rights><Agent><dc:title>utgenome org.</dc:title></Agent></dc:rights><license rdf:resource="http://creativecommons.org/licenses/by-sa/2.1/jp/" /></Work><License rdf:about="http://creativecommons.org/licenses/by-sa/2.1/jp/"><permits rdf:resource="http://web.resource.org/cc/Reproduction" /><permits rdf:resource="http://web.resource.org/cc/Distribution" /><requires rdf:resource="http://web.resource.org/cc/Notice" /><requires rdf:resource="http://web.resource.org/cc/Attribution" /><permits rdf:resource="http://web.resource.org/cc/DerivativeWorks" /><requires rdf:resource="http://web.resource.org/cc/ShareAlike" /></License></rdf:RDF>-->]]></bottom>
