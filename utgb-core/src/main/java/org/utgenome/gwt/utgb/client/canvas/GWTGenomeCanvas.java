@@ -510,7 +510,7 @@ public class GWTGenomeCanvas extends Composite {
 
 			for (int x = x1; x + 4 <= x2; x += 5) {
 				canvas.saveContext();
-				canvas.translate(drawPosition(x + 2.0f), (double) yPosition + arrowHeight);
+				canvas.translate(drawPosition(x + 2.0f), yPosition + arrowHeight);
 				if (!isSense)
 					canvas.rotate(Math.PI);
 				canvas.beginPath();

@@ -53,6 +53,13 @@ public class Exon implements Serializable, Comparable<Exon> {
 		this.end = end;
 	}
 
+	public void adjustToOneOrigin() {
+		if (start != -1)
+			start += 1;
+		if (end != -1)
+			end += 1;
+	}
+
 	public long getStart() {
 		return start;
 	}
@@ -77,6 +84,7 @@ public class Exon implements Serializable, Comparable<Exon> {
 			return (int) (end - other.getEnd());
 	}
 
+	@Override
 	public String toString() {
 		return "(" + start + ", " + end + ")";
 	}

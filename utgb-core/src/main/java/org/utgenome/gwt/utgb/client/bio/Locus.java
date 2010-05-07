@@ -64,6 +64,13 @@ public class Locus implements Serializable, Comparable<Locus> {
 		return "name:" + name + ", start:" + start + ", end:" + end + ", strand=" + strand;
 	}
 
+	public void adjustToOneOrigin() {
+		if (start != -1)
+			start += 1;
+		if (end != -1)
+			end += 1;
+	}
+
 	public Locus() {
 	}
 

@@ -70,8 +70,8 @@ import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.bio.WigGraphData;
 import org.utgenome.gwt.utgb.client.track.bean.SearchResult;
 import org.utgenome.gwt.utgb.client.track.bean.TrackBean;
-import org.utgenome.gwt.utgb.client.view.TrackView;
 import org.utgenome.gwt.utgb.client.util.Properties;
+import org.utgenome.gwt.utgb.client.view.TrackView;
 import org.utgenome.gwt.utgb.server.app.BEDViewer;
 import org.utgenome.gwt.utgb.server.app.ChromosomeMap.Comparator4ChrName;
 import org.utgenome.gwt.utgb.server.util.WebApplicationResource;
@@ -384,13 +384,23 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 		}
 	}
 
+	static class RefseqGeneRetriever extends BeanRetriever<Gene> {
+
+		@Override
+		public void handle(Gene g) throws Exception {
+			g.adjustToOneOrigin();
+			super.handle(g);
+		}
+
+	}
+
 	public List<Gene> getGeneList(String serviceURI) {
 
 		StopWatch sw = new StopWatch();
 		try {
 			BufferedReader reader = openURL(serviceURI);
 
-			BeanRetriever<Gene> geneRetriever = new BeanRetriever<Gene>();
+			RefseqGeneRetriever geneRetriever = new RefseqGeneRetriever();
 			Lens.findFromJSON(reader, "gene", Gene.class, geneRetriever);
 			return geneRetriever.getResult();
 		}
@@ -640,17 +650,18 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 			_logger.info(WebTrackBase.getProjectRootPath() + "/" + refSeqFileName);
 			final CompactFASTA cf = new CompactFASTA(WebTrackBase.getProjectRootPath() + "/" + refSeqFileName);
 
-			SAMFileReader reader = new SAMFileReader( new File(WebTrackBase.getProjectRootPath() + "/" + bamFileName),
-					new File(WebTrackBase.getProjectRootPath() + "/" + indexFileName));
+			SAMFileReader reader = new SAMFileReader(new File(WebTrackBase.getProjectRootPath() + "/" + bamFileName), new File(WebTrackBase
+					.getProjectRootPath()
+					+ "/" + indexFileName));
 
 			StopWatch st1 = new StopWatch();
 			Iterator<SAMRecord> iterator = reader.query(rname, start, end, true);
-			_logger.info("st1:"+st1.getElapsedTime());
+			_logger.info("st1:" + st1.getElapsedTime());
 
-			while (iterator.hasNext()){
+			while (iterator.hasNext()) {
 				SAMRecord record = iterator.next();
 				_logger.info(record.format());
-				
+
 				// convert SAMRecord to SAMRead
 				SAMRead read = new SAMRead();
 				read.qname = record.getReadName();
@@ -680,15 +691,16 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 		return readDataList;
 	}
 
-	public String getRefSeq(String refSeqFileName, String rname, int start, int end){
+	public String getRefSeq(String refSeqFileName, String rname, int start, int end) {
 		_logger.info(rname + ":" + start + "-" + end);
 		String refSeq = null;
 		try {
 			_logger.info(WebTrackBase.getProjectRootPath() + "/" + refSeqFileName);
 			final CompactFASTA cf = new CompactFASTA(WebTrackBase.getProjectRootPath() + "/" + refSeqFileName);
 
-			if(end - start > 10000) end = start + 10000;
-				
+			if (end - start > 10000)
+				end = start + 10000;
+
 			refSeq = cf.getSequence(rname, start - 1, end).toString();
 			_logger.info(refSeq);
 		}

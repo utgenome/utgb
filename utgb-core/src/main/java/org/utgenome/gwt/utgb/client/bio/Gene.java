@@ -76,4 +76,14 @@ public class Gene extends Locus implements Serializable {
 		return cdsList;
 	}
 
+	@Override
+	public void adjustToOneOrigin() {
+		super.adjustToOneOrigin();
+		for (Exon each : exonList)
+			each.adjustToOneOrigin();
+
+		for (CDS each : cdsList)
+			each.adjustToOneOrigin();
+	}
+
 }

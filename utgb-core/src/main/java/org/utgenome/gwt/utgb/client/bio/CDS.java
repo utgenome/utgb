@@ -51,6 +51,13 @@ public class CDS implements Serializable {
 		this.end = end;
 	}
 
+	public void adjustToOneOrigin() {
+		if (start != -1)
+			start += 1;
+		if (end != -1)
+			end += 1;
+	}
+
 	public long getStart() {
 		return start;
 	}
@@ -67,6 +74,7 @@ public class CDS implements Serializable {
 		this.end = end;
 	}
 
+	@Override
 	public String toString() {
 		return "(" + start + ", " + end + ")";
 	}
