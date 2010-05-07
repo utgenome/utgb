@@ -126,7 +126,7 @@ public class Import extends UTGBShellCommand {
 			WIGDatabaseGenerator.toSQLiteDB(in, outputFileName);
 		case UNKNOWN:
 		default: {
-			_logger.warn("specify the input file type with -t option");
+			_logger.warn("specify the input file type with -t option. Type utgb import --help to see the list of the supported file types");
 			break;
 		}
 		}
