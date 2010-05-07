@@ -175,7 +175,7 @@
                   <type>jar</type>
                 </artifactItem>
               </artifactItems>
-              <outputDirectory>\${basedir}/war/utgb/theme</outputDirectory>
+              <outputDirectory>\${basedir}/src/main/webapp/theme</outputDirectory>
             </configuration>
           </execution>
     	  

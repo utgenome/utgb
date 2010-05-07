@@ -24,6 +24,11 @@
 //--------------------------------------
 package org.utgenome.shell;
 
+import java.io.File;
+
+import org.xerial.util.FileUtil;
+import org.xerial.util.log.Logger;
+
 /**
  * UTGB Shell Sub Command for cleaning target directory
  * 
@@ -31,8 +36,20 @@ package org.utgenome.shell;
  * 
  */
 public class Clean extends UTGBShellCommand {
+
+	private static Logger _logger = Logger.getLogger(Clean.class);
+
 	@Override
 	public void execute(String[] args) throws Exception {
+
+		if (!isInProjectRoot())
+			throw new UTGBShellException("not in the project root");
+
+		// clean war/utgb
+		_logger.info("clean war/utgb ...");
+		FileUtil.rmdir(new File(getProjectRoot(), "war/utgb"));
+
+		// clean target folder
 		Maven.runMaven(new String[] { "clean" });
 	}
 

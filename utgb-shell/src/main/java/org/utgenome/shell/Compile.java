@@ -24,6 +24,9 @@
 //--------------------------------------
 package org.utgenome.shell;
 
+import java.io.File;
+
+import org.xerial.util.FileUtil;
 import org.xerial.util.StringUtil;
 
 /**
@@ -38,6 +41,13 @@ public class Compile extends UTGBShellCommand {
 	@Override
 	public void execute(String[] args) throws Exception {
 
+		if (!isInProjectRoot())
+			throw new UTGBShellException("not in the project root");
+
+		// create war/utgb folder
+		FileUtil.mkdirs(new File(getProjectRoot(), "war/utgb"));
+
+		// run mvn compile
 		String commandLine = "compile " + StringUtil.join(args, " ");
 		maven(commandLine);
 	}
