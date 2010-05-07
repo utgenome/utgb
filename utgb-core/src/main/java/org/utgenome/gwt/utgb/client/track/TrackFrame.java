@@ -88,6 +88,7 @@ public class TrackFrame extends SimplePanel {
 			setUrl(_dragBarIcon.getImageURL());
 		}
 
+		@Override
 		protected void onAttach() {
 			super.onAttach();
 			setUrl(_dragBarIcon.getImageURL());
@@ -415,7 +416,7 @@ public class TrackFrame extends SimplePanel {
 		void updateTrackLabel() {
 			TrackInfo info = getTrack().getTrackInfo();
 			_trackLabel.setText(info.getTrackName());
-			_trackLabel.setTitle(info.getDescription());
+			_trackLabel.setTitle(info.getTrackName() + ": " + info.getDescription());
 			_trackLabel.setStyleName("track-label");
 			_trackLabel.setWidth("100px");
 			Style.trimOverflowedText(_trackLabel);
