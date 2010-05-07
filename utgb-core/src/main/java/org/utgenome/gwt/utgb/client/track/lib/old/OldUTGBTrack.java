@@ -44,11 +44,11 @@ import org.utgenome.gwt.utgb.client.track.TrackGroup;
 import org.utgenome.gwt.utgb.client.track.TrackGroupProperty;
 import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChange;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
-import org.utgenome.gwt.utgb.client.ui.CSS;
 import org.utgenome.gwt.utgb.client.util.GETMethodURL;
 import org.utgenome.gwt.utgb.client.util.JSONUtil;
 import org.utgenome.gwt.utgb.client.util.Properties;
 import org.utgenome.gwt.utgb.client.util.Utilities;
+import org.utgenome.gwt.widget.client.Style;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ErrorEvent;
@@ -212,7 +212,7 @@ public class OldUTGBTrack extends TrackBase {
 		_panel.setWidget(0, 0, indexAbsolutePanel);
 		mainAbsolutePanel.add(mainGraphicPanel);
 		_panel.setWidget(0, 1, mainAbsolutePanel);
-		CSS.hideHorizontalScrollBar(_panel);
+		Style.hideHorizontalScrollBar(_panel);
 	}
 
 	public int getDefaultWindowHeight() {

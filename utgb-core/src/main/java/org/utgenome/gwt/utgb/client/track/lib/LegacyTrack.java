@@ -35,8 +35,8 @@ import org.utgenome.gwt.utgb.client.track.TrackFrame;
 import org.utgenome.gwt.utgb.client.track.TrackGroup;
 import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChange;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
-import org.utgenome.gwt.utgb.client.ui.CSS;
 import org.utgenome.gwt.utgb.client.util.Properties;
+import org.utgenome.gwt.widget.client.Style;
 
 import com.google.gwt.event.dom.client.ErrorEvent;
 import com.google.gwt.event.dom.client.ErrorHandler;
@@ -79,7 +79,7 @@ public class LegacyTrack extends TrackBase {
 
 		_panel.setCellPadding(0);
 		_panel.setCellSpacing(0);
-		CSS.fontSize(_panel, 0);
+		Style.fontSize(_panel, 0);
 
 		_panel.getCellFormatter().setWidth(0, 0, INDEX_FRAME_WIDTH + "px");
 		_panel.setWidget(0, 1, trackImage);

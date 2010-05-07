@@ -36,11 +36,11 @@ import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChange;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.track.UTGBProperty;
 import org.utgenome.gwt.utgb.client.track.bean.SequenceInfo;
-import org.utgenome.gwt.utgb.client.ui.CSS;
 import org.utgenome.gwt.utgb.client.ui.FormLabel;
 import org.utgenome.gwt.utgb.client.util.JSONUtil;
 import org.utgenome.gwt.utgb.client.util.Properties;
 import org.utgenome.gwt.utgb.client.util.xml.XMLWriter;
+import org.utgenome.gwt.widget.client.Style;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -274,8 +274,8 @@ public class NavigatorTrack extends TrackBase {
 		hp2.add(endBox);
 
 		Button strandSwitch = new Button("reverse");
-		CSS.margin(strandSwitch, CSS.LEFT, 2);
-		CSS.border(strandSwitch, 2, CSS.BORDER_OUTSET, "white");
+		Style.margin(strandSwitch, Style.LEFT, 2);
+		Style.border(strandSwitch, 2, Style.BORDER_OUTSET, "white");
 		strandSwitch.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent e) {
 				isPlusStrand = !isPlusStrand;

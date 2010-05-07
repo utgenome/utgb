@@ -39,9 +39,9 @@ import org.utgenome.gwt.utgb.client.track.TrackGroup;
 import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChange;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.track.UTGBProperty;
-import org.utgenome.gwt.utgb.client.ui.CSS;
 import org.utgenome.gwt.utgb.client.util.Properties;
 import org.utgenome.gwt.utgb.client.util.StringUtil;
+import org.utgenome.gwt.widget.client.Style;
 
 import com.google.gwt.event.dom.client.ErrorEvent;
 import com.google.gwt.event.dom.client.ErrorHandler;
@@ -90,14 +90,14 @@ public class GenomeTrack extends TrackBase {
 	public GenomeTrack(String string) {
 		super(string);
 
-		CSS.fullWidth(layoutPanel);
+		Style.fullWidth(layoutPanel);
 		layoutPanel.setCellPadding(0);
 		layoutPanel.setCellSpacing(0);
-		CSS.fontSize(layoutPanel, 0);
+		Style.fontSize(layoutPanel, 0);
 
-		CSS.fullWidth(frame);
-		CSS.margin(frame, 0);
-		CSS.padding(frame, 0);
+		Style.fullWidth(frame);
+		Style.margin(frame, 0);
+		Style.padding(frame, 0);
 		DOM.setElementProperty(frame.getElement(), "align", "left");
 		DOM.setElementPropertyInt(frame.getElement(), "marginHight", 0);
 		DOM.setElementPropertyInt(frame.getElement(), "marginWidth", 0);

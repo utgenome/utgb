@@ -37,10 +37,10 @@ import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.track.UTGBProperty;
 import org.utgenome.gwt.utgb.client.track.bean.Result;
 import org.utgenome.gwt.utgb.client.track.bean.SearchResult;
-import org.utgenome.gwt.utgb.client.ui.CSS;
 import org.utgenome.gwt.utgb.client.ui.FormLabel;
 import org.utgenome.gwt.utgb.client.util.JSONUtil;
 import org.utgenome.gwt.utgb.client.util.Properties;
+import org.utgenome.gwt.widget.client.Style;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -142,9 +142,9 @@ public class KeywordSearchTrack extends TrackBase {
 				String pageNumStr = Integer.toString(pageNum);
 				if (i == page) {
 					Label label = new Label(pageNumStr);
-					CSS.set(label, "color", "#FF9999");
-					CSS.margin(label, CSS.LEFT | CSS.RIGHT, 2);
-					CSS.bold(label);
+					Style.set(label, "color", "#FF9999");
+					Style.margin(label, Style.LEFT | Style.RIGHT, 2);
+					Style.bold(label);
 					//label.setStyleName("current");
 					panel.add(label);
 				}
@@ -163,7 +163,7 @@ public class KeywordSearchTrack extends TrackBase {
 
 		private Anchor getPagerLink(final int pageNum, String label) {
 			Anchor link = new Anchor(label);
-			CSS.margin(link, CSS.LEFT | CSS.RIGHT, 2);
+			Style.margin(link, Style.LEFT | Style.RIGHT, 2);
 			link.addClickHandler(new ClickHandler() {
 				public void onClick(ClickEvent e) {
 					performSearch(keyword, pageNum, 10);
@@ -244,11 +244,11 @@ public class KeywordSearchTrack extends TrackBase {
 						hp.setVerticalAlignment(HorizontalPanel.ALIGN_MIDDLE);
 
 						Image icon = new Image("image/item.gif");
-						CSS.margin(icon, CSS.LEFT, 10);
+						Style.margin(icon, Style.LEFT, 10);
 						hp.add(icon);
 						for (String tag : e.getKeywordList()) {
 							FormLabel tagLabel = new FormLabel(tag);
-							CSS.margin(tagLabel, CSS.LEFT, 3);
+							Style.margin(tagLabel, Style.LEFT, 3);
 							hp.add(tagLabel);
 						}
 						String label = e.getSpecies() + "/" + e.getRevision() + "/" + e.getTarget() + ":" + e.getStart() + "-" + e.getEnd() + "";

@@ -24,6 +24,8 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.ui;
 
+import org.utgenome.gwt.widget.client.Style;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -43,8 +45,8 @@ public class EditableLabel extends TextBox {
 		_cellReference = cellReference;
 		setText(text);
 
-		CSS.set(this, CSS.CSS_BORDER, "0");
-		CSS.backgroundColor(this, "#9999FF");
+		Style.set(this, Style.CSS_BORDER, "0");
+		Style.backgroundColor(this, "#9999FF");
 		setSize("100%", "100%");
 
 		addClickHandler(new ClickHandler() {
@@ -55,7 +57,7 @@ public class EditableLabel extends TextBox {
 		addFocusHandler(new FocusHandler() {
 
 			public void onFocus(FocusEvent arg0) {
-				//CSS.backgroundColor(_textBox, "#9999FF");				
+				//Style.backgroundColor(_textBox, "#9999FF");				
 			}
 		});
 

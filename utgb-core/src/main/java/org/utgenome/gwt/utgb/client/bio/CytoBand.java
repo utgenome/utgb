@@ -27,7 +27,7 @@ package org.utgenome.gwt.utgb.client.bio;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
- * CytoBand 
+ * CytoBand
  * 
  * @author yoshimura
  * 
@@ -37,8 +37,8 @@ public class CytoBand implements IsSerializable {
 	 * 
 	 */
 	String chrom = "chrZZZ";
-	long start = -1; // 1-origin
-	long end = -1;
+	long start = -1; // (inclusive, 1-origin)
+	long end = -1; // (exclusive, 1-origin)
 	String name = "?";
 	String gieStain = "?";
 
@@ -52,6 +52,7 @@ public class CytoBand implements IsSerializable {
 		this.name = name;
 		this.gieStain = gieStain;
 	}
+
 	public String getChrom() {
 		return chrom;
 	}
@@ -75,7 +76,7 @@ public class CytoBand implements IsSerializable {
 	public void setEnd(long end) {
 		this.end = end;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -84,11 +85,11 @@ public class CytoBand implements IsSerializable {
 		this.name = name;
 	}
 
-	public String getGieStain(){
+	public String getGieStain() {
 		return gieStain;
 	}
-	
-	public void setGieStain(String gieStain){
+
+	public void setGieStain(String gieStain) {
 		this.gieStain = gieStain;
 	}
 }

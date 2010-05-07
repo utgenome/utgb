@@ -32,24 +32,28 @@ import org.utgenome.gwt.utgb.client.track.TrackConfig;
 import org.utgenome.gwt.utgb.client.track.TrackConfigChange;
 import org.utgenome.gwt.utgb.client.track.TrackFrame;
 import org.utgenome.gwt.utgb.client.track.TrackGroup;
-import org.utgenome.gwt.utgb.client.ui.CSS;
 import org.utgenome.gwt.utgb.client.util.Properties;
+import org.utgenome.gwt.widget.client.Style;
 
 import com.google.gwt.event.dom.client.ErrorEvent;
 import com.google.gwt.event.dom.client.ErrorHandler;
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * Track for embedding HTML page via iframe tag
+ * 
+ * @author leo
+ * 
+ */
 public class MiniBrowserTrack extends TrackBase {
 	private String type = "frame";
 	private String trackBaseURL;
-	private int leftMargin = 0;
 	private FlexTable layoutPanel = new FlexTable();
 	private Image trackImage = new Image();
 	private Frame frame = new Frame();
@@ -65,41 +69,24 @@ public class MiniBrowserTrack extends TrackBase {
 		};
 	}
 
-	private class ContentFrame extends Frame {
-		@Override
-		protected void onLoad() {
-		}
-
-		@Override
-		public void onBrowserEvent(Event event) {
-
-			if (event.getTypeInt() == Event.ONCHANGE) {
-				TrackFrame frame = getFrame();
-				if (frame != null) {
-					frame.loadingDone();
-				}
-			}
-		}
-	}
-
 	public MiniBrowserTrack() {
 		super("Mini Browser");
 
-		CSS.fullWidth(layoutPanel);
+		Style.fullWidth(layoutPanel);
 		layoutPanel.setCellPadding(0);
 		layoutPanel.setCellSpacing(0);
-		CSS.fontSize(layoutPanel, 0);
+		Style.fontSize(layoutPanel, 0);
 
-		CSS.fullWidth(frame);
-		CSS.margin(frame, 0);
-		CSS.padding(frame, 0);
+		Style.fullWidth(frame);
+		Style.margin(frame, 0);
+		Style.padding(frame, 0);
 		DOM.setElementProperty(frame.getElement(), "align", "left");
 		DOM.setElementPropertyInt(frame.getElement(), "marginHight", 0);
 		DOM.setElementPropertyInt(frame.getElement(), "marginWidth", 0);
 		DOM.setElementPropertyInt(frame.getElement(), "frameBorder", 0);
 
-		CSS.hideHorizontalScrollBar(layoutPanel);
-		CSS.hideHorizontalScrollBar(frame);
+		Style.hideHorizontalScrollBar(layoutPanel);
+		Style.hideHorizontalScrollBar(frame);
 	}
 
 	public Widget getWidget() {

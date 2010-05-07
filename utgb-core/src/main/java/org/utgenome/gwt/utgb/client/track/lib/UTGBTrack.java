@@ -28,7 +28,7 @@ import org.utgenome.gwt.utgb.client.track.TrackBase;
 import org.utgenome.gwt.utgb.client.track.TrackFrame;
 import org.utgenome.gwt.utgb.client.track.TrackGroup;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
-import org.utgenome.gwt.utgb.client.ui.CSS;
+import org.utgenome.gwt.widget.client.Style;
 
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -39,46 +39,40 @@ public class UTGBTrack extends TrackBase {
 	private static final int INDEX_PANEL_WIDTH = 100;
 	private FlexTable layoutFrame = new FlexTable();
 	private SimplePanel indexPanel = new SimplePanel();
-	private SimplePanel graphicPanel = new SimplePanel(); 
-	
+	private SimplePanel graphicPanel = new SimplePanel();
+
 	public UTGBTrack() {
 		super("UTGB Track");
-		
+
 		init();
 	}
-	
-	public void init()
-	{
+
+	public void init() {
 		layoutFrame.setHeight("100%");
 		layoutFrame.setCellPadding(0);
 		layoutFrame.setCellSpacing(0);
-		CSS.borderCollapse(layoutFrame);
-		
-		CSS.fontSize(indexPanel, 0);
+		Style.borderCollapse(layoutFrame);
+
+		Style.fontSize(indexPanel, 0);
 		indexPanel.setWidth(INDEX_PANEL_WIDTH + "px");
-		CSS.fontSize(graphicPanel, 0);
-		CSS.fullWidth(graphicPanel);
-		
+		Style.fontSize(graphicPanel, 0);
+		Style.fullWidth(graphicPanel);
+
 		// layout widgets
 		layoutFrame.setWidget(0, 0, indexPanel);
 		layoutFrame.setWidget(1, 0, graphicPanel);
-		
+
 	}
-	
+
 	public Widget getWidget() {
 		return layoutFrame;
 	}
-	
+
 	public void setUp(TrackFrame trackFrame, TrackGroup group) {
 		TrackWindow window = group.getTrackWindow();
 		int width = window.getWindowWidth();
 		layoutFrame.setWidth(width + "px");
-		
-		
+
 	}
 
 }
-
-
-
-

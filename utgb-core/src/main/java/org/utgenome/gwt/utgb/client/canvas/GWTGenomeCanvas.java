@@ -34,7 +34,6 @@ import org.utgenome.gwt.utgb.client.bio.Gene;
 import org.utgenome.gwt.utgb.client.bio.Locus;
 import org.utgenome.gwt.utgb.client.bio.WigGraphData;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
-import org.utgenome.gwt.utgb.client.ui.CSS;
 import org.utgenome.gwt.utgb.client.ui.FixedWidthLabel;
 import org.utgenome.gwt.utgb.client.ui.FormLabel;
 import org.utgenome.gwt.widget.client.Style;
@@ -101,10 +100,10 @@ public class GWTGenomeCanvas extends Composite {
 			super(true);
 			this.locus = l;
 
-			CSS.border(this, 1, "solid", "#666666");
-			CSS.backgroundColor(this, "#FFFFF8");
-			CSS.padding(this, 2);
-			CSS.fontSize(this, 12);
+			Style.border(this, 1, "solid", "#666666");
+			Style.backgroundColor(this, "#FFFFF8");
+			Style.padding(this, 2);
+			Style.fontSize(this, 12);
 		}
 
 		public void setName(String name) {

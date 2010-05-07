@@ -33,8 +33,8 @@ import org.utgenome.gwt.utgb.client.track.TrackGroup;
 import org.utgenome.gwt.utgb.client.track.TrackRangeSelector;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.ui.AbsoluteFocusPanel;
-import org.utgenome.gwt.utgb.client.ui.CSS;
 import org.utgenome.gwt.utgb.client.util.Properties;
+import org.utgenome.gwt.widget.client.Style;
 
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
@@ -252,7 +252,7 @@ public class RulerTrack extends TrackBase implements RangeSelectable {
 		ruler = new Ruler(_rangeSelector);
 		_layoutPanel.setCellPadding(0);
 		_layoutPanel.setCellSpacing(0);
-		CSS.fontSize(_layoutPanel, 0);
+		Style.fontSize(_layoutPanel, 0);
 	}
 
 	public RulerTrack(int windowLeftMargin) {

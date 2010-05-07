@@ -24,6 +24,8 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.ui;
 
+import org.utgenome.gwt.widget.client.Style;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -37,15 +39,14 @@ public class WindowTitleBar extends Composite {
 	public final FlexTable titleBar = new FlexTable();
 	public final Label title = new Label("Title");
 	public final Label rightCorner = new Label();
-	
+
 	public WindowTitleBar() {
 
 		setupWidget();
 		initWidget(layoutFrame);
 	}
-	
-	protected void setupWidget()
-	{
+
+	protected void setupWidget() {
 		// layout widgets
 		layoutFrame.clear();
 		layoutFrame.setWidget(0, 0, leftCorner);
@@ -57,7 +58,7 @@ public class WindowTitleBar extends Composite {
 		layoutFrame.setCellSpacing(0);
 		layoutFrame.getCellFormatter().setWidth(0, 1, "100%");
 		layoutFrame.setHeight("100%");
-		
+
 		// title bar
 		titleBar.setCellPadding(0);
 		titleBar.setCellSpacing(0);
@@ -66,24 +67,20 @@ public class WindowTitleBar extends Composite {
 		titleBar.setWidget(0, 0, title);
 		titleBar.getRowFormatter().setVerticalAlign(0, VerticalPanel.ALIGN_MIDDLE);
 		titleBar.getCellFormatter().setWidth(0, 0, "100%");
-		CSS.cursor(title, CSS.CURSOR_MOVE);
+		Style.cursor(title, Style.CURSOR_MOVE);
 
 		// CSS 
-        leftCorner.setPixelSize(9, 23);
-        rightCorner.setPixelSize(9, 23);
-        CSS.fontSize(leftCorner, 0);
-        CSS.fontSize(rightCorner, 0);
-        CSS.fontSize(title, 12);
-        CSS.nowrap(title);
-        CSS.backgroundImage(leftCorner, GWT.getModuleBaseURL() + "theme/mac/tl.gif");
-        CSS.backgroundImage(titleBar, GWT.getModuleBaseURL() + "theme/mac/t.gif");
-        CSS.backgroundImage(rightCorner, GWT.getModuleBaseURL() + "theme/mac/tr.gif");
-        CSS.backgroundNoRepeat(leftCorner);
-        CSS.backgroundNoRepeat(rightCorner);
+		leftCorner.setPixelSize(9, 23);
+		rightCorner.setPixelSize(9, 23);
+		Style.fontSize(leftCorner, 0);
+		Style.fontSize(rightCorner, 0);
+		Style.fontSize(title, 12);
+		Style.nowrap(title);
+		Style.backgroundImage(leftCorner, GWT.getModuleBaseURL() + "theme/mac/tl.gif");
+		Style.backgroundImage(titleBar, GWT.getModuleBaseURL() + "theme/mac/t.gif");
+		Style.backgroundImage(rightCorner, GWT.getModuleBaseURL() + "theme/mac/tr.gif");
+		Style.backgroundNoRepeat(leftCorner);
+		Style.backgroundNoRepeat(rightCorner);
 	}
-	
+
 }
-
-
-
-

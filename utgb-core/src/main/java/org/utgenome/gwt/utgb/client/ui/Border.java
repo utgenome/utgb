@@ -74,8 +74,8 @@ public class Border extends Composite {
 		right.setPixelSize(cornerRadius, cornerRadius);
 
 		Style.backgroundImage(center, "utgb-core/transparent?color=" + color + "&opacity=" + alpha);
-		//CSS.backgroundColor(center, color);
-		CSS.fontSize(center, 0);
+		//Style.backgroundColor(center, color);
+		Style.fontSize(center, 0);
 		center.setSize("100%", cornerRadius + "px");
 		//layoutFrame.setBorderWidth(1);
 
@@ -90,11 +90,11 @@ public class Border extends Composite {
 		int backgroundXPos = (positionType & RIGHT) != 0 ? -cornerRadius : 0;
 		int backgroundYPos = (positionType & LOWER) != 0 ? -cornerRadius : 0;
 
-		CSS.backgroundImage(l, "utgb-core.roundcircle.action?color=" + color + "&size=" + cornerRadius + "&opacity=" + alpha);
-		CSS.backgroundNoRepeat(l);
-		CSS.backgroundPosition(l, backgroundXPos + "px " + backgroundYPos + "px");
-		CSS.overflowHidden(l);
-		CSS.fontSize(l, 0);
+		Style.backgroundImage(l, "utgb-core.roundcircle.action?color=" + color + "&size=" + cornerRadius + "&opacity=" + alpha);
+		Style.backgroundNoRepeat(l);
+		Style.backgroundPosition(l, backgroundXPos + "px " + backgroundYPos + "px");
+		Style.overflowHidden(l);
+		Style.fontSize(l, 0);
 
 		l.setPixelSize(cornerRadius, cornerRadius);
 

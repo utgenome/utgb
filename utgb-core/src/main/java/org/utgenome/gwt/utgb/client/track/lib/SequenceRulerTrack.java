@@ -44,9 +44,9 @@ import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.track.UTGBProperty;
 import org.utgenome.gwt.utgb.client.track.impl.TrackWindowImpl;
 import org.utgenome.gwt.utgb.client.ui.AbsoluteFocusPanel;
-import org.utgenome.gwt.utgb.client.ui.CSS;
 import org.utgenome.gwt.utgb.client.util.Properties;
 import org.utgenome.gwt.utgb.client.util.StringUtil;
+import org.utgenome.gwt.widget.client.Style;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
@@ -94,7 +94,7 @@ public class SequenceRulerTrack extends TrackBase implements RangeSelectable {
 		range.addMouseDownHandler(new MouseListenerOnRulerWidget(_rangeSelector));
 		_layoutPanel.setCellPadding(0);
 		_layoutPanel.setCellSpacing(0);
-		CSS.fontSize(_layoutPanel, 0);
+		Style.fontSize(_layoutPanel, 0);
 	}
 
 	public void clear() {

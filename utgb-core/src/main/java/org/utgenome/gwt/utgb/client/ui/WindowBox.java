@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.utgenome.gwt.utgb.client.track.Design;
+import org.utgenome.gwt.widget.client.Style;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -172,16 +173,16 @@ class ResizeBar extends FocusPanel implements MouseDownHandler, MouseOverHandler
 		super();
 		this._windowFrame = windowFrame;
 		this._iconImage = iconImage;
-		// CSS.backgroundImage(this, iconImage.getImageURL());
-		// CSS.backgroundRepeat(this);
-		// CSS.border(this, 1, CSS.BORDER_SOLID, "#CCFFFF");
+		// Style.backgroundImage(this, iconImage.getImageURL());
+		// Style.backgroundRepeat(this);
+		// Style.border(this, 1, Style.BORDER_SOLID, "#CCFFFF");
 		_resizeH = (directionFlag & DIRECTION_H) != 0;
 		_resizeV = (directionFlag & DIRECTION_V) != 0;
 		if (_resizeH) {
-			CSS.cursor(this, CSS.CURSOR_RESIZE_E);
+			Style.cursor(this, Style.CURSOR_RESIZE_E);
 		}
 		if (_resizeV) {
-			CSS.cursor(this, CSS.CURSOR_RESIZE_N);
+			Style.cursor(this, Style.CURSOR_RESIZE_N);
 		}
 		if (_resizeH || _resizeV) {
 			addMouseDownHandler(this);
@@ -201,11 +202,11 @@ class ResizeBar extends FocusPanel implements MouseDownHandler, MouseOverHandler
 	}
 
 	public void onMouseOver(MouseOverEvent e) {
-		CSS.backgroundImage(this, _iconImage.getMouseOverImageURL());
+		Style.backgroundImage(this, _iconImage.getMouseOverImageURL());
 	}
 
 	public void onMouseOut(MouseOutEvent e) {
-		CSS.backgroundImage(this, _iconImage.getImageURL());
+		Style.backgroundImage(this, _iconImage.getImageURL());
 	}
 
 	public void onMouseMove(MouseMoveEvent e) {
@@ -278,7 +279,7 @@ class WindowNavigationBar extends Composite {
 		_iconGrid.setWidth("100%");
 		_iconGrid.getRowFormatter().setVerticalAlign(0, VerticalPanel.ALIGN_MIDDLE);
 		// _iconGrid.setHeight("21px");
-		CSS.borderCollapse(_iconGrid);
+		Style.borderCollapse(_iconGrid);
 		_iconGrid.setCellPadding(0);
 		_iconGrid.setCellSpacing(0);
 		_iconGrid.setBorderWidth(0);
@@ -310,9 +311,9 @@ class WindowNavigationBar extends Composite {
 		}
 		// set CSS style
 		_windowLabel.setStyleName("window-title");
-		CSS.fullBlock(_windowLabel);
-		CSS.cursor(_windowLabel, CSS.CURSOR_MOVE);
-		CSS.overflowHidden(_windowLabel);
+		Style.fullBlock(_windowLabel);
+		Style.cursor(_windowLabel, Style.CURSOR_MOVE);
+		Style.overflowHidden(_windowLabel);
 		// drag & drop mover
 
 		new MouseMoveListener(_window).register(_windowLabel);

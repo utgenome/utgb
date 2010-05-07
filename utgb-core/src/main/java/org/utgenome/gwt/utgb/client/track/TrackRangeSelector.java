@@ -25,7 +25,7 @@
 package org.utgenome.gwt.utgb.client.track;
 
 import org.utgenome.gwt.utgb.client.ui.AbsoluteFocusPanel;
-import org.utgenome.gwt.utgb.client.ui.CSS;
+import org.utgenome.gwt.widget.client.Style;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.MouseDownEvent;
@@ -58,11 +58,11 @@ public class TrackRangeSelector implements MouseDownHandler, MouseMoveHandler {
 		this.track = track;
 		this.trackPanel = track.getAbsoluteFocusPanel();
 
-		CSS.fontSize(rangeIndicator, 8);
-		CSS.border(rangeIndicator, 1, "solid", "#66CCFF");
-		CSS.margin(rangeIndicator, 0);
-		CSS.padding(rangeIndicator, 0);
-		CSS.zIndex(rangeIndicator, 2000);
+		Style.fontSize(rangeIndicator, 8);
+		Style.border(rangeIndicator, 1, "solid", "#66CCFF");
+		Style.margin(rangeIndicator, 0);
+		Style.padding(rangeIndicator, 0);
+		Style.zIndex(rangeIndicator, 2000);
 		//rangeIndicator.setStyleName("track-range");
 		rangeIndicator.setHeight("10px");
 
