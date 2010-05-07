@@ -21,7 +21,7 @@ PREFIX=${HOME}/.utgb
 ARCHIVE = target/utgb-package.zip
 SCRIPT_DIR = src/main/java/org/utgenome/shell/script
 
-JAVA=$(shell find src/main/java -name '*.java')
+JAVA_SRC=$(shell find src/main/java -name '*.java')
 
 .phony: all install clean package 
 
@@ -31,7 +31,7 @@ all: package
 package: $(ARCHIVE)
 
 
-$(ARCHIVE): $(JAVA)
+$(ARCHIVE): $(JAVA_SRC)
 	$(MVN) package
 
 install: $(ARCHIVE) $(SCRIPT_DIR)/bin/utgb

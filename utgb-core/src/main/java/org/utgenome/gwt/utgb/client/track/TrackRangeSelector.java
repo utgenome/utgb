@@ -123,9 +123,13 @@ public class TrackRangeSelector implements MouseDownHandler, MouseMoveHandler {
 		if (!isInRangeSelectMode)
 			return;
 
-		int width = e.getX() - x1;
-		if (width <= 0)
-			width = 1;
+		int x = e.getX();
+		int width = x - x1;
+		if (width <= 0) {
+			rangeIndicator.removeFromParent();
+			trackPanel.add(rangeIndicator, x, 0);
+			width = -width;
+		}
 		if (width >= windowWidth)
 			width = windowWidth;
 		rangeIndicator.setWidth(width + "px");

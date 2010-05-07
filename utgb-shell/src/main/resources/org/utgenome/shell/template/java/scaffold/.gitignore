@@ -1,5 +1,7 @@
 target
 .classpath
 .project
+war/utgb
+db
 *~
 

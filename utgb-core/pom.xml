@@ -115,7 +115,7 @@
                   <type>jar</type>
                 </artifactItem>
               </artifactItems>
-              <outputDirectory>war/${gwt.module}/theme</outputDirectory>
+              <outputDirectory>${basedir}/src/main/webapp/theme</outputDirectory>
             </configuration>
           </execution>
         </executions>

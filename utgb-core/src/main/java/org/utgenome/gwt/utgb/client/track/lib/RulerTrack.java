@@ -233,6 +233,7 @@ public class RulerTrack extends TrackBase implements RangeSelectable {
 
 	public static TrackFactory factory() {
 		return new TrackFactory() {
+			@Override
 			public Track newInstance() {
 				return new RulerTrack();
 			}
@@ -269,6 +270,7 @@ public class RulerTrack extends TrackBase implements RangeSelectable {
 		return _layoutPanel;
 	}
 
+	@Override
 	public void draw() {
 		_basePanel.clear();
 		if (_windowLeftMargin > 0)
@@ -289,10 +291,12 @@ public class RulerTrack extends TrackBase implements RangeSelectable {
 		}
 	}
 
+	@Override
 	public int getDefaultWindowHeight() {
 		return Ruler.RULER_HEIGHT;
 	}
 
+	@Override
 	public void onChangeTrackWindow(TrackWindow newWindow) {
 		_rangeSelector.setWindowWidth(newWindow.getWindowWidth());
 		refresh();
@@ -305,21 +309,31 @@ public class RulerTrack extends TrackBase implements RangeSelectable {
 	public void onRangeSelect(int x1OnTrackWindow, int x2OnTrackWindow) {
 		TrackWindow w = getTrackGroup().getTrackWindow();
 		double factor = w.getWindowWidth() / (double) (w.getWindowWidth() - _windowLeftMargin);
+
+		if (x1OnTrackWindow > x2OnTrackWindow) {
+			int tmp = x1OnTrackWindow;
+			x1OnTrackWindow = x2OnTrackWindow;
+			x2OnTrackWindow = tmp;
+		}
+
 		int startOnGenome = w.calcGenomePosition((int) (x1OnTrackWindow * factor));
 		int endOnGenome = w.calcGenomePosition((int) (x2OnTrackWindow * factor));
 
 		getTrackGroup().getPropertyWriter().setTrackWindow(startOnGenome, endOnGenome);
 	}
 
+	@Override
 	public void setUp(TrackFrame trackFrame, TrackGroup group) {
 		trackFrame.disablePack();
 		trackFrame.disableResize();
 	}
 
+	@Override
 	public void restoreProperties(Properties properties) {
 		_windowLeftMargin = properties.getInt("leftMargin", _windowLeftMargin);
 	}
 
+	@Override
 	public void saveProperties(Properties saveData) {
 		saveData.add("leftMargin", _windowLeftMargin);
 	}

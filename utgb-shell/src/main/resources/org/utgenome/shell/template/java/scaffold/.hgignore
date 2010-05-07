@@ -1,6 +1,8 @@
 target	
 .classpath
 .project
+war/utgb
+db
 
 syntax: glob
 *~
