@@ -74,6 +74,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class NavigatorTrack extends TrackBase {
 	public static TrackFactory factory() {
 		return new TrackFactory() {
+			@Override
 			public Track newInstance() {
 				return new NavigatorTrack();
 			}
@@ -124,7 +125,7 @@ public class NavigatorTrack extends TrackBase {
 			genomeRange = -genomeRange;
 			isPlusStrand = false;
 		}
-		int offset = (int) (genomeRange * ((double) movePercentageOnWindow / 100.0));
+		int offset = (int) (genomeRange * (movePercentageOnWindow / 100.0));
 		if (!isPlusStrand)
 			offset = -offset;
 
@@ -149,13 +150,15 @@ public class NavigatorTrack extends TrackBase {
 
 		windowSize = (int) Math.pow(10L, Math.round(Math.log(windowSize) / Math.log(10)));
 
+		final int magnificationRatio = 3;
+
 		if (scaleDiff > 0) {
 			for (int i = 0; i < scaleDiff; ++i)
-				windowSize *= 10;
+				windowSize *= magnificationRatio;
 		}
 		else {
 			for (int i = 0; i > scaleDiff; --i)
-				windowSize /= 10;
+				windowSize /= magnificationRatio;
 		}
 
 		zoomWindow(group, windowSize);
@@ -170,8 +173,8 @@ public class NavigatorTrack extends TrackBase {
 
 		if (windowSize <= 100)
 			windowSize = 100;
-		if (windowSize >= 100000000)
-			windowSize = 100000000;
+		if (windowSize >= 50000000)
+			windowSize = 50000000;
 
 		int half = windowSize / 2;
 		if (start <= end)
@@ -195,7 +198,7 @@ public class NavigatorTrack extends TrackBase {
 			}
 
 			public void onClick(ClickEvent e) {
-				scroll(getTrackGroup(), (double) movePercentageOnWindow);
+				scroll(getTrackGroup(), movePercentageOnWindow);
 			}
 		}
 
@@ -383,6 +386,7 @@ public class NavigatorTrack extends TrackBase {
 		return false;
 	}
 
+	@Override
 	public void onChangeTrackGroupProperty(TrackGroupPropertyChange change) {
 		final String[] relatedProperties = new String[] { UTGBProperty.SPECIES, UTGBProperty.REVISION, UTGBProperty.TARGET };
 		if (change.containsOneOf(relatedProperties)) {
@@ -396,11 +400,13 @@ public class NavigatorTrack extends TrackBase {
 		}
 	}
 
+	@Override
 	public void onChangeTrackWindow(TrackWindow newWindow) {
 		startBox.setText(Long.toString(newWindow.getStartOnGenome()));
 		endBox.setText(Long.toString(newWindow.getEndOnGenome()));
 	}
 
+	@Override
 	public void setUp(TrackFrame trackFrame, TrackGroup group) {
 		trackFrame.disableClose();
 		TrackWindow w = group.getTrackWindow();
@@ -411,6 +417,7 @@ public class NavigatorTrack extends TrackBase {
 		retrieveSpeciesList();
 	}
 
+	@Override
 	public void saveProperties(Properties saveData) {
 
 		StringBuffer buf = new StringBuffer();
@@ -426,6 +433,7 @@ public class NavigatorTrack extends TrackBase {
 		saveData.add("sequenceList", buf.toString());
 	}
 
+	@Override
 	public void restoreProperties(Properties properties) {
 
 		JSONValue v = JSONParser.parse(properties.get("sequenceList", "[]"));
