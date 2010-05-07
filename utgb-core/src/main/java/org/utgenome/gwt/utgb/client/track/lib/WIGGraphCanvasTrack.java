@@ -165,8 +165,6 @@ public class WIGGraphCanvasTrack extends TrackBase {
 			Label nameLabel = new FormLabel();
 			nameLabel.setStyleName("search-label");
 
-			height = getDefaultWindowHeight();
-
 			labelPanel.clear();
 			labelPanel.setPixelSize(leftMargin, height);
 			labelPanel.add(nameLabel, 0, 0);
@@ -179,7 +177,6 @@ public class WIGGraphCanvasTrack extends TrackBase {
 			int s = w.getStartOnGenome();
 			int e = w.getEndOnGenome();
 			int width = w.getWindowWidth() - leftMargin;
-
 			geneCanvas.clear();
 			geneCanvas.setWindow(new TrackWindowImpl(width, s, e));
 			geneCanvas.setWindowHeight(height - heightMargin);
