@@ -140,28 +140,38 @@ public class NavigatorTrack extends TrackBase {
 	}
 
 	public static void zoom(TrackGroup group, int scaleDiff) {
+		if (scaleDiff == 0)
+			return; // do nothing
+
 		TrackWindow currentWindow = group.getTrackWindow();
 		int start = currentWindow.getStartOnGenome();
 		int end = currentWindow.getEndOnGenome();
+		int windowSize = (start < end) ? end - start + 1 : start - end + 1;
 
-		int windowSize = end - start;
-		if (windowSize < 0)
-			windowSize = -windowSize;
+		// compute a close window size that is a power of 10, e.g., 10, 100, 1000, 10000, ...
+		int windowUpperBound = (int) Math.pow(10L, Math.ceil(Math.log(windowSize) / Math.log(10)));
+		int windowLowerBound = (int) Math.pow(10L, Math.floor(Math.log(windowSize) / Math.log(10)));
 
-		windowSize = (int) Math.pow(10L, Math.round(Math.log(windowSize) / Math.log(10)));
-
-		final int magnificationRatio = 3;
-
-		if (scaleDiff > 0) {
-			for (int i = 0; i < scaleDiff; ++i)
-				windowSize *= magnificationRatio;
-		}
-		else {
-			for (int i = 0; i > scaleDiff; --i)
-				windowSize /= magnificationRatio;
+		if (windowUpperBound == windowLowerBound) {
+			if (scaleDiff > 0)
+				windowUpperBound *= 10;
+			else
+				windowLowerBound /= 10;
 		}
 
-		zoomWindow(group, windowSize);
+		final double magnificationRatio = 0.25;
+
+		int tickWidth = (int) (windowUpperBound * magnificationRatio);
+		int currentPos = windowSize / tickWidth;
+		int nextPos = currentPos + scaleDiff;
+		int nextWindowSize;
+		if (nextPos <= 0) {
+			nextWindowSize = windowLowerBound;
+		}
+		else
+			nextWindowSize = tickWidth * nextPos;
+
+		zoomWindow(group, nextWindowSize);
 	}
 
 	public static void zoomWindow(TrackGroup group, int windowSize) {
@@ -173,8 +183,8 @@ public class NavigatorTrack extends TrackBase {
 
 		if (windowSize <= 100)
 			windowSize = 100;
-		if (windowSize >= 50000000)
-			windowSize = 50000000;
+		if (windowSize >= 10000000) // 10M
+			windowSize = 10000000;
 
 		int half = windowSize / 2;
 		if (start <= end)

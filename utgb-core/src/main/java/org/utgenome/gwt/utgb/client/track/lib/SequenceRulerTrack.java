@@ -76,6 +76,7 @@ public class SequenceRulerTrack extends TrackBase implements RangeSelectable {
 
 	public static TrackFactory factory() {
 		return new TrackFactory() {
+			@Override
 			public Track newInstance() {
 				return new SequenceRulerTrack();
 			}
@@ -101,6 +102,7 @@ public class SequenceRulerTrack extends TrackBase implements RangeSelectable {
 		_basePanel.clear();
 	}
 
+	@Override
 	public int getDefaultWindowHeight() {
 		return 14;
 	}
@@ -109,10 +111,11 @@ public class SequenceRulerTrack extends TrackBase implements RangeSelectable {
 		return _layoutPanel;
 	}
 
+	@Override
 	public void onChangeTrackGroupProperty(TrackGroupPropertyChange change) {
 		final String[] relatedProperties = { UTGBProperty.SPECIES, UTGBProperty.REVISION, UTGBProperty.TARGET };
 		if (change.containsOneOf(relatedProperties)) {
-			retrieveSequenceLength();
+			//retrieveSequenceLength();
 		}
 	}
 
@@ -138,6 +141,7 @@ public class SequenceRulerTrack extends TrackBase implements RangeSelectable {
 		setSequenceSize(Integer.parseInt(newSequenceSize));
 	}
 
+	@Override
 	public void onChangeTrackWindow(TrackWindow newWindow) {
 		_rangeSelector.setWindowWidth(newWindow.getWindowWidth());
 		refresh();
@@ -169,6 +173,7 @@ public class SequenceRulerTrack extends TrackBase implements RangeSelectable {
 		}
 	}
 
+	@Override
 	public void draw() {
 		_basePanel.clear();
 		if (_windowLeftMargin > 0)
@@ -202,11 +207,12 @@ public class SequenceRulerTrack extends TrackBase implements RangeSelectable {
 		}
 	}
 
+	@Override
 	public void setUp(TrackFrame trackFrame, TrackGroup group) {
 		trackFrame.pack();
 		trackFrame.disablePack();
 		trackFrame.disableResize();
-		retrieveSequenceLength();
+		//retrieveSequenceLength();
 		TrackWindow w = group.getTrackWindow();
 		// set up the configuration panel
 		_config.addConfigParameter("Input Window Size (BP)", new IntegerType(UTGBProperty.SEQUENCE_SIZE), Integer.toString(_sequenceSize));
@@ -221,10 +227,12 @@ public class SequenceRulerTrack extends TrackBase implements RangeSelectable {
 		_config.addConfigParameter("Window Size", new IntegerType("window_size", windowSizeDomain), Integer.toString(10000));
 	}
 
+	@Override
 	public TrackConfig getConfig() {
 		return _config;
 	}
 
+	@Override
 	public void onChangeTrackConfig(TrackConfigChange change) {
 		if (change.contains(UTGBProperty.SEQUENCE_SIZE))
 			updateSequenceSize(change.getValue(UTGBProperty.SEQUENCE_SIZE));
@@ -235,11 +243,13 @@ public class SequenceRulerTrack extends TrackBase implements RangeSelectable {
 		}
 	}
 
+	@Override
 	public void restoreProperties(Properties properties) {
 		_windowLeftMargin = properties.getInt("leftMargin", _windowLeftMargin);
 		_sequenceSize = properties.getInt("ruler.length", _sequenceSize);
 	}
 
+	@Override
 	public void saveProperties(Properties saveData) {
 		saveData.add("leftMargin", _windowLeftMargin);
 		saveData.add("ruler.length", _sequenceSize);

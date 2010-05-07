@@ -96,7 +96,7 @@ public class UTGBEntryPointBase implements EntryPoint {
 					if (event.getNativeEvent().getAltKey())
 						break;
 
-					double scrollPercentage = 10.0;
+					double scrollPercentage = 20.0;
 					if (event.getNativeEvent().getShiftKey())
 						scrollPercentage = 25.0;
 
