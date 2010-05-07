@@ -43,58 +43,53 @@ import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.Tree;
-import org.utgenome.format.wig.WIGLexer;
-import org.utgenome.format.wig.WIGParser;
 import org.xerial.core.XerialException;
 import org.xerial.db.DBException;
 import org.xerial.util.StopWatch;
 import org.xerial.util.bean.impl.BeanUtilImpl;
 import org.xerial.util.log.Logger;
 
-public class WIGDatabaseGenerator
-{
+public class WIGDatabaseGenerator {
 
 	private static Logger _logger = Logger.getLogger(WIGDatabaseGenerator.class);
 	private static StopWatch stopWatch = new StopWatch();
 
 	private static CompressedBuffer chromStartBuffer;
 	private static CompressedBuffer dataValueBuffer;
-	
+
 	private static long data_start = 0;
 	private static long data_step = 0;
-	
+
 	private static boolean isVariableStep = true;
 	private static boolean isAddTrackId = true;
 	private static boolean isBufferEnpty = true;
-	
+
 	private static int buffer_count = 0;
 	private static long buffer_start = -1;
 	private static long buffer_end = -1;
 	private static float buffer_maxValue = Float.MIN_VALUE;
 	private static float buffer_minValue = Float.MAX_VALUE;
-	
+
 	private static int dataSplitUnit = 100000;
 	private static long[] chromStarts;
 	private static float[] dataValues;
-	
-	public static void toSQLiteDB(Reader wigInput, String dbName) throws IOException, XerialException
-	{
+
+	public static void toSQLiteDB(Reader wigInput, String dbName) throws IOException, XerialException {
 		BufferedReader reader = new BufferedReader(wigInput);
 
 		int track_id = -1;
 
 		chromStartBuffer = new CompressedBuffer();
 		dataValueBuffer = new CompressedBuffer();
-		
+
 		long nPoints = 0;
 		chromStarts = new long[dataSplitUnit];
 		dataValues = new float[dataSplitUnit];
-		
+
 		String line = null;
 		int lineNum = 1;
 
-		try
-		{
+		try {
 			Class.forName("org.sqlite.JDBC");
 			Connection conn = DriverManager.getConnection("jdbc:sqlite:" + dbName);
 			Statement stat = conn.createStatement();
@@ -107,32 +102,25 @@ public class WIGDatabaseGenerator
 			stat.executeUpdate("drop table if exists browser");
 			stat.executeUpdate("drop table if exists track");
 			stat.executeUpdate("drop table if exists data");
-			
+
 			stat.executeUpdate("create table browser (description text)");
 			stat.executeUpdate("create table track (track_id integer, name text, value text)");
-			stat.executeUpdate("create table data (track_id integer, start integer, end integer, min_value real, " +
-												  "max_value real, data_num integer, chrom_starts blob, " +
-												  "data_values blob)");
-						
-			stat.executeUpdate("create index track_index on track (name, value)");
-			stat.executeUpdate("create index data_index on data (track_id, start)");
+			stat.executeUpdate("create table data (track_id integer, start integer, end integer, min_value real, "
+					+ "max_value real, data_num integer, chrom_starts blob, " + "data_values blob)");
 
 			PreparedStatement p1 = conn.prepareStatement("insert into browser values(?)");
 			PreparedStatement p2 = conn.prepareStatement("insert into track values(?, ?, ?)");
 			PreparedStatement p3 = conn.prepareStatement("insert into data values(?, ?, ?, ?, ?, ?, ?, ?)");
-	 		
+
 			stopWatch.reset();
 
 			// for each WIG File 
-			while((line = reader.readLine()) != null)
-			{
-				if (line.startsWith("#") || line.trim().length() == 0)
-				{}
-				else if (line.startsWith("browser"))
-				{
+			while ((line = reader.readLine()) != null) {
+				if (line.startsWith("#") || line.trim().length() == 0) {
+				}
+				else if (line.startsWith("browser")) {
 					// flush buffer
-					if(!isBufferEnpty)
-					{
+					if (!isBufferEnpty) {
 						insertData(track_id, p3);
 						nPoints = 0;
 					}
@@ -140,78 +128,69 @@ public class WIGDatabaseGenerator
 					// insert browser line
 					readBrowserLine(p1, line);
 				}
-				else if (line.startsWith("track") || line.startsWith("variableStep") || line.startsWith("fixedStep"))
-				{
+				else if (line.startsWith("track") || line.startsWith("variableStep") || line.startsWith("fixedStep")) {
 					// flush buffer
-					if(!isBufferEnpty)
-					{
+					if (!isBufferEnpty) {
 						insertData(track_id, p3);
 						nPoints = 0;
 					}
 
-					if(isAddTrackId)
-					{
+					if (isAddTrackId) {
 						track_id++;
 						isAddTrackId = false;
 					}
-					
+
 					// insert track line
 					readHeaderLine(track_id, p2, line);
 				}
-				else
-				{
+				else {
 					// insert data lines					
 					isBufferEnpty = false;
-					
-					if(isVariableStep)
-					{
+
+					if (isVariableStep) {
 						String[] lineValues = readDataLine(line, lineNum);
 						long currentPoint = Long.parseLong(lineValues[0]);
-						if(buffer_count == 0)
-						{
+						if (buffer_count == 0) {
 							buffer_start = currentPoint;
 						}
-						else
-						{
+						else {
 							buffer_end = currentPoint;
 						}
 						chromStarts[buffer_count] = currentPoint;
 						dataValues[buffer_count] = Float.parseFloat(lineValues[1]);
 					}
-					else
-					{
+					else {
 						String[] lineValues = readDataLine(line, lineNum);
 						long currentPoint = data_start + (nPoints * data_step);
-						if(buffer_count == 0)
-						{
+						if (buffer_count == 0) {
 							buffer_start = currentPoint;
 						}
-						else
-						{
+						else {
 							buffer_end = currentPoint;
 						}
 						dataValues[buffer_count] = Float.parseFloat(lineValues[0]);
 					}
 
-					buffer_maxValue = Math.max(dataValues[buffer_count], buffer_maxValue);	
+					buffer_maxValue = Math.max(dataValues[buffer_count], buffer_maxValue);
 					buffer_minValue = Math.min(dataValues[buffer_count], buffer_minValue);
-					
+
 					nPoints++;
 					buffer_count++;
-					
-					if(buffer_count >= dataSplitUnit)
-					{
+
+					if (buffer_count >= dataSplitUnit) {
 						insertData(track_id, p3);
 					}
 				}
 				lineNum++;
 			}
-			
-			if(!isBufferEnpty)
-			{
+
+			if (!isBufferEnpty) {
 				insertData(track_id, p3);
 			}
-			
+
+			stat.executeUpdate("create index track_index on track (name, value)");
+			stat.executeUpdate("create index data_index on data (track_id, start)");
+
 			conn.commit();
 
 			p1.close();
@@ -225,19 +204,18 @@ public class WIGDatabaseGenerator
 			_logger.error(String.format("line %d: %s", lineNum, e));
 		}
 	}
-	
-    private static void insertData(int track_id, PreparedStatement p3) throws SQLException, IOException {
 
-    	long[] tempChromStarts = new long[buffer_count];
-    	float[] tempDataValues = new float[buffer_count];
-    	
-    	System.arraycopy(chromStarts, 0, tempChromStarts, 0, buffer_count);
-    	System.arraycopy(dataValues, 0, tempDataValues, 0, buffer_count);
-    	
+	private static void insertData(int track_id, PreparedStatement p3) throws SQLException, IOException {
+
+		long[] tempChromStarts = new long[buffer_count];
+		float[] tempDataValues = new float[buffer_count];
+
+		System.arraycopy(chromStarts, 0, tempChromStarts, 0, buffer_count);
+		System.arraycopy(dataValues, 0, tempDataValues, 0, buffer_count);
+
 		ByteArrayOutputStream buf = new ByteArrayOutputStream();
 		ObjectOutputStream out = new ObjectOutputStream(buf);
-		if(isVariableStep)
-		{
+		if (isVariableStep) {
 			out.writeObject(tempChromStarts);
 			out.flush();
 			chromStartBuffer.write(buf.toByteArray());
@@ -247,9 +225,9 @@ public class WIGDatabaseGenerator
 		out.writeObject(tempDataValues);
 		out.flush();
 		dataValueBuffer.write(buf.toByteArray());
-    	
-    	// insert data line
-    	p3.setInt(1, track_id);
+
+		// insert data line
+		p3.setInt(1, track_id);
 		p3.setLong(2, buffer_start);
 		p3.setLong(3, buffer_end);
 		p3.setFloat(4, buffer_minValue);
@@ -258,9 +236,9 @@ public class WIGDatabaseGenerator
 		p3.setBytes(7, chromStartBuffer.toByteArray());
 		p3.setBytes(8, dataValueBuffer.toByteArray());
 		p3.execute();
-		
+
 		_logger.info(String.format("insert data %d:%d-%d", track_id, buffer_start, buffer_end));
-		
+
 		// init variables
 		chromStarts = new long[dataSplitUnit];
 		dataValues = new float[dataSplitUnit];
@@ -274,113 +252,96 @@ public class WIGDatabaseGenerator
 		buffer_maxValue = Float.MIN_VALUE;
 		buffer_minValue = Float.MAX_VALUE;
 	}
-    
-	private static String[] readDataLine(String line, int lineNum) throws DataFormatException
-    {
-        String[] temp = line.replace(" ", "\t").trim().split("\t+");
-        // split by tab or space
-        if (temp.length > 2)
-        {
-        	throw new DataFormatException("Number of line parameters > 2");
-        }
-        return temp;
-    }
 
-	private static void readBrowserLine(PreparedStatement p1, String line) throws SQLException
-	{
+	private static String[] readDataLine(String line, int lineNum) throws DataFormatException {
+		String[] temp = line.replace(" ", "\t").trim().split("\t+");
+		// split by tab or space
+		if (temp.length > 2) {
+			throw new DataFormatException("Number of line parameters > 2");
+		}
+		return temp;
+	}
+
+	private static void readBrowserLine(PreparedStatement p1, String line) throws SQLException {
 		p1.setString(1, line);
 		p1.execute();
 	}
-	
-    private static void readHeaderLine(int track_id, PreparedStatement p2, String line) throws IOException, XerialException,
-    		RecognitionException, NumberFormatException, DBException, SQLException
-    {
-    	  
-    	WIGLexer lexer = new WIGLexer(new ANTLRReaderStream(new StringReader(line)));
-    	CommonTokenStream tokens = new CommonTokenStream(lexer);
-    	
-    	WIGParser parser = new WIGParser(tokens);
-    	WIGParser.description_return ret = parser.description();
 
-		if (line.startsWith("variableStep"))
-		{
+	private static void readHeaderLine(int track_id, PreparedStatement p2, String line) throws IOException, XerialException, RecognitionException,
+			NumberFormatException, DBException, SQLException {
+
+		WIGLexer lexer = new WIGLexer(new ANTLRReaderStream(new StringReader(line)));
+		CommonTokenStream tokens = new CommonTokenStream(lexer);
+
+		WIGParser parser = new WIGParser(tokens);
+		WIGParser.description_return ret = parser.description();
+
+		if (line.startsWith("variableStep")) {
 			isVariableStep = true;
 			p2.setInt(1, track_id);
 			p2.setString(2, "stepType");
 			p2.setString(3, "variableStep");
 			p2.execute();
 		}
-		else if (line.startsWith("fixedStep"))
-		{
+		else if (line.startsWith("fixedStep")) {
 			isVariableStep = false;
 			p2.setInt(1, track_id);
 			p2.setString(2, "stepType");
 			p2.setString(3, "fixedStep");
 			p2.execute();
 		}
-		
-        for (WIGHeaderAttribute a : BeanUtilImpl.createBeanFromParseTree(WIGHeaderDescription.class, (Tree) ret.getTree(),
-                WIGParser.tokenNames).attributes)
-        {
-        	if(a.name.equals("start"))
-        	{
-        		data_start = Long.parseLong(a.value);
-        	}
-        	else if(a.name.equals("step"))
-        	{
-        		data_step = Long.parseLong(a.value);        		
-        	}
-        	
+
+		for (WIGHeaderAttribute a : BeanUtilImpl.createBeanFromParseTree(WIGHeaderDescription.class, (Tree) ret.getTree(), WIGParser.tokenNames).attributes) {
+			if (a.name.equals("start")) {
+				data_start = Long.parseLong(a.value);
+			}
+			else if (a.name.equals("step")) {
+				data_step = Long.parseLong(a.value);
+			}
+
 			p2.setInt(1, track_id);
 			p2.setString(2, a.name);
 			p2.setString(3, a.value);
 			p2.execute();
-        }
-    }
-    public static class WIGHeaderDescription
-    {
-        String name;
-        ArrayList<WIGHeaderAttribute> attributes = new ArrayList<WIGHeaderAttribute>();
+		}
+	}
 
-        public void setName(String name)
-        {
-            this.name = name;
-        }
+	public static class WIGHeaderDescription {
+		String name;
+		ArrayList<WIGHeaderAttribute> attributes = new ArrayList<WIGHeaderAttribute>();
 
-        public void addAttribute(WIGHeaderAttribute attribute)
-        {
-            attributes.add(attribute);
-        }
+		public void setName(String name) {
+			this.name = name;
+		}
 
-        @Override
-        public String toString()
-        {
-            return String.format("name=%s, attributes=%s", name, attributes.toString());
-        }
-    }
+		public void addAttribute(WIGHeaderAttribute attribute) {
+			attributes.add(attribute);
+		}
 
-    public static class WIGHeaderAttribute
-    {
-        String name;
-        String value;
+		@Override
+		public String toString() {
+			return String.format("name=%s, attributes=%s", name, attributes.toString());
+		}
+	}
 
-        public void setName(String name)
-        {
-            this.name = name;
-        }
+	public static class WIGHeaderAttribute {
+		String name;
+		String value;
 
-        public void setValue(String value)
-        {
-            this.value = value;
-        }
+		public void setName(String name) {
+			this.name = name;
+		}
 
-        @Override
-        public String toString()
-        {
-            return String.format("{name=%s, value=%s}", name, value);
-        }
-    }
-    
+		public void setValue(String value) {
+			this.value = value;
+		}
+
+		@Override
+		public String toString() {
+			return String.format("{name=%s, value=%s}", name, value);
+		}
+	}
+
 	static class CompressedBuffer {
 		private ByteArrayOutputStream buf;
 		private GZIPOutputStream compressor;
