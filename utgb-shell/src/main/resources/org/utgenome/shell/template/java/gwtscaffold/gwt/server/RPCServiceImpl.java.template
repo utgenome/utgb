@@ -9,13 +9,13 @@
 package $serverPackageName$;
 
 import $clientPackageName$.RPCService;
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.google.gwt.rpc.server.RpcServlet;
 
 /**
  * Server-side implementation of the RPCService
  * 
  */
-public class RPCServiceImpl extends RemoteServiceServlet implements RPCService {
+public class RPCServiceImpl extends RpcServlet implements RPCService {
 
 	private static final long serialVersionUID = 1L;
 
