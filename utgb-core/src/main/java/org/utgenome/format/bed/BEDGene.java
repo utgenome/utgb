@@ -51,14 +51,14 @@ public class BEDGene extends Gene {
 		gene.score = rs.getInt(4);
 		gene.setStrand(rs.getString(5));
 
-		ArrayList<long[]> regionList = readRegions(rs.getString(6));
-		for (long[] region : regionList) {
+		ArrayList<int[]> regionList = readRegions(rs.getString(6));
+		for (int[] region : regionList) {
 			CDS cds = new CDS(region[0], region[1]);
 			gene.addCDS(cds);
 		}
 
 		regionList = readRegions(rs.getString(7));
-		for (long[] region : regionList) {
+		for (int[] region : regionList) {
 			Exon exon = new Exon(region[0], region[1]);
 			gene.addExon(exon);
 		}
@@ -68,8 +68,8 @@ public class BEDGene extends Gene {
 		return gene;
 	}
 
-	private static ArrayList<long[]> readRegions(String string) {
-		ArrayList<long[]> res = new ArrayList<long[]>();
+	private static ArrayList<int[]> readRegions(String string) {
+		ArrayList<int[]> res = new ArrayList<int[]>();
 
 		StringTokenizer st = new StringTokenizer(string, "[] ,");
 		while (st.hasMoreTokens()) {
@@ -77,14 +77,14 @@ public class BEDGene extends Gene {
 
 			// get start of region
 			if (str.startsWith("(")) {
-				long[] region = new long[2];
-				region[0] = Long.valueOf(str.substring(1)).longValue();
+				int[] region = new int[2];
+				region[0] = Integer.valueOf(str.substring(1)).intValue();
 
 				// get end of region
 				while (st.hasMoreTokens()) {
 					str = st.nextToken();
 					if (str.endsWith(")")) {
-						region[1] = Long.valueOf(str.substring(0, str.length() - 1)).longValue();
+						region[1] = Integer.valueOf(str.substring(0, str.length() - 1)).intValue();
 						res.add(region);
 						break;
 					}
