@@ -25,7 +25,9 @@
 package org.utgenome.config;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.utgenome.gwt.utgb.client.view.TrackView;
 
@@ -57,6 +59,16 @@ public class OldViewXML {
 				}
 			}
 			return null;
+		}
+
+		public Set<String> propKeySet() {
+			HashSet<String> keySet = new HashSet<String>();
+			for (Prop p : groupProperties.property) {
+				if (p.key != null) {
+					keySet.add(p.key);
+				}
+			}
+			return keySet;
 		}
 
 	}
@@ -100,10 +112,18 @@ public class OldViewXML {
 		c.pixelWidth = trackGroup.groupProperties.trackWindow.width;
 
 		v.trackGroup.coordinate = c;
-
-		//
 		for (Prop p : trackGroup.property) {
 			v.trackGroup.property.put(p.key, p.value);
+		}
+		for (String key : trackGroup.propKeySet()) {
+			if (key == null)
+				continue;
+
+			if (key.equals("species") || key.equals("revision") || key.equals("target"))
+				continue;
+
+			String val = trackGroup.getProperty(key);
+			v.trackGroup.property.put(key, val);
 		}
 
 		for (Track each : trackGroup.track) {

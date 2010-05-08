@@ -5,6 +5,7 @@
     <property key="species">human</property>
     <property key="target">chr1</property>
     <trackWindow start="10000" end="100000" width="700"/>
+    <property key="dbGroup">genome</property>
   </groupProperties>
   <track className="org.utgenome.gwt.utgb.client.track.lib.NavigatorTrack" name="UTGB Navigator" height="41" pack="true">
       <property key="sequenceList">[{"species":"human", "revision":["hg18","hg17"]},{"species":"mouse", "revision":["mm9"]},{"species":"drosophila", "revision":["dm3"]},{"species":"c.elegance", "revision":["ce6"]}]</property>

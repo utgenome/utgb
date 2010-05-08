@@ -24,6 +24,8 @@
 //--------------------------------------
 package org.utgenome.config;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.StringReader;
 
 import org.junit.After;
@@ -52,6 +54,8 @@ public class OldViewXMLTest {
 
 		TrackView tv = ov.toTrackView();
 		String silk = Lens.toSilk(tv);
+
+		assertTrue(tv.trackGroup.property.containsKey("dbGroup"));
 
 		TrackView tv2 = Lens.loadSilk(TrackView.class, new StringReader(silk));
 		_logger.info(Lens.toSilk(tv2));
