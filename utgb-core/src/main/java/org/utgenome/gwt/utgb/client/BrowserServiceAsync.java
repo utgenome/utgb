@@ -39,10 +39,10 @@ import org.utgenome.gwt.utgb.client.track.bean.SearchResult;
 import org.utgenome.gwt.utgb.client.track.bean.TrackBean;
 import org.utgenome.gwt.utgb.client.view.TrackView;
 
+import com.google.gwt.rpc.client.RpcService;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.rpc.RemoteService;
 
-public interface BrowserServiceAsync extends RemoteService {
+public interface BrowserServiceAsync extends RpcService {
 
 	public void getTrackView(String viewName, AsyncCallback<TrackView> view);
 
