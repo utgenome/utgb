@@ -170,7 +170,7 @@ public class GWTGenomeCanvas extends Composite {
 
 	private Locus overlappedLocus(Event event, int xBorder) {
 
-		int x = getXOnCanvas(event);
+		int x = drawPosition(getXOnCanvas(event));
 		int y = getYOnCanvas(event);
 
 		for (LocusLayout gl : locusLayout.rangeQuery(x, Integer.MAX_VALUE, x)) {
@@ -231,7 +231,7 @@ public class GWTGenomeCanvas extends Composite {
 		canvas.setPixelWidth(windowWidth);
 	}
 
-	public int pixelPositionOnWindow(long indexOnGenome) {
+	public int pixelPositionOnWindow(int indexOnGenome) {
 		double v = (indexOnGenome - startIndexOnGenome) * (double) windowWidth;
 		double v2 = v / (endIndexOnGenome - startIndexOnGenome + 1);
 		return (int) v2;
@@ -405,10 +405,10 @@ public class GWTGenomeCanvas extends Composite {
 			public void visit(LocusLayout gl) {
 				gl.yOffset = gl.yOffset * h;
 				Gene g = (Gene) gl.getLocus();
-				int gx = pixelPositionOnWindow(g.getStart());
+				int gx1 = pixelPositionOnWindow(g.getStart());
 				int gx2 = pixelPositionOnWindow(g.getEnd());
 
-				int geneWidth = gx2 - gx;
+				int geneWidth = gx2 - gx1;
 				if (geneWidth <= 10) {
 					draw(g, gl.getYOffset());
 				}
@@ -420,22 +420,37 @@ public class GWTGenomeCanvas extends Composite {
 				if (showLabels) {
 					String n = g.getName();
 					if (n != null) {
-						int width = estimiateLabelWidth(g);
+						int textWidth = estimiateLabelWidth(g);
 
-						FixedWidthLabel label = new FixedWidthLabel(n, width);
+						FixedWidthLabel label = new FixedWidthLabel(n, textWidth);
 						Style.fontSize(label, geneHeight);
 						Style.fontColor(label, getExonColorText(g));
 
 						Style.verticalAlign(label, "middle");
 
-						if (gx - width < 0) {
-							Style.textAlign(label, "left");
-							panel.add(label, gx2 + 1, gl.getYOffset() - 1);
+						int yPos = gl.getYOffset() - 1;
+
+						if (gx1 - textWidth < 0) {
+							if (reverse) {
+								Style.textAlign(label, "right");
+								panel.add(label, drawPosition(gx2) - textWidth - 1, yPos);
+							}
+							else {
+								Style.textAlign(label, "left");
+								panel.add(label, drawPosition(gx2) + 1, yPos);
+							}
 						}
 						else {
-							Style.textAlign(label, "right");
-							panel.add(label, gx - width - 1, gl.getYOffset() - 1);
+							if (reverse) {
+								Style.textAlign(label, "left");
+								panel.add(label, drawPosition(gx1) + 1, yPos);
+							}
+							else {
+								Style.textAlign(label, "right");
+								panel.add(label, drawPosition(gx1) - textWidth - 1, yPos);
+							}
 						}
+
 						labels.add(label);
 					}
 				}
@@ -503,14 +518,14 @@ public class GWTGenomeCanvas extends Composite {
 
 			canvas.saveContext();
 			canvas.beginPath();
-			canvas.moveTo(drawPosition(x1 + 0.5f), yAxis);
-			canvas.lineTo(drawPosition(x2 - 0.5f), yAxis);
+			canvas.moveTo(drawPosition(x1) + 0.5f, yAxis);
+			canvas.lineTo(drawPosition(x2) - 0.5f, yAxis);
 			canvas.stroke();
 			canvas.restoreContext();
 
 			for (int x = x1; x + 4 <= x2; x += 5) {
 				canvas.saveContext();
-				canvas.translate(drawPosition(x + 2.0f), yPosition + arrowHeight);
+				canvas.translate(drawPosition(x) + 2.0f, yPosition + arrowHeight);
 				if (!isSense)
 					canvas.rotate(Math.PI);
 				canvas.beginPath();
@@ -526,11 +541,11 @@ public class GWTGenomeCanvas extends Composite {
 
 	}
 
-	public float drawPosition(float x) {
-		if (!reverse)
-			return x;
+	private int drawPosition(int x) {
+		if (reverse)
+			return (int) (windowWidth - x);
 		else
-			return windowWidth - x;
+			return (int) x;
 	}
 
 	public Color getExonColor(Gene g) {
@@ -596,7 +611,8 @@ public class GWTGenomeCanvas extends Composite {
 		if (drawShadow) {
 			canvas.saveContext();
 			canvas.setStrokeStyle(new Color(30, 30, 30, 0.6f));
-			canvas.translate(x1, y);
+			double shadowStart = drawPosition(reverse ? x2 : x1);
+			canvas.translate(shadowStart, y);
 			canvas.beginPath();
 			canvas.moveTo(1.5f, geneHeight + 0.5f);
 			canvas.lineTo(boxWidth + 0.5f, geneHeight + 0.5f);
@@ -614,22 +630,22 @@ public class GWTGenomeCanvas extends Composite {
 	private boolean isLog = false;
 
 	public void drawWigGraph(WigGraphData data, Color color) {
-		long span = 1;
+		int span = 1;
 		if (data.getTrack().containsKey("span")) {
-			span = Long.parseLong(data.getTrack().get("span"));
+			span = Integer.parseInt(data.getTrack().get("span"));
 		}
 		// draw data graph
-		for (long pos : data.getData().keySet()) {
+		for (int pos : data.getData().keySet()) {
 			float value = data.getData().get(pos);
 			if (value == 0.0f)
 				continue;
 
-			float x1 = pixelPositionOnWindow(pos);
-			float y1 = getYPosition(value);
-			float width = pixelPositionOnWindow(pos + span) - x1;
+			int x1 = pixelPositionOnWindow(pos);
+			float y1 = (float) getYPosition(value);
+			int width = pixelPositionOnWindow(pos + span) - x1;
 
-			if (width <= 1.0f) {
-				width = 1.0f;
+			if (width <= 1) {
+				width = 1;
 			}
 
 			if (reverse) {

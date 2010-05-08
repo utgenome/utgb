@@ -41,14 +41,14 @@ public class Exon implements Serializable, Comparable<Exon> {
 	/**
 	 * 
 	 */
-	long start = -1;
-	long end = -1;
+	int start = -1;
+	int end = -1;
 
 	public Exon() {
 
 	}
 
-	public Exon(long start, long end) {
+	public Exon(int start, int end) {
 		this.start = start;
 		this.end = end;
 	}
@@ -60,19 +60,19 @@ public class Exon implements Serializable, Comparable<Exon> {
 			end += 1;
 	}
 
-	public long getStart() {
+	public int getStart() {
 		return start;
 	}
 
-	public void setStart(long start) {
+	public void setStart(int start) {
 		this.start = start;
 	}
 
-	public long getEnd() {
+	public int getEnd() {
 		return end;
 	}
 
-	public void setEnd(long end) {
+	public void setEnd(int end) {
 		this.end = end;
 	}
 

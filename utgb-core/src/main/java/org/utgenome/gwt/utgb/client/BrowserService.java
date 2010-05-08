@@ -85,12 +85,13 @@ public interface BrowserService extends RemoteService {
 
 	public List<DatabaseEntry> getDBEntry(String dbGroup);
 
-	public List<WigGraphData> getWigDataList(String fileName, long windowWidth, ChrLoc location);
+	public List<WigGraphData> getWigDataList(String fileName, int windowWidth, ChrLoc location);
 
 	public List<SAMRead> getSAMReadList(String readFileName, String refSeqFileName);
 
 	public List<Gene> getBEDEntryList(String bedPath, ChrLoc location);
 
 	public List<SAMRead> querySAMReadList(String bamFileName, String indexFileName, String refSeqFileName, String rname, int start, int end);
+
 	public String getRefSeq(String refSeqFileName, String rname, int start, int end);
 }

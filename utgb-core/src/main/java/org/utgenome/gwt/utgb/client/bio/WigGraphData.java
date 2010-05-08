@@ -48,24 +48,28 @@ public class WigGraphData implements Serializable {
 
 	ArrayList<String> browser = null;
 	HashMap<String, String> track = null;
-	HashMap<Long, Float> data = null;
+	HashMap<Integer, Float> data = null;
 
 	public int getTrack_id() {
 		return trackId;
 	}
+
 	public void setTrack_id(int track_id) {
 		this.trackId = track_id;
 	}
-	
+
 	public float getMinValue() {
 		return minValue;
 	}
+
 	public void setMinValue(float minValue) {
 		this.minValue = minValue;
 	}
+
 	public float getMaxValue() {
 		return maxValue;
 	}
+
 	public void setMaxValue(float maxValue) {
 		this.maxValue = maxValue;
 	}
@@ -73,53 +77,55 @@ public class WigGraphData implements Serializable {
 	public ArrayList<String> getBrowser() {
 		return browser;
 	}
+
 	public void setBrowser(ArrayList<String> browser) {
 		this.browser = browser;
 	}
-	
+
 	public HashMap<String, String> getTrack() {
 		return track;
 	}
+
 	public void setTrack(HashMap<String, String> track) {
 		this.track = track;
 	}
-	
-	public HashMap<Long, Float> getData() {
+
+	public HashMap<Integer, Float> getData() {
 		return data;
 	}
-	public void setData(HashMap<Long, Float> data) {
+
+	public void setData(HashMap<Integer, Float> data) {
 		this.data = data;
 	}
-	
+
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 
-		if(track.isEmpty())return null;
-		
+		if (track.isEmpty())
+			return null;
+
 		sb.append("TrackID:" + trackId + "(");
-		if(!browser.isEmpty())
-		{
-			for(String s : browser){
+		if (!browser.isEmpty()) {
+			for (String s : browser) {
 				sb.append(s + ", ");
 			}
 			sb.delete(sb.lastIndexOf(","), sb.length()).append("), (");
 		}
 
-		if(!track.isEmpty())
-		{
-			for(String s : track.keySet()){
+		if (!track.isEmpty()) {
+			for (String s : track.keySet()) {
 				sb.append(s + "=" + track.get(s) + ", ");
 			}
 			sb.delete(sb.lastIndexOf(","), sb.length()).append("), (");
 		}
-		if(!data.isEmpty())
-		{
-			for(long l : data.keySet()){
+		if (!data.isEmpty()) {
+			for (int l : data.keySet()) {
 				sb.append(l + ":" + data.get(l) + ", ");
 			}
 		}
-		if(!sb.equals(""))sb.delete(sb.lastIndexOf(","), sb.length()).append(")");
-		
+		if (!sb.equals(""))
+			sb.delete(sb.lastIndexOf(","), sb.length()).append(")");
+
 		return sb.toString();
 	}
 }

@@ -76,13 +76,14 @@ public interface BrowserServiceAsync extends RemoteService {
 
 	public void getDBEntry(String dbGroup, AsyncCallback<List<DatabaseEntry>> callback);
 
-	public void getWigDataList(String fileName, long windowWidth, ChrLoc location, AsyncCallback<List<WigGraphData>> callback);
+	public void getWigDataList(String fileName, int windowWidth, ChrLoc location, AsyncCallback<List<WigGraphData>> callback);
 
 	public void getSAMReadList(String readFileName, String refSeqFileName, AsyncCallback<List<SAMRead>> callback);
 
 	public void getBEDEntryList(String bedPath, ChrLoc location, AsyncCallback<List<Gene>> callback);
 
-	public void querySAMReadList(String bamFileName, String indexFileName, String refSeqFileName, String rname, int start, int end, AsyncCallback<List<SAMRead>> callback);
+	public void querySAMReadList(String bamFileName, String indexFileName, String refSeqFileName, String rname, int start, int end,
+			AsyncCallback<List<SAMRead>> callback);
 
 	public void getRefSeq(String refSeqFileName, String rname, int start, int end, AsyncCallback<String> callback);
 

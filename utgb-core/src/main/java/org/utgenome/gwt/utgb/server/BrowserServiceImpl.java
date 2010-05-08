@@ -113,7 +113,7 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 	}
 
 	private static String sanitizeViewName(String name) {
-		return name.replaceAll("\\.", "");
+		return name.replaceAll("\\.\\.", "");
 	}
 
 	public TrackView getTrackView(String viewName) throws UTGBClientException {
@@ -599,7 +599,7 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 		return result;
 	}
 
-	public List<WigGraphData> getWigDataList(String fileName, long windowWidth, ChrLoc location) {
+	public List<WigGraphData> getWigDataList(String fileName, int windowWidth, ChrLoc location) {
 		ArrayList<WigGraphData> wigDataList = null;
 
 		try {
