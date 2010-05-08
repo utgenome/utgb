@@ -8,6 +8,7 @@ package org.utgenome.gwt.utgb.server.app;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -15,7 +16,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.utgenome.config.OldViewXML;
+import org.utgenome.gwt.utgb.client.view.TrackView;
 import org.utgenome.gwt.utgb.server.WebTrackBase;
+import org.xerial.core.XerialException;
+import org.xerial.lens.Lens;
 import org.xerial.util.log.Logger;
 
 /**
@@ -33,7 +38,6 @@ public class EchoBackView extends WebTrackBase {
 	}
 
 	public void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		PrintWriter writer = response.getWriter();
 
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd-HHmmss");
 		String timeStamp = formatter.format(new Date(time));
@@ -41,8 +45,18 @@ public class EchoBackView extends WebTrackBase {
 		response.setContentType("application/octet-stream");
 		response.addHeader("Content-disposition", "attachment; filename=\"" + fileName + "\"");
 
-		writer.append(view);
-		writer.flush();
+		try {
+			// convert XML based view file into Silk
+			OldViewXML viewXML = Lens.loadXML(OldViewXML.class, new StringReader(view));
+			TrackView tv = viewXML.toTrackView();
+
+			PrintWriter writer = response.getWriter();
+			writer.append(Lens.toSilk(tv));
+			writer.flush();
+		}
+		catch (XerialException e) {
+			_logger.error(e);
+		}
 	}
 
 	public void setView(String view) {

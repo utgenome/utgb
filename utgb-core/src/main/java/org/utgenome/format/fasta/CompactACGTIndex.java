@@ -49,7 +49,7 @@ public class CompactACGTIndex {
 	public String description;
 
 	public long offset;
-	public long length;
+	public int length;
 
 	private static class IndexHolder implements ObjectHandler<CompactACGTIndex> {
 

@@ -34,6 +34,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -114,6 +115,16 @@ public class BrowserServiceImpl extends RpcServlet implements BrowserService {
 
 	private static String sanitizeViewName(String name) {
 		return name.replaceAll("\\.\\.", "");
+	}
+
+	public TrackView createTrackView(String silk) throws UTGBClientException {
+		try {
+			TrackView v = Lens.loadSilk(TrackView.class, new StringReader(silk));
+			return v;
+		}
+		catch (Exception e) {
+			throw new UTGBClientException(UTGBClientErrorCode.PARSE_ERROR, "parse error: " + e.getMessage());
+		}
 	}
 
 	public TrackView getTrackView(String viewName) throws UTGBClientException {

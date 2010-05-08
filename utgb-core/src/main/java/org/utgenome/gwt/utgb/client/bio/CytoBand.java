@@ -37,15 +37,15 @@ public class CytoBand implements IsSerializable {
 	 * 
 	 */
 	String chrom = "chrZZZ";
-	long start = -1; // (inclusive, 1-origin)
-	long end = -1; // (exclusive, 1-origin)
+	int start = -1; // (inclusive, 1-origin)
+	int end = -1; // (exclusive, 1-origin)
 	String name = "?";
 	String gieStain = "?";
 
 	public CytoBand() {
 	}
 
-	public CytoBand(String chrom, long start, long end, String name, String gieStain) {
+	public CytoBand(String chrom, int start, int end, String name, String gieStain) {
 		this.chrom = chrom;
 		this.start = start;
 		this.end = end;
@@ -61,19 +61,19 @@ public class CytoBand implements IsSerializable {
 		this.chrom = chrom;
 	}
 
-	public long getStart() {
+	public int getStart() {
 		return start;
 	}
 
-	public void setStart(long start) {
+	public void setStart(int start) {
 		this.start = start;
 	}
 
-	public long getEnd() {
+	public int getEnd() {
 		return end;
 	}
 
-	public void setEnd(long end) {
+	public void setEnd(int end) {
 		this.end = end;
 	}
 

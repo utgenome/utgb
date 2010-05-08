@@ -72,8 +72,8 @@ public class ChromosomeMap extends WebTrackBase {
 					public Object handle(ResultSet rs) throws SQLException {
 						CytoBand cytoBand = new CytoBand();
 						cytoBand.setChrom(rs.getString(1));
-						cytoBand.setStart(rs.getLong(2) + 1); // 1-origin
-						cytoBand.setEnd(rs.getLong(3));
+						cytoBand.setStart(rs.getInt(2) + 1); // 1-origin
+						cytoBand.setEnd(rs.getInt(3));
 						cytoBand.setName(rs.getString(4));
 						cytoBand.setGieStain(rs.getString(5));
 						cytoBandList.add(cytoBand);

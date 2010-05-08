@@ -40,7 +40,7 @@ public class LoadView extends WebTrackBase {
 			return;
 		}
 
-		response.setContentType("text/plain");
+		response.setContentType("text/html");
 		// Create a new file upload handler
 		ServletFileUpload upload = new ServletFileUpload();
 
@@ -52,10 +52,14 @@ public class LoadView extends WebTrackBase {
 					BufferedReader reader = new BufferedReader(new InputStreamReader(fs.openStream()));
 					StringWriter buf = new StringWriter();
 					String line;
+
+					buf.append("<body><!--");
+
 					while ((line = reader.readLine()) != null) {
 						buf.append(line);
 						buf.append(StringUtil.newline());
 					}
+					buf.append("--></body>");
 					buf.flush();
 
 					response.getWriter().append(buf.toString());

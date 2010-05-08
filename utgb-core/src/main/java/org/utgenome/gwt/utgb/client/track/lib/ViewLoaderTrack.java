@@ -25,11 +25,13 @@
 package org.utgenome.gwt.utgb.client.track.lib;
 
 import org.utgenome.gwt.utgb.client.GenomeBrowser;
+import org.utgenome.gwt.utgb.client.UTGBClientException;
 import org.utgenome.gwt.utgb.client.track.Track;
 import org.utgenome.gwt.utgb.client.track.TrackBase;
 import org.utgenome.gwt.utgb.client.track.TrackGroup;
 import org.utgenome.gwt.utgb.client.track.TrackLoader;
 import org.utgenome.gwt.utgb.client.ui.FormLabel;
+import org.utgenome.gwt.utgb.client.view.TrackView;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -50,6 +52,12 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 
+/**
+ * Track for loading view files in Silk format.
+ * 
+ * @author leo
+ * 
+ */
 public class ViewLoaderTrack extends TrackBase {
 	public static TrackFactory factory() {
 		return new TrackFactory() {
@@ -67,7 +75,7 @@ public class ViewLoaderTrack extends TrackBase {
 		// load view via HTTP
 		HorizontalPanel hp = new HorizontalPanel();
 		hp.setVerticalAlignment(HorizontalPanel.ALIGN_MIDDLE);
-		hp.add(new FormLabel("View XML URL: "));
+		hp.add(new FormLabel("View Silk URL: "));
 		urlBox.setWidth("400px");
 		urlBox.addKeyPressHandler(new KeyPressHandler() {
 			public void onKeyPress(KeyPressEvent e) {
@@ -100,16 +108,17 @@ public class ViewLoaderTrack extends TrackBase {
 				fileUploadForm.submit();
 			}
 		});
-		formButtonPanel.add(new FormLabel("View XML File:"));
+		formButtonPanel.add(new FormLabel("View Silk File:"));
 		formButtonPanel.add(fileBox);
 		formButtonPanel.add(uploadButton);
 		fileUploadForm.add(formButtonPanel);
 		DOM.setStyleAttribute(fileUploadForm.getElement(), "margin", "0");
 		fileUploadForm.addSubmitCompleteHandler(new SubmitCompleteHandler() {
 			public void onSubmitComplete(SubmitCompleteEvent e) {
+
 				getFrame().setNowLoading();
-				String viewXML = extractEmbeddedXMLInPreTag(e.getResults());
-				setViewXML(viewXML);
+				String viewXML = extractEmbeddedSilkInComment(e.getResults());
+				setViewSilk(viewXML);
 			}
 		});
 		// set panes
@@ -118,13 +127,9 @@ public class ViewLoaderTrack extends TrackBase {
 		panel.add(fileUploadForm);
 	}
 
-	private static String extractEmbeddedXMLInPreTag(String html) {
-		html = html.replaceAll("&gt;", ">");
-		html = html.replaceAll("&lt;", "<");
-		html = html.replaceFirst("<PRE>", "");
-		html = html.replaceFirst("</PRE>", "");
-		html = html.replaceFirst("<pre>", "");
-		html = html.replaceFirst("</pre>", "");
+	private static String extractEmbeddedSilkInComment(String html) {
+		html = html.replaceFirst("<!--", "");
+		html = html.replaceFirst("-->", "");
 		return html;
 	}
 
@@ -138,33 +143,45 @@ public class ViewLoaderTrack extends TrackBase {
 
 			public void onSuccess(String viewXML) {
 
-				setViewXML(viewXML);
+				setViewSilk(viewXML);
 				getFrame().loadingDone();
 			}
 		});
 	}
 
-	private void setViewXML(String viewXML) {
-		if (viewXML == null)
+	private void setViewSilk(String viewSilk) {
+		if (viewSilk == null)
 			return;
+
 		GenomeBrowser.showLoadingMessage();
-		try {
-			// GenomeBrowser.getRootTrackGroup().clear();
-			TrackGroup newGroup = TrackLoader.createTrackGroupFromXML(viewXML);
-			TrackGroup rootTrackGroup = getTrackGroup().getRootTrackGroup();
-			rootTrackGroup.clear();
-			rootTrackGroup.addTrackGroup(newGroup);
-			// GenomeBrowser.getRootTrackGroup().loadFromXML(viewXML);
-		}
-		catch (Exception e) {
-			GWT.log(e.getMessage(), e);
-			DialogBox dialog = new DialogBox();
-			dialog.setText(e.getMessage());
-			dialog.show();
-		}
-		finally {
-			GenomeBrowser.hideLoadingMessage();
-		}
+		GenomeBrowser.getService().createTrackView(viewSilk, new AsyncCallback<TrackView>() {
+			public void onFailure(Throwable e) {
+				GWT.log(e.getMessage(), e);
+				DialogBox dialog = new DialogBox();
+				dialog.setText(e.getMessage());
+				dialog.show();
+				GenomeBrowser.hideLoadingMessage();
+			}
+
+			public void onSuccess(TrackView v) {
+				TrackGroup newGroup;
+				try {
+					newGroup = TrackLoader.createTrackGroup(v);
+					TrackGroup rootTrackGroup = getTrackGroup().getRootTrackGroup();
+					rootTrackGroup.clear();
+					rootTrackGroup.addTrackGroup(newGroup);
+				}
+				catch (UTGBClientException e) {
+					GWT.log(e.getMessage(), e);
+					DialogBox dialog = new DialogBox();
+					dialog.setText(e.getMessage());
+					dialog.show();
+				}
+
+				GenomeBrowser.hideLoadingMessage();
+			}
+		});
+
 	}
 
 	public Widget getWidget() {

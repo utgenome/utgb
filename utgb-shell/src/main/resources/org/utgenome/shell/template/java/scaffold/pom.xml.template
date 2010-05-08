@@ -16,9 +16,9 @@
   <!-- set your GWT module name within the gwt.module tag (optional) -->  
   <properties>
     <utgb.version>$utgbVersion$</utgb.version>
-    <gwt.version>2.0.0</gwt.version>
+    <gwt.version>2.0.3</gwt.version>
     <gwt.module>$moduleName$</gwt.module>
-    <sqlite-jdbc.version>3.6.20</sqlite-jdbc.version>
+    <sqlite-jdbc.version>3.6.20.1</sqlite-jdbc.version>
     <gwt.jvmargs></gwt.jvmargs>
   </properties>
 

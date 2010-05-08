@@ -45,6 +45,8 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 @RemoteServiceRelativePath("service")
 public interface BrowserService extends RpcService {
 
+	public TrackView createTrackView(String silk) throws UTGBClientException;
+
 	public TrackView getTrackView(String viewName) throws UTGBClientException;
 
 	public String getHTTPContent(String url);

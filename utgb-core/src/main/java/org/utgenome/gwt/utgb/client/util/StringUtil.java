@@ -61,6 +61,8 @@ public class StringUtil {
 	}
 
 	public static String join(List<String> elementList, String separator) {
+		if (elementList.isEmpty())
+			return "";
 		StringBuffer b = new StringBuffer();
 		for (int i = 0; i < elementList.size() - 1; i++) {
 			b.append(elementList.get(i));

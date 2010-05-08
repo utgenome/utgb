@@ -44,7 +44,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface BrowserServiceAsync extends RpcService {
 
-	public void getTrackView(String viewName, AsyncCallback<TrackView> view);
+	public void createTrackView(String silk, AsyncCallback<TrackView> callback);
+
+	public void getTrackView(String viewName, AsyncCallback<TrackView> callback);
 
 	public void getHTTPContent(String url, AsyncCallback<String> callback);
 
