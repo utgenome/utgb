@@ -188,20 +188,23 @@ public class WIGDatabaseReader {
 			st2.resume();
 			for (i = 0; i < nDatas; i++) {
 				if (start <= chromStarts[i] && chromStarts[i] <= end) {
-					int chromStart = chromStarts[i] - (chromStarts[i] % rough);
-					if (data.containsKey(chromStart))
-						data.put(chromStart, Math.max(dataValues[i], data.get(chromStart)));
-					else
-						data.put(chromStart, dataValues[i]);
-
+					if (dataValues[i] != 0.0f) {
+						int chromStart = chromStarts[i] - (chromStarts[i] % rough);
+						if (data.containsKey(chromStart))
+							data.put(chromStart, Math.max(dataValues[i], data.get(chromStart)));
+						else
+							data.put(chromStart, dataValues[i]);
+					}
+					
 					minValue = Math.min(minValue, dataValues[i]);
 					maxValue = Math.max(maxValue, dataValues[i]);
 				}
 			}
 			st2.stop();
 		}
-		_logger.info("st2:" + st2.getElapsedTime());
-		_logger.info("st1:" + st1.getElapsedTime());
+		_logger.info("min: " + minValue + ", max: " + maxValue);
+		_logger.info("Time(all)    : " + st1.getElapsedTime());
+		_logger.info("Time(archive): " + st2.getElapsedTime());
 		return data;
 	}
 

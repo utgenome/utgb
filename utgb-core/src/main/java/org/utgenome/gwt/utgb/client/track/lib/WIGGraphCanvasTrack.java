@@ -62,7 +62,9 @@ public class WIGGraphCanvasTrack extends TrackBase {
 	protected TrackConfig config = new TrackConfig(this);
 	protected String fileName = "db/sample.wig.sqlite";
 	private final boolean isDebug = false;
-
+	private boolean isTrackColor = false;
+	private String color = Color.DARK_BLUE.toString();
+	private float alpha = 1.0f;
 	private float maxValue = 20.0f;
 	private float minValue = 0.0f;
 	private boolean isAutoRange = false;
@@ -147,6 +149,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 		config.addConfigParameter("minValue", new FloatType("minValue"), String.valueOf(minValue));
 		config.addConfigParameter("Auto Range", new BooleanType("isAutoRange"), String.valueOf(isAutoRange));
 		config.addConfigParameter("Log Scale", new BooleanType("isLog"), String.valueOf(isLog));
+		config.addConfigParameter("Color", new StringType("color"), color);
 
 		update(group.getTrackWindow());
 	}
@@ -216,17 +219,22 @@ public class WIGGraphCanvasTrack extends TrackBase {
 					nameLabel.setText(fileName);
 				}
 
-				Color color = new Color(Color.DARK_BLUE.toString());
-				if (data.getTrack().containsKey("color")) {
+				if (!isTrackColor && data.getTrack().containsKey("color")) {
 					String colorStr = data.getTrack().get("color");
 					String c[] = colorStr.split(",");
 					if (c.length == 3)
-						color = new Color(Integer.valueOf(c[0]), Integer.valueOf(c[1]), Integer.valueOf(c[2]));
+						color = new Color(Integer.valueOf(c[0]), Integer.valueOf(c[1]), Integer.valueOf(c[2])).toString();
 				}
-				geneCanvas.drawWigGraph(data, color);
+				
+				geneCanvas.drawWigGraph(data, new Color(color));
 
 				// adjust name label length
-				while (nameLabel.getOffsetWidth() > getLabelWidth(nameLabel, labelPanel)) {
+//				while (nameLabel.getOffsetWidth() > getLabelWidth(nameLabel, labelPanel)) {
+//					nameLabel.setText(nameLabel.getText().substring(0, nameLabel.getText().length() - 1));
+//					if (nameLabel.getText().equals(""))
+//						break;
+//				}
+				while (nameLabel.getOffsetWidth() > 60) {
 					nameLabel.setText(nameLabel.getText().substring(0, nameLabel.getText().length() - 1));
 					if (nameLabel.getText().equals(""))
 						break;
@@ -309,6 +317,14 @@ public class WIGGraphCanvasTrack extends TrackBase {
 			isLog = change.getBoolValue("isLog");
 			GWT.log("log:" + isLog, null);
 		}
+		if (change.contains("color")) {
+			color = change.getValue("color");
+			GWT.log("color:" + color, null);
+		}
+		if (change.contains("alpha")) {
+			alpha = change.getFloatValue("alpha");
+			GWT.log("alpha:" + alpha, null);
+		}
 
 		if (isUpdate) {
 			update(getTrackWindow());
@@ -322,6 +338,9 @@ public class WIGGraphCanvasTrack extends TrackBase {
 	@Override
 	public void saveProperties(Properties saveData) {
 		saveData.add("fileName", fileName);
+		saveData.add("trackHeight", height);
+		saveData.add("color", color.toString());
+		saveData.add("alpha", alpha);
 		saveData.add("leftMargin", leftMargin);
 		saveData.add("maxValue", maxValue);
 		saveData.add("minValue", minValue);
@@ -331,18 +350,35 @@ public class WIGGraphCanvasTrack extends TrackBase {
 
 	@Override
 	public void restoreProperties(Properties properties) {
+		
 		fileName = properties.get("fileName", fileName);
+		height = properties.getInt("trackHeight", height);
 		leftMargin = properties.getInt("leftMargin", leftMargin);
 		maxValue = properties.getFloat("maxValue", maxValue);
 		minValue = properties.getFloat("minValue", minValue);
 		isAutoRange = properties.getBoolean("isAutoRange", isAutoRange);
 		isLog = properties.getBoolean("isLog", isLog);
 
+		alpha = properties.getFloat("alpha", alpha);
+		color = properties.get("color", color);
+		if(!color.isEmpty()) {
+			isTrackColor = true;
+			if(color.startsWith("#")){
+				color = hexValue2Color(color).toString();
+			}
+		}
+		
 		String p = properties.get("changeParamOnClick");
 		if (p != null) {
 			// set canvas action
 
 		}
+	}
+	public Color hexValue2Color(String hex) {
+		int r_value = Integer.parseInt(hex.substring(1, 3), 16);
+		int g_value = Integer.parseInt(hex.substring(3, 5), 16);
+		int b_value = Integer.parseInt(hex.substring(5, 7), 16);
+		return new Color(r_value, g_value, b_value, alpha);
 	}
 
 	@Override
