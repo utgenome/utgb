@@ -52,6 +52,19 @@ public class TrackQueue extends Composite implements TrackUpdateListener, TrackL
 	private void init() {
 		_trackQueue.setStyleName("track-queue");
 		initTrackGroup(_trackGroup);
+
+		//		Window.addResizeHandler(new ResizeHandler() {
+		//
+		//			public void onResize(ResizeEvent e) {
+		//				int width = e.getWidth();
+		//				int panelWidth = width - (TrackFrame.INFOPANEL_WIDTH + TrackFrame.SCROLLBAR_WIDTH);
+		//				if (panelWidth > 0) {
+		//					_trackGroup.setTrackWindowWidth(panelWidth);
+		//				}
+		//
+		//			}
+		//		});
+
 	}
 
 	private void initTrackGroup(TrackGroup trackGroup) {

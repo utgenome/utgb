@@ -241,11 +241,11 @@ public class OldUTGBTrack extends TrackBase {
 
 		{ // remove an old image panel and operationAreas.
 			{ // main
-				mainAbsolutePanel.clear();
-				mainAbsolutePanel.add(mainGraphicPanel); // re-add image panel
+				//mainAbsolutePanel.clear();
+				//mainAbsolutePanel.add(mainGraphicPanel); // re-add image panel
 			}
 			{ // index
-				indexAbsolutePanel.clear();
+				//indexAbsolutePanel.clear();
 			}
 		}
 		{
@@ -255,7 +255,7 @@ public class OldUTGBTrack extends TrackBase {
 			final String revision = propertyReader.getProperty(OldUTGBProperty.REVISION);
 			boolean isAccept = isAccepted(species, revision);
 			if (!isAccept) {
-				mainGraphicPanel.setUrl("image/na.png");
+				mainGraphicPanel.setUrl("theme/image/na.png");
 				GWT.log("This track does not accept this species/revision setting.", null);
 				isUptodate = true;
 				return;
@@ -263,7 +263,7 @@ public class OldUTGBTrack extends TrackBase {
 			else {
 				_frame.setNowLoading();
 				eraseMessage();
-				indexAbsolutePanel.add(indexGraphicPanel); // re-add image panel
+				//indexAbsolutePanel.add(indexGraphicPanel); // re-add image panel
 			}
 		}
 		{ // update image panel
@@ -283,7 +283,7 @@ public class OldUTGBTrack extends TrackBase {
 				}
 				else {
 					indexGraphicPanel.setUrl(Design.IMAGE_TRANSPARENT);
-					indexGraphicPanel.setSize(Integer.toString(INDEX_WINDOW_WIDTH), "0");
+					indexGraphicPanel.setWidth(INDEX_WINDOW_WIDTH + "px");
 				}
 			}
 		}

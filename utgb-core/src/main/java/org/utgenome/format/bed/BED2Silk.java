@@ -48,8 +48,7 @@ import org.xerial.util.log.Logger;
  * @author yoshimura
  * 
  */
-public class BED2Silk
-{
+public class BED2Silk {
 
 	// private File bedFile;
 
@@ -61,52 +60,43 @@ public class BED2Silk
 
 	private final BufferedReader reader;
 
-	public static class BEDHeaderDescription
-	{
+	public static class BEDHeaderDescription {
 		String name;
 		ArrayList<BEDHeaderAttribute> attributes = new ArrayList<BEDHeaderAttribute>();
 
-		public void setName(String name)
-		{
+		public void setName(String name) {
 			this.name = name;
 		}
 
-		public void addAttribute(BEDHeaderAttribute attribute)
-		{
+		public void addAttribute(BEDHeaderAttribute attribute) {
 			attributes.add(attribute);
 		}
 
 		@Override
-		public String toString()
-		{
+		public String toString() {
 			return String.format("name=%s, attributes=%s", name, attributes.toString());
 		}
 	}
 
-	public static class BEDHeaderAttribute
-	{
+	public static class BEDHeaderAttribute {
 		String name;
 		String value;
 
-		public void setName(String name)
-		{
+		public void setName(String name) {
 			this.name = name;
 		}
 
-		public void setValue(String value)
-		{
+		public void setValue(String value) {
 			this.value = value;
 		}
 
 		@Override
-		public String toString()
-		{
+		public String toString() {
 			return String.format("{name=%s, value=%s}", name, value);
 		}
 	}
 
-	public BED2Silk(File bedFile) throws IOException
-	{
+	public BED2Silk(File bedFile) throws IOException {
 		this(new FileReader(bedFile));
 	}
 
@@ -115,8 +105,7 @@ public class BED2Silk
 	 * @param bedFile
 	 * @throws IOException
 	 */
-	public BED2Silk(Reader bedFile) throws IOException
-	{
+	public BED2Silk(Reader bedFile) throws IOException {
 
 		// track = new BEDHeaderDescription();
 		// genes = new ArrayList<String[]>();
@@ -132,8 +121,7 @@ public class BED2Silk
 	 * @throws UTGBShellException
 	 */
 
-	public void toSilk(PrintWriter out) throws IOException, UTGBException
-	{
+	public void toSilk(PrintWriter out) throws IOException, UTGBException {
 
 		// print header line
 		out.println("%silk(version:1.0)");
@@ -142,31 +130,23 @@ public class BED2Silk
 		int geneCount = 0;
 
 		int lineNum = 1;
-		for (String line; (line = reader.readLine()) != null; lineNum++)
-		{
-			try
-			{
-				if (line.startsWith("#") || line.length() == 0)
-				{}
-				else if (line.startsWith("browser"))
-				{
+		for (String line; (line = reader.readLine()) != null; lineNum++) {
+			try {
+				if (line.startsWith("#") || line.length() == 0) {
+				}
+				else if (line.startsWith("browser")) {
 					// this.browser = readTrackLine(line,i);
 				}
-				else if (line.startsWith("track"))
-				{
+				else if (line.startsWith("track")) {
 					// print track line
 					BEDHeaderDescription track = readTrackLine(line);
 					StringBuffer sb = new StringBuffer("\n-track(");
-					for (BEDHeaderAttribute a : track.attributes)
-					{
+					for (BEDHeaderAttribute a : track.attributes) {
 						sb.append(a.name + ":");
-						if ((a.value.contains(",") || a.value.contains(" "))
-								&& !a.value.startsWith("\"") && !a.value.endsWith("\""))
-						{
+						if ((a.value.contains(",") || a.value.contains(" ")) && !a.value.startsWith("\"") && !a.value.endsWith("\"")) {
 							sb.append("\"" + a.value + "\", ");
 						}
-						else
-						{
+						else {
 							sb.append(a.value + ", ");
 						}
 					}
@@ -174,68 +154,54 @@ public class BED2Silk
 					out.println(sb.toString());
 					out.flush();
 				}
-				else
-				{
+				else {
 					String[] gene = readBEDLine(line);
-					if (geneCount == 0)
-					{
+					if (geneCount == 0) {
 						// print gene header line
-						out
-						.println(" -gene(coordinate, start, end, name, strand, cds(start, end), exon(start, end)*, color, _[json])|");
+						out.println(" -gene(coordinate, start, end, name, strand, cds(start, end), exon(start, end)*, color, _[json])|");
 						out.flush();
 					}
 
 					geneCount++;
 
 					StringBuilder sb = new StringBuilder();
-					if (gene.length >= 3)
-					{
+					if (gene.length >= 3) {
 						// print "coordinate.name, start, end"
-						sb.append(gene[0] + "\t" + shiftOneBase(Long.parseLong(gene[1])) 
-								+ "\t" + Long.parseLong(gene[2]));
+						sb.append(gene[0] + "\t" + shiftOneBase(Long.parseLong(gene[1])) + "\t" + Long.parseLong(gene[2]));
 						// print "name"
 						sb.append("\t");
-						if (gene.length >= 4)
-						{
+						if (gene.length >= 4) {
 							sb.append(gene[3]);
 						}
 						// print "strand"
 						sb.append("\t");
-						if (gene.length >= 6)
-						{
-							if(gene[5].equals("+") || gene[5].equals("-"))
-							{
+						if (gene.length >= 6) {
+							if (gene[5].equals("+") || gene[5].equals("-")) {
 								sb.append(gene[5]);
 							}
-							else
-							{
-								throw new IllegalArgumentException("Illegal strand value: " + gene[5]);
+							else {
+								_logger.warn(String.format("Illegal strand value '%s'. Using '+' instead. ", gene[5]));
+								sb.append("+");
 							}
 						}
 						// print "cds"
 						sb.append("\t");
-						if (gene.length >= 8)
-						{
-							sb.append("[" + shiftOneBase(Long.parseLong(gene[6])) + ", " 
-									+ Long.parseLong(gene[7]) + "]");
+						if (gene.length >= 8) {
+							sb.append("[" + shiftOneBase(Long.parseLong(gene[6])) + ", " + Long.parseLong(gene[7]) + "]");
 						}
 						// print "exon"
 						sb.append("\t");
-						if (gene.length >= 12)
-						{
+						if (gene.length >= 12) {
 							String[] blockSizes = gene[10].split(",");
 							String[] blockStarts = gene[11].split(",");
 
 							sb.append("[");
 							Integer nExons = Integer.parseInt(gene[9]);
-							for (int i = 0; i < nExons; i++)
-							{
-								Long startExon = Long.parseLong(gene[1]) 
-									+ Long.parseLong(shiftOneBase(Long.parseLong(blockStarts[i])));
+							for (int i = 0; i < nExons; i++) {
+								Long startExon = Long.parseLong(gene[1]) + Long.parseLong(shiftOneBase(Long.parseLong(blockStarts[i])));
 								Long endExon = startExon + Long.parseLong(blockSizes[i]) - 1;
 								sb.append("[" + startExon + ", " + endExon + "]");
-								if (i < nExons - 1)
-								{
+								if (i < nExons - 1) {
 									sb.append(", ");
 								}
 							}
@@ -244,14 +210,12 @@ public class BED2Silk
 
 						// print "color"
 						sb.append("\t");
-						if (gene.length >= 9)
-						{
+						if (gene.length >= 9) {
 							sb.append(changeRGB2Hex(gene[8]));
 						}
 						// print "score"
 						sb.append("\t");
-						if (gene.length >= 5)
-						{
+						if (gene.length >= 5) {
 							sb.append("{\"score\":" + gene[4] + "}");
 						}
 						out.println(sb.toString());
@@ -260,26 +224,21 @@ public class BED2Silk
 
 				}
 			}
-			catch (RecognitionException e)
-			{
+			catch (RecognitionException e) {
 				throw new UTGBException(String.format("line %d: %s", lineNum, e));
 			}
-			catch (XerialException e)
-			{
+			catch (XerialException e) {
 				throw new UTGBException(String.format("line %d: %s", lineNum, e));
 			}
-			catch (NumberFormatException e)
-			{
+			catch (NumberFormatException e) {
 				_logger.error(e + " -> line:" + lineNum);
 				continue;
 			}
-			catch (DataFormatException e)
-			{
+			catch (DataFormatException e) {
 				_logger.error(e + " -> line:" + lineNum);
 				continue;
 			}
-			catch (IllegalArgumentException e)
-			{
+			catch (IllegalArgumentException e) {
 				_logger.error(e + " -> line:" + lineNum);
 				continue;
 			}
@@ -287,67 +246,54 @@ public class BED2Silk
 
 	}
 
-	public String toSilk() throws IOException, UTGBException
-	{
+	public String toSilk() throws IOException, UTGBException {
 		StringWriter out = new StringWriter();
 		toSilk(new PrintWriter(out));
 		return out.toString();
 	}
 
-	private static String[] readBEDLine(String line) throws DataFormatException
-	{
+	private static String[] readBEDLine(String line) throws DataFormatException {
 		String[] temp = line.replace(" ", "\t").trim().split("\t+");
 		// split by tab or space
-		if (temp.length < 3)
-		{
+		if (temp.length < 3) {
 			throw new DataFormatException("Number of line parameters < 3");
 		}
 		return temp;
 	}
 
-	private static BEDHeaderDescription readTrackLine(String line)
-		throws IOException, XerialException, RecognitionException
-	{
+	private static BEDHeaderDescription readTrackLine(String line) throws IOException, XerialException, RecognitionException {
 		BEDLexer lexer = new BEDLexer(new ANTLRReaderStream(new StringReader(line)));
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 
 		BEDParser parser = new BEDParser(tokens);
 		BEDParser.description_return ret = parser.description();
 
-		return BeanUtilImpl.createBeanFromParseTree(BEDHeaderDescription.class, (Tree) ret.getTree(),
-				BEDParser.tokenNames);
+		return BeanUtilImpl.createBeanFromParseTree(BEDHeaderDescription.class, (Tree) ret.getTree(), BEDParser.tokenNames);
 	}
 
-	private static String changeRGB2Hex(String rgb)throws NumberFormatException
-	{
+	private static String changeRGB2Hex(String rgb) throws NumberFormatException {
 		String[] temp = rgb.split(",");
 		StringBuffer ret = new StringBuffer("\"#");
-		if (temp.length >= 3)
-		{
-			for (int i = 0; i < 3; i++)
-			{
+		if (temp.length >= 3) {
+			for (int i = 0; i < 3; i++) {
 				Integer tempInt = Integer.parseInt(temp[i]);
-				if (tempInt > 255 || tempInt < 0)
-				{
+				if (tempInt > 255 || tempInt < 0) {
 					System.err.println("Warn : out of color range 0-255");
 					return "";
 				}
-				if (Integer.toHexString(tempInt).length() == 1)
-				{
+				if (Integer.toHexString(tempInt).length() == 1) {
 					ret.append("0");
 				}
 				ret.append(Integer.toHexString(tempInt));
 			}
 			return ret.append("\"").toString();
 		}
-		else
-		{
+		else {
 			return "";
 		}
 	}
 
-	private static String shiftOneBase(Long baseNumber)
-	{
+	private static String shiftOneBase(Long baseNumber) {
 		return String.valueOf(baseNumber.longValue() + 1);
 	}
 }

@@ -63,7 +63,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class TrackFrame extends SimplePanel {
 	public static final int SCROLLBAR_WIDTH = 25;
-	public static final int INFOPANEL_WIDTH = 150;
+	public static final int INFOPANEL_WIDTH = 200;
 	private static IconImage _dragBarIcon = Design.getIconImage(Design.TRACK_BORDER_V);
 	private static IconImage _resizeBarIcon = Design.getIconImage(Design.TRACK_BORDER_H);
 
@@ -328,11 +328,17 @@ public class TrackFrame extends SimplePanel {
 			basePanel.add(_dragBar, 0, 0);
 			_dragBar.register(_trackLabel);
 			// track label
+
+			_trackLabel.setStyleName("track-label");
+			_trackLabel.setWidth((INFOPANEL_WIDTH - 20) + "px");
+			Style.trimOverflowedText(_trackLabel);
+
 			updateTrackLabel();
 			_labelFrame.setSize("100%", "100%");
 			_labelFrame.setVerticalAlignment(HorizontalPanel.ALIGN_MIDDLE);
 			_labelFrame.setHorizontalAlignment(HorizontalPanel.ALIGN_LEFT);
 			_labelFrame.add(_trackLabel);
+
 			frameWithResizeBar.setSize((INFOPANEL_WIDTH - DRAGBAR_WIDTH) + "px", "100%");
 			frameWithResizeBar.setVerticalAlignment(VerticalPanel.ALIGN_BOTTOM);
 			frameWithResizeBar.add(_labelFrame);
@@ -417,9 +423,7 @@ public class TrackFrame extends SimplePanel {
 			TrackInfo info = getTrack().getTrackInfo();
 			_trackLabel.setText(info.getTrackName());
 			_trackLabel.setTitle(info.getTrackName() + ": " + info.getDescription());
-			_trackLabel.setStyleName("track-label");
-			_trackLabel.setWidth("100px");
-			Style.trimOverflowedText(_trackLabel);
+
 			String linkURL = info.getLinkURL();
 			if (linkURL.length() > 0) {
 				_trackLabel.setHTML("<a href=\"" + linkURL + "\" target=\"_blank\">" + info.getTrackName() + "</a>");

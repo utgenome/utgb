@@ -53,8 +53,8 @@ public class OperationArea extends Image implements MouseOverHandler, MouseOutHa
 	protected final String activeImageURL;
 	protected final String inactiveImageURL;
 
-	private static final String DEFAULT_ACTIVE_IMAGE_URL = "image/pink.gif";
-	private static final String DEFAULT_INACTIVE_IMAGE_URL = "image/transparent.gif";
+	private static final String DEFAULT_ACTIVE_IMAGE_URL = "theme/image/pink.gif";
+	private static final String DEFAULT_INACTIVE_IMAGE_URL = "theme/image/transparent.gif";
 
 	public OperationArea(final int startX, final int startY, final int endX, final int endY, final String activeImageURL, final String inactiveImageURL) {
 		this.startX = startX;
