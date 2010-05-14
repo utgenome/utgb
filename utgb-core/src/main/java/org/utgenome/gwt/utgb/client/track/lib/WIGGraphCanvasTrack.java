@@ -287,7 +287,8 @@ public class WIGGraphCanvasTrack extends TrackBase {
 
 			public void onSuccess(List<WigGraphData> dataList) {
 				wigDataList = dataList;
-				DeferredCommand.addCommand(new UpdateCommand(dataList));
+//				DeferredCommand.addCommand(new UpdateCommand(dataList));
+				new UpdateCommand(dataList).execute();
 			}
 		});
 	}
