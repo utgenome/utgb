@@ -39,7 +39,6 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
-import org.antlr.tool.LeftRecursionCyclesMessage;
 import org.utgenome.gwt.utgb.client.bio.CytoBand;
 import org.xerial.util.log.Logger;
 
@@ -56,17 +55,17 @@ public class ChromosomeMapCanvas {
 	private final HashMap<String, ChromosomeWindow> windows;
 	private BufferedImage image;
 	private Graphics2D g;
-	
+
 	private int canvasWidth;
 	private int canvasHeight;
 	private int chromHeight = 10;
 	private int chromMargin = 10;
 	private int charHeight = 10;
-	
+
 	private boolean isRotate = false;
 
 	private long maxChromosomeLength = 0;
-	
+
 	private boolean isLighter = false;
 	private double lighterRate = 0.7;
 
@@ -114,6 +113,7 @@ public class ChromosomeMapCanvas {
 		this.canvasWidth = width;
 		setPixelSize(canvasWidth, canvasHeight);
 	}
+
 	public static int width(int x1, int x2) {
 		return (x1 < x2) ? x2 - x1 : x1 - x2;
 	}
@@ -137,14 +137,14 @@ public class ChromosomeMapCanvas {
 	public void setRotate() {
 		this.isRotate = true;
 	}
-	
+
 	// draw Chromosomes
 	public <E extends CytoBand> void draw(List<E> cytoBandList) {
 
 		// calc left margin
 		int chrNameWidth = 0;
 
-		if(!isRotate){
+		if (!isRotate) {
 			for (String chromName : windows.keySet()) {
 				Font f = new Font("SansSerif", Font.PLAIN, charHeight);
 				g.setFont(f);
@@ -155,21 +155,21 @@ public class ChromosomeMapCanvas {
 				}
 			}
 		}
-		else{
+		else {
 			chrNameWidth = charHeight * 2;
 		}
 		for (String chromName : windows.keySet()) {
 			windows.get(chromName).setLeftMargin(chrNameWidth);
 		}
 
-		if(!isRotate){
+		if (!isRotate) {
 			setPixelHeight((windows.size()) * (chromHeight + chromMargin) + chromMargin);
 		}
-		else{
-			chromHeight = ((canvasWidth  - chromMargin) / windows.size()) - chromMargin;
+		else {
+			chromHeight = ((canvasWidth - chromMargin) / windows.size()) - chromMargin;
 			setPixelWidth((windows.size()) * (chromHeight + chromMargin) + chromMargin);
 		}
-			
+
 		// draw CytoBand
 		for (CytoBand c : cytoBandList) {
 			drawCytoBand(c, windows.get(c.getChrom()));
@@ -197,11 +197,10 @@ public class ChromosomeMapCanvas {
 			end = temp;
 		}
 
-		if (((!isRotate && start <= canvasWidth) ||
-				(isRotate && start <= canvasHeight)) && end >= 0) {
+		if (((!isRotate && start <= canvasWidth) || (isRotate && start <= canvasHeight)) && end >= 0) {
 			int offset = w.getRank() * (chromHeight + chromMargin) + chromMargin;
 
-			if (c.getGieStain().equals("acen")) {
+			if (c.getGieStain() != null && c.getGieStain().equals("acen")) {
 				//draw Centromere
 				if (c.getName().startsWith("p")) {
 					drawTriangle(start, end, offset, getCytoBandColor(c));
@@ -264,8 +263,8 @@ public class ChromosomeMapCanvas {
 				w = 2;
 
 			fillRect(start, offset - 3, w, chromHeight + 6, color);
-//			Rectangle2D rect = new Rectangle2D.Double(start, offset - 3, 2, chromHeight + 6);
-//			g.fill(rect);
+			//			Rectangle2D rect = new Rectangle2D.Double(start, offset - 3, 2, chromHeight + 6);
+			//			g.fill(rect);
 		}
 	}
 
@@ -277,7 +276,7 @@ public class ChromosomeMapCanvas {
 
 			g.setColor(new Color(128, 64, 255));
 			g.setStroke(new BasicStroke(1.0f));
-			
+
 			if (start > end) {
 				int t = start;
 				start = end;
@@ -286,10 +285,10 @@ public class ChromosomeMapCanvas {
 			int w = end - start;
 			if (w <= 3)
 				w = 3;
-			
+
 			drawRect(start, offset - 3, w, chromHeight + 6, new Color(128, 64, 255));
-//			Rectangle2D rect = new Rectangle2D.Double(start, offset - 3, w, chromHeight + 6);
-//			g.draw(rect);
+			//			Rectangle2D rect = new Rectangle2D.Double(start, offset - 3, w, chromHeight + 6);
+			//			g.draw(rect);
 		}
 	}
 
@@ -309,11 +308,11 @@ public class ChromosomeMapCanvas {
 	}
 
 	public void drawChrName(String chrName, Integer rank) {
-		if(!isRotate){
+		if (!isRotate) {
 			drawText(chrName, 0, (rank + 1) * (chromHeight + chromMargin), Color.BLACK);
 		}
-		else{
-			drawText(chrName, charHeight * (rank % 2), rank * (chromHeight + chromMargin)+ chromMargin, Color.BLACK);
+		else {
+			drawText(chrName, charHeight * (rank % 2), rank * (chromHeight + chromMargin) + chromMargin, Color.BLACK);
 		}
 	}
 
@@ -321,7 +320,7 @@ public class ChromosomeMapCanvas {
 		Font f = new Font("SansSerif", Font.PLAIN, charHeight);
 		g.setFont(f);
 		g.setColor(color);
-		if(!isRotate)
+		if (!isRotate)
 			g.drawString(text, x, y - 1);
 		else
 			g.drawString(text, y - 1, canvasHeight - x);
@@ -334,23 +333,27 @@ public class ChromosomeMapCanvas {
 	public void fillRect(int x, int y, int width, int height, Color color) {
 		Rectangle2D rect;
 
-		if(!isRotate) rect = new Rectangle2D.Double(x, y, width, height);
-		else		  rect = new Rectangle2D.Double(y, canvasHeight - x - width, height, width);
-		
+		if (!isRotate)
+			rect = new Rectangle2D.Double(x, y, width, height);
+		else
+			rect = new Rectangle2D.Double(y, canvasHeight - x - width, height, width);
+
 		g.setColor(color);
 		g.fill(rect);
 	}
-	
+
 	public void drawRect(int x1, int x2, int y, Color c) {
 		drawRect(x1, y, x2 - x1, chromHeight, c);
 	}
-	
+
 	public void drawRect(int x, int y, int width, int height, Color color) {
 		Rectangle2D rect;
 
-		if(!isRotate) rect = new Rectangle2D.Double(x, y, width, height);
-		else		  rect = new Rectangle2D.Double(y, canvasHeight - x - width, height, width);
-		
+		if (!isRotate)
+			rect = new Rectangle2D.Double(x, y, width, height);
+		else
+			rect = new Rectangle2D.Double(y, canvasHeight - x - width, height, width);
+
 		g.setColor(color);
 		g.draw(rect);
 	}
@@ -358,17 +361,17 @@ public class ChromosomeMapCanvas {
 	public void drawTriangle(int x1, int x2, int y, Color color) {
 		Polygon tri = new Polygon();
 
-		if(!isRotate){
+		if (!isRotate) {
 			tri.addPoint(x1, y);
 			tri.addPoint(x1, y + chromHeight);
 			tri.addPoint(x2, y + (chromHeight / 2));
 		}
-		else{
+		else {
 			tri.addPoint(y, canvasHeight - x1);
 			tri.addPoint(y + chromHeight, canvasHeight - x1);
 			tri.addPoint(y + (chromHeight / 2), canvasHeight - x2);
 		}
-		
+
 		g.setColor(color);
 		g.fill(tri);
 	}
@@ -380,7 +383,10 @@ public class ChromosomeMapCanvas {
 	public Color getCytoBandColor(CytoBand c) {
 		Color color;
 
-		if (c.getGieStain().equals("gpos100")) {
+		if (c.getGieStain() == null) {
+			color = Color.WHITE;
+		}
+		else if (c.getGieStain().equals("gpos100")) {
 			color = Color.BLACK;
 		}
 		else if (c.getGieStain().equals("gpos75")) {
@@ -412,6 +418,9 @@ public class ChromosomeMapCanvas {
 	}
 
 	public Color getCytoBandNameColor(CytoBand c) {
+		if (c.getGieStain() == null)
+			return Color.WHITE;
+
 		if (c.getGieStain().equals("gpos100") || c.getGieStain().equals("gpos75")) {
 			return Color.WHITE;
 		}
@@ -443,10 +452,10 @@ public class ChromosomeMapCanvas {
 		double rate = 1.0;
 		double ratio = 1.0 - ((1.0 - ((double) w.getRange() / (double) maxChromosomeLength)) / rate);
 
-		if(!isRotate){
-			return (int) ((canvasWidth - w.getLeftMargin()) * ratio);	
+		if (!isRotate) {
+			return (int) ((canvasWidth - w.getLeftMargin()) * ratio);
 		}
-		else{
+		else {
 			return (int) ((canvasHeight - w.getLeftMargin()) * ratio);
 		}
 	}

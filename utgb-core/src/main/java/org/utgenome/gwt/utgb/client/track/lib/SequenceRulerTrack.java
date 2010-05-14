@@ -117,6 +117,10 @@ public class SequenceRulerTrack extends TrackBase implements RangeSelectable {
 		if (change.containsOneOf(relatedProperties)) {
 			//retrieveSequenceLength();
 		}
+
+		if (change.contains(UTGBProperty.SEQUENCE_SIZE))
+			updateSequenceSize(change.getProperty(UTGBProperty.SEQUENCE_SIZE));
+
 	}
 
 	public void setSequenceSize(int newSequenceSize) {

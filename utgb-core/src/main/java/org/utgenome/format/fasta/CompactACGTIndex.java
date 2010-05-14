@@ -73,8 +73,8 @@ public class CompactACGTIndex {
 		return holder.index;
 	}
 
-	public CytoBand toCyteBand() {
-		return new CytoBand(name, 1, length, null, null);
+	public CytoBand toCytoBand() {
+		return new CytoBand(name, 1, length, "", null);
 	}
 
 }

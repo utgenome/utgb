@@ -200,13 +200,13 @@ public class ChromosomeMapTrack extends TrackBase {
 				new AsyncCallback<ChrRange>() {
 
 					public void onFailure(Throwable arg0) {
-						// TODO Auto-generated method stub
 						GWT.log("get chrom region error!", arg0);
 					}
 
-					public void onSuccess(ChrRange arg0) {
-						// TODO Auto-generated method stub
-						chrRange = arg0;
+					public void onSuccess(ChrRange r) {
+						chrRange = r;
+						setTrackGroupProperty(UTGBProperty.SEQUENCE_SIZE, Long.toString(r.maxLength));
+
 						if (isDebug) {
 							for (ChrLoc loc : chrRange.ranges) {
 								GWT.log(loc.target + ":" + loc.start + "-" + loc.end, null);

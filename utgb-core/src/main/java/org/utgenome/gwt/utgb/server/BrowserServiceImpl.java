@@ -24,10 +24,6 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.server;
 
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -38,11 +34,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -74,11 +66,10 @@ import org.utgenome.gwt.utgb.client.track.bean.TrackBean;
 import org.utgenome.gwt.utgb.client.util.Properties;
 import org.utgenome.gwt.utgb.client.view.TrackView;
 import org.utgenome.gwt.utgb.server.app.BEDViewer;
-import org.utgenome.gwt.utgb.server.app.ChromosomeMap.Comparator4ChrName;
+import org.utgenome.gwt.utgb.server.app.ChromosomeMap;
 import org.utgenome.gwt.utgb.server.util.WebApplicationResource;
 import org.xerial.core.XerialException;
 import org.xerial.db.DBException;
-import org.xerial.db.sql.ResultSetHandler;
 import org.xerial.db.sql.SQLExpression;
 import org.xerial.db.sql.sqlite.SQLiteAccess;
 import org.xerial.db.sql.sqlite.SQLiteCatalog;
@@ -438,81 +429,7 @@ public class BrowserServiceImpl extends RpcServlet implements BrowserService {
 	}
 
 	public ChrRange getChrRegion(String species, String revision) {
-
-		final ChrRange chrRanges = new ChrRange();
-		chrRanges.ranges = new ArrayList<ChrLoc>();
-		chrRanges.maxLength = -1;
-
-		final ArrayList<String> chrNames = new ArrayList<String>();
-
-		_logger.debug(String.format("%s(%s)", species, revision));
-
-		try {
-
-			File cytoBandDb = new File(WebTrackBase.getProjectRootPath(), "db/" + species + "/" + revision + "/cytoBand/cytoBand.db");
-
-			if (cytoBandDb.exists()) {
-				SQLiteAccess dbAccess = new SQLiteAccess(cytoBandDb.getAbsolutePath());
-
-				// get chrom name list
-				String sql = WebTrackBase.createSQLStatement("select distinct(chrom) from entry");
-				if (_logger.isDebugEnabled())
-					_logger.debug(sql);
-
-				dbAccess.query(sql, new ResultSetHandler<Object>() {
-					@Override
-					public Object handle(ResultSet rs) throws SQLException {
-						chrNames.add(rs.getString(1));
-						return null;
-					}
-				});
-
-				// make chromosome ranking
-				Object[] chrNamesArray = chrNames.toArray();
-				Comparator<Object> comparator = new Comparator4ChrName();
-				Arrays.sort(chrNamesArray, comparator);
-
-				// get chrLoc information
-				for (int i = 0; i < chrNamesArray.length; i++) {
-					sql = WebTrackBase.createSQLStatement("select chrom, min(chromStart), max(chromEnd) from entry where chrom='$1'", chrNamesArray[i]);
-					if (_logger.isDebugEnabled())
-						_logger.debug(sql);
-
-					dbAccess.query(sql, new ResultSetHandler<Object>() {
-						@Override
-						public Object handle(ResultSet rs) throws SQLException {
-							ChrLoc chrLoc = new ChrLoc();
-							chrLoc.target = rs.getString(1);
-							chrLoc.start = rs.getInt(2);
-							chrLoc.end = rs.getInt(3);
-
-							chrRanges.ranges.add(chrLoc);
-							if (_logger.isDebugEnabled())
-								_logger.debug(String.format("%s:%d-%d", chrLoc.target, chrLoc.start, chrLoc.end));
-
-							chrRanges.maxLength = Math.max(chrRanges.maxLength, chrLoc.end - chrLoc.start);
-
-							BufferedImage image = new BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB);
-							Graphics2D g = image.createGraphics();
-							Font f = new Font("SansSerif", Font.PLAIN, 10);
-							g.setFont(f);
-							FontMetrics fontMetrics = g.getFontMetrics();
-
-							chrRanges.chrNameWidth = Math.max(chrRanges.chrNameWidth, fontMetrics.stringWidth(chrLoc.target));
-
-							return null;
-						}
-					});
-				}
-				if (_logger.isDebugEnabled())
-					_logger.debug(String.format("max length : %d", chrRanges.maxLength));
-			}
-		}
-		catch (Exception e) {
-			_logger.error(e);
-		}
-
-		return chrRanges;
+		return ChromosomeMap.getChrRegion(species, revision);
 	}
 
 	public List<Locus> getLocusList(String dbGroup, String dbName, ChrLoc location) {

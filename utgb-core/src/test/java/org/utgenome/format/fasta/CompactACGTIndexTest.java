@@ -69,7 +69,7 @@ public class CompactACGTIndexTest {
 		assertEquals(3, index.size());
 
 		for (CompactACGTIndex each : index) {
-			CytoBand c = each.toCyteBand();
+			CytoBand c = each.toCytoBand();
 			assertEquals(1, c.getStart());
 			assertEquals(c.getEnd(), each.length);
 			assertEquals(each.name, c.getChrom());
