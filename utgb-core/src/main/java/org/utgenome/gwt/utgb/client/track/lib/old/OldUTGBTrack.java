@@ -33,7 +33,6 @@ import java.util.Stack;
 
 import org.utgenome.gwt.utgb.client.GenomeBrowser;
 import org.utgenome.gwt.utgb.client.db.datatype.StringType;
-import org.utgenome.gwt.utgb.client.operation.OperationParser;
 import org.utgenome.gwt.utgb.client.track.Design;
 import org.utgenome.gwt.utgb.client.track.Track;
 import org.utgenome.gwt.utgb.client.track.TrackBase;
@@ -44,6 +43,7 @@ import org.utgenome.gwt.utgb.client.track.TrackGroup;
 import org.utgenome.gwt.utgb.client.track.TrackGroupProperty;
 import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChange;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
+import org.utgenome.gwt.utgb.client.track.operation.OperationParser;
 import org.utgenome.gwt.utgb.client.util.GETMethodURL;
 import org.utgenome.gwt.utgb.client.util.JSONUtil;
 import org.utgenome.gwt.utgb.client.util.Properties;

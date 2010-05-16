@@ -24,7 +24,8 @@ import org.xerial.util.StringUtil;
 import org.xerial.util.log.Logger;
 
 /**
- * Request handler
+ * Get the view data from the user's file via POST request, and return the data by embedding it in an HTML.
+ * 
  * 
  */
 public class LoadView extends WebTrackBase {

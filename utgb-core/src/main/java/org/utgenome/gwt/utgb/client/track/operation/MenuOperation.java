@@ -22,7 +22,7 @@
 // $URL$ 
 // $Author$ ssksn
 //--------------------------------------
-package org.utgenome.gwt.utgb.client.operation;
+package org.utgenome.gwt.utgb.client.track.operation;
 
 import java.util.ArrayList;
 

@@ -16,31 +16,22 @@
 //--------------------------------------
 // GenomeBrowser Project
 //
-// OperationImpl.java
-// Since: 2007/06/14
+// Operation.java
+// Since: 2007/06/13
 //
 // $URL$ 
-// $Author$ ssksn
+// $Author$
 //--------------------------------------
-package org.utgenome.gwt.utgb.client.operation;
+package org.utgenome.gwt.utgb.client.track.operation;
 
-import org.utgenome.gwt.utgb.client.track.Track;
+import com.google.gwt.user.client.ui.Widget;
 
-public abstract class OperationImpl implements Operation
-{
-    protected Track track;
-
-    protected OperationImpl(final Track track) {
-        this.track = track;
-    }
-    
-    protected void setTrack(final Track track) {
-        this.track = track;
-    }
-    protected Track getTrack() { return track; }
-    
+/**
+ * Mouse click operation interface
+ * 
+ * @author leo
+ * 
+ */
+public interface Operation {
+	public void execute(final Widget sender, final int x, final int y);
 }
-
-
-
-

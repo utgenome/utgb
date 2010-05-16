@@ -28,13 +28,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.utgenome.gwt.utgb.client.GenomeBrowser;
-import org.utgenome.gwt.utgb.client.operation.Operation;
-import org.utgenome.gwt.utgb.client.operation.OperationParser;
-import org.utgenome.gwt.utgb.client.operation.SubOperation;
 import org.utgenome.gwt.utgb.client.track.Track;
 import org.utgenome.gwt.utgb.client.track.TrackGroup;
 import org.utgenome.gwt.utgb.client.track.TrackGroupProperty;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
+import org.utgenome.gwt.utgb.client.track.operation.Operation;
+import org.utgenome.gwt.utgb.client.track.operation.OperationParser;
+import org.utgenome.gwt.utgb.client.track.operation.SubOperation;
 import org.utgenome.gwt.utgb.client.util.Utilities;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;

@@ -34,7 +34,6 @@ import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyWriter;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.track.impl.TrackGroupPropertyImpl;
 import org.utgenome.gwt.utgb.client.track.impl.TrackWindowImpl;
-import org.utgenome.gwt.utgb.client.track.lib.LoadAndStoreTrack;
 import org.utgenome.gwt.utgb.client.track.lib.TrackTreeTrack;
 import org.utgenome.gwt.utgb.client.track.lib.ValueSelectorTrack;
 import org.utgenome.gwt.utgb.client.util.GETMethodURL;
@@ -211,7 +210,7 @@ public class OldUTGBTrackGroup extends TrackGroup {
 		defaultPropertyMap.put(OldUTGBProperty.TARGET, "scaffold1");
 		propertyWriter.setProperty(defaultPropertyMap);
 
-		addTrack(new LoadAndStoreTrack());
+		//addTrack(new LoadAndStoreTrack());
 		final TrackTreeTrack ttTrack = new TrackTreeTrack();
 		addTrackUpdateListener(ttTrack);
 		addTrack(ttTrack);

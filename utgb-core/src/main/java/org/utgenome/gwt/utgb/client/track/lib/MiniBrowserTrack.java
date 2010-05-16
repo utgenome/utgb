@@ -46,7 +46,18 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Track for embedding HTML page via iframe tag
+ * Track for embedding HTML page via iframe tag.
+ * 
+ * Usage:
+ * 
+ * <pre>
+ * -track 
+ *  -name: Browser
+ *  -class: MiniBrowser
+ *  -property
+ *    -URL: http://www.google.com
+ *    -type: {frame or image}
+ * </pre>
  * 
  * @author leo
  * 

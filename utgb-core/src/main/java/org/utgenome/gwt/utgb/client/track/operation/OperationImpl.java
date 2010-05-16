@@ -16,20 +16,29 @@
 //--------------------------------------
 // GenomeBrowser Project
 //
-// OperationParserImpl.java
-// Since: 2007/06/19
+// OperationImpl.java
+// Since: 2007/06/14
 //
 // $URL$ 
-// $Author$
+// $Author$ ssksn
 //--------------------------------------
-package org.utgenome.gwt.utgb.client.operation;
+package org.utgenome.gwt.utgb.client.track.operation;
 
+import org.utgenome.gwt.utgb.client.track.Track;
 
-/**
- * @author ssksn
- *
- */
-public abstract class OperationParserImpl extends OperationParser {
+public abstract class OperationImpl implements Operation {
+	protected Track track;
+
+	protected OperationImpl(final Track track) {
+		this.track = track;
+	}
+
+	protected void setTrack(final Track track) {
+		this.track = track;
+	}
+
+	protected Track getTrack() {
+		return track;
+	}
 
 }
-

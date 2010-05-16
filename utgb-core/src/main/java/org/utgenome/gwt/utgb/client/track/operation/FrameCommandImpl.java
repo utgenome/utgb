@@ -16,17 +16,32 @@
 //--------------------------------------
 // GenomeBrowser Project
 //
-// Operation.java
-// Since: 2007/06/13
+// FrameCommandImpl.java
+// Since: 2007/06/18
 //
 // $URL$ 
-// $Author$
+// $Author$ ssksn
 //--------------------------------------
-package org.utgenome.gwt.utgb.client.operation;
+package org.utgenome.gwt.utgb.client.track.operation;
 
-import com.google.gwt.user.client.ui.Widget;
+import org.utgenome.gwt.utgb.client.track.Track;
 
-public interface Operation {
-    public void execute(final Widget sender, final int x, final int y);
+import com.google.gwt.xml.client.Node;
+
+/**
+ * @author ssksn
+ * 
+ */
+public class FrameCommandImpl implements FrameCommand {
+	public FrameCommandImpl(final Node frameCommandNode) {
+
+	}
+
+	public static FrameCommand newInstance(final Node frameCommandNode) {
+		return null;
+	}
+
+	public void execute(Track track) {
+
+	}
 }
-

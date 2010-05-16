@@ -16,38 +16,43 @@
 //--------------------------------------
 // GenomeBrowser Project
 //
-// FrameCommandImpl.java
+// FrameOperation.java
 // Since: 2007/06/18
 //
 // $URL$ 
 // $Author$ ssksn
 //--------------------------------------
-package org.utgenome.gwt.utgb.client.operation;
+package org.utgenome.gwt.utgb.client.track.operation;
+
+import java.util.ArrayList;
 
 import org.utgenome.gwt.utgb.client.track.Track;
 
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.xml.client.Node;
 
 /**
  * @author ssksn
- *
+ * 
  */
-public class FrameCommandImpl implements FrameCommand
-{
-    public FrameCommandImpl(final Node frameCommandNode) {
-        
-    }
-    
-    public static FrameCommand newInstance(final Node frameCommandNode) {
-        return null;
-    }
-    
-    public void execute(Track track)
-    {
+public class FrameOperation extends OperationImpl {
+	protected final ArrayList<FrameCommand> commands = new ArrayList<FrameCommand>();
 
-    }
+	public FrameOperation(final Node frameOperationNode, final Track track) {
+		super(track);
+	}
+
+	public void execute(Widget sender, int x, int y) {
+		final int commandNum = commands.size();
+		for (int i = 0; i < commandNum; i++) {
+			final FrameCommand frameCommand = (FrameCommand) (commands.get(i));
+
+			frameCommand.execute(getTrack());
+		}
+	}
+
+	public void addCommand(final FrameCommand frameCommand) {
+		commands.add(frameCommand);
+	}
+
 }
-
-
-
-

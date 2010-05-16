@@ -50,6 +50,13 @@ public class TrackLoader {
 	private TrackLoader() {
 	}
 
+	/**
+	 * Create a track group from a given {@link TrackView}
+	 * 
+	 * @param view
+	 * @return
+	 * @throws UTGBClientException
+	 */
 	public static TrackGroup createTrackGroup(TrackView view) throws UTGBClientException {
 
 		TrackView.TrackGroup g = view.trackGroup;
@@ -93,12 +100,22 @@ public class TrackLoader {
 
 	}
 
+	/**
+	 * @param xml
+	 * @return
+	 * @deprecated use {@link #createTrackGroup(TrackView)} instead.
+	 */
 	public static TrackGroup createTrackGroupFromXML(String xml) {
 		final Document document = XMLParser.parse(xml);
 		final Node topLevelNode = document.getFirstChild();
 		return loadTrackGroupFromXML(topLevelNode);
 	}
 
+	/**
+	 * @param trackGroupNode
+	 * @return
+	 * @deprecated use {@link #createTrackGroup(TrackView)} instead
+	 */
 	public static TrackGroup loadTrackGroupFromXML(final Node trackGroupNode) {
 		final String trackGroupClassName = Utilities.getAttributeValue(trackGroupNode, "className");
 
@@ -194,6 +211,11 @@ public class TrackLoader {
 		}
 	}
 
+	/**
+	 * @param trackNode
+	 * @return
+	 * @deprecated
+	 */
 	public static Track loadTrackFromXML(final Node trackNode) {
 		final String trackClassName = DOMUtil.getAttributeValue(trackNode, "className");
 

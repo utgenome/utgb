@@ -16,28 +16,20 @@
 //--------------------------------------
 // GenomeBrowser Project
 //
-// EventImpl.java
-// Since: 2007/06/14
+// FrameCommand.java
+// Since: 2007/06/18
 //
 // $URL$ 
 // $Author$
 //--------------------------------------
-package org.utgenome.gwt.utgb.client.operation;
+package org.utgenome.gwt.utgb.client.track.operation;
 
-import java.util.ArrayList;
-
-import com.google.gwt.event.shared.EventHandler;
+import org.utgenome.gwt.utgb.client.track.Track;
 
 /**
  * @author ssksn
  * 
  */
-public class EventImpl implements EventHandler {
-	protected ArrayList<Operation> operations = new ArrayList<Operation>();
-
-	public void addOperation(final Operation operation) {
-		if (operation != null)
-			operations.add(operation);
-	}
-
+public interface FrameCommand {
+	public void execute(final Track track);
 }

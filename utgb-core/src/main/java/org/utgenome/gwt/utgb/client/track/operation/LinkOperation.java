@@ -16,18 +16,17 @@
 //--------------------------------------
 // GenomeBrowser Project
 //
-// FrameOperation.java
-// Since: 2007/06/18
+// LinkOperation.java
+// Since: 2007/06/14
 //
 // $URL$ 
-// $Author$ ssksn
+// $Author$
 //--------------------------------------
-package org.utgenome.gwt.utgb.client.operation;
+package org.utgenome.gwt.utgb.client.track.operation;
 
-import java.util.ArrayList;
+import org.utgenome.gwt.utgb.client.util.Utilities;
 
-import org.utgenome.gwt.utgb.client.track.Track;
-
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.xml.client.Node;
 
@@ -35,24 +34,21 @@ import com.google.gwt.xml.client.Node;
  * @author ssksn
  * 
  */
-public class FrameOperation extends OperationImpl {
-	protected final ArrayList<FrameCommand> commands = new ArrayList<FrameCommand>();
+public class LinkOperation implements Operation {
+	private final String url;
+	private final String target;
 
-	public FrameOperation(final Node frameOperationNode, final Track track) {
-		super(track);
+	public LinkOperation(final Node linkOperationNode) {
+		this.url = Utilities.getAttributeValue(linkOperationNode, "url");
+		final String _target = Utilities.getAttributeValue(linkOperationNode, "target");
+		if (_target == null)
+			this.target = "";
+		else
+			this.target = _target;
 	}
 
 	public void execute(Widget sender, int x, int y) {
-		final int commandNum = commands.size();
-		for (int i = 0; i < commandNum; i++) {
-			final FrameCommand frameCommand = (FrameCommand) (commands.get(i));
-
-			frameCommand.execute(getTrack());
-		}
-	}
-
-	public void addCommand(final FrameCommand frameCommand) {
-		commands.add(frameCommand);
+		Window.open(url, target, "");
 	}
 
 }

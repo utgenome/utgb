@@ -26,10 +26,9 @@ package org.utgenome.gwt.utgb.client.track.lib.debug;
 
 import org.utgenome.gwt.utgb.client.track.Track;
 import org.utgenome.gwt.utgb.client.track.lib.LegacyTrack;
-import org.utgenome.gwt.utgb.client.track.lib.LoadAndStoreTrack;
-import org.utgenome.gwt.utgb.client.track.lib.OperationTrack;
 import org.utgenome.gwt.utgb.client.track.lib.ToolBoxTrack;
 import org.utgenome.gwt.utgb.client.track.lib.old.OldUTGBAddTrackTrack;
+import org.utgenome.gwt.utgb.client.track.lib.old.OperationTrack;
 
 /**
  * A tool box for debug purpose tracks
@@ -58,7 +57,6 @@ public class DebugToolBoxTrack extends ToolBoxTrack {
 		addTrackFactory("URL Query", URLQueryArgumentTrack.factory());
 		addTrackFactory("Legacy Track", LegacyTrack.factory());
 		addTrackFactory("Legacy Track Loader", OldUTGBAddTrackTrack.factory());
-		addTrackFactory("Load/Store", LoadAndStoreTrack.factory());
 	}
 
 }

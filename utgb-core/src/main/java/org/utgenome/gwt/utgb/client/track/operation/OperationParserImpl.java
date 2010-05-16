@@ -16,43 +16,18 @@
 //--------------------------------------
 // GenomeBrowser Project
 //
-// LinkOperation.java
-// Since: 2007/06/14
+// OperationParserImpl.java
+// Since: 2007/06/19
 //
 // $URL$ 
 // $Author$
 //--------------------------------------
-package org.utgenome.gwt.utgb.client.operation;
-
-import org.utgenome.gwt.utgb.client.util.Utilities;
-
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.xml.client.Node;
+package org.utgenome.gwt.utgb.client.track.operation;
 
 /**
  * @author ssksn
- *
+ * 
  */
-public class LinkOperation implements Operation
-{
-    private final String url;
-    private final String target;
-    
-    public LinkOperation(final Node linkOperationNode) {
-        this.url    = Utilities.getAttributeValue(linkOperationNode, "url");
-        final String _target = Utilities.getAttributeValue(linkOperationNode, "target");
-        if ( _target == null ) this.target = "";
-        else this.target = _target;
-    }
-    
-    public void execute(Widget sender, int x, int y)
-    {
-        Window.open(url, target, "");
-    }
+public abstract class OperationParserImpl extends OperationParser {
 
 }
-
-
-
-

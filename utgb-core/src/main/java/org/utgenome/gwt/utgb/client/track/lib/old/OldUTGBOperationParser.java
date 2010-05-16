@@ -24,18 +24,18 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.track.lib.old;
 
-import org.utgenome.gwt.utgb.client.operation.EventImpl;
-import org.utgenome.gwt.utgb.client.operation.FrameCommand;
-import org.utgenome.gwt.utgb.client.operation.FrameOperation;
-import org.utgenome.gwt.utgb.client.operation.LinkOperation;
-import org.utgenome.gwt.utgb.client.operation.MenuOperation;
-import org.utgenome.gwt.utgb.client.operation.MenuOperationItem;
-import org.utgenome.gwt.utgb.client.operation.MouseClickEventImpl;
-import org.utgenome.gwt.utgb.client.operation.Operation;
-import org.utgenome.gwt.utgb.client.operation.OperationArea;
-import org.utgenome.gwt.utgb.client.operation.OperationParser;
-import org.utgenome.gwt.utgb.client.operation.SubOperation;
 import org.utgenome.gwt.utgb.client.track.Track;
+import org.utgenome.gwt.utgb.client.track.operation.EventImpl;
+import org.utgenome.gwt.utgb.client.track.operation.FrameCommand;
+import org.utgenome.gwt.utgb.client.track.operation.FrameOperation;
+import org.utgenome.gwt.utgb.client.track.operation.LinkOperation;
+import org.utgenome.gwt.utgb.client.track.operation.MenuOperation;
+import org.utgenome.gwt.utgb.client.track.operation.MenuOperationItem;
+import org.utgenome.gwt.utgb.client.track.operation.MouseClickEventImpl;
+import org.utgenome.gwt.utgb.client.track.operation.Operation;
+import org.utgenome.gwt.utgb.client.track.operation.OperationArea;
+import org.utgenome.gwt.utgb.client.track.operation.OperationParser;
+import org.utgenome.gwt.utgb.client.track.operation.SubOperation;
 import org.utgenome.gwt.utgb.client.util.Utilities;
 
 import com.google.gwt.core.client.GWT;

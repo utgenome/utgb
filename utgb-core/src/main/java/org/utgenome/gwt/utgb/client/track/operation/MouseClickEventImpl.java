@@ -16,55 +16,30 @@
 //--------------------------------------
 // GenomeBrowser Project
 //
-// MenuOperationItem.java
+// MouseClickListener.java
 // Since: 2007/06/14
 //
 // $URL$ 
-// $Author$
+// $Author$ ssksn
 //--------------------------------------
-package org.utgenome.gwt.utgb.client.operation;
-
-import org.utgenome.gwt.utgb.client.util.Utilities;
+package org.utgenome.gwt.utgb.client.track.operation;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.xml.client.Node;
 
 /**
  * @author ssksn
  * 
  */
-public class MenuOperationItem extends EventImpl implements ClickHandler {
-	public String caption;
-	private PopupPanel _popupPanel;
-
-	public MenuOperationItem(final Node menuItemNode) {
-		this(Utilities.getAttributeValue(menuItemNode, "caption"));
-	}
-
-	public MenuOperationItem(final String caption) {
-		this.caption = caption;
-	}
-
-	public Widget getWidget(final PopupPanel popupPanel) {
-		final Button widget = new Button(caption);
-		widget.addClickHandler(this);
-
-		_popupPanel = popupPanel;
-
-		return widget;
-	}
+public class MouseClickEventImpl extends EventImpl implements ClickHandler {
 
 	public void onClick(ClickEvent e) {
-		final int operationSize = operations.size();
-		for (int i = 0; i < operationSize; i++) {
+		final int SIZE = operations.size();
+		for (int i = 0; i < SIZE; i++) {
 			final Operation operation = (Operation) (operations.get(i));
 			operation.execute((Widget) e.getSource(), -1, -1);
 		}
-
-		_popupPanel.hide();
 	}
+
 }

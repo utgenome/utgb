@@ -22,7 +22,7 @@
 // $URL$ 
 // $Author$ ssksn
 //--------------------------------------
-package org.utgenome.gwt.utgb.client.operation;
+package org.utgenome.gwt.utgb.client.track.operation;
 
 import org.utgenome.gwt.utgb.client.track.Track;
 import org.utgenome.gwt.utgb.client.track.lib.old.OldUTGBOperationParser;
@@ -38,32 +38,27 @@ import com.google.gwt.xml.client.XMLParser;
  * @since GWT 1.4
  * @version 0.1
  */
-public abstract class OperationParser
-{
+public abstract class OperationParser {
 	private static OperationParser _parser = new OldUTGBOperationParser();
-	
+
 	public static OperationParser getParser() {
 		return _parser;
 	}
-	
+
 	public final void parse(final String operationXMLStr, final AbsolutePanel panel, final Track track) {
-        final Document document = XMLParser.parse(operationXMLStr);
+		final Document document = XMLParser.parse(operationXMLStr);
 
-        parse(document, panel, track);
-    }
+		parse(document, panel, track);
+	}
 
-    public abstract void parse(final Document document, final AbsolutePanel panel, final Track track);
-    
-    protected abstract EventImpl parseEventNode(final Node eventNode);
+	public abstract void parse(final Document document, final AbsolutePanel panel, final Track track);
 
-    public abstract Operation parseOperationNode(final Node operationNode, final Track track);
+	protected abstract EventImpl parseEventNode(final Node eventNode);
 
-    protected abstract MenuOperationItem parseMenuItemNode(final Node menuItemNode, final Track track);
+	public abstract Operation parseOperationNode(final Node operationNode, final Track track);
 
-    protected abstract FrameCommand parseCommandNode(final Node commandNode, final Track track);
+	protected abstract MenuOperationItem parseMenuItemNode(final Node menuItemNode, final Track track);
+
+	protected abstract FrameCommand parseCommandNode(final Node commandNode, final Track track);
 
 }
-
-
-
-

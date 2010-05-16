@@ -96,7 +96,7 @@ public class ToolBoxTrack extends TrackBase {
 	 * override this method to implement your own tool box
 	 */
 	public void setupToolbox() {
-		addTrackFactory("Track Group", GroupViewerTrack.factory());
+
 		addTrackFactory("Scroll Button", ScrollButtonTrack.factory());
 		addTrackFactory("Window Controller", WindowControlTrack.factory());
 		addTrackFactory("Sequence Ruler", SequenceRulerTrack.factory());
