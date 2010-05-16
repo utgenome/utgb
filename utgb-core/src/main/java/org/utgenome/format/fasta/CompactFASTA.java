@@ -31,7 +31,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Set;
 
 import org.utgenome.UTGBException;
 import org.xerial.core.XerialException;
@@ -48,7 +50,7 @@ public class CompactFASTA {
 	public final static String PAC_N_FILE_SUFFIX = ".pacn";
 	public final static String PAC_INDEX_FILE_SUFFIX = ".i.silk";
 
-	private final HashMap<String, CompactFASTAIndex> indexTable = new HashMap<String, CompactFASTAIndex>();
+	private final LinkedHashMap<String, CompactFASTAIndex> indexTable = new LinkedHashMap<String, CompactFASTAIndex>();
 
 	private final String fastaFilePrefix;
 	private final PacFileAccess access;
@@ -76,6 +78,25 @@ public class CompactFASTA {
 			access = new OnDiskAccess(pacFile, pacNFile);
 		else
 			access = new OnMemoryBuffer(pacFile, pacNFile);
+	}
+
+	/**
+	 * Get the set of chromosome names
+	 * 
+	 * @return
+	 */
+	public Set<String> getChrSet() {
+		return Collections.unmodifiableSet(indexTable.keySet());
+	}
+
+	/**
+	 * Test the specified chromosome name is in this FASTA
+	 * 
+	 * @param chr
+	 * @return
+	 */
+	public boolean containsChr(String chr) {
+		return indexTable.containsKey(chr);
 	}
 
 	public static CompactFASTA loadIntoMemory(String fastaFilePrefix) throws XerialException, IOException {

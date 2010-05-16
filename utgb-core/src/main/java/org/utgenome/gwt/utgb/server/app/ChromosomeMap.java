@@ -278,6 +278,7 @@ public class ChromosomeMap extends WebTrackBase {
 	}
 
 	public static class ReadLocus extends Locus {
+		private static final long serialVersionUID = 1L;
 		public String target;
 
 		public void setTarget(String target) {

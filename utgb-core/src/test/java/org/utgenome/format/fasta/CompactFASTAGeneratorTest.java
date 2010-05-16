@@ -24,6 +24,8 @@
 //--------------------------------------
 package org.utgenome.format.fasta;
 
+import static org.junit.Assert.assertTrue;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,6 +45,10 @@ public class CompactFASTAGeneratorTest {
 	public void testGen() throws Exception {
 		CompactFASTAGenerator g = new CompactFASTAGenerator();
 		g.packFASTA(FileResource.find(CompactFASTAGeneratorTest.class, "sample.fa"));
+
+		CompactFASTA cf = new CompactFASTA(g.getWorkDir() + "/" + "sample.fa");
+		for (String chr : new String[] { "chr1", "chr2", "chr3" })
+			assertTrue(cf.containsChr(chr));
 	}
 
 	@Test
@@ -51,6 +57,8 @@ public class CompactFASTAGeneratorTest {
 		g.packFASTA(FileResource.find(CompactFASTAGeneratorTest.class, "sample-archive.fa.tar.gz"));
 
 		CompactFASTA cf = new CompactFASTA(g.getWorkDir() + "/" + "sample-archive.fa");
+		for (String chr : new String[] { "chr1", "chr2", "chr3" })
+			assertTrue(cf.containsChr(chr));
 	}
 
 }
