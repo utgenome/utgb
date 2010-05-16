@@ -24,7 +24,6 @@
 //--------------------------------------
 package org.utgenome.format.fasta;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -33,12 +32,8 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.zip.GZIPInputStream;
 
-import org.apache.tools.tar.TarEntry;
-import org.apache.tools.tar.TarInputStream;
 import org.xerial.silk.SilkWriter;
 import org.xerial.util.FileType;
 import org.xerial.util.log.Logger;
@@ -83,7 +78,7 @@ public class CompactFASTAGenerator {
 		packFASTA(fastaFile.getPath(), fastaFile.openStream());
 	}
 
-	public void packFASTA(String fastaFilePrefix, InputStream inputFASTA) throws IOException {
+	public void packFASTA(String fastaFilePrefix, InputStream in) throws IOException {
 
 		File work = new File(workDir);
 		if (!work.exists()) {
@@ -110,19 +105,8 @@ public class CompactFASTAGenerator {
 		indexOut.preamble();
 		indexOut.preamble("schema sequence(name, description, length, offset)");
 
-		// load FASTA file
-		// switch the input stream according to the file type
-		switch (FileType.getFileType(fileName)) {
-		case TAR_GZ:
-			packFASTAInTarGZFormat(new GZIPInputStream(new BufferedInputStream(inputFASTA, BUFFER_SIZE)));
-			break;
-		case GZIP:
-			packFASTA(new GZIPInputStream(new BufferedInputStream(inputFASTA, BUFFER_SIZE)));
-			break;
-		default:
-			packFASTA(new BufferedInputStream(inputFASTA, BUFFER_SIZE));
-			break;
-		}
+		// load FASTA file (.fa, .fa.tar.gz, ...)
+		packFASTA(new FASTAPullParser(fileName, in, BUFFER_SIZE));
 
 		compressor.close();
 		indexOut.close();
@@ -131,12 +115,11 @@ public class CompactFASTAGenerator {
 
 	}
 
-	private void packFASTA(InputStream in) throws IOException {
-		FASTAPullParser fastaParser = new FASTAPullParser(new InputStreamReader(in));
+	private void packFASTA(FASTAPullParser fastaParser) throws IOException {
 		String description;
 		while ((description = fastaParser.nextDescriptionLine()) != null) {
 
-			String sequenceName = FASTA.pickSequenceName(description);
+			String sequenceName = CompactFASTA.pickSequenceName(description);
 			_logger.info(String.format("loading %s ...", sequenceName));
 			long start = compressor.getSequenceLength();
 
@@ -154,19 +137,6 @@ public class CompactFASTAGenerator {
 			s.leaf("offset", Long.toString(start));
 		}
 
-	}
-
-	public void packFASTAInTarGZFormat(InputStream in) throws IOException {
-		TarInputStream tarInput = new TarInputStream(in);
-		TarEntry nextEntry = null;
-
-		while ((nextEntry = tarInput.getNextEntry()) != null) {
-			if (nextEntry.isDirectory())
-				continue;
-
-			packFASTA(tarInput);
-		}
-		tarInput.close();
 	}
 
 }

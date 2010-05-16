@@ -24,15 +24,22 @@
 //--------------------------------------
 package org.utgenome.format.fasta;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.LinkedList;
+import java.util.zip.GZIPInputStream;
 
+import org.apache.tools.tar.TarEntry;
+import org.apache.tools.tar.TarInputStream;
 import org.utgenome.format.InvalidFormatException;
+import org.xerial.util.FileType;
+import org.xerial.util.log.Logger;
 
 /**
  * A pull parser for FASTA format files
@@ -40,159 +47,243 @@ import org.utgenome.format.InvalidFormatException;
  * @author leo
  * 
  */
-public class FASTAPullParser
-{
-    private static enum TokenType {
-        DescriptionLine, SequenceLine
-    }
+public class FASTAPullParser {
+	private static Logger _logger = Logger.getLogger(FASTAPullParser.class);
 
-    private static class Token
-    {
-        private TokenType type;
-        private String data;
+	private static enum TokenType {
+		DescriptionLine, SequenceLine
+	}
 
-        public Token(TokenType type, String data)
-        {
-            this.type = type;
-            this.data = data.trim();
-        }
+	private static class Token {
+		private TokenType type;
+		private String data;
 
-        public TokenType getType()
-        {
-            return type;
-        }
+		public Token(TokenType type, String data) {
+			this.type = type;
+			this.data = data.trim();
+		}
 
-        public String getData()
-        {
-            return data;
-        }
-    }
+		public TokenType getType() {
+			return type;
+		}
 
-    private LinkedList<Token> tokenStack = new LinkedList<Token>();
-    private final BufferedReader fastaReader;
-    private int lineCount = 0;
+		public String getData() {
+			return data;
+		}
+	}
 
-    public FASTAPullParser(Reader reader)
-    {
-        fastaReader = new BufferedReader(reader);
-    }
+	private LinkedList<Token> tokenStack = new LinkedList<Token>();
+	private final FASTAReader fastaReader;
+	private int lineCount = 0;
 
-    public FASTAPullParser(File fastaFile) throws FileNotFoundException
-    {
-        fastaReader = new BufferedReader(new FileReader(fastaFile));
-    }
+	public int BUFFER_SIZE = 4 * 1024 * 1024;
 
-    private boolean hasStackedToken()
-    {
-        return !tokenStack.isEmpty();
-    }
+	public FASTAPullParser(Reader reader) {
+		fastaReader = new DefaultFASTAReader(new BufferedReader(reader));
+	}
 
-    private Token popToken()
-    {
-        return tokenStack.removeLast();
-    }
+	public FASTAPullParser(File fastaFile, int bufferSize) throws IOException {
+		this(fastaFile.getName(), new FileInputStream(fastaFile), bufferSize);
+	}
 
-    private Token nextToken() throws IOException
-    {
-        if (hasStackedToken())
-            return popToken();
-        else
-        {
-            // read next line
-            String line = fastaReader.readLine();
-            if (line == null)
-                return null; // no more token
-            lineCount++;
-            if (line.startsWith(">"))
-                return new Token(TokenType.DescriptionLine, line.substring(1));
-            else
-                return new Token(TokenType.SequenceLine, line);
-        }
-    }
+	public FASTAPullParser(String fastaFile, InputStream in, int bufferSize) throws IOException {
+		BUFFER_SIZE = bufferSize;
 
-    /**
-     * read the next fasta sequence;
-     * 
-     * @return the next fasta sequence, or null when there is no more sequence
-     *         to read.
-     * @throws InvalidFormatException
-     *             when the input fasta data format is invalid
-     * @throws IOException
-     */
-    public FASTASequence nextSequence() throws InvalidFormatException, IOException
-    {
-        Token t = nextToken();
-        if (t == null)
-            return null;
+		FileType fileType = FileType.getFileType(fastaFile);
+		switch (fileType) {
+		case TAR:
+			fastaReader = new TarFASTAReader(new BufferedInputStream(in, BUFFER_SIZE), BUFFER_SIZE);
+			break;
+		case TAR_GZ:
+			fastaReader = new TarFASTAReader(new GZIPInputStream(new BufferedInputStream(in)), BUFFER_SIZE);
+			break;
+		case GZIP:
+			fastaReader = new DefaultFASTAReader(new GZIPInputStream(new BufferedInputStream(in)), BUFFER_SIZE);
+			break;
+		case FASTA:
+		default:
+			fastaReader = new DefaultFASTAReader(in, BUFFER_SIZE);
+			break;
+		}
+	}
 
-        TokenType type = t.getType();
-        if (type == TokenType.DescriptionLine)
-        {
-            String seq = readSequence();
-            return new FASTASequence(t.getData(), seq);
-        }
-        else
-            return null;
-    }
+	private static interface FASTAReader {
+		public String nextLine() throws IOException;
 
-    public String nextSequenceLine() throws IOException
-    {
-        Token t = nextToken();
-        if (t == null)
-            return null;
+		public void close() throws IOException;
+	}
 
-        TokenType type = t.getType();
-        if (type == TokenType.SequenceLine)
-        {
-            return t.getData();
-        }
-        else
-        {
-            tokenStack.add(t);
-            return null;
-        }
-    }
+	private static class DefaultFASTAReader implements FASTAReader {
 
-    public String nextDescriptionLine() throws IOException
-    {
-        Token t = nextToken();
-        if (t == null)
-            return null;
-        if (t.getType() == TokenType.DescriptionLine)
-        {
-            return t.getData();
-        }
-        else
-        {
-            tokenStack.add(t);
-            return null;
-        }
-    }
+		private BufferedReader in;
 
-    private String readSequence() throws InvalidFormatException, IOException
-    {
-        Token t = nextToken();
-        if (t == null)
-            throw new InvalidFormatException("sequence is null: " + lineInfo());
-        TokenType type;
-        StringBuilder builder = new StringBuilder();
-        while ((type = t.getType()) == TokenType.SequenceLine)
-        {
-            builder.append(t.getData());
-            t = nextToken();
-            if (t == null)
-            {
-                return builder.toString();
-            }
-        }
-        tokenStack.add(t);
-        return builder.toString();
+		public DefaultFASTAReader(BufferedReader r) {
+			this.in = r;
+		}
 
-    }
+		public DefaultFASTAReader(InputStream in, int bufferSize) {
+			this.in = new BufferedReader(new InputStreamReader(in), bufferSize);
+		}
 
-    private String lineInfo()
-    {
-        return "line=" + lineCount;
-    }
+		public String nextLine() throws IOException {
+			return in.readLine();
+		}
+
+		public void close() throws IOException {
+			if (in != null)
+				in.close();
+		}
+	}
+
+	private static class TarFASTAReader implements FASTAReader {
+
+		TarInputStream tarIn;
+		BufferedReader reader = null;
+		int bufferSize;
+
+		public TarFASTAReader(InputStream in, int bufferSize) throws IOException {
+			this.tarIn = new TarInputStream(in);
+			this.bufferSize = bufferSize;
+		}
+
+		public String nextLine() throws IOException {
+
+			if (reader != null) {
+				String line = reader.readLine();
+				if (line == null) {
+					reader = null;
+					return nextLine();
+				}
+				else
+					return line;
+			}
+
+			while (true) {
+				TarEntry currentEntry = tarIn.getNextEntry();
+				if (currentEntry == null)
+					return null;
+
+				if (currentEntry.isDirectory()) {
+					continue;
+				}
+
+				FileType fileType = FileType.getFileType(currentEntry.getName());
+				if (fileType != FileType.FASTA)
+					continue;
+
+				reader = new BufferedReader(new InputStreamReader(tarIn), bufferSize);
+				break;
+			}
+
+			return nextLine();
+		}
+
+		public void close() throws IOException {
+			if (reader != null)
+				reader.close();
+		}
+
+	}
+
+	private boolean hasStackedToken() {
+		return !tokenStack.isEmpty();
+	}
+
+	private Token popToken() {
+		return tokenStack.removeLast();
+	}
+
+	private Token nextToken() throws IOException {
+		if (hasStackedToken())
+			return popToken();
+		else {
+			// read next line
+			String line = fastaReader.nextLine();
+			if (line == null)
+				return null; // no more token
+			lineCount++;
+			if (line.startsWith(">"))
+				return new Token(TokenType.DescriptionLine, line.substring(1));
+			else
+				return new Token(TokenType.SequenceLine, line);
+		}
+	}
+
+	/**
+	 * read the next fasta sequence;
+	 * 
+	 * @return the next fasta sequence, or null when there is no more sequence to read.
+	 * @throws InvalidFormatException
+	 *             when the input fasta data format is invalid
+	 * @throws IOException
+	 */
+	public FASTASequence nextSequence() throws InvalidFormatException, IOException {
+		Token t = nextToken();
+		if (t == null)
+			return null;
+
+		TokenType type = t.getType();
+		if (type == TokenType.DescriptionLine) {
+			String seq = readSequence();
+			return new FASTASequence(t.getData(), seq);
+		}
+		else
+			return null;
+	}
+
+	public String nextSequenceLine() throws IOException {
+		Token t = nextToken();
+		if (t == null)
+			return null;
+
+		TokenType type = t.getType();
+		if (type == TokenType.SequenceLine) {
+			return t.getData();
+		}
+		else {
+			tokenStack.add(t);
+			return null;
+		}
+	}
+
+	public String nextDescriptionLine() throws IOException {
+		Token t = nextToken();
+		if (t == null)
+			return null;
+		if (t.getType() == TokenType.DescriptionLine) {
+			return t.getData();
+		}
+		else {
+			tokenStack.add(t);
+			return null;
+		}
+	}
+
+	private String readSequence() throws InvalidFormatException, IOException {
+		Token t = nextToken();
+		if (t == null)
+			throw new InvalidFormatException("sequence is null: " + lineInfo());
+		TokenType type;
+		StringBuilder builder = new StringBuilder();
+		while ((type = t.getType()) == TokenType.SequenceLine) {
+			builder.append(t.getData());
+			t = nextToken();
+			if (t == null) {
+				return builder.toString();
+			}
+		}
+		tokenStack.add(t);
+		return builder.toString();
+
+	}
+
+	private String lineInfo() {
+		return "line=" + lineCount;
+	}
+
+	public void close() throws IOException {
+		if (fastaReader != null)
+			fastaReader.close();
+	}
 
 }

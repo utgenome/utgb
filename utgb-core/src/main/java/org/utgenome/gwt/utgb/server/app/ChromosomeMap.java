@@ -26,7 +26,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.utgenome.format.fasta.CompactACGTIndex;
+import org.utgenome.format.fasta.CompactFASTAIndex;
 import org.utgenome.graphics.ChromosomeMapCanvas;
 import org.utgenome.graphics.ChromosomeWindow;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
@@ -98,8 +98,8 @@ public class ChromosomeMap extends WebTrackBase {
 
 		}
 		else if (packIndex.exists()) {
-			List<CompactACGTIndex> index = CompactACGTIndex.load(new BufferedReader(new FileReader(packIndex)));
-			for (CompactACGTIndex each : index) {
+			List<CompactFASTAIndex> index = CompactFASTAIndex.load(new BufferedReader(new FileReader(packIndex)));
+			for (CompactFASTAIndex each : index) {
 				CytoBand cytoBand = each.toCytoBand();
 				cytoBandList.add(cytoBand);
 			}
@@ -137,8 +137,8 @@ public class ChromosomeMap extends WebTrackBase {
 
 		}
 		else if (packIndex.exists()) {
-			List<CompactACGTIndex> index = CompactACGTIndex.load(new BufferedReader(new FileReader(packIndex)));
-			for (CompactACGTIndex each : index) {
+			List<CompactFASTAIndex> index = CompactFASTAIndex.load(new BufferedReader(new FileReader(packIndex)));
+			for (CompactFASTAIndex each : index) {
 				CytoBand cytoBand = each.toCytoBand();
 				cytoBandList.add(cytoBand);
 			}

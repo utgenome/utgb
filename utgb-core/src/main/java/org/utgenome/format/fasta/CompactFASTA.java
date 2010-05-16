@@ -48,22 +48,25 @@ public class CompactFASTA {
 	public final static String PAC_N_FILE_SUFFIX = ".pacn";
 	public final static String PAC_INDEX_FILE_SUFFIX = ".i.silk";
 
-	private final HashMap<String, CompactACGTIndex> indexTable = new HashMap<String, CompactACGTIndex>();
+	private final HashMap<String, CompactFASTAIndex> indexTable = new HashMap<String, CompactFASTAIndex>();
 
 	private final String fastaFilePrefix;
 	private final PacFileAccess access;
 
-	public CompactFASTA(String fastaFilePrefix) throws XerialException, IOException {
-		this(fastaFilePrefix, false);
+	/**
+	 * @param fastaFilePrefix
+	 * @throws XerialException
+	 * @throws IOException
+	 */
+	public CompactFASTA(String fastaFile) throws XerialException, IOException {
+		this(fastaFile, false);
 	}
 
-	private CompactFASTA(String fastaFilePrefix, boolean loadIntoMemory) throws XerialException, IOException {
-		this.fastaFilePrefix = fastaFilePrefix;
+	private CompactFASTA(String fastaFile, boolean loadIntoMemory) throws XerialException, IOException {
+		this.fastaFilePrefix = fastaFile;
 
-		File f = new File(fastaFilePrefix);
-		String fileDir = f.getParent();
 		File indexFile = new File(fastaFilePrefix + PAC_INDEX_FILE_SUFFIX);
-		for (CompactACGTIndex each : CompactACGTIndex.load(new BufferedReader(new FileReader(indexFile)))) {
+		for (CompactFASTAIndex each : CompactFASTAIndex.load(new BufferedReader(new FileReader(indexFile)))) {
 			indexTable.put(each.name, each);
 		}
 
@@ -99,11 +102,11 @@ public class CompactFASTA {
 	public GenomeSequence getSequence(String chr, int start, int end) throws IOException, UTGBException {
 		if (!indexTable.containsKey(chr))
 			return null;
-		CompactACGTIndex index = indexTable.get(chr);
+		CompactFASTAIndex index = indexTable.get(chr);
 		return getSequence(index, start, end);
 	}
 
-	GenomeSequence getSequence(CompactACGTIndex index, int start, int end) throws IOException, UTGBException {
+	GenomeSequence getSequence(CompactFASTAIndex index, int start, int end) throws IOException, UTGBException {
 		if (index == null)
 			throw new IllegalArgumentException("index must not be null");
 
@@ -138,12 +141,33 @@ public class CompactFASTA {
 	public GenomeSequence getSequence(String chr, int start) throws IOException, UTGBException {
 		if (!indexTable.containsKey(chr))
 			return null;
-		CompactACGTIndex index = indexTable.get(chr);
+		CompactFASTAIndex index = indexTable.get(chr);
 		return getSequence(index, start, (int) index.length);
 	}
 
 	public GenomeSequence getSequence(String chr) throws IOException, UTGBException {
 		return getSequence(chr, 0);
+	}
+
+	public static String pickSequenceName(String descriptionLine) {
+		int begin = 0;
+		if (descriptionLine.length() > 0 && descriptionLine.charAt(0) == '>')
+			begin++;
+
+		// skip leading white spaces
+		for (; begin < descriptionLine.length(); ++begin) {
+			char c = descriptionLine.charAt(begin);
+			if (!(c == ' ' | c == '\t'))
+				break;
+		}
+		int end = begin + 1;
+		for (; end < descriptionLine.length(); ++end) {
+			char c = descriptionLine.charAt(end);
+			if (c == ' ' | c == '\t') {
+				break;
+			}
+		}
+		return descriptionLine.substring(begin, end);
 	}
 
 	public interface PacFileAccess {

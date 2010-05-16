@@ -27,7 +27,6 @@ package org.utgenome.format.fasta;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.utgenome.format.fasta.CompactFASTAGenerator;
 import org.xerial.util.FileResource;
 
 public class CompactFASTAGeneratorTest {
@@ -50,6 +49,8 @@ public class CompactFASTAGeneratorTest {
 	public void testGenTarGZ() throws Exception {
 		CompactFASTAGenerator g = new CompactFASTAGenerator();
 		g.packFASTA(FileResource.find(CompactFASTAGeneratorTest.class, "sample-archive.fa.tar.gz"));
+
+		CompactFASTA cf = new CompactFASTA(g.getWorkDir() + "/" + "sample-archive.fa");
 	}
 
 }

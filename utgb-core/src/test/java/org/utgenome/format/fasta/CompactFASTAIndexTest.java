@@ -16,7 +16,7 @@
 //--------------------------------------
 // utgb-core Project
 //
-// CompactACGTIndexTest.java
+// CompactFASTAIndexTest.java
 // Since: 2010/03/11
 //
 // $URL$ 
@@ -38,9 +38,9 @@ import org.xerial.lens.Lens;
 import org.xerial.util.FileResource;
 import org.xerial.util.log.Logger;
 
-public class CompactACGTIndexTest {
+public class CompactFASTAIndexTest {
 
-	private static Logger _logger = Logger.getLogger(CompactACGTIndexTest.class);
+	private static Logger _logger = Logger.getLogger(CompactFASTAIndexTest.class);
 
 	public static String workDir = "target";
 
@@ -57,7 +57,7 @@ public class CompactACGTIndexTest {
 
 	@Test
 	public void load() throws Exception {
-		List<CompactACGTIndex> index = CompactACGTIndex.load(new FileReader(new File(workDir, "sample.fa.i.silk")));
+		List<CompactFASTAIndex> index = CompactFASTAIndex.load(new FileReader(new File(workDir, "sample.fa.i.silk")));
 		assertEquals(3, index.size());
 		_logger.info(Lens.toSilk(index));
 
@@ -65,10 +65,10 @@ public class CompactACGTIndexTest {
 
 	@Test
 	public void toCytoBand() throws Exception {
-		List<CompactACGTIndex> index = CompactACGTIndex.load(new FileReader(new File(workDir, "sample.fa.i.silk")));
+		List<CompactFASTAIndex> index = CompactFASTAIndex.load(new FileReader(new File(workDir, "sample.fa.i.silk")));
 		assertEquals(3, index.size());
 
-		for (CompactACGTIndex each : index) {
+		for (CompactFASTAIndex each : index) {
 			CytoBand c = each.toCytoBand();
 			assertEquals(1, c.getStart());
 			assertEquals(c.getEnd(), each.length);
