@@ -748,7 +748,7 @@ public class GWTGenomeCanvas extends Composite {
 			//				exponent = 5;
 			else {
 				exponent = 1;
-				fraction ++;
+				fraction++;
 			}
 			double stepSize = exponent * Math.pow(10, fraction);
 			max = (float) (Math.floor(max / stepSize) * stepSize);
@@ -778,9 +778,10 @@ public class GWTGenomeCanvas extends Composite {
 			else {
 				int exponent_tmp = (int) Math.ceil(Math.round(indentValue / Math.pow(10, fraction - 3)) / 1000.0);
 				int endIndex = String.valueOf(exponent_tmp).length() + 1;
-				if(fraction < 0)endIndex -= fraction;
+				if (fraction < 0)
+					endIndex -= fraction;
 				endIndex = Math.min(String.valueOf(indentValue).length(), endIndex);
-				
+
 				return String.valueOf(indentValue).substring(0, endIndex);
 			}
 		}
@@ -882,4 +883,5 @@ public class GWTGenomeCanvas extends Composite {
 	public void setIndentHeight(int indentHeight) {
 		this.indentHeight = indentHeight;
 	}
+
 }

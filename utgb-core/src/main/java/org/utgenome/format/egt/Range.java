@@ -16,7 +16,7 @@
 //--------------------------------------
 // utgb-core Project
 //
-// Range.java
+// Read.java
 // Since: Dec 10, 2007
 //
 // $URL$ 
@@ -25,7 +25,7 @@
 package org.utgenome.format.egt;
 
 /**
- * Range on a genome sequence
+ * Read on a genome sequence
  * 
  * @author leo
  *

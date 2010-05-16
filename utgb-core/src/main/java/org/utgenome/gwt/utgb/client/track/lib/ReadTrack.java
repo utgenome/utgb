@@ -16,8 +16,8 @@
 //--------------------------------------
 // utgb-core Project
 //
-// BEDCanvasTrack.java
-// Since: Apr 20, 2010
+// ReadTrack.java
+// Since: May 16, 2010
 //
 // $URL$ 
 // $Author$
@@ -25,12 +25,12 @@
 package org.utgenome.gwt.utgb.client.track.lib;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.utgenome.gwt.utgb.client.GenomeBrowser;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
-import org.utgenome.gwt.utgb.client.bio.Gene;
 import org.utgenome.gwt.utgb.client.bio.Locus;
+import org.utgenome.gwt.utgb.client.bio.Read;
+import org.utgenome.gwt.utgb.client.bio.ReadSet;
 import org.utgenome.gwt.utgb.client.canvas.GWTGenomeCanvas;
 import org.utgenome.gwt.utgb.client.canvas.LocusClickHandler;
 import org.utgenome.gwt.utgb.client.db.datatype.BooleanType;
@@ -56,12 +56,12 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * BED track using HTML5 Canvas
+ * Track for displaying read data
  * 
  * @author leo
  * 
  */
-public class BEDCanvasTrack extends TrackBase {
+public class ReadTrack extends TrackBase {
 
 	protected TrackConfig config = new TrackConfig(this);
 	private String fileName;
@@ -69,19 +69,19 @@ public class BEDCanvasTrack extends TrackBase {
 	private String clickURLtemplate = "http://www.ncbi.nlm.nih.gov/entrez/viewer.fcgi?val=%q";
 	private int leftMargin = 0;
 
-	private ArrayList<Gene> genes = new ArrayList<Gene>();
+	private ArrayList<Read> genes = new ArrayList<Read>();
 
 	public static TrackFactory factory() {
 		return new TrackFactory() {
 			@Override
 			public Track newInstance() {
-				return new BEDCanvasTrack();
+				return new ReadTrack();
 			}
 		};
 	}
 
-	public BEDCanvasTrack() {
-		super("BED Canvas");
+	public ReadTrack() {
+		super("Read Track");
 
 		layoutTable.setBorderWidth(0);
 		layoutTable.setCellPadding(0);
@@ -119,7 +119,7 @@ public class BEDCanvasTrack extends TrackBase {
 		geneCanvas.clear();
 		geneCanvas.setWindow(new TrackWindowImpl(width, s, e));
 		//geneCanvas.setShowLabels(showLabels);
-		geneCanvas.drawGene(genes);
+		//geneCanvas.draw(genes);
 
 		getFrame().loadingDone();
 	}
@@ -157,15 +157,15 @@ public class BEDCanvasTrack extends TrackBase {
 	}
 
 	class UpdateCommand implements Command {
-		private final List<Gene> geneList;
+		private final ReadSet readSet;
 
-		public UpdateCommand(List<Gene> geneList) {
-			this.geneList = geneList;
+		public UpdateCommand(ReadSet readSet) {
+			this.readSet = readSet;
 		}
 
 		public void execute() {
 			genes.clear();
-			genes.addAll(geneList);
+			genes.addAll(readSet.read);
 			refresh();
 		}
 	}
@@ -175,24 +175,23 @@ public class BEDCanvasTrack extends TrackBase {
 		int s = newWindow.getStartOnGenome();
 		int e = newWindow.getEndOnGenome();
 		TrackGroupProperty prop = getTrackGroup().getPropertyReader();
-		String species = prop.getProperty(UTGBProperty.SPECIES);
+		//String species = prop.getProperty(UTGBProperty.SPECIES);
 		String revision = prop.getProperty(UTGBProperty.REVISION);
 		String target = prop.getProperty(UTGBProperty.TARGET);
 
 		getFrame().setNowLoading();
 
-		GenomeBrowser.getService().getBEDEntryList(fileName, new ChrLoc(target, s, e), new AsyncCallback<List<Gene>>() {
+		GenomeBrowser.getService().getReadSet(revision, new ChrLoc(target, s, e), new AsyncCallback<ReadSet>() {
 
 			public void onFailure(Throwable e) {
 				GWT.log("failed to retrieve gene data", e);
 				getFrame().loadingDone();
 			}
 
-			public void onSuccess(List<Gene> geneList) {
-				DeferredCommand.addCommand(new UpdateCommand(geneList));
-				GWT.log("canvas size= (" + geneCanvas.getOffsetWidth() + "," + geneCanvas.getOffsetHeight() + ")", null);
-				GWT.log("frame size= (" + layoutTable.getOffsetWidth() + "," + layoutTable.getOffsetHeight() + ")", null);
+			public void onSuccess(ReadSet readSet) {
+				DeferredCommand.addCommand(new UpdateCommand(readSet));
 			}
+
 		});
 
 	}

@@ -39,16 +39,13 @@ import org.utgenome.gwt.utgb.client.util.Properties;
  * @author leo
  * 
  */
-public class Locus implements Serializable, Comparable<Locus> {
+public class Locus extends Read implements Serializable, Comparable<Locus> {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
 	String name;
-	int start = -1; // 1-origin (inclusive, -1 means undefined value)
-	int end = -1; // 1-origin (exclusive, -1 means undefined value)
-	String strand = "+";
 	String color = null;
 	public Properties properties;
 
@@ -62,13 +59,6 @@ public class Locus implements Serializable, Comparable<Locus> {
 	@Override
 	public String toString() {
 		return "name:" + name + ", start:" + start + ", end:" + end + ", strand=" + strand;
-	}
-
-	public void adjustToOneOrigin() {
-		if (start != -1)
-			start += 1;
-		if (end != -1)
-			end += 1;
 	}
 
 	public Locus() {
@@ -99,62 +89,6 @@ public class Locus implements Serializable, Comparable<Locus> {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	/**
-	 * Get the start position of the locus. (start <= end)
-	 * 
-	 * @return the start position
-	 */
-	public int getStart() {
-		return start;
-	}
-
-	public void setStart(int start) {
-		this.start = start;
-		correctInterval();
-	}
-
-	private void correctInterval() {
-		// do not swap start and end when one of them is undefined
-		if (start == -1 || end == -1)
-			return;
-
-		if (start > end) {
-			int tmp = start;
-			start = end;
-			end = tmp;
-		}
-	}
-
-	/**
-	 * Get the end position of the locus (start <= end)
-	 * 
-	 * @return the end position
-	 */
-	public int getEnd() {
-		return end;
-	}
-
-	public void setEnd(int end) {
-		this.end = end;
-		correctInterval();
-	}
-
-	public String getStrand() {
-		return strand;
-	}
-
-	public boolean isSense() {
-		return "+".equals(strand);
-	}
-
-	public boolean isAntiSense() {
-		return "-".equals(strand);
-	}
-
-	public void setStrand(String strand) {
-		this.strand = strand;
 	}
 
 	public String getColor() {

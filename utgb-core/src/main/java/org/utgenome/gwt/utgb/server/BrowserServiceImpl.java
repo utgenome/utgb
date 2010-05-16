@@ -59,6 +59,7 @@ import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.ChrRange;
 import org.utgenome.gwt.utgb.client.bio.Gene;
 import org.utgenome.gwt.utgb.client.bio.Locus;
+import org.utgenome.gwt.utgb.client.bio.ReadSet;
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.bio.WigGraphData;
 import org.utgenome.gwt.utgb.client.track.bean.SearchResult;
@@ -636,6 +637,16 @@ public class BrowserServiceImpl extends RpcServlet implements BrowserService {
 			_logger.error(e);
 		}
 		return refSeq;
+	}
+
+	public ReadSet getReadSet(String ref, ChrLoc range) {
+
+		ReadSet result = new ReadSet();
+
+		result.location = range;
+		result.read.add(new Locus("r1", 10, 200));
+
+		return result;
 	}
 
 }

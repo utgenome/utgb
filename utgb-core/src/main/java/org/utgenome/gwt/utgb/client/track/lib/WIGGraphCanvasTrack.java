@@ -147,7 +147,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 		config.addConfigParameter("File Name", new StringType("fileName"), fileName);
 		config.addConfigParameter("maxValue", new FloatType("maxValue"), String.valueOf(maxValue));
 		config.addConfigParameter("minValue", new FloatType("minValue"), String.valueOf(minValue));
-		config.addConfigParameter("Auto Range", new BooleanType("isAutoRange"), String.valueOf(isAutoRange));
+		config.addConfigParameter("Auto Read", new BooleanType("isAutoRange"), String.valueOf(isAutoRange));
 		config.addConfigParameter("Log Scale", new BooleanType("isLog"), String.valueOf(isLog));
 		config.addConfigParameter("Color", new StringType("color"), color);
 

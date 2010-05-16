@@ -33,6 +33,7 @@ import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.ChrRange;
 import org.utgenome.gwt.utgb.client.bio.Gene;
 import org.utgenome.gwt.utgb.client.bio.Locus;
+import org.utgenome.gwt.utgb.client.bio.ReadSet;
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.bio.WigGraphData;
 import org.utgenome.gwt.utgb.client.track.bean.SearchResult;
@@ -88,5 +89,7 @@ public interface BrowserServiceAsync extends RpcService {
 			AsyncCallback<List<SAMRead>> callback);
 
 	public void getRefSeq(String refSeqFileName, String rname, int start, int end, AsyncCallback<String> callback);
+
+	public void getReadSet(String ref, ChrLoc range, AsyncCallback<ReadSet> callback);
 
 }

@@ -25,7 +25,7 @@
 package org.utgenome.gwt.utgb.client.canvas;
 
 /**
- * Range
+ * Read
  * 
  * @author leo
  * 
