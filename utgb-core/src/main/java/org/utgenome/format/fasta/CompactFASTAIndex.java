@@ -16,7 +16,7 @@
 //--------------------------------------
 // utgb-core Project
 //
-// CompactACGTIndex.java
+// CompactFASTAIndex.java
 // Since: 2010/03/11
 //
 // $URL$ 
@@ -37,7 +37,7 @@ import org.xerial.core.XerialException;
 import org.xerial.lens.Lens;
 import org.xerial.lens.ObjectHandler;
 
-public class CompactACGTIndex {
+public class CompactFASTAIndex {
 
 	/**
 	 * sequence name (e.g., chr1, scaffold2)
@@ -51,24 +51,24 @@ public class CompactACGTIndex {
 	public long offset;
 	public int length;
 
-	private static class IndexHolder implements ObjectHandler<CompactACGTIndex> {
+	private static class IndexHolder implements ObjectHandler<CompactFASTAIndex> {
 
-		ArrayList<CompactACGTIndex> index = new ArrayList<CompactACGTIndex>();
+		ArrayList<CompactFASTAIndex> index = new ArrayList<CompactFASTAIndex>();
 
-		public void handle(CompactACGTIndex input) throws Exception {
+		public void handle(CompactFASTAIndex input) throws Exception {
 			index.add(input);
 		}
 
 	}
 
-	public static List<CompactACGTIndex> load(URL indexFile) throws XerialException, IOException {
+	public static List<CompactFASTAIndex> load(URL indexFile) throws XerialException, IOException {
 		Reader in = new BufferedReader(new InputStreamReader(indexFile.openStream()));
 		return load(in);
 	}
 
-	public static List<CompactACGTIndex> load(Reader indexFile) throws XerialException, IOException {
+	public static List<CompactFASTAIndex> load(Reader indexFile) throws XerialException, IOException {
 		IndexHolder holder = new IndexHolder();
-		Lens.findFromSilk(indexFile, "sequence", CompactACGTIndex.class, holder);
+		Lens.findFromSilk(indexFile, "sequence", CompactFASTAIndex.class, holder);
 
 		return holder.index;
 	}
