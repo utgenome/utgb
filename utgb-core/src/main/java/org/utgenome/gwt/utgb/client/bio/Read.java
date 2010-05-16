@@ -26,13 +26,15 @@ package org.utgenome.gwt.utgb.client.bio;
 
 import java.io.Serializable;
 
+import org.utgenome.gwt.utgb.client.canvas.ReadVisitor;
+
 /**
  * A range on a genome sequence
  * 
  * @author leo
  * 
  */
-public class Read implements Serializable {
+public class Read implements Serializable, AcceptReadVisitor {
 
 	/**
 	 * 
@@ -41,7 +43,17 @@ public class Read implements Serializable {
 
 	public int start = -1; // 1-origin (inclusive, -1 means undefined value)
 	public int end = -1; // 1-origin (exclusive, -1 means undefined value)
-	public String strand = "+";
+	public byte strand = '+';
+
+	public Read() {
+
+	}
+
+	public Read(int start, int end) {
+		this.start = start;
+		this.end = end;
+		correctInterval();
+	}
 
 	public void adjustToOneOrigin() {
 		if (start != -1)
@@ -90,20 +102,24 @@ public class Read implements Serializable {
 		correctInterval();
 	}
 
-	public String getStrand() {
-		return strand;
+	public char getStrand() {
+		return (char) strand;
 	}
 
 	public boolean isSense() {
-		return "+".equals(strand);
+		return '+' == strand;
 	}
 
 	public boolean isAntiSense() {
-		return "-".equals(strand);
+		return '-' == strand;
 	}
 
-	public void setStrand(String strand) {
-		this.strand = strand;
+	public void setStrand(char strand) {
+		this.strand = (byte) strand;
+	}
+
+	public void accept(ReadVisitor visitor) {
+		visitor.visitRead(this);
 	}
 
 }

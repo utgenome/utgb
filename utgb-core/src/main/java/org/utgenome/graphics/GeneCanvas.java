@@ -351,7 +351,7 @@ public class GeneCanvas {
 
 	public String getExonColorText(Locus g) {
 		if (g.getColor() == null) {
-			if (g.getStrand().equals("+")) {
+			if (g.isSense()) {
 				return "#d80067";
 			}
 			else {

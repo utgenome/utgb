@@ -49,7 +49,7 @@ public class BEDGene extends Gene {
 
 		gene.setName(rs.getString(3));
 		gene.score = rs.getInt(4);
-		gene.setStrand(rs.getString(5));
+		gene.setStrand((char) rs.getByte(5));
 
 		ArrayList<int[]> regionList = readRegions(rs.getString(6));
 		for (int[] region : regionList) {

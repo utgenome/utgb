@@ -226,19 +226,19 @@ public class ChromosomeMapCanvas {
 
 	// draw Mapping data
 	public void drawMapping(String[] data) {
-		drawMapping(data[1], Long.valueOf(data[8]).longValue(), Long.valueOf(data[9]).longValue());
+		drawMapping(data[1], Integer.valueOf(data[8]), Integer.valueOf(data[9]));
 	}
 
-	public void drawMapping(String chrom, long startOnChrom, long endOnChrom) {
+	public void drawMapping(String chrom, int startOnChrom, int endOnChrom) {
 		if (startOnChrom <= endOnChrom) {
-			drawMapping(chrom, startOnChrom, endOnChrom, "+");
+			drawMapping(chrom, startOnChrom, endOnChrom, '+');
 		}
 		else {
-			drawMapping(chrom, endOnChrom, startOnChrom, "-");
+			drawMapping(chrom, endOnChrom, startOnChrom, '-');
 		}
 	}
 
-	public void drawMapping(String chrom, long startOnChrom, long endOnChrom, String strand) {
+	public void drawMapping(String chrom, int startOnChrom, int endOnChrom, char strand) {
 		assert startOnChrom <= endOnChrom;
 		Color color;
 		if (windows.containsKey(chrom)) {
@@ -246,7 +246,7 @@ public class ChromosomeMapCanvas {
 			int end = windows.get(chrom).getXPosOnWindow(endOnChrom, windowWidth(windows.get(chrom)));
 			int offset = windows.get(chrom).getRank() * (chromHeight + chromMargin) + chromMargin;
 
-			if (strand.equals("+")) {
+			if (strand == '+') {
 				color = new Color(255, 0, 0, 192);
 			}
 			else {

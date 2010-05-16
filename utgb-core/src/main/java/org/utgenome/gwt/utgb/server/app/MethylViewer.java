@@ -80,7 +80,7 @@ public class MethylViewer extends WebTrackBase {
 				}
 			}
 
-			boolean isReverse = getStrand().equals("-");
+			boolean isReverse = isAntiSense();
 			if (isReverse) {
 				int width = (int) (getEnd() - getStart());
 				for (int i = 0; i < mPos.size(); ++i)

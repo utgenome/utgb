@@ -28,6 +28,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.utgenome.gwt.utgb.client.canvas.ReadVisitor;
+
 /**
  * Gene with Exon and CDS regions
  * 
@@ -86,4 +88,8 @@ public class Gene extends Locus implements Serializable {
 			each.adjustToOneOrigin();
 	}
 
+	@Override
+	public void accept(ReadVisitor visitor) {
+		visitor.visitGene(this);
+	}
 }

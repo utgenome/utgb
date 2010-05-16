@@ -127,7 +127,7 @@ public class BEDDatabaseGenerator {
 				p2.setLong(3, gene.getEnd());
 				p2.setString(4, gene.getName());
 				p2.setInt(5, gene.score);
-				p2.setString(6, gene.getStrand());
+				p2.setString(6, Character.toString(gene.getStrand()));
 				p2.setString(7, gene.getCDS().toString());
 				p2.setString(8, gene.getExon().toString());
 				p2.setString(9, gene.getColor());
