@@ -26,6 +26,7 @@ package org.utgenome.gwt.utgb.client.bio;
 
 import java.io.Serializable;
 
+import org.utgenome.gwt.utgb.client.canvas.ReadVisitor;
 import org.utgenome.gwt.utgb.client.util.Properties;
 
 /**
@@ -115,6 +116,11 @@ public class Locus extends Read implements Serializable, Comparable<Locus> {
 		long e2 = other.getEnd();
 
 		return s1 <= e2 && s2 <= e1;
+	}
+
+	@Override
+	public void accept(ReadVisitor visitor) {
+		visitor.visitLocus(this);
 	}
 
 }

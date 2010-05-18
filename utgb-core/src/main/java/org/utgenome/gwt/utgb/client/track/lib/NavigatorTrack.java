@@ -272,9 +272,9 @@ public class NavigatorTrack extends TrackBase {
 		hp.setVerticalAlignment(HorizontalPanel.ALIGN_MIDDLE);
 		hp.add(new FormLabel("Species"));
 		hp.add(speciesBox);
-		hp.add(new FormLabel("Revision"));
+		hp.add(new FormLabel("Ref."));
 		hp.add(revisionBox);
-		hp.add(new FormLabel("Target"));
+		hp.add(new FormLabel("Chr."));
 		hp.add(targetBox);
 		// window locator
 		startBox.setWidth("80px");

@@ -24,6 +24,8 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.track;
 
+import org.utgenome.gwt.utgb.client.BrowserServiceAsync;
+import org.utgenome.gwt.utgb.client.GenomeBrowser;
 import org.utgenome.gwt.utgb.client.bio.Coordinate;
 import org.utgenome.gwt.utgb.client.track.bean.TrackBean;
 import org.utgenome.gwt.utgb.client.util.Properties;
@@ -293,6 +295,15 @@ public abstract class TrackBase implements Track {
 
 	public void setTrackGroupProperty(String key, String value) {
 		getTrackGroup().getPropertyWriter().setProperty(key, value);
+	}
+
+	/**
+	 * Get the RPC service for communicating with the server
+	 * 
+	 * @return
+	 */
+	public BrowserServiceAsync getBrowserService() {
+		return GenomeBrowser.getService();
 	}
 
 }
