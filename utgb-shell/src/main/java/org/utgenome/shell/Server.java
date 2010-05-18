@@ -31,6 +31,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.utgenome.config.UTGBConfig;
+import org.xerial.util.FileUtil;
 import org.xerial.util.log.Logger;
 
 /**
@@ -54,6 +55,9 @@ public class Server extends UTGBShellCommand {
 
 		if (!isInProjectRoot())
 			throw new UTGBShellException("not in the track project root");
+
+		// create war/utgb folder
+		FileUtil.mkdirs(new File(getProjectRoot(), "war/utgb"));
 
 		// copy resources
 		Maven.runMaven("war:exploded");

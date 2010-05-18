@@ -27,6 +27,7 @@ package org.utgenome.shell;
 import java.io.File;
 
 import org.utgenome.config.UTGBConfig;
+import org.xerial.util.FileUtil;
 import org.xerial.util.opt.Option;
 
 public class Deploy extends UTGBShellCommand {
@@ -44,6 +45,9 @@ public class Deploy extends UTGBShellCommand {
 	public void execute(String[] args) throws Exception {
 		if (!isInProjectRoot())
 			throw new UTGBShellException("not in the project root");
+
+		// create war/utgb folder
+		FileUtil.mkdirs(new File(getProjectRoot(), "war/utgb"));
 
 		UTGBConfig config = loadUTGBConfig();
 		// generate context.xml file
