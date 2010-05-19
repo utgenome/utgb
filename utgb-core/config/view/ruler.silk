@@ -32,3 +32,6 @@
   -class: org.utgenome.gwt.utgb.client.track.lib.RulerTrack
   -property
     -leftMargin: 100
+-track
+  -name: Window Control
+  -class: org.utgenome.gwt.utgb.client.track.lib.WindowControlTrack

@@ -27,6 +27,7 @@ package org.utgenome.gwt.utgb.client;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.utgenome.gwt.utgb.client.track.TrackFrame;
 import org.utgenome.gwt.utgb.client.track.TrackGroup;
 import org.utgenome.gwt.utgb.client.track.TrackGroupProperty;
 import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChange;
@@ -45,6 +46,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Event;
@@ -130,8 +133,30 @@ public class UTGBEntryPointBase implements EntryPoint {
 		History.addValueChangeHandler(new HistoryChangeHandler());
 		Event.addNativePreviewHandler(new KeyboardShortcut());
 
+		// add window size change listener
+		Window.addResizeHandler(new ResizeHandler() {
+
+			public void onResize(ResizeEvent e) {
+				adjustTrackWidth();
+
+			}
+		});
+
 		// invoke main method
 		main();
+
+	}
+
+	public static int computeTrackWidth() {
+		int newBrowserWidth = Window.getClientWidth();
+		return (int) (newBrowserWidth * 0.95) - TrackFrame.INFOPANEL_WIDTH;
+	}
+
+	private void adjustTrackWidth() {
+		int newTrackWidth = computeTrackWidth();
+		for (TrackGroup g : trackGroup.getTrackGroupList()) {
+			g.setTrackWindowWidth(newTrackWidth);
+		}
 
 	}
 
