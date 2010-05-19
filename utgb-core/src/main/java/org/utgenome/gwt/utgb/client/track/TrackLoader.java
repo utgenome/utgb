@@ -29,6 +29,7 @@ import java.util.Map;
 
 import org.utgenome.gwt.utgb.client.UTGBClientErrorCode;
 import org.utgenome.gwt.utgb.client.UTGBClientException;
+import org.utgenome.gwt.utgb.client.UTGBEntryPointBase;
 import org.utgenome.gwt.utgb.client.track.HasFactory.TrackGroupFactory;
 import org.utgenome.gwt.utgb.client.track.Track.TrackFactory;
 import org.utgenome.gwt.utgb.client.track.bean.TrackBean;
@@ -75,6 +76,8 @@ public class TrackLoader {
 
 		// set track window (coordinate)
 		Coordinate c = g.coordinate;
+		if (c.pixelWidth < 0)
+			c.pixelWidth = UTGBEntryPointBase.computeTrackWidth();
 		group.setTrackWindow(new TrackWindowImpl(c.pixelWidth, c.start, c.end));
 
 		// instantiate tracks in the track group 

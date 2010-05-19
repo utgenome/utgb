@@ -136,7 +136,7 @@ public class TrackView implements Serializable {
 		/**
 		 * pixel width of the track window
 		 */
-		public int pixelWidth;
+		public int pixelWidth = -1;
 	}
 
 }
