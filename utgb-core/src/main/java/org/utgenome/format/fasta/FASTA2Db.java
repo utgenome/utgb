@@ -94,7 +94,7 @@ public class FASTA2Db {
 			db.update("drop table if exists description");
 			db.update("drop table if exists sequence");
 			db.update("drop table if exists sequence_length");
-			db.update("create table description (id integer primary key not null, description string)");
+			db.update("create table description (id integer primary key not null, description string, fullDesc string)");
 			db
 					.update("create table sequence (description_id integer not null, start integer, end integer, sequence string, primary key (description_id, start))");
 			db.update("create table sequence_length (description_id integer primary_key not null, length integer)");
@@ -111,8 +111,11 @@ public class FASTA2Db {
 				long start = 1;
 				long end = 1;
 
-				_logger.info("new entry: " + description);
-				db.update(SQLExpression.fillTemplate("insert into description values($1, $2)", count, SQLUtil.singleQuote(description)));
+				String chr = CompactFASTA.pickSequenceName(description);
+				_logger.info("new entry: " + chr);
+
+				db.update(SQLExpression.fillTemplate("insert into description values($1, $2, $3)", count, SQLUtil.singleQuote(chr), SQLUtil
+						.singleQuote(description)));
 
 				CompressedBuffer buffer = new CompressedBuffer();
 
