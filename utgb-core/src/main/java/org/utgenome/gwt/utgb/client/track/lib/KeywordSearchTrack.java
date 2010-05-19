@@ -71,6 +71,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class KeywordSearchTrack extends TrackBase {
 	public static TrackFactory factory() {
 		return new TrackFactory() {
+			@Override
 			public Track newInstance() {
 				return new KeywordSearchTrack();
 			}
@@ -243,7 +244,7 @@ public class KeywordSearchTrack extends TrackBase {
 						HorizontalPanel hp = new HorizontalPanel();
 						hp.setVerticalAlignment(HorizontalPanel.ALIGN_MIDDLE);
 
-						Image icon = new Image("image/item.gif");
+						Image icon = new Image("theme/image/item.gif");
 						Style.margin(icon, Style.LEFT, 10);
 						hp.add(icon);
 						for (String tag : e.getKeywordList()) {
@@ -326,6 +327,7 @@ public class KeywordSearchTrack extends TrackBase {
 		return basePanel;
 	}
 
+	@Override
 	public void setUp(TrackFrame trackFrame, TrackGroup group) {
 		trackFrame.pack();
 		// trackFrame.disableClose();

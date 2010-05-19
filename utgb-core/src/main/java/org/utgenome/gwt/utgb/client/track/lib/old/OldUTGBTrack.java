@@ -76,18 +76,20 @@ public class OldUTGBTrack extends TrackBase {
 		return new TrackFactory() {
 			Map<String, List<String>> properties = new HashMap<String, List<String>>();
 
+			@Override
 			public Track newInstance() {
 				OldUTGBTrack track = new OldUTGBTrack();
 				if (properties.containsKey("descriptionXMLURL")) {
 					final List<String> values = properties.get("descriptionXMLURL");
 					for (int i = 0; i < values.size(); i++) {
-						final String descriptionXMLURL = (String) (values.get(i));
+						final String descriptionXMLURL = (values.get(i));
 						track.setDescriptionXML(descriptionXMLURL);
 					}
 				}
 				return track;
 			}
 
+			@Override
 			public void setProperty(String key, String value) {
 				if (properties.containsKey(key)) {
 					final List<String> values = properties.get(key);
@@ -100,6 +102,7 @@ public class OldUTGBTrack extends TrackBase {
 				}
 			}
 
+			@Override
 			public void clear() {
 				properties.clear();
 			}
@@ -215,6 +218,7 @@ public class OldUTGBTrack extends TrackBase {
 		Style.hideHorizontalScrollBar(_panel);
 	}
 
+	@Override
 	public int getDefaultWindowHeight() {
 		return 50;
 	}
@@ -227,6 +231,7 @@ public class OldUTGBTrack extends TrackBase {
 		unparsedDescriptionXML.push(descriptionXMLURL);
 	}
 
+	@Override
 	public void draw() {
 
 		if (!unparsedDescriptionXML.empty()) {
@@ -263,7 +268,7 @@ public class OldUTGBTrack extends TrackBase {
 			else {
 				_frame.setNowLoading();
 				eraseMessage();
-				//indexAbsolutePanel.add(indexGraphicPanel); // re-add image panel
+				indexAbsolutePanel.add(indexGraphicPanel); // re-add image panel
 			}
 		}
 		{ // update image panel
@@ -293,11 +298,13 @@ public class OldUTGBTrack extends TrackBase {
 		isUptodate = true;
 	}
 
+	@Override
 	public void onChangeTrackWindow(TrackWindow newWindow) {
 		isUptodate = false;
 		refresh();
 	}
 
+	@Override
 	public void onChangeTrackGroupProperty(TrackGroupPropertyChange change) {
 		final String[] propertyNameArray = OldUTGBProperty.getPropertyNameArray();
 		if (change.containsOneOf(propertyNameArray)) {
@@ -306,11 +313,13 @@ public class OldUTGBTrack extends TrackBase {
 		}
 	}
 
+	@Override
 	public void onChangeTrackConfig(TrackConfigChange change) {
 		isUptodate = false;
 		refresh();
 	}
 
+	@Override
 	public void setUp(TrackFrame trackFrame, TrackGroup group) {
 		trackFrame.pack();
 
@@ -393,7 +402,7 @@ public class OldUTGBTrack extends TrackBase {
 							parseOptionAttribute(optAttrStr.trim(), prefix);
 							_config = new TrackConfig(OldUTGBTrack.this);
 							for (int i = 0; i < optionAttributes.size(); i++) {
-								final OldUTGBOptionAttribute optionAttribute = (OldUTGBOptionAttribute) (optionAttributes.get(i));
+								final OldUTGBOptionAttribute optionAttribute = (optionAttributes.get(i));
 								optionAttribute.setConfig(_config);
 							}
 						}
@@ -481,6 +490,7 @@ public class OldUTGBTrack extends TrackBase {
 		// _frame.eraseMessage(true);
 	}
 
+	@Override
 	public TrackConfig getConfig() {
 		return _config;
 	}
@@ -603,7 +613,7 @@ public class OldUTGBTrack extends TrackBase {
 		parameterMap.put("start", Long.toString(startIndex));
 		parameterMap.put("end", Long.toString(endIndex));
 		for (int i = 0; i < optionAttributes.size(); i++) {
-			final OldUTGBOptionAttribute optionAttribute = (OldUTGBOptionAttribute) (optionAttributes.get(i));
+			final OldUTGBOptionAttribute optionAttribute = (optionAttributes.get(i));
 			optionAttribute.setParameters(parameterMap);
 		}
 		final String returnURL = url.getURL(parameterMap);
@@ -707,16 +717,18 @@ public class OldUTGBTrack extends TrackBase {
 		}
 	}
 
+	@Override
 	public void saveProperties(Properties saveData) {
 		final ArrayList<String> descriptionURLs = new ArrayList<String>();
 		for (int i = 0; i < descriptionURLList.size(); i++) {
-			final DescriptionURLInfo descriptionURLInfo = (DescriptionURLInfo) (descriptionURLList.get(i));
+			final DescriptionURLInfo descriptionURLInfo = (descriptionURLList.get(i));
 			final String descriptionXMLURL = descriptionURLInfo.getDescriptionXMLURL();
 			descriptionURLs.add(descriptionXMLURL);
 		}
 		saveData.add("descriptionXMLURL", JSONUtil.toJSONArray(descriptionURLs));
 	}
 
+	@Override
 	public void restoreProperties(Properties properties) {
 		ArrayList<String> valueList = JSONUtil.parseJSONArray(properties.get("descriptionXMLURL", "[]"));
 		for (Iterator<String> it = valueList.iterator(); it.hasNext();) {

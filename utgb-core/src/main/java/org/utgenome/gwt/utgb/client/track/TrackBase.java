@@ -24,6 +24,8 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.track;
 
+import java.util.HashMap;
+
 import org.utgenome.gwt.utgb.client.BrowserServiceAsync;
 import org.utgenome.gwt.utgb.client.GenomeBrowser;
 import org.utgenome.gwt.utgb.client.bio.Coordinate;
@@ -295,6 +297,37 @@ public abstract class TrackBase implements Track {
 
 	public void setTrackGroupProperty(String key, String value) {
 		getTrackGroup().getPropertyWriter().setProperty(key, value);
+	}
+
+	public void setCenterOfTrackWindow(String chr, int start, int end) {
+
+		TrackWindow win = getTrackGroup().getTrackWindow();
+		int width = win.getEndOnGenome() - win.getStartOnGenome();
+		int left = start;
+		int right = end;
+		if (width < 0) {
+			width = -width;
+		}
+
+		// locate the new window so that the target region will be at 20% from the left side 
+		int newLeft = left - (int) (width * 0.3);
+		int newRight = right + (int) (width * 0.3);
+
+		TrackGroupPropertyWriter writer = getTrackGroup().getPropertyWriter();
+		HashMap<String, String> property = new HashMap<String, String>();
+		property.put(UTGBProperty.TARGET, chr);
+
+		try {
+			writer.setProperyChangeNotifaction(false);
+			if (!win.isReverseStrand())
+				writer.setTrackWindow(newLeft, newRight);
+			else
+				writer.setTrackWindow(newRight, newLeft);
+		}
+		finally {
+			writer.setProperyChangeNotifaction(true);
+		}
+		writer.setProperty(property);
 	}
 
 	/**
