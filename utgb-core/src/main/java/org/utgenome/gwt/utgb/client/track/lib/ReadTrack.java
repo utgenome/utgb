@@ -179,9 +179,10 @@ public class ReadTrack extends TrackBase {
 		String revision = prop.getProperty(UTGBProperty.REVISION);
 		String target = prop.getProperty(UTGBProperty.TARGET);
 
+		String dbID = "db";
 		getFrame().setNowLoading();
 
-		GenomeBrowser.getService().getReadSet(revision, new ChrLoc(target, s, e), new AsyncCallback<ReadSet>() {
+		GenomeBrowser.getService().getReadSet(dbID, revision, new ChrLoc(target, s, e), new AsyncCallback<ReadSet>() {
 
 			public void onFailure(Throwable e) {
 				GWT.log("failed to retrieve gene data", e);

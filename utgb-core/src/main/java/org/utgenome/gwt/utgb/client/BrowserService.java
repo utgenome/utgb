@@ -98,6 +98,6 @@ public interface BrowserService extends RpcService {
 
 	public String getRefSeq(String refSeqFileName, String rname, int start, int end);
 
-	public ReadSet getReadSet(String ref, ChrLoc range);
+	public ReadSet getReadSet(String dbID, String ref, ChrLoc range);
 
 }

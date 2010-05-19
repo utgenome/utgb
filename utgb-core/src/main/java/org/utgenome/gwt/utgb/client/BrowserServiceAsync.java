@@ -90,6 +90,6 @@ public interface BrowserServiceAsync extends RpcService {
 
 	public void getRefSeq(String refSeqFileName, String rname, int start, int end, AsyncCallback<String> callback);
 
-	public void getReadSet(String ref, ChrLoc range, AsyncCallback<ReadSet> callback);
+	public void getReadSet(String dbID, String ref, ChrLoc range, AsyncCallback<ReadSet> callback);
 
 }

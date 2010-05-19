@@ -9,8 +9,6 @@
     -start: 10000
     -end: 100000
     -pixel width: 700
-  -property
-    -name: human
 -track
   -name: UTGB Navigator
   -height: 41

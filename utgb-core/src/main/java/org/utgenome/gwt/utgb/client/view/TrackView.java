@@ -62,7 +62,7 @@ public class TrackView implements Serializable {
 		public int id;
 		/**
 		 * Java class name of this track group. The underscore (_) is necessary to differentiate this parameter name
-		 * from the same name Java keyword, <i>class</i>
+		 * from the Java keyword <i>class</i>
 		 */
 		public String class_;
 

@@ -251,7 +251,7 @@ public class NavigatorTrack extends TrackBase {
 	private boolean isPlusStrand = true;
 
 	public NavigatorTrack() {
-		super("UTGB Navigator");
+		super("NavigatorTrack");
 		panel.setStyleName("toolbox");
 		panel.setWidth("100%");
 

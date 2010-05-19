@@ -140,7 +140,7 @@ public class BrowserServiceImpl extends RpcServlet implements BrowserService {
 			File viewFile = new File("config/view", sanitizeViewName(viewName) + ".silk");
 			try {
 				File viewFilePath = new File(UTGBMaster.getProjectRootFolder(), viewFile.getPath());
-				_logger.info(String.format("loading view:" + viewFilePath));
+				_logger.info(String.format("loading view:" + viewFile));
 				if (!viewFilePath.exists())
 					throw new UTGBClientException(UTGBClientErrorCode.MISSING_FILES, String.format("%s is not found", viewFile));
 
@@ -640,7 +640,7 @@ public class BrowserServiceImpl extends RpcServlet implements BrowserService {
 		return refSeq;
 	}
 
-	public ReadSet getReadSet(String ref, ChrLoc range) {
+	public ReadSet getReadSet(String dbID, String ref, ChrLoc range) {
 
 		ReadSet result = new ReadSet();
 
