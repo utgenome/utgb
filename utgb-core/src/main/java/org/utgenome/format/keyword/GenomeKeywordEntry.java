@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------------------
- *  Copyright 2008 utgenome.org
+ *  Copyright 2009 utgenome.org
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,40 +14,37 @@
  *  limitations under the License.
  *--------------------------------------------------------------------------*/
 //--------------------------------------
-// utgb-shell Project
+// utgb-core Project
 //
-// BED2SilkReader.java
-// Since: May 26, 2009
+// GenomeKeywordEntry.java
+// Since: 2010/05/19
 //
-// $URL: http://svn.utgenome.org/utgb/trunk/utgb/utgb-shell/src/main/java/org/utgenome/shell/db/bed/BED2SilkReader.java $ 
-// $Author: leo $
+// $URL$ 
+// $Author$
 //--------------------------------------
-package org.utgenome.format.bed;
-
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Reader;
-import java.io.Writer;
-
-import org.utgenome.format.FormatConversionReader;
+package org.utgenome.format.keyword;
 
 /**
- * BED2SilkReader translates the input BED data into a Silk format
+ * Keyword associated to a genome region
  * 
  * @author leo
  * 
  */
-public class BED2SilkReader extends FormatConversionReader {
+public class GenomeKeywordEntry {
 
-	public BED2SilkReader(Reader bedReader) throws IOException {
-		super(bedReader, new PipeConsumer() {
-			public void consume(Reader in, Writer out) throws Exception {
-				BED2Silk converter = new BED2Silk(in);
-				PrintWriter pout = new PrintWriter(out);
-				converter.toSilk(pout);
-			}
-		});
+	public String ref; // reference sequence ID (e.g. hg19, ut-medaka-1.0) 
+	public int start; // start position 
+	public String text; // text containing keywords
 
+	/**
+	 * Alias is a keyword
+	 * 
+	 * @author leo
+	 * 
+	 */
+	public static class KeywordAlias {
+		public String keyword; // the keyword to redirect
+		public String alias; // aliases 
 	}
 
 }

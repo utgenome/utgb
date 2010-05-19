@@ -30,8 +30,11 @@ import org.junit.Test;
 import org.utgenome.gwt.utgb.server.app.BEDViewer.BEDQuery;
 import org.xerial.lens.Lens;
 import org.xerial.util.FileResource;
+import org.xerial.util.log.Logger;
 
 public class BED2SilkReaderTest {
+
+	private static Logger _logger = Logger.getLogger(BED2SilkReaderTest.class);
 
 	@Before
 	public void setUp() throws Exception {
@@ -45,6 +48,7 @@ public class BED2SilkReaderTest {
 	public void testGen() throws Exception {
 		BED2SilkReader r = new BED2SilkReader(FileResource.open(BED2SilkReaderTest.class, "sample.bed"));
 		BEDQuery q = Lens.loadSilk(BEDQuery.class, r);
+		_logger.info(Lens.toSilk(q));
 	}
 
 }

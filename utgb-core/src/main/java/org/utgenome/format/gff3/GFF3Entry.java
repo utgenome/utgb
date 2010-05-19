@@ -26,88 +26,22 @@ package org.utgenome.format.gff3;
 
 import java.util.HashMap;
 
+/**
+ * GFF3 entry
+ * 
+ * @author leo
+ * 
+ */
 public class GFF3Entry {
 
-	private String seqId;
-	private String soruce;
-	private String type;
-	private long start;
-	private long end;
-	private double score;
-	private String strand;
-	private String phase;
-	private HashMap<String, String> attributes = new HashMap<String, String>();
-
-	public String getSeqId() {
-		return seqId;
-	}
-
-	public void setSeqId(String seqId) {
-		this.seqId = seqId;
-	}
-
-	public String getSoruce() {
-		return soruce;
-	}
-
-	public void setSoruce(String soruce) {
-		this.soruce = soruce;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	public long getStart() {
-		return start;
-	}
-
-	public void setStart(long start) {
-		this.start = start;
-	}
-
-	public long getEnd() {
-		return end;
-	}
-
-	public void setEnd(long end) {
-		this.end = end;
-	}
-
-	public double getScore() {
-		return score;
-	}
-
-	public void setScore(double score) {
-		this.score = score;
-	}
-
-	public String getStrand() {
-		return strand;
-	}
-
-	public void setStrand(String strand) {
-		this.strand = strand;
-	}
-
-	public String getPhase() {
-		return phase;
-	}
-
-	public void setPhase(String phase) {
-		this.phase = phase;
-	}
-
-	public HashMap<String, String> getAttributes() {
-		return attributes;
-	}
-
-	public void addAttribute(String key, String value) {
-		this.attributes.put(key, value);
-	}
+	public String seqId;
+	public String soruce;
+	public String type;
+	public long start;
+	public long end;
+	public double score;
+	public String strand;
+	public String phase;
+	public HashMap<String, String> attributes = new HashMap<String, String>();
 
 }
