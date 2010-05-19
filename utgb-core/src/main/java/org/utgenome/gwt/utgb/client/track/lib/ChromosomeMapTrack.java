@@ -24,6 +24,8 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.track.lib;
 
+import java.util.ArrayList;
+
 import org.utgenome.gwt.utgb.client.GenomeBrowser;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.ChrRange;
@@ -43,6 +45,7 @@ import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChange;
 import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyWriter;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.track.UTGBProperty;
+import org.utgenome.gwt.utgb.client.util.JSONUtil;
 import org.utgenome.gwt.utgb.client.util.Properties;
 import org.utgenome.gwt.widget.client.Style;
 
@@ -85,9 +88,11 @@ public class ChromosomeMapTrack extends TrackBase {
 	protected ChrRange chrRange = null;
 
 	private boolean isDebug = false;
+	private ArrayList<String> chrList = new ArrayList<String>();
 
 	public static TrackFactory factory() {
 		return new TrackFactory() {
+			@Override
 			public Track newInstance() {
 				return new ChromosomeMapTrack();
 			}
@@ -160,13 +165,13 @@ public class ChromosomeMapTrack extends TrackBase {
 
 				if (!displayType.equals("rotate")) {
 					windowWidth = (trackImage.getWidth() - chrNameWidth);
-					index = (int) (y * chrRange.ranges.size() / trackImage.getHeight());
+					index = (y * chrRange.ranges.size() / trackImage.getHeight());
 				}
 				else {
 					chrNameWidth = 20;
 					windowWidth = (trackImage.getHeight() - chrNameWidth);
 					GWT.log("" + trackImage.getWidth(), null);
-					index = (int) (x * chrRange.ranges.size() / trackImage.getWidth());
+					index = (x * chrRange.ranges.size() / trackImage.getWidth());
 					x = trackImage.getHeight() - y;
 				}
 
@@ -222,23 +227,12 @@ public class ChromosomeMapTrack extends TrackBase {
 			GWT.log("left margin:" + leftMargin, null);
 
 		String trackURL = getTrackURL();
-		if (type.equals("frame")) {
-			if (!isWidgetReady) {
-				layoutPanel.setWidget(0, 1, frame);
-				isWidgetReady = true;
-			}
-			frame.setUrl(trackURL);
+		if (!isWidgetReady) {
+			layoutPanel.setWidget(0, 1, trackImage);
+			isWidgetReady = true;
 		}
-		else if (type.equals("image")) {
-			// use image 
-			if (!isWidgetReady) {
-				layoutPanel.setWidget(0, 1, trackImage);
-				isWidgetReady = true;
-			}
-
-			trackImage.setUrl(getTrackURL());
-			getFrame().setNowLoading();
-		}
+		trackImage.setUrl(getTrackURL());
+		getFrame().setNowLoading();
 	}
 
 	protected String getTrackURL() {
@@ -327,6 +321,7 @@ public class ChromosomeMapTrack extends TrackBase {
 		saveData.add("trackBaseURL", trackBaseURL);
 		saveData.add("leftMargin", leftMargin);
 		saveData.add("displayType", displayType);
+		saveData.add("chrList", JSONUtil.toJSONArray(chrList));
 	}
 
 	@Override
@@ -335,5 +330,6 @@ public class ChromosomeMapTrack extends TrackBase {
 		leftMargin = properties.getInt("leftMargin", leftMargin);
 		type = properties.get("type", type);
 		displayType = properties.get("displayType", displayType);
+		chrList = JSONUtil.parseJSONArray(properties.get("chrList", "[]"));
 	}
 }
