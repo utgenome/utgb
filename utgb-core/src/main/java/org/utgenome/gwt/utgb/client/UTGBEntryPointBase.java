@@ -149,7 +149,7 @@ public class UTGBEntryPointBase implements EntryPoint {
 
 	public static int computeTrackWidth() {
 		int newBrowserWidth = Window.getClientWidth();
-		return (int) (newBrowserWidth * 0.95) - TrackFrame.INFOPANEL_WIDTH;
+		return Math.max((int) (newBrowserWidth * 0.95) - TrackFrame.INFOPANEL_WIDTH, 150);
 	}
 
 	private void adjustTrackWidth() {
