@@ -29,6 +29,7 @@ import java.io.IOException;
 
 import org.utgenome.UTGBException;
 import org.utgenome.config.UTGBConfig;
+import org.xerial.lens.ObjectLens;
 import org.xerial.util.StringUtil;
 import org.xerial.util.log.Logger;
 import org.xerial.util.opt.Argument;
@@ -62,6 +63,7 @@ public class Create extends UTGBShellCommand {
 
 	}
 
+	@Override
 	public void execute(String[] args) throws Exception {
 
 		if (projectName == null)
@@ -75,7 +77,7 @@ public class Create extends UTGBShellCommand {
 		}
 
 		if (packageName == null)
-			packageName = projectName;
+			packageName = ObjectLens.getCanonicalParameterName(projectName);
 
 		String outputFolder = globalOption.projectDir;
 		if (outputFolder == null || outputFolder.length() <= 0)
@@ -129,6 +131,7 @@ public class Create extends UTGBShellCommand {
 		return "create";
 	}
 
+	@Override
 	public String getOneLinerDescription() {
 		return "create a new project for implmenting your own track.";
 	}
