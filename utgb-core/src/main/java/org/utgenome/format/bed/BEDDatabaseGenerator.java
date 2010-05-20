@@ -34,7 +34,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import org.utgenome.gwt.utgb.server.app.BEDViewer.BEDTrack;
 import org.xerial.core.XerialException;
 import org.xerial.lens.Lens;
 import org.xerial.util.log.Logger;

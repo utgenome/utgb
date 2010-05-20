@@ -29,7 +29,9 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.Writer;
 
+import org.utgenome.UTGBException;
 import org.utgenome.format.FormatConversionReader;
+import org.xerial.lens.Lens;
 
 /**
  * BED2SilkReader translates the input BED data into a Silk format
@@ -41,6 +43,7 @@ public class BED2SilkReader extends FormatConversionReader {
 
 	public BED2SilkReader(Reader bedReader) throws IOException {
 		super(bedReader, new PipeConsumer() {
+			@Override
 			public void consume(Reader in, Writer out) throws Exception {
 				BED2Silk converter = new BED2Silk(in);
 				PrintWriter pout = new PrintWriter(out);
@@ -48,6 +51,18 @@ public class BED2SilkReader extends FormatConversionReader {
 			}
 		});
 
+	}
+
+	public static BEDQuery scan(Reader input, BEDQuery query) throws UTGBException {
+
+		try {
+			BED2SilkReader in = new BED2SilkReader(input);
+			Lens.loadSilk(query, in);
+			return query;
+		}
+		catch (Exception e) {
+			throw UTGBException.convert(e);
+		}
 	}
 
 }

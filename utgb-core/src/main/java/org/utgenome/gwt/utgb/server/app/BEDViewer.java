@@ -39,6 +39,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.utgenome.format.bed.BED2SilkReader;
 import org.utgenome.format.bed.BEDGene;
+import org.utgenome.format.bed.BEDTrack;
 import org.utgenome.graphics.GeneCanvas;
 import org.utgenome.graphics.GenomeWindow;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
@@ -160,34 +161,6 @@ public class BEDViewer extends WebTrackBase implements Serializable {
 			if (coordinate.equals(gene.coordinate) && (start <= geneEnd) && (end >= geneStart)) {
 				geneList.add(new Gene(gene));
 			}
-		}
-	}
-
-	public static class BEDTrack implements Serializable {
-
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-		public String name;
-		public String description;
-		public int visibility;
-		public String color;
-		public String itemRgb;
-		public int useScore;
-		public String group;
-		public String priority;
-		public String db;
-		public long offset;
-		public String url;
-		public String htmlUrl;
-
-		@Override
-		public String toString() {
-			return String
-					.format(
-							"track:name=%s, description=%s, visibility=%d, color=%s, itemRgb=%s, useScore=%d, group=%s, priority=%s, db=%s, offset=%d, url=%s, htmlUrl=%s\n",
-							name, description, visibility, color, itemRgb, useScore, group, priority, db, offset, url, htmlUrl);
 		}
 	}
 

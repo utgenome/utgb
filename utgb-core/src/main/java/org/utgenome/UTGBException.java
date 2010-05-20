@@ -23,60 +23,65 @@
 // $Author$
 //--------------------------------------
 package org.utgenome;
+
+import java.io.IOException;
+
 /**
  * A UTGBException is a base class for all exception classes in the org.utgb packages
+ * 
  * @author leo
- *
+ * 
  */
 @SuppressWarnings("serial")
-public class UTGBException extends Exception
-{
+public class UTGBException extends Exception {
 	private UTGBErrorCode errorCode = UTGBErrorCode.Unknown;
-	
-    public UTGBException()
-    {
-    }
 
-    public UTGBException(String message)
-    {
-        super(message);
-    }
+	public UTGBException() {
+	}
 
-    public UTGBException(Throwable cause)
-    {
-        super(cause);
-    }
+	public UTGBException(String message) {
+		super(message);
+	}
 
-    public UTGBException(String message, Throwable cause)
-    {
-        super(message, cause);
-    }
-    
-    public UTGBException(UTGBErrorCode errorCode, Throwable cause)
-    {
-    	super(cause);
-    	this.errorCode = errorCode;
-    }
-    
-    public UTGBException(UTGBErrorCode errorCode, String message, Throwable cause)
-    {
-    	super(message, cause);
-    	this.errorCode = errorCode;
-    }
-    
-    public UTGBException(UTGBErrorCode errorCode, String message)
-    {
-    	super(message);
-    	this.errorCode = errorCode;
-    }
-    
-    @Override
-    public String getMessage() {
-    	return "[" + errorCode.name() + "] " + super.getMessage();
-    }
+	public UTGBException(Throwable cause) {
+		super(cause);
+	}
+
+	public UTGBException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
+	public UTGBException(UTGBErrorCode errorCode, Throwable cause) {
+		super(cause);
+		this.errorCode = errorCode;
+	}
+
+	public UTGBException(UTGBErrorCode errorCode, String message, Throwable cause) {
+		super(message, cause);
+		this.errorCode = errorCode;
+	}
+
+	public UTGBException(UTGBErrorCode errorCode, String message) {
+		super(message);
+		this.errorCode = errorCode;
+	}
+
+	@Override
+	public String getMessage() {
+		return "[" + errorCode.name() + "] " + super.getMessage();
+	}
+
+	public static UTGBException convert(Exception e) {
+		if (UTGBException.class.isInstance(e)) {
+			UTGBException xe = UTGBException.class.cast(e);
+			return xe;
+		}
+		else if (IOException.class.isInstance(e)) {
+			return new UTGBException(UTGBErrorCode.IO_ERROR, e);
+		}
+		else {
+			return new UTGBException(UTGBErrorCode.INHERITED, e);
+		}
+	}
 
 }
-
-
-
-

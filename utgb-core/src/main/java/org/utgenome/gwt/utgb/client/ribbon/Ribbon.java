@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Ribbon is an coordinate for representing insertion to reference and deletion to reference,
+ * Ribbon is a coordinate for representing insertions to reference and deletions to reference,
  * 
  * <pre>
  * xOffset:            1 2 3 4 5 6 7 8 9
@@ -40,6 +40,8 @@ import java.util.List;
  *                          /         \
  *                     - - -           -  -  -  
  * -insertion(pos:4, length:5)
+ * 
+ * 
  * 
  * [deletion] 
  * xOffset:            1 2 3 4 5 6  7  8  9 10 11

@@ -1,0 +1,10 @@
+# comment-line
+#name   value
+F13H10.3a       F13H10.3
+C47E12.5b.2     uba-1
+K12H6.9 K12H6.9
+F11C1.6a.2      nhr-25
+F30F8.2 F30F8.2
+ZK177.2 ZK177.2
+T01C4.2a        odr-2
+M01E11.5.2      cey-3

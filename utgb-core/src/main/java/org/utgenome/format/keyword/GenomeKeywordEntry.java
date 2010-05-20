@@ -32,9 +32,26 @@ package org.utgenome.format.keyword;
  */
 public class GenomeKeywordEntry {
 
-	public String ref; // reference sequence ID (e.g. hg19, ut-medaka-1.0) 
-	public int start; // start position 
+	public String ref; // reference sequence ID (e.g. hg19, ut-medaka-1.0)
+	public String chr; // chromosome/contig/scaffold name
 	public String text; // text containing keywords
+	public int start; // start position 
+	public int end; // end position
+
+	public GenomeKeywordEntry(String ref, String chr, String text, int start, int end) {
+		this.ref = ref;
+		this.chr = chr;
+		this.text = text;
+
+		if (end <= start) {
+			int tmp = start;
+			start = end;
+			end = tmp;
+		}
+
+		this.start = start;
+		this.end = end;
+	}
 
 	/**
 	 * Alias is a keyword
@@ -44,7 +61,13 @@ public class GenomeKeywordEntry {
 	 */
 	public static class KeywordAlias {
 		public String keyword; // the keyword to redirect
-		public String alias; // aliases 
+		public String alias; // aliases
+
+		public KeywordAlias(String keyword, String alias) {
+			this.keyword = keyword;
+			this.alias = alias;
+		}
+
 	}
 
 }
