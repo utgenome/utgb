@@ -62,13 +62,13 @@ public class RibbonRuler extends Composite {
 	 * 
 	 */
 	private static class RibbonCrease implements Comparable<RibbonCrease> {
-		public final long pos;
+		public final int pos;
 		public final int len;
 
 		private final RibbonType type;
 		private boolean isOpen = true;
 
-		public RibbonCrease(RibbonType type, long pos, int len) {
+		public RibbonCrease(RibbonType type, int pos, int len) {
 			this.type = type;
 			this.pos = pos;
 			this.len = len;
@@ -249,11 +249,11 @@ public class RibbonRuler extends Composite {
 		redraw();
 	}
 
-	public void setGap(long indexOnGenome, int gapLength) {
+	public void setGap(int indexOnGenome, int gapLength) {
 		ribbonPoint.add(new RibbonCrease(RibbonType.GAP, indexOnGenome, gapLength));
 	}
 
-	public void setFold(long indexOnGenome, int foldLength) {
+	public void setFold(int indexOnGenome, int foldLength) {
 		ribbonPoint.add(new RibbonCrease(RibbonType.FOLD, indexOnGenome, foldLength));
 	}
 
