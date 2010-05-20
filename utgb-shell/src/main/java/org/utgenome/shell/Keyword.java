@@ -33,7 +33,7 @@ import java.io.Reader;
 
 import org.utgenome.UTGBException;
 import org.utgenome.format.keyword.KeywordDB;
-import org.utgenome.format.keyword.KeywordSearchResult;
+import org.utgenome.gwt.utgb.client.bio.KeywordSearchResult;
 import org.utgenome.shell.Import.FileType;
 import org.xerial.lens.Lens;
 import org.xerial.util.StopWatch;
