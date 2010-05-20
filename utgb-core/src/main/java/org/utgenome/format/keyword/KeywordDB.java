@@ -101,7 +101,7 @@ public class KeywordDB {
 		if (aliases.size() > 0) {
 			String altKeyword = aliases.get(0).keyword;
 			if (altKeyword != null)
-				keywordSegments = keywordSegments + " OR " + splitKeyword(altKeyword);
+				keywordSegments = sanitize(altKeyword) + " OR " + keywordSegments;
 		}
 
 		String refCondition = (ref == null) ? "" : SQLExpression.fillTemplate("ref=\"$1\" and ", ref);
