@@ -111,7 +111,7 @@ public class Repair extends UTGBShellCommand {
 
 		try {
 			UTGBConfig config = loadUTGBConfig();
-			Create.createScaffold(config, "./", scaffoldFilter);
+			Create.createScaffold(config, getProjectRoot().getPath(), scaffoldFilter);
 		}
 		catch (UTGBShellException e) {
 			_logger.info(String.format("No %s file found or the config file is collapsed", getConfigFile()));

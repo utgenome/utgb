@@ -121,9 +121,11 @@ public class Upgrade extends UTGBShellCommand {
 		// upgrade pom.xml
 		if (isInProjectRoot()) {
 			// upgrading pom.xml
-			UTGBShell.runCommand("repair -y -f pom.xml");
+			_logger.info("upgrade pom.xml");
+			UTGBShell.runCommand(globalOption, "repair -y -f pom.xml");
 		}
 
+		_logger.info("upgrade done.");
 	}
 
 	@Override

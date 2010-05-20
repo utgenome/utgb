@@ -142,14 +142,12 @@ public class UTGBShell {
 		runCommand(argLine.split("[\\s]+"));
 	}
 
-	/**
-	 * Run UTGB Shell commands
-	 * 
-	 * @param args
-	 * @throws Exception
-	 */
-	public static void runCommand(String[] args) throws Exception {
-		UTGBShellOption opt = new UTGBShellOption();
+	public static void runCommand(UTGBShellOption opt, String argLine) throws Exception {
+		runCommand(opt, argLine.split("[\\s]+"));
+	}
+
+	public static void runCommand(UTGBShellOption opt, String[] args) throws Exception {
+
 		OptionParser optionParser = new OptionParser(opt);
 		optionParser.setIgnoreUnknownOption(true);
 
@@ -231,6 +229,16 @@ public class UTGBShell {
 		System.out.println(getProgramInfo());
 		System.out.println("type --help for a list of the available sub commands.");
 
+	}
+
+	/**
+	 * Run UTGB Shell commands
+	 * 
+	 * @param args
+	 * @throws Exception
+	 */
+	public static void runCommand(String[] args) throws Exception {
+		runCommand(new UTGBShellOption(), args);
 	}
 
 	/**
