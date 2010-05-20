@@ -275,29 +275,6 @@ public class BrowserServiceImpl extends RpcServlet implements BrowserService {
 			SearchResult searchResult = new SearchResult();
 			BeanUtil.populateBeanWithJSON(searchResult, in);
 
-			/*
-			// parse the returned keywords
-			String keywordLowerCase = keyword.toLowerCase();
-			for (Result result : searchResult.getResult()) {
-				if (result.getSpecies() == null || result.getRevision() == null || result.getScaffold() == null)
-					continue;
-
-				ArrayList<Tag> matchedTagList = new ArrayList<Tag>();
-				if (!isScaffoldSearch) {
-					for (Tag tag : result.getKeywords()) {
-						if (tag.getKey().toLowerCase().contains(keywordLowerCase) || tag.getValue().toLowerCase().contains(keywordLowerCase)) {
-							matchedTagList.add(tag);
-						}
-					}
-
-				}
-				result.clearKeyword();
-				for (Tag tag : matchedTagList) {
-					result.addKeywords(tag);
-				}
-			}
-			 */
-
 			return searchResult;
 		}
 		catch (MalformedURLException e) {

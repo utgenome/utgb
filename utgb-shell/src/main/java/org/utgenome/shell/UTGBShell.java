@@ -227,8 +227,12 @@ public class UTGBShell {
 		try {
 			runCommand(args);
 		}
-		catch (Exception e) {
+		catch (UTGBShellException e) {
 			System.err.println(e.getMessage());
+			System.exit(1); // return error code
+		}
+		catch (Exception e) {
+			e.printStackTrace(System.err);
 			System.exit(1); // return error code
 		}
 		catch (Error e) {

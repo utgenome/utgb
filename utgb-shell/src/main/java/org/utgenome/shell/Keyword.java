@@ -26,7 +26,10 @@ package org.utgenome.shell;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.io.Reader;
 
 import org.utgenome.UTGBException;
 import org.utgenome.format.keyword.KeywordDB;
@@ -62,7 +65,7 @@ public class Keyword extends UTGBShellCommand {
 	private SubCommand subCommand = null;
 
 	@Argument(index = 1, name = "input file")
-	private String input = null;
+	private String input = "-";
 
 	@Option(symbol = "r", longName = "ref", description = "reference sequence name for the keywords, e.g., hg19, ce6, etc.")
 	private String ref;
@@ -91,32 +94,34 @@ public class Keyword extends UTGBShellCommand {
 		StopWatch timer = new StopWatch();
 		try {
 			switch (subCommand) {
-			case IMPORT:
-				_logger.info("input file: " + input);
+			case IMPORT: {
+
 				if (ref == null)
-					throw new UTGBException("specify a reference sequence name with -r option");
+					throw new UTGBShellException("specify a reference sequence name with -r option");
+
+				Reader r = getInputFileReader();
 
 				if (inputFileType == FileType.AUTO)
 					inputFileType = Import.detectFileType(input);
 				switch (inputFileType) {
 				case BED:
-					db.importFromBED(ref, new BufferedReader(new FileReader(input)));
+					db.importFromBED(ref, r);
 					_logger.info(String.format("done. %s sec.", timer.getElapsedTime()));
 					break;
 				default:
-					throw new UTGBException(String.format("Unsupported (or unknown) file type of %s. Use -t option to explicitely specify the file type.",
-							input));
+					throw new UTGBShellException(String.format("Unsupported (or unknown) file type. Use -t option to explicitely specify the file type."));
 				}
 				break;
+			}
 			case ALIAS:
-				_logger.info("input file: " + input);
+				Reader r = getInputFileReader();
 
-				db.importKeywordAliasFile(new BufferedReader(new FileReader(input)));
+				db.importKeywordAliasFile(r);
 				_logger.info(String.format("done. %s sec.", timer.getElapsedTime()));
 				break;
 			case SEARCH:
 				if (ref == null)
-					throw new UTGBException("specify a reference sequence name with -r option");
+					throw new UTGBShellException("specify a reference sequence name with -r option");
 				KeywordSearchResult query = db.query(ref, input, page, pageSize);
 				System.out.println(Lens.toSilk(query));
 				break;
@@ -127,6 +132,17 @@ public class Keyword extends UTGBShellCommand {
 			db.close();
 		}
 
+	}
+
+	private BufferedReader getInputFileReader() throws FileNotFoundException {
+		if (input != null && !input.equals("-")) {
+			_logger.info("input file: " + input);
+			return new BufferedReader(new FileReader(input));
+		}
+		else {
+			_logger.info("use STDIN for input");
+			return new BufferedReader(new InputStreamReader(System.in));
+		}
 	}
 
 	@Override
