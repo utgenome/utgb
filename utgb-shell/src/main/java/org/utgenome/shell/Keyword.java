@@ -31,7 +31,6 @@ import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-import org.utgenome.UTGBException;
 import org.utgenome.format.keyword.KeywordDB;
 import org.utgenome.gwt.utgb.client.bio.KeywordSearchResult;
 import org.utgenome.shell.Import.FileType;
@@ -82,7 +81,7 @@ public class Keyword extends UTGBShellCommand {
 	public void execute(String[] args) throws Exception {
 
 		if (subCommand == null)
-			throw new UTGBException("specify on of the command: utgb keyword (import|alias)");
+			throw new UTGBShellException("specify one of the sub command: utgb keyword (import|alias)");
 
 		_logger.info("keyword database: " + dbFile);
 		File dbPath = new File(getProjectRoot(), dbFile);
