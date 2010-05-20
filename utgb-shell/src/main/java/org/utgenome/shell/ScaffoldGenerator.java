@@ -56,7 +56,7 @@ public class ScaffoldGenerator {
 	private static Logger _logger = Logger.getLogger(ScaffoldGenerator.class);
 
 	private String outputFolder;
-	private OverwriteMode overwriteMode = OverwriteMode.INTERACTIVE;
+	static OverwriteMode overwriteMode = OverwriteMode.INTERACTIVE;
 	private final Properties property = new Properties();
 	private ScaffoldFileFilter generateFileFilter = null;
 

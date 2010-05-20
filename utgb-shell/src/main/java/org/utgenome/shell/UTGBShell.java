@@ -34,6 +34,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.utgenome.shell.Create.OverwriteMode;
 import org.xerial.util.FileResource;
 import org.xerial.util.ResourceFilter;
 import org.xerial.util.StringUtil;
@@ -122,6 +123,9 @@ public class UTGBShell {
 		@Option(symbol = "e", longName = "env", varName = "test|development|production", description = "running mode (default: development)")
 		public String environment = "development";
 
+		@Option(symbol = "y", description = "(non-interactive mode) answer yes to all question")
+		public boolean answerYes = false;
+
 	}
 
 	public static Set<String> getSubCommandNameSet() {
@@ -156,6 +160,10 @@ public class UTGBShell {
 			Logger.getRootLogger().setLogLevel(opt.logLevel);
 
 		Logger.getRootLogger().setLogWriter(new SimpleLogWriter(System.err));
+
+		if (opt.answerYes) {
+			ScaffoldGenerator.overwriteMode = OverwriteMode.YES_TO_ALL;
+		}
 
 		if (opt.subCommand != null) {
 			// go to sub command processing
