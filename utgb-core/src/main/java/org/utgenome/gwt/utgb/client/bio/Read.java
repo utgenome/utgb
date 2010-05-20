@@ -114,8 +114,9 @@ public class Read implements Serializable, AcceptReadVisitor {
 		return '-' == strand;
 	}
 
-	public void setStrand(char strand) {
-		this.strand = (byte) strand;
+	public void setStrand(String strand) {
+		if (strand != null && strand.length() > 0)
+			this.strand = (byte) strand.charAt(0);
 	}
 
 	public void accept(ReadVisitor visitor) {

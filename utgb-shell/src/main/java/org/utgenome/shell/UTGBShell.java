@@ -134,6 +134,16 @@ public class UTGBShell {
 	 * @param args
 	 * @throws Exception
 	 */
+	public static void runCommand(String argLine) throws Exception {
+		runCommand(argLine.split("[\\s]+"));
+	}
+
+	/**
+	 * Run UTGB Shell commands
+	 * 
+	 * @param args
+	 * @throws Exception
+	 */
 	public static void runCommand(String[] args) throws Exception {
 		UTGBShellOption opt = new UTGBShellOption();
 		OptionParser optionParser = new OptionParser(opt);
@@ -228,6 +238,10 @@ public class UTGBShell {
 			runCommand(args);
 		}
 		catch (UTGBShellException e) {
+			System.err.println(e.getMessage());
+			System.exit(1); // return error code
+		}
+		catch (OptionParserException e) {
 			System.err.println(e.getMessage());
 			System.exit(1); // return error code
 		}

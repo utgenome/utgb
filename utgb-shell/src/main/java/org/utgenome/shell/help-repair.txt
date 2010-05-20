@@ -5,5 +5,5 @@ Repair missing files or overwrite with the default file. If no config/track-conf
 you have to specify a project name in the command line to reproduce the config file. 
 
 Repair command is useful when you happen to delete some important files such as pom.xml (project file),
-src/main/webapp/WEB-INF/web.xml (web server setting file)
+src/main/webapp/WEB-INF/web.xml (web server setting file), etc.
 
