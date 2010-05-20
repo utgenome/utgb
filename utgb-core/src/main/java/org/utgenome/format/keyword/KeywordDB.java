@@ -39,6 +39,7 @@ import org.utgenome.format.bed.BEDQuery;
 import org.utgenome.format.bed.BEDTrack;
 import org.utgenome.format.fasta.CompactFASTAIndex;
 import org.utgenome.format.keyword.GenomeKeywordEntry.KeywordAlias;
+import org.utgenome.gwt.utgb.client.bio.KeywordSearchResult;
 import org.xerial.db.DBException;
 import org.xerial.db.sql.ResultSetHandler;
 import org.xerial.db.sql.SQLExpression;
@@ -100,7 +101,7 @@ public class KeywordDB {
 		if (aliases.size() > 0) {
 			String altKeyword = aliases.get(0).keyword;
 			if (altKeyword != null)
-				keywordSegments = splitKeyword(altKeyword);
+				keywordSegments = keywordSegments + " OR " + splitKeyword(altKeyword);
 		}
 
 		String refCondition = (ref == null) ? "" : SQLExpression.fillTemplate("ref=\"$1\" and ", ref);

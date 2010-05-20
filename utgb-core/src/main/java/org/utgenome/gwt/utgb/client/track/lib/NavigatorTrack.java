@@ -396,6 +396,12 @@ public class NavigatorTrack extends TrackBase {
 		return false;
 	}
 
+	public void updateRangeBox() {
+		startBox.setText(Long.toString(getTrackWindow().getStartOnGenome()));
+		endBox.setText(Long.toString(getTrackWindow().getEndOnGenome()));
+
+	}
+
 	@Override
 	public void onChangeTrackGroupProperty(TrackGroupPropertyChange change) {
 		final String[] relatedProperties = new String[] { UTGBProperty.SPECIES, UTGBProperty.REVISION, UTGBProperty.TARGET };
@@ -405,15 +411,17 @@ public class NavigatorTrack extends TrackBase {
 				selectItem(speciesBox, newSpecies);
 			}
 			updateListBox();
+
 			if (change.contains(UTGBProperty.TARGET))
 				targetBox.setText(change.getProperty(UTGBProperty.TARGET));
+
+			updateRangeBox();
 		}
 	}
 
 	@Override
 	public void onChangeTrackWindow(TrackWindow newWindow) {
-		startBox.setText(Long.toString(newWindow.getStartOnGenome()));
-		endBox.setText(Long.toString(newWindow.getEndOnGenome()));
+		updateRangeBox();
 	}
 
 	@Override

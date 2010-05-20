@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.utgenome.gwt.utgb.client.GenomeBrowser;
+import org.utgenome.gwt.utgb.client.bio.KeywordSearchResult;
+import org.utgenome.gwt.utgb.client.bio.KeywordSearchResult.Entry;
 import org.utgenome.gwt.utgb.client.track.Track;
 import org.utgenome.gwt.utgb.client.track.TrackBase;
 import org.utgenome.gwt.utgb.client.track.TrackFrame;
@@ -35,8 +37,6 @@ import org.utgenome.gwt.utgb.client.track.TrackGroup;
 import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyWriter;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.track.UTGBProperty;
-import org.utgenome.gwt.utgb.client.track.bean.Result;
-import org.utgenome.gwt.utgb.client.track.bean.SearchResult;
 import org.utgenome.gwt.utgb.client.ui.FormLabel;
 import org.utgenome.gwt.utgb.client.util.JSONUtil;
 import org.utgenome.gwt.utgb.client.util.Properties;
@@ -175,9 +175,9 @@ public class KeywordSearchTrack extends TrackBase {
 	}
 
 	private class LocationMover implements ClickHandler {
-		private final Result e;
+		private final Entry e;
 
-		public LocationMover(final Result e) {
+		public LocationMover(final Entry e) {
 			this.e = e;
 		}
 
@@ -185,15 +185,14 @@ public class KeywordSearchTrack extends TrackBase {
 
 			TrackGroupPropertyWriter writer = getTrackGroup().getPropertyWriter();
 			HashMap<String, String> property = new HashMap<String, String>();
-			property.put(UTGBProperty.SPECIES, e.getSpecies());
-			property.put(UTGBProperty.REVISION, e.getRevision());
-			property.put(UTGBProperty.TARGET, e.getTarget());
+			property.put(UTGBProperty.REVISION, e.ref);
+			property.put(UTGBProperty.TARGET, e.chr);
 
 			TrackWindow win = getTrackGroup().getTrackWindow();
 
 			int width = win.getEndOnGenome() - win.getStartOnGenome();
-			int left = e.getStart();
-			int right = e.getEnd();
+			int left = e.start;
+			int right = e.end;
 			if (width < 0) {
 				width = -width;
 			}
@@ -222,38 +221,43 @@ public class KeywordSearchTrack extends TrackBase {
 		if (!speciesScope.equals("any"))
 			species = getTrackGroup().getPropertyReader().getProperty(UTGBProperty.SPECIES, "");
 		String revision = getTrackGroup().getPropertyReader().getProperty(UTGBProperty.REVISION, "");
-		GenomeBrowser.getService().keywordSearch(species, revision, keyword, entriesPerPage, numPage, new AsyncCallback<SearchResult>() {
+		GenomeBrowser.getService().keywordSearch(species, revision, keyword, entriesPerPage, numPage, new AsyncCallback<KeywordSearchResult>() {
 			public void onFailure(Throwable caught) {
 				getFrame().loadingDone();
 				GWT.log("search failed:", caught);
 			}
 
-			public void onSuccess(SearchResult foundEntryList) {
+			public void onSuccess(KeywordSearchResult foundEntryList) {
 				if (foundEntryList == null) {
 					getFrame().loadingDone();
 					return;
 				}
 				searchResultPanel.clear();
-				if (foundEntryList.getCount() <= 0) {
+				if (foundEntryList.count <= 0) {
 					searchResultPanel.add(new FormLabel("no entry is found"));
 				}
 				else {
-					pager.update(keyword, foundEntryList.getPage(), foundEntryList.getMaxpage());
+					pager.update(keyword, foundEntryList.page, foundEntryList.maxPage);
 					searchResultPanel.add(pager);
-					for (Result e : foundEntryList.getResult()) {
+
+					//String species = getTrackGroupProperty(UTGBProperty.SPECIES);
+
+					for (Entry e : foundEntryList.result) {
 						HorizontalPanel hp = new HorizontalPanel();
 						hp.setVerticalAlignment(HorizontalPanel.ALIGN_MIDDLE);
 
 						Image icon = new Image("theme/image/item.gif");
 						Style.margin(icon, Style.LEFT, 10);
 						hp.add(icon);
-						for (String tag : e.getKeywordList()) {
-							FormLabel tagLabel = new FormLabel(tag);
-							Style.margin(tagLabel, Style.LEFT, 3);
-							hp.add(tagLabel);
-						}
-						String label = e.getSpecies() + "/" + e.getRevision() + "/" + e.getTarget() + ":" + e.getStart() + "-" + e.getEnd() + "";
+						FormLabel tagLabel = new FormLabel(e.name);
+						tagLabel.setWidth("120px");
+						Style.margin(tagLabel, Style.LEFT, 3);
+						Style.trimOverflowedText(tagLabel);
+						hp.add(tagLabel);
+
+						String label = e.ref + "/" + e.chr + ":" + e.start + "-" + e.end + "";
 						Anchor link = new Anchor(label);
+						Style.fontSize(link, 12);
 						//link.setStyleName("searchresult");
 						link.addClickHandler(new LocationMover(e));
 
@@ -264,6 +268,7 @@ public class KeywordSearchTrack extends TrackBase {
 				refresh();
 				getFrame().loadingDone();
 			}
+
 		});
 	}
 

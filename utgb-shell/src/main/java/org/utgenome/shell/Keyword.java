@@ -42,7 +42,7 @@ import org.xerial.util.opt.Argument;
 import org.xerial.util.opt.Option;
 
 /**
- * keyword DB
+ * keyword DB management tool
  * 
  * @author leo
  * 
@@ -95,7 +95,6 @@ public class Keyword extends UTGBShellCommand {
 		try {
 			switch (subCommand) {
 			case IMPORT: {
-
 				if (ref == null)
 					throw new UTGBShellException("specify a reference sequence name with -r option");
 

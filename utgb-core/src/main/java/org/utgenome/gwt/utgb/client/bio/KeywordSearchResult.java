@@ -22,8 +22,9 @@
 // $URL: http://svn.utgenome.org/utgb/trunk/utgb/utgb-keyword/src/main/java/org/utgenome/keyword/app/KeywordSearchResult.java $ 
 // $Author: leo $
 //--------------------------------------
-package org.utgenome.format.keyword;
+package org.utgenome.gwt.utgb.client.bio;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,14 +34,18 @@ import java.util.List;
  * @author leo
  * 
  */
-public class KeywordSearchResult {
+public class KeywordSearchResult implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	public int page;
 	public int count;
 	public int maxPage;
 	public List<Entry> result = new ArrayList<Entry>();
 
-	public static class Entry {
+	public static class Entry implements Serializable {
+		private static final long serialVersionUID = 1L;
+
 		public String name = "";
 		public String chr = "";
 		public int start;

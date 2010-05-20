@@ -29,6 +29,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 
 import org.junit.Test;
+import org.utgenome.gwt.utgb.client.bio.KeywordSearchResult;
 import org.xerial.util.FileResource;
 import org.xerial.util.FileUtil;
 import org.xerial.util.log.Logger;

@@ -32,11 +32,11 @@ import org.utgenome.gwt.utgb.client.bio.AlignmentResult;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.ChrRange;
 import org.utgenome.gwt.utgb.client.bio.Gene;
+import org.utgenome.gwt.utgb.client.bio.KeywordSearchResult;
 import org.utgenome.gwt.utgb.client.bio.Locus;
 import org.utgenome.gwt.utgb.client.bio.ReadSet;
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.bio.WigGraphData;
-import org.utgenome.gwt.utgb.client.track.bean.SearchResult;
 import org.utgenome.gwt.utgb.client.track.bean.TrackBean;
 import org.utgenome.gwt.utgb.client.view.TrackView;
 
@@ -66,7 +66,7 @@ public interface BrowserService extends RpcService {
 	 */
 	public List<TrackBean> getTrackList(String prefix, int entriesPerPage, int page);
 
-	public SearchResult keywordSearch(String species, String revision, String keyword, int entriesPerPage, int page);
+	public KeywordSearchResult keywordSearch(String species, String revision, String keyword, int entriesPerPage, int page) throws UTGBClientException;
 
 	/**
 	 * Retrieves the gene list by accessing the specified URI

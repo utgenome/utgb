@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -47,6 +46,7 @@ import net.sf.samtools.SAMRecord.SAMTagAndValue;
 
 import org.utgenome.UTGBException;
 import org.utgenome.format.fasta.CompactFASTA;
+import org.utgenome.format.keyword.KeywordDB;
 import org.utgenome.format.sam.SAM2SilkReader;
 import org.utgenome.format.wig.WIGDatabaseReader;
 import org.utgenome.gwt.utgb.client.BrowserService;
@@ -58,12 +58,12 @@ import org.utgenome.gwt.utgb.client.bio.AlignmentResult;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.ChrRange;
 import org.utgenome.gwt.utgb.client.bio.Gene;
+import org.utgenome.gwt.utgb.client.bio.KeywordSearchResult;
 import org.utgenome.gwt.utgb.client.bio.Locus;
 import org.utgenome.gwt.utgb.client.bio.Read;
 import org.utgenome.gwt.utgb.client.bio.ReadSet;
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.bio.WigGraphData;
-import org.utgenome.gwt.utgb.client.track.bean.SearchResult;
 import org.utgenome.gwt.utgb.client.track.bean.TrackBean;
 import org.utgenome.gwt.utgb.client.util.Properties;
 import org.utgenome.gwt.utgb.client.view.TrackView;
@@ -258,36 +258,60 @@ public class BrowserServiceImpl extends RpcServlet implements BrowserService {
 		return 0;
 	}
 
-	public SearchResult keywordSearch(String species, String revision, String keyword, int numEntriesPerPage, int page) {
+	//	public SearchResult keywordSearch(String species, String revision, String keyword, int numEntriesPerPage, int page) {
+	//
+	//		String keywordSearchURL = "http://utgenome.org/service/utgb-keyword/search";
+	//		keywordSearchURL += String.format("?revision=%s&keyword=%s&page=%d&pagewidth=%d", revision, keyword, page, numEntriesPerPage);
+	//		if (species != null)
+	//			keywordSearchURL += "&species=" + species;
+	//
+	//		_logger.debug(keywordSearchURL);
+	//
+	//		boolean isScaffoldSearch = keyword.toLowerCase().contains("scaffold");
+	//
+	//		try {
+	//			URL url = new URL(keywordSearchURL);
+	//			BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+	//			SearchResult searchResult = new SearchResult();
+	//			BeanUtil.populateBeanWithJSON(searchResult, in);
+	//
+	//			return searchResult;
+	//		}
+	//		catch (MalformedURLException e) {
+	//			_logger.error(e);
+	//		}
+	//		catch (IOException e) {
+	//			_logger.error(e);
+	//		}
+	//		catch (XerialException e) {
+	//			_logger.error(e);
+	//		}
+	//
+	//		return null;
+	//	}
 
-		String keywordSearchURL = "http://utgenome.org/service/utgb-keyword/search";
-		keywordSearchURL += String.format("?revision=%s&keyword=%s&page=%d&pagewidth=%d", revision, keyword, page, numEntriesPerPage);
-		if (species != null)
-			keywordSearchURL += "&species=" + species;
+	public KeywordSearchResult keywordSearch(String species, String revision, String keyword, int numEntriesPerPage, int page) throws UTGBClientException {
 
-		_logger.debug(keywordSearchURL);
-
-		boolean isScaffoldSearch = keyword.toLowerCase().contains("scaffold");
-
+		File keywordDBFile = new File(WebTrackBase.getProjectRootPath(), "db/keyword.sqlite");
+		KeywordDB db = null;
 		try {
-			URL url = new URL(keywordSearchURL);
-			BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-			SearchResult searchResult = new SearchResult();
-			BeanUtil.populateBeanWithJSON(searchResult, in);
+			db = new KeywordDB(keywordDBFile);
+			return db.query(revision, keyword, page, numEntriesPerPage);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			throw new UTGBClientException(e.getMessage());
+		}
+		finally {
+			if (db != null)
+				try {
+					db.close();
+				}
+				catch (DBException e) {
+					throw new UTGBClientException(e.getMessage());
+				}
+		}
 
-			return searchResult;
-		}
-		catch (MalformedURLException e) {
-			_logger.error(e);
-		}
-		catch (IOException e) {
-			_logger.error(e);
-		}
-		catch (XerialException e) {
-			_logger.error(e);
-		}
-
-		return null;
 	}
 
 	public void saveView(String viewXML) {

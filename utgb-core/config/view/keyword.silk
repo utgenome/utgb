@@ -3,19 +3,18 @@
   -id: 1
   -class: org.utgenome.gwt.utgb.client.track.TrackGroup
   -coordinate
-    -species: medaka
-    -ref: version1.0
-    -chr: scaffold1
+    -species: c.elegans
+    -ref: ce6
+    -chr: chrI
     -start: 1
     -end: 100
-    -pixel width: 800
 -track
   -name: UTGB Navigator
   -height: 41
   -pack: true
   -class: org.utgenome.gwt.utgb.client.track.lib.NavigatorTrack
   -property
-    -sequenceList: [{"species":"medaka", "revision":["version1.0", "version0.9"]}]
+    -sequenceList: [{"species":"c.elegans", "revision":["ce6"]}]
 -track
   -name: Keyword Search
   -height: 0
