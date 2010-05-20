@@ -45,11 +45,10 @@ public class KeywordSearchResult {
 		public String chr = "";
 		public int start;
 		public int end;
-		public String species = "";
 		public String ref = "";
 		public String offsets = null;
 
-		public String getName() {
+		public String getHit() {
 			if (offsets != null) {
 				String[] offsetData = offsets.split(" ");
 				if (offsetData == null || offsetData.length < 4)
