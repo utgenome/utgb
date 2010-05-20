@@ -65,7 +65,7 @@ public class KeywordDBTest {
 			db.importKeywordAliasFile(FileResource.open(KeywordDBTest.class, "alias-sample.txt"));
 
 			// query via alias
-			query = db.query("ce6", "samplealias", 1, 10);
+			query = db.query(null, "samplealias", 1, 10);
 			assertEquals(1, query.count);
 			assertEquals(1, query.result.size());
 			assertEquals("Y74C9A.4b", query.result.get(0).name);

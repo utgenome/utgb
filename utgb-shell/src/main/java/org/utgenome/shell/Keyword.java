@@ -120,8 +120,6 @@ public class Keyword extends UTGBShellCommand {
 				_logger.info(String.format("done. %s sec.", timer.getElapsedTime()));
 				break;
 			case SEARCH:
-				if (ref == null)
-					throw new UTGBShellException("specify a reference sequence name with -r option");
 				KeywordSearchResult query = db.query(ref, input, page, pageSize);
 				System.out.println(Lens.toSilk(query));
 				break;

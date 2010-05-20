@@ -103,9 +103,11 @@ public class KeywordDB {
 				keywordSegments = splitKeyword(altKeyword);
 		}
 
+		String refCondition = (ref == null) ? "" : SQLExpression.fillTemplate("ref=\"$1\" and ", ref);
+
 		// count the search results
-		String countSQL = SQLExpression.fillTemplate("select count(*) as count from keyword_index where ref = \"$1\" and keyword match \"$2\"", ref,
-				keywordSegments);
+		String countSQL = SQLExpression
+				.fillTemplate("select count(*) as count from keyword_index where $1 keyword match \"$2\"", refCondition, keywordSegments);
 
 		if (_logger.isDebugEnabled())
 			_logger.debug(countSQL);
@@ -121,9 +123,9 @@ public class KeywordDB {
 		r.maxPage = r.count / pageSize + (r.count % pageSize == 0 ? 0 : 1);
 
 		String searchSQLTemplate = "select original_keyword as name, offsets(keyword_index) as offsets, ref, chr, start, end "
-				+ "from keyword_index, entry where ref = \"$1\" and keyword match \"$2\" " + "and keyword_index.rowid = entry.rowid limit $3 offset $4";
+				+ "from keyword_index, entry where $1 keyword match \"$2\" " + "and keyword_index.rowid = entry.rowid limit $3 offset $4";
 
-		String keywordSearchSQL = SQLExpression.fillTemplate(searchSQLTemplate, ref, keywordSegments, pageSize, pageSize * (page - 1));
+		String keywordSearchSQL = SQLExpression.fillTemplate(searchSQLTemplate, refCondition, keywordSegments, pageSize, pageSize * (page - 1));
 
 		r.result = db.query(keywordSearchSQL, KeywordSearchResult.Entry.class);
 
