@@ -43,6 +43,7 @@ import org.xerial.db.DBException;
 import org.xerial.db.sql.ResultSetHandler;
 import org.xerial.db.sql.SQLExpression;
 import org.xerial.db.sql.sqlite.SQLiteAccess;
+import org.xerial.db.sql.sqlite.SQLiteCatalog;
 import org.xerial.util.StringUtil;
 import org.xerial.util.log.Logger;
 
@@ -71,9 +72,13 @@ public class KeywordDB {
 	}
 
 	public void initDB() throws DBException {
-		db.update("create table if not exists entry(chr text, start integer, end integer, original_keyword text)");
-		db.update("create virtual table alias_table using fts3(keyword text, alias text)");
-		db.update("create virtual table keyword_index using fts3(ref text, keyword text)");
+
+		SQLiteCatalog catalog = db.getCatalog();
+		if (!catalog.getTableNameSet().contains("entry")) {
+			db.update("create table if not exists entry(chr text, start integer, end integer, original_keyword text)");
+			db.update("create virtual table alias_table using fts3(keyword text, alias text)");
+			db.update("create virtual table keyword_index using fts3(ref text, keyword text)");
+		}
 	}
 
 	public KeywordSearchResult query(String ref, String keyword, int page, int pageSize) throws Exception {
@@ -89,6 +94,16 @@ public class KeywordDB {
 		if (keywordSegments == null)
 			return r;
 
+		// search alias
+		String aliasQuery = SQLExpression.fillTemplate("select * from alias_table where alias match \"$1\" limit 1", keywordSegments);
+		List<KeywordAlias> aliases = db.query(aliasQuery, GenomeKeywordEntry.KeywordAlias.class);
+		if (aliases.size() > 0) {
+			String altKeyword = aliases.get(0).keyword;
+			if (altKeyword != null)
+				keywordSegments = splitKeyword(altKeyword);
+		}
+
+		// count the search results
 		String countSQL = SQLExpression.fillTemplate("select count(*) as count from keyword_index where ref = \"$1\" and keyword match \"$2\"", ref,
 				keywordSegments);
 
@@ -152,7 +167,7 @@ public class KeywordDB {
 	}
 
 	public void add(KeywordAlias alias) throws DBException {
-		String sql = SQLExpression.fillTemplate("insert into alias values('$1', '$2')", alias.keyword, alias.alias);
+		String sql = SQLExpression.fillTemplate("insert into alias_table values('$1', '$2')", alias.keyword, alias.alias);
 		db.update(sql);
 	}
 
