@@ -9,3 +9,17 @@ ZK177.2 ZK177.2
 T01C4.2a        odr-2
 M01E11.5.2      cey-3
 Y74C9A.4b	SampleAlias
+C16D9.2a    rol-3
+ZK1290.3a    rol-8
+C16D9.2b    rol-3
+ZK1290.3b    rol-8
+C16D9.2c    rol-3
+T01B7.7    rol-6
+Y57A10A.11    rol-1
+NM_182112    rol-8
+NM_072721    rol-3
+NM_064188    rol-1
+NM_063457    rol-6
+NM_063181    rol-8
+NM_182326    rol-3
+NM_182327    rol-3

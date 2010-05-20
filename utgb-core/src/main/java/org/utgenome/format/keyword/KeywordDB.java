@@ -96,12 +96,15 @@ public class KeywordDB {
 			return r;
 
 		// search alias
-		String aliasQuery = SQLExpression.fillTemplate("select * from alias_table where alias match \"$1\" limit 1", keywordSegments);
+		String aliasQuery = SQLExpression.fillTemplate("select distinct(keyword), alias from alias_table where alias match \"$1\"", keywordSegments);
 		List<KeywordAlias> aliases = db.query(aliasQuery, GenomeKeywordEntry.KeywordAlias.class);
 		if (aliases.size() > 0) {
-			String altKeyword = aliases.get(0).keyword;
-			if (altKeyword != null)
-				keywordSegments = sanitize(altKeyword) + " OR " + keywordSegments;
+			ArrayList<String> keywords = new ArrayList<String>();
+			for (KeywordAlias each : aliases) {
+				keywords.add(sanitize(each.keyword));
+			}
+			keywords.add(keywordSegments);
+			keywordSegments = StringUtil.join(keywords, " OR ");
 		}
 
 		String refCondition = (ref == null) ? "" : SQLExpression.fillTemplate("ref=\"$1\" and ", ref);
@@ -154,7 +157,7 @@ public class KeywordDB {
 		if (text == null)
 			return null;
 
-		String s = text.replaceAll("[\\.+-]", "_");
+		String s = text.replaceAll("[_+\\.-]", "");
 		return s.replaceAll("['\"]", " ");
 	}
 
@@ -170,7 +173,7 @@ public class KeywordDB {
 	}
 
 	public void add(KeywordAlias alias) throws DBException {
-		String sql = SQLExpression.fillTemplate("insert into alias_table values('$1', '$2')", alias.keyword, alias.alias);
+		String sql = SQLExpression.fillTemplate("insert into alias_table values('$1', '$2')", alias.keyword, sanitize(alias.alias));
 		db.update(sql);
 	}
 
