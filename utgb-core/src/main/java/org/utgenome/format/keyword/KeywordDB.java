@@ -100,10 +100,10 @@ public class KeywordDB {
 		List<KeywordAlias> aliases = db.query(aliasQuery, GenomeKeywordEntry.KeywordAlias.class);
 		if (aliases.size() > 0) {
 			ArrayList<String> keywords = new ArrayList<String>();
+			keywords.add(keywordSegments);
 			for (KeywordAlias each : aliases) {
 				keywords.add(sanitize(each.keyword));
 			}
-			keywords.add(keywordSegments);
 			keywordSegments = StringUtil.join(keywords, " OR ");
 		}
 

@@ -88,7 +88,7 @@ public class KeywordDBTest {
 	public void keywordSplit() throws Exception {
 
 		String[] keywords = new String[] { "Y74C9A.4b", "chrI NM.0" };
-		String[] sanitizedKeywords = new String[] { "Y74C9A_4b*", "chrI* AND NM0*" };
+		String[] sanitizedKeywords = new String[] { "Y74C9A4b*", "chrI* AND NM0*" };
 		int index = 0;
 		for (String each : keywords) {
 			String s = KeywordDB.splitKeyword(each);
