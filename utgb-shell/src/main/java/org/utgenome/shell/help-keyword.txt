@@ -1,0 +1,14 @@
+usage: keyword [option] (import|alias) (input file)
+
+$ utgb keyword import -r (ref seq. name) (input BED file)
+ - creates a keyword database from a given BED file
+
+$ utgb keyword alias (keyword alias file)
+ - creates aliases to keywords from a given tab-delimited (keyword, alias) file.
+ 
+(keyword)[TAB](aliases...)    
+
+$ utgb keyword search -r (ref seq. name) (keyword)
+ - search the input keyword from the database
+ 
+ 

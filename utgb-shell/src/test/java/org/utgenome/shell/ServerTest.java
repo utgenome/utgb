@@ -35,25 +35,18 @@ import java.util.concurrent.TimeUnit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.utgenome.shell.ProjectGenerator.ProjectInfo;
 import org.xerial.util.log.Logger;
 
 public class ServerTest {
 
 	private static Logger _logger = Logger.getLogger(ServerTest.class);
-	static String tmpDir = "target"; // System.getProperty("java.io.tmpdir");
-	public static String appName = "sample";
+	private static ProjectInfo temporatyProject;
 
 	@BeforeClass
 	public static void setUp() throws Exception {
-		// create temporary application
 
-		int count = 0;
-		while (new File(tmpDir, appName).exists()) {
-			appName = "sample" + count++;
-		}
-
-		// create a web application scaffold
-		UTGBShell.runCommand(new String[] { "create", "-d", tmpDir, appName });
+		temporatyProject = ProjectGenerator.createTemporatyProject();
 
 	}
 
@@ -80,31 +73,27 @@ public class ServerTest {
 	public void compile() throws Exception {
 		// UTGBShell.main(new String[] { "gwt", "-d", new File(tmpDir, appName).getAbsolutePath() });
 
-		final String projectPath = new File(tmpDir, appName).getAbsolutePath();
-
-		UTGBShell.runCommand(new String[] { "action", "-d", projectPath, "hello" });
-		UTGBShell.runCommand(new String[] { "compile", "-d", projectPath });
+		UTGBShell.runCommand(new String[] { "action", "-d", temporatyProject.projectRoot, "hello" });
+		UTGBShell.runCommand(new String[] { "compile", "-d", temporatyProject.projectRoot });
 	}
 
 	@Test
 	public void server() throws Exception {
 		// UTGBShell.main(new String[] { "gwt", "-d", new File(tmpDir, appName).getAbsolutePath() });
 
-		final String projectPath = new File(tmpDir, appName).getAbsolutePath();
-
-		UTGBShell.runCommand(new String[] { "action", "-d", projectPath, "hello" });
-		UTGBShell.runCommand(new String[] { "compile", "-d", projectPath });
+		UTGBShell.runCommand(new String[] { "action", "-d", temporatyProject.projectRoot, "hello" });
+		UTGBShell.runCommand(new String[] { "compile", "-d", temporatyProject.projectRoot });
 
 		ExecutorService es = Executors.newFixedThreadPool(1);
 		es.submit(new Callable<Void>() {
 			public Void call() throws Exception {
-				UTGBShell.runCommand(new String[] { "server", "-d", projectPath });
+				UTGBShell.runCommand(new String[] { "server", "-d", temporatyProject.projectRoot });
 				return null;
 			}
 		});
 
-		URL serverPage = new URL("http://localhost:8989/" + appName + "/utgb-core/roundcircle");
-		URL actionPage = new URL("http://localhost:8989/" + appName + "/hello");
+		URL serverPage = new URL("http://localhost:8989/" + temporatyProject.appName + "/utgb-core/roundcircle");
+		URL actionPage = new URL("http://localhost:8989/" + temporatyProject.appName + "/hello");
 
 		Thread.sleep(8 * 1000);
 
@@ -126,7 +115,7 @@ public class ServerTest {
 	public void envSwitchTest() throws Exception {
 		// UTGBShell.main(new String[] { "gwt", "-d", new File(tmpDir, appName).getAbsolutePath() });
 
-		final String projectPath = new File(tmpDir, appName).getAbsolutePath();
+		final String projectPath = temporatyProject.projectRoot;
 
 		UTGBShell.runCommand(new String[] { "compile", "-d", projectPath });
 

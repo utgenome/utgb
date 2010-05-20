@@ -116,7 +116,7 @@ public class UTGBShell {
 		@Option(symbol = "l", longName = "loglevel", description = "set log level: TRACE, DEBUG, INFO(default), WARN, ERROR, FATAL")
 		private LogLevel logLevel = null;
 
-		@Option(symbol = "d", longName = "projectDir")
+		@Option(symbol = "d", longName = "projectDir", description = "specify the project directory (default = current directory)")
 		public String projectDir = new File("").getAbsolutePath();
 
 		@Option(symbol = "e", longName = "env", varName = "test|development|production", description = "running mode (default: development)")
