@@ -175,8 +175,6 @@ public class BEDCanvasTrack extends TrackBase {
 		int s = newWindow.getStartOnGenome();
 		int e = newWindow.getEndOnGenome();
 		TrackGroupProperty prop = getTrackGroup().getPropertyReader();
-		String species = prop.getProperty(UTGBProperty.SPECIES);
-		String revision = prop.getProperty(UTGBProperty.REVISION);
 		String target = prop.getProperty(UTGBProperty.TARGET);
 
 		getFrame().setNowLoading();

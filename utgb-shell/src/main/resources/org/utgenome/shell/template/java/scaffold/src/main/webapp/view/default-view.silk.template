@@ -9,7 +9,7 @@
 
 # track list to be displayed
 -track(name:UTGB Navigator, height:41, pack:true)
- -java class: org.utgenome.gwt.utgb.client.track.lib.NavigatorTrack
+ -java class: NavigatorTrack
  -sequenceList>
  [
    {"species":"human", "revision":["hg18", "hg17"]},
@@ -17,16 +17,16 @@
  ]
 
 -track(name:Sequence Overview, height:14 pack:true)
- -java class: org.utgenome.gwt.utgb.client.track.lib.SequenceRulerTrack
+ -java class: SequenceRulerTrack
  -leftMargin: 100
 
 -track (name:Ruler, height:14 pack:true)
- -java class: org.utgenome.gwt.utgb.client.track.lib.RulerTrack
+ -java class: RulerTrack
  -leftMargin: 100
 
 # DAS data track
 -track(name: DAS Track, pack:true)
- -java class: org.utgenome.gwt.utgb.client.track.lib.DASTrack
+ -java class: DASTrack
  -type: image
  -leftMargin: 100
  # DAS url to connect
@@ -38,7 +38,7 @@
 
 # BED data track
 -track(name: BED Track, pack:true)
- -java class: org.utgenome.gwt.utgb.client.track.lib.DASTrack
+ -java class: DASTrack
  -type: image
  -leftMargin: 100
  # %q symbol will be replaced with species=human&revision=version1.0&start=1&end=10000&name=chr1
@@ -49,7 +49,7 @@
 
 # Refseq gene track provided as a PNG image
 -track(name:RefSeq Gene Demo, pack:true)
- -java class: org.utgenome.gwt.utgb.client.track.lib.GenomeTrack
+ -java class: GenomeTrack
  -type: image 
  -leftMargin: 100
  # This track retrieves the contents from (server_URL)/utgb-core/GeneViewer 
@@ -57,7 +57,7 @@
 
 # Refseq gene track provided as a PNG image
 -track(name:RefSeq Gene Table Demo, pack:true)
- -java class: org.utgenome.gwt.utgb.client.track.lib.GenomeTrack
+ -java class: GenomeTrack
  -type: frame 
  -leftMargin: 100
  # This track retrieves the contents from (server_URL)/utgb-core/GeneViewer 

@@ -719,8 +719,13 @@ public class TrackGroup implements TrackEntry, Comparable<TrackGroup>, HasFactor
 		for (TrackView.Track t : view.track) {
 			String className = t.class_;
 			TrackFactory trackFactory = TrackFactoryHolder.getTrackFactory(className);
-			if (trackFactory == null)
-				throw new UTGBClientException(UTGBClientErrorCode.UNKNOWN_TRACK, "unknown track class: " + className);
+			if (trackFactory == null) {
+				// search for default package
+				String defaultClass = String.format("org.utgenome.gwt.utgb.client.track.lib.%s", className);
+				trackFactory = TrackFactoryHolder.getTrackFactory(defaultClass);
+				if (trackFactory == null)
+					throw new UTGBClientException(UTGBClientErrorCode.UNKNOWN_TRACK, "unknown track class: " + className);
+			}
 
 			Track track = trackFactory.newInstance();
 			track.loadView(t);

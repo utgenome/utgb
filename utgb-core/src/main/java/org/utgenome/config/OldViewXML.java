@@ -132,6 +132,9 @@ public class OldViewXML {
 			t.height = each.height;
 			t.pack = each.pack;
 			t.class_ = each.className;
+			if (t.class_.startsWith("org.utgenome.gwt.utgb.client.track.lib."))
+				t.class_ = t.class_.replace("org.utgenome.gwt.utgb.client.track.lib.", "");
+
 			for (Prop p : each.property) {
 				t.property.put(p.key, p.value);
 			}
