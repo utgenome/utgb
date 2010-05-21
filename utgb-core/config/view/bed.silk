@@ -12,14 +12,14 @@
   -name: UTGB Navigator
   -height: 41
   -pack: true
-  -class: org.utgenome.gwt.utgb.client.track.lib.NavigatorTrack
+  -class: NavigatorTrack
   -property
     -sequenceList: [{"species":"human", "revision":["hg18","hg17"]},{"species":"mouse", "revision":["mm9"]},{"species":"drosophila", "revision":["dm3"]},{"species":"c.elegance", "revision":["ce6"]}]
 -track
   -name: Keyword Search
   -height: 0
   -pack: true
-  -class: org.utgenome.gwt.utgb.client.track.lib.KeywordSearchTrack
+  -class: KeywordSearchTrack
   -property
     -keyword.examples: ["Scaffold number (e.g. scaffold123)","GenBank accession number (e.g. BJ013363)","UniGene cluster identifier (e.g. Ola.5710)","Clone number (e.g. MF01SSA159G06)"]
     -species.scope: any
@@ -27,17 +27,17 @@
   -name: Sequence Overview
   -height: 14
   -pack: true
-  -class: org.utgenome.gwt.utgb.client.track.lib.SequenceRulerTrack
+  -class: SequenceRulerTrack
 -track
   -name: Ruler
   -height: 14
   -pack: true
-  -class: org.utgenome.gwt.utgb.client.track.lib.RulerTrack
+  -class: RulerTrack
 -track
   -name: BED Track
   -height: 0
   -pack: true
-  -class: org.utgenome.gwt.utgb.client.track.lib.BEDTrack
+  -class: BEDTrack
   -property
     -trackBaseURL: utgb-core/BEDViewer
     -fileName: db/sample.bed
@@ -46,6 +46,8 @@
   -name: BED Canvas
   -height: 0
   -pack: true
-  -class: org.utgenome.gwt.utgb.client.track.lib.BEDCanvasTrack
+  -class: BEDCanvasTrack
   -property
     -fileName: db/sample.bed
+    -onclick.action: link
+    -onclick.url: http://www.ncbi.nlm.nih.gov/entrez/viewer.fcgi?val=%q

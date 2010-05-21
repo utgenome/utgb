@@ -52,6 +52,7 @@ public class KeywordSearchResult implements Serializable {
 		public int end;
 		public String ref = "";
 		public String offsets = null;
+		public int id;
 
 		public String getHit() {
 			if (offsets != null) {

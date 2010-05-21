@@ -1,4 +1,4 @@
-usage: keyword [option] (import|alias) (input file)
+usage: keyword [option] (sub command) (input file)
 
 $ utgb keyword import -r (ref seq. name) (input BED file)
  - creates a keyword database from a given BED file

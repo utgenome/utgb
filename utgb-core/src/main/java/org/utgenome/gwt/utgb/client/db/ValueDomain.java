@@ -63,4 +63,14 @@ public class ValueDomain implements IsSerializable {
 		valueList.add(value);
 	}
 
+	public static ValueDomain createNewValueDomain(String[] value) {
+		ValueDomain vd = new ValueDomain();
+		if (value == null)
+			return vd;
+		for (String each : value) {
+			vd.addValueList(new Value(each));
+		}
+		return vd;
+	}
+
 }

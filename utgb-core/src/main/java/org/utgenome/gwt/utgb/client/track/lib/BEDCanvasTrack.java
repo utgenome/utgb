@@ -33,11 +33,13 @@ import org.utgenome.gwt.utgb.client.bio.Gene;
 import org.utgenome.gwt.utgb.client.bio.Locus;
 import org.utgenome.gwt.utgb.client.canvas.GWTGenomeCanvas;
 import org.utgenome.gwt.utgb.client.canvas.LocusClickHandler;
+import org.utgenome.gwt.utgb.client.db.ValueDomain;
 import org.utgenome.gwt.utgb.client.db.datatype.BooleanType;
 import org.utgenome.gwt.utgb.client.db.datatype.StringType;
 import org.utgenome.gwt.utgb.client.track.Track;
 import org.utgenome.gwt.utgb.client.track.TrackBase;
 import org.utgenome.gwt.utgb.client.track.TrackConfig;
+import org.utgenome.gwt.utgb.client.track.TrackConfigChange;
 import org.utgenome.gwt.utgb.client.track.TrackFrame;
 import org.utgenome.gwt.utgb.client.track.TrackGroup;
 import org.utgenome.gwt.utgb.client.track.TrackGroupProperty;
@@ -66,7 +68,8 @@ public class BEDCanvasTrack extends TrackBase {
 	protected TrackConfig config = new TrackConfig(this);
 	private String fileName;
 	private boolean showLabels = true;
-	private String clickURLtemplate = "http://www.ncbi.nlm.nih.gov/entrez/viewer.fcgi?val=%q";
+	private String clickAction = "link";
+	private String clickURLtemplate = "http://www.google.com/search?q=%q";
 	private int leftMargin = 0;
 
 	private ArrayList<Gene> genes = new ArrayList<Gene>();
@@ -88,14 +91,7 @@ public class BEDCanvasTrack extends TrackBase {
 		layoutTable.setCellSpacing(0);
 		layoutTable.setWidget(0, 1, geneCanvas);
 
-		geneCanvas.setLocusClickHandler(new LocusClickHandler() {
-			public void onClick(Locus locus) {
-				String url = clickURLtemplate;
-				if (url.contains("%q") && locus.getName() != null)
-					url = url.replace("%q", locus.getName());
-				Window.open(url, "locus", "");
-			}
-		});
+		updateClickAction();
 	}
 
 	private FlexTable layoutTable = new FlexTable();
@@ -153,7 +149,43 @@ public class BEDCanvasTrack extends TrackBase {
 	public void setUp(TrackFrame trackFrame, TrackGroup group) {
 		update(group.getTrackWindow());
 		config.addConfigParameter("File Name", new StringType("fileName"), fileName);
+		ValueDomain actionTypes = ValueDomain.createNewValueDomain(new String[] { "none", "link" });
+		config.addConfigParameter("On Click Action", new StringType("onclick.action", actionTypes), clickAction);
+		config.addConfigParameter("On Click URL", new StringType("onclick.url"), clickURLtemplate);
 		config.addConfigParameter("Show Labels", new BooleanType("showLabels"), Boolean.toString(showLabels));
+
+	}
+
+	@Override
+	public void onChangeTrackConfig(TrackConfigChange change) {
+
+		if (change.contains("onclick.url")) {
+			clickURLtemplate = change.getValue("onclick.url");
+		}
+
+		if (change.contains("onclick.action")) {
+			clickAction = change.getValue("onclick.action");
+		}
+
+		updateClickAction();
+	}
+
+	private void updateClickAction() {
+
+		if ("none".equals(clickAction)) {
+			geneCanvas.setLocusClickHandler(null);
+		}
+		else if ("link".equals(clickAction)) {
+			geneCanvas.setLocusClickHandler(new LocusClickHandler() {
+				public void onClick(Locus locus) {
+					String url = clickURLtemplate;
+					if (url.contains("%q") && locus.getName() != null)
+						url = url.replace("%q", locus.getName());
+					Window.open(url, "locus", "");
+				}
+			});
+		}
+
 	}
 
 	class UpdateCommand implements Command {
@@ -198,7 +230,8 @@ public class BEDCanvasTrack extends TrackBase {
 	@Override
 	public void saveProperties(Properties saveData) {
 		saveData.add("fileName", fileName);
-		saveData.add("clickURL", clickURLtemplate);
+		saveData.add("onclick.url", clickURLtemplate);
+		saveData.add("onclick.action", clickAction);
 		saveData.add("leftMargin", leftMargin);
 		saveData.add("showLabels", showLabels);
 	}
@@ -206,9 +239,12 @@ public class BEDCanvasTrack extends TrackBase {
 	@Override
 	public void restoreProperties(Properties properties) {
 		fileName = properties.get("fileName", fileName);
-		clickURLtemplate = properties.get("clickURL", clickURLtemplate);
+		clickURLtemplate = properties.get("onclick.url", clickURLtemplate);
+		clickAction = properties.get("onclick.action", clickAction);
 		leftMargin = properties.getInt("leftMargin", leftMargin);
 		showLabels = properties.getBoolean("showLabels", showLabels);
+
+		updateClickAction();
 	}
 
 }
