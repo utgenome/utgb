@@ -38,6 +38,7 @@ import org.junit.Test;
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.util.Properties;
 import org.xerial.util.FileResource;
+import org.xerial.util.FileUtil;
 import org.xerial.util.log.Logger;
 
 public class BAMReaderTest {
@@ -64,7 +65,15 @@ public class BAMReaderTest {
 		_logger.info("query test");
 		ArrayList<SAMRead> readDataList = new ArrayList<SAMRead>();
 
-		Iterator<SAMRecord> iterator = new SAMFileReader(new File("db/bss-align-sorted.bam"), new File("db/bss-align-sorted.bam.bai")).query("chr13", 0, 0, true);
+		File temp_bam = FileUtil.createTempFile(new File("target"), "sample", ".bam");
+		FileUtil.copy(FileResource.find(BAMReaderTest.class, "bss-align-sorted.bam").openStream(), temp_bam);
+		File temp_bam_bai = FileUtil.createTempFile(new File("target"), "sample", ".bai");
+		FileUtil.copy(FileResource.find(BAMReaderTest.class, "bss-align-sorted.bam.bai").openStream(), temp_bam_bai);
+
+		temp_bam.deleteOnExit();
+		temp_bam_bai.deleteOnExit();
+		
+		Iterator<SAMRecord> iterator = new SAMFileReader(temp_bam, temp_bam_bai).query("chr13", 0, 0, true);
 		while (iterator.hasNext()){
 			SAMRecord each = iterator.next();
 			_logger.info(each.format());
