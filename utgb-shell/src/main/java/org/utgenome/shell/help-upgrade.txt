@@ -1,4 +1,12 @@
 usage: upgrade [option] 
 
-Upgrade the current project into a new version.
+Upgrade the current project into a new version. 
 
+This command updates your pom.xml file, and the dependencies to 
+some libraries might change. If you are using Eclipse for 
+developing UTGB projects, you need to perform 'utgb eclipse' to 
+download the dependent libraries. 
+
+  
+ 
+ 
