@@ -43,7 +43,7 @@ public class Eclipse extends UTGBShellCommand {
 	}
 
 	public String getOneLinerDescription() {
-		return "creates (or updates) the Eclipse project files";
+		return "create (or updates) Eclipse project files";
 	}
 
 }

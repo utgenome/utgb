@@ -14,7 +14,7 @@ Here is an example of settings.xml file:
   <server>
     <id>tomcat</id>
     <username>admin</username>
-    <password></password>
+    <password>(your password)</password>
    </server>
  </servers>
 </settings>
@@ -28,7 +28,7 @@ there is a plug-in section that denotes Tomcat manager's URL (http://localhost:8
     <configuration>
       <server>tomcat</server>
       <url>http://localhost:8080/manager</url>
-      <path>/base-color</path>
+      <path>/myapp</path>
       <update>true</update>
     </configuration>
   </plugin>

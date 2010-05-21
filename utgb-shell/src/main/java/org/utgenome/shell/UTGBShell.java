@@ -120,10 +120,10 @@ public class UTGBShell {
 		@Option(symbol = "d", longName = "projectDir", description = "specify the project directory (default = current directory)")
 		public String projectDir = new File("").getAbsolutePath();
 
-		@Option(symbol = "e", longName = "env", varName = "test|development|production", description = "running mode (default: development)")
+		@Option(symbol = "e", longName = "env", varName = "test|development|production", description = "switch the configuration file (default: development)")
 		public String environment = "development";
 
-		@Option(symbol = "y", description = "(non-interactive mode) answer yes to all question")
+		@Option(symbol = "y", description = "(non-interactive mode) answer yes to all questions")
 		public boolean answerYes = false;
 
 	}

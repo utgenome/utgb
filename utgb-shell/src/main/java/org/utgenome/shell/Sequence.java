@@ -89,7 +89,7 @@ public class Sequence extends UTGBShellCommand {
 
 	@Override
 	public String getOneLinerDescription() {
-		return "retrieve a genome sequence from pack file";
+		return "retrieve a genome sequence from a pack file";
 	}
 
 	@Override

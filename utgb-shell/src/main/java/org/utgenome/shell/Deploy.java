@@ -62,7 +62,7 @@ public class Deploy extends UTGBShellCommand {
 	}
 
 	public String getOneLinerDescription() {
-		return "deploy the war file to the remote tomcat server";
+		return "deploy the project (a war file) to a remote Tomcat server";
 	}
 
 }

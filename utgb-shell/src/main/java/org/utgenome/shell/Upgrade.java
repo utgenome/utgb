@@ -130,7 +130,7 @@ public class Upgrade extends UTGBShellCommand {
 
 	@Override
 	public String getOneLinerDescription() {
-		return "upgrade the utgb project";
+		return "upgrade your UTGB project";
 	}
 
 	@Override

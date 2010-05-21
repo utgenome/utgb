@@ -11,7 +11,7 @@ Dir["src/**/*.java"].each { |file|
   puts "apply license to #{file}"
   license = <<LICENSE
 /*--------------------------------------------------------------------------
- *  Copyright 2007 utgenome.org
+ *  Copyright 2010 utgenome.org
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.

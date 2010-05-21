@@ -46,7 +46,7 @@ public class GWTCompile extends UTGBShellCommand {
 
 	@Override
 	public String getOneLinerDescription() {
-		return "(beta) compile GWT codes (Java) into JavaScript ones";
+		return "(BETA) compile GWT codes (Java) into JavaScript";
 	}
 
 	@Override
