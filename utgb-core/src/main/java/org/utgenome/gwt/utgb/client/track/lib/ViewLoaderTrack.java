@@ -29,7 +29,6 @@ import org.utgenome.gwt.utgb.client.UTGBClientException;
 import org.utgenome.gwt.utgb.client.track.Track;
 import org.utgenome.gwt.utgb.client.track.TrackBase;
 import org.utgenome.gwt.utgb.client.track.TrackGroup;
-import org.utgenome.gwt.utgb.client.track.TrackLoader;
 import org.utgenome.gwt.utgb.client.ui.FormLabel;
 import org.utgenome.gwt.utgb.client.view.TrackView;
 
@@ -166,7 +165,7 @@ public class ViewLoaderTrack extends TrackBase {
 			public void onSuccess(TrackView v) {
 				TrackGroup newGroup;
 				try {
-					newGroup = TrackLoader.createTrackGroup(v);
+					newGroup = TrackGroup.createTrackGroup(v);
 					TrackGroup rootTrackGroup = getTrackGroup().getRootTrackGroup();
 					rootTrackGroup.clear();
 					rootTrackGroup.addTrackGroup(newGroup);

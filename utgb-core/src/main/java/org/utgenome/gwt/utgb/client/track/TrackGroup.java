@@ -28,12 +28,19 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.utgenome.gwt.utgb.client.UTGBClientErrorCode;
+import org.utgenome.gwt.utgb.client.UTGBClientException;
+import org.utgenome.gwt.utgb.client.UTGBEntryPointBase;
+import org.utgenome.gwt.utgb.client.track.Track.TrackFactory;
 import org.utgenome.gwt.utgb.client.track.impl.TrackGroupPropertyImpl;
+import org.utgenome.gwt.utgb.client.track.impl.TrackWindowImpl;
 import org.utgenome.gwt.utgb.client.track.lib.NavigatorTrack;
 import org.utgenome.gwt.utgb.client.util.Properties;
 import org.utgenome.gwt.utgb.client.util.xml.XMLAttribute;
 import org.utgenome.gwt.utgb.client.util.xml.XMLUtil;
 import org.utgenome.gwt.utgb.client.util.xml.XMLWriter;
+import org.utgenome.gwt.utgb.client.view.TrackView;
+import org.utgenome.gwt.utgb.client.view.TrackView.Coordinate;
 
 interface HasFactory {
 	public static abstract class TrackGroupFactory {
@@ -670,6 +677,58 @@ public class TrackGroup implements TrackEntry, Comparable<TrackGroup>, HasFactor
 	 */
 	protected void storeInternalProperties(Properties saveData) {
 		saveData.add("name", _trackGroupName);
+	}
+
+	/**
+	 * Create a track group from a given {@link TrackView}
+	 * 
+	 * @param view
+	 * @return
+	 * @throws UTGBClientException
+	 */
+	public static TrackGroup createTrackGroup(TrackView view) throws UTGBClientException {
+
+		TrackView.TrackGroup g = view.trackGroup;
+		if (g == null)
+			g = new TrackView.TrackGroup();
+		String groupClass = view.trackGroup.class_;
+		if (groupClass == null)
+			groupClass = "org.utgenome.gwt.utgb.client.track.TrackGroup";
+
+		// instantiate a track group
+		TrackGroupFactory trackGroupFactory = TrackFactoryHolder.getTrackGroupFactory(groupClass);
+		final TrackGroup group = trackGroupFactory.newInstance();
+
+		// set track group properties
+
+		Properties p = new Properties();
+		p.putAll(g.property);
+		p.put(UTGBProperty.SPECIES, g.coordinate.species);
+		p.put(UTGBProperty.REVISION, g.coordinate.ref);
+		p.put(UTGBProperty.TARGET, g.coordinate.chr);
+
+		group.getPropertyWriter().setProperty(p);
+
+		// set track window (coordinate)
+		Coordinate c = g.coordinate;
+		if (c.pixelWidth < 0)
+			c.pixelWidth = UTGBEntryPointBase.computeTrackWidth();
+		group.setTrackWindow(new TrackWindowImpl(c.pixelWidth, c.start, c.end));
+
+		// instantiate tracks in the track group 
+		for (TrackView.Track t : view.track) {
+			String className = t.class_;
+			TrackFactory trackFactory = TrackFactoryHolder.getTrackFactory(className);
+			if (trackFactory == null)
+				throw new UTGBClientException(UTGBClientErrorCode.UNKNOWN_TRACK, "unknown track class: " + className);
+
+			Track track = trackFactory.newInstance();
+			track.loadView(t);
+			group.addTrack(track);
+		}
+
+		return group;
+
 	}
 
 }

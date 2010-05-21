@@ -118,8 +118,11 @@ public class TrackWindowImpl implements TrackWindow {
 	}
 
 	public boolean equals(TrackWindow window) {
-		return (this.startIndexOnGenome == window.getStartOnGenome()) && (this.endIndexOnGenome == window.getEndOnGenome())
-				&& (this.windowWidth == window.getWindowWidth());
+		return sameRangeWith(window) && (this.windowWidth == window.getWindowWidth());
+	}
+
+	public boolean sameRangeWith(TrackWindow window) {
+		return this.startIndexOnGenome == window.getStartOnGenome() && this.endIndexOnGenome == window.getEndOnGenome();
 	}
 
 	public boolean isReverseStrand() {

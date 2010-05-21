@@ -32,7 +32,6 @@ import org.utgenome.gwt.utgb.client.track.TrackGroup;
 import org.utgenome.gwt.utgb.client.track.TrackGroupProperty;
 import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChange;
 import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChangeListener;
-import org.utgenome.gwt.utgb.client.track.TrackLoader;
 import org.utgenome.gwt.utgb.client.track.TrackQueue;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.track.UTGBProperty;
@@ -192,7 +191,7 @@ public class UTGBEntryPointBase implements EntryPoint {
 
 			public void onSuccess(TrackView v) {
 				try {
-					mainGroup = TrackLoader.createTrackGroup(v);
+					mainGroup = TrackGroup.createTrackGroup(v);
 
 					// apply the URL query parameters
 					String hash = BrowserInfo.getHash();

@@ -77,6 +77,8 @@ public interface TrackWindow {
 
 	public boolean equals(TrackWindow window);
 
+	public boolean sameRangeWith(TrackWindow window);
+
 	public boolean isReverseStrand();
 
 	public TrackWindow newWindow(int newStartOnGenome, int newEndOnGenome);
