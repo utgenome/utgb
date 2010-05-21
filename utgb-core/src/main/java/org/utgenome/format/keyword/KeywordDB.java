@@ -102,7 +102,7 @@ public class KeywordDB {
 		String aliasQuery = SQLExpression.fillTemplate("select distinct(keyword), alias from alias_table where alias match \"$1\"", keywordSegmentsWithStar);
 		List<KeywordAlias> aliases = db.query(aliasQuery, GenomeKeywordEntry.KeywordAlias.class);
 		ArrayList<String> keywords = new ArrayList<String>();
-		keywords.add(sKeyword);
+		//keywords.add(sKeyword);
 		for (KeywordAlias each : aliases) {
 			keywords.add(sanitize(each.keyword));
 		}
@@ -112,16 +112,21 @@ public class KeywordDB {
 
 		String perfectMatchQuery = SQLExpression.fillTemplate(
 				"select rowid as id, 1 as priority, offsets(keyword_index) as offsets, * from keyword_index where $1 keyword match $2", refCondition, SQLUtil
+						.doubleQuote(sKeyword));
+
+		String aliasPerfectMatchQuery = SQLExpression.fillTemplate(
+				"select rowid as id, 2 as priority, offsets(keyword_index) as offsets, * from keyword_index where $1 keyword match $2", refCondition, SQLUtil
 						.doubleQuote(aliasSearchKeyword));
 
 		String forwardMatchQuery = SQLExpression.fillTemplate(
-				"select rowid as id, 2 as priority, offsets(keyword_index) as offsets, * from keyword_index where $1 keyword match $2", refCondition, SQLUtil
-						.doubleQuote(keywordSegmentsWithStar + "-" + sKeyword));
+				"select rowid as id, 3 as priority, offsets(keyword_index) as offsets, * from keyword_index where $1 keyword match $2", refCondition, SQLUtil
+						.doubleQuote(keywordSegmentsWithStar + " -" + sKeyword));
 
-		String unionSQL = SQLExpression.fillTemplate("select distinct(id), * from ($1 union all $2)", perfectMatchQuery, forwardMatchQuery);
+		String unionSQL = SQLExpression.fillTemplate("select * from ($1 union all $2 union all $3)", perfectMatchQuery, aliasPerfectMatchQuery,
+				forwardMatchQuery);
 
 		// count the search results
-		String countSQL = SQLExpression.fillTemplate("select count(*) as count from ($1)", unionSQL);
+		String countSQL = SQLExpression.fillTemplate("select count(*) as count from (select distinct(id) from ($1))", unionSQL);
 
 		db.query(countSQL, new ResultSetHandler<Void>() {
 			@Override
@@ -133,7 +138,7 @@ public class KeywordDB {
 
 		r.maxPage = r.count / pageSize + (r.count % pageSize == 0 ? 0 : 1);
 
-		String searchSQLTemplate = "select t.id as id, original_keyword as name, offsets, ref, chr, start, end "
+		String searchSQLTemplate = "select distinct(t.id) as id, original_keyword as name, offsets, ref, chr, start, end "
 				+ "from ($1) t, entry where t.id = entry.rowid order by priority, chr, start limit $2 offset $3";
 		String keywordSearchSQL = SQLExpression.fillTemplate(searchSQLTemplate, unionSQL, pageSize, pageSize * (page - 1));
 
@@ -163,8 +168,7 @@ public class KeywordDB {
 		if (text == null)
 			return null;
 
-		String s = text.replaceAll("[_+\\.-]", "");
-		return s.replaceAll("['\"]", " ");
+		return text.replaceAll("[\\p{Punct}]", "");
 	}
 
 	public void add(GenomeKeywordEntry entry) throws DBException {

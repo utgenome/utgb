@@ -61,10 +61,10 @@ public class KeywordDBTest {
 			// reopen 
 			db = new KeywordDB(tmpKeywordDB);
 			query = db.query("ce6", "Y74C9A.2", 1, 10);
+			_logger.info(Lens.toSilk(query));
+			assertEquals("Y74C9A.2", query.result.get(0).name);
 			assertEquals(6, query.count);
 			assertEquals(6, query.result.size());
-			assertEquals("Y74C9A.2", query.result.get(0).name);
-			_logger.info(Lens.toSilk(query));
 
 			// add alias 
 			db.importKeywordAliasFile(FileResource.open(KeywordDBTest.class, "alias-sample.txt"));
