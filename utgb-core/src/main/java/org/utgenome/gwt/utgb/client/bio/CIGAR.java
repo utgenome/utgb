@@ -22,23 +22,29 @@
 // $URL$ 
 // $Author$
 //--------------------------------------
-package org.utgenome.format.sam;
+package org.utgenome.gwt.utgb.client.bio;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.utgenome.UTGBErrorCode;
-import org.utgenome.UTGBException;
+import org.utgenome.gwt.utgb.client.UTGBClientErrorCode;
+import org.utgenome.gwt.utgb.client.UTGBClientException;
 
 /**
- * CIGAR string management utility
+ * CIGAR string (in SAM format) management utility
  * 
  * @author leo
  * 
  */
-public class CIGAR {
+public class CIGAR implements Serializable {
 
-	public static enum Type {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public static enum Type implements Serializable {
 		Matches("M"), Insertions("I"), Deletions("D"), SkippedRegion("N"), SoftClip("S"), HardClip("H"), Padding("P");
 		public final String shortName;
 
@@ -46,7 +52,7 @@ public class CIGAR {
 			this.shortName = shortName;
 		}
 
-		public static Type convert(char c) throws UTGBException {
+		public static Type convert(char c) throws UTGBClientException {
 			switch (c) {
 			case 'M':
 				return Type.Matches;
@@ -63,7 +69,7 @@ public class CIGAR {
 			case 'P':
 				return Type.Padding;
 			default:
-				throw new UTGBException(UTGBErrorCode.INVALID_INPUT, "unknown CIGAR type: " + c);
+				throw new UTGBClientException(UTGBClientErrorCode.PARSE_ERROR, "unknown CIGAR type: " + c);
 			}
 		}
 
@@ -74,7 +80,11 @@ public class CIGAR {
 
 	}
 
-	public static class Element {
+	public static class Element implements Serializable {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 		public final Type type;
 		public final int length;
 
@@ -85,7 +95,7 @@ public class CIGAR {
 
 		@Override
 		public String toString() {
-			return String.format("%d:%s", length, type);
+			return length + ":" + type;
 		}
 
 	}
@@ -99,7 +109,7 @@ public class CIGAR {
 		cigar = new ArrayList<Element>();
 	}
 
-	public CIGAR(String cigarString) throws UTGBException {
+	public CIGAR(String cigarString) throws UTGBClientException {
 		this.cigar = parse(cigarString);
 	}
 
@@ -131,17 +141,21 @@ public class CIGAR {
 	public String toCIGARString() {
 		StringBuilder buf = new StringBuilder();
 		for (Element each : cigar) {
-			buf.append(String.format("%d%s", each.length, each.type));
+			buf.append(each.length + each.type.shortName);
 		}
 		return buf.toString();
 	}
 
 	@Override
 	public String toString() {
-		return cigar.toString();
+		return toCIGARString();
 	}
 
-	private static ArrayList<Element> parse(String cigarString) throws UTGBException {
+	private static CIGAR parseCIGAR(String cigar) throws UTGBClientException {
+		return new CIGAR(parse(cigar));
+	}
+
+	private static ArrayList<Element> parse(String cigarString) throws UTGBClientException {
 
 		ArrayList<Element> result = new ArrayList<Element>();
 		int startIndexOfNumber = 0;

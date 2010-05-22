@@ -24,7 +24,6 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.track.lib;
 
-import org.utgenome.gwt.utgb.client.GenomeBrowser;
 import org.utgenome.gwt.utgb.client.bio.AlignmentResult;
 import org.utgenome.gwt.utgb.client.canvas.AlignmentCanvas;
 import org.utgenome.gwt.utgb.client.track.Track;
@@ -132,8 +131,8 @@ public class AlignmentViewTrack extends TrackBase {
 	public void doAlignment(String sequence) {
 
 		getFrame().setNowLoading();
-		String target = getTrackGroup().getPropertyReader().getProperty(UTGBProperty.TARGET);
-		GenomeBrowser.getService().getAlignment(serviceURL, target, sequence, new AsyncCallback<AlignmentResult>() {
+		String target = getTrackGroupProperty(UTGBProperty.TARGET);
+		getBrowserService().getAlignment(serviceURL, target, sequence, new AsyncCallback<AlignmentResult>() {
 
 			public void onFailure(Throwable e) {
 				GWT.log("error", e);

@@ -48,8 +48,6 @@ import org.utgenome.gwt.utgb.client.track.impl.TrackWindowImpl;
 import org.utgenome.gwt.utgb.client.util.Properties;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -156,18 +154,10 @@ public class BEDCanvasTrack extends TrackBase {
 		config.addConfigParameter("Show Labels", new BooleanType("showLabels"), Boolean.toString(showLabels));
 	}
 
-	class UpdateCommand implements Command {
-		private final List<Gene> geneList;
-
-		public UpdateCommand(List<Gene> geneList) {
-			this.geneList = geneList;
-		}
-
-		public void execute() {
-			genes.clear();
-			genes.addAll(geneList);
-			refresh();
-		}
+	private void updateGenes(List<Gene> geneList) {
+		genes.clear();
+		genes.addAll(geneList);
+		refresh();
 	}
 
 	public void update(TrackWindow newWindow) {
@@ -187,9 +177,7 @@ public class BEDCanvasTrack extends TrackBase {
 			}
 
 			public void onSuccess(List<Gene> geneList) {
-				DeferredCommand.addCommand(new UpdateCommand(geneList));
-				GWT.log("canvas size= (" + geneCanvas.getOffsetWidth() + "," + geneCanvas.getOffsetHeight() + ")", null);
-				GWT.log("frame size= (" + layoutTable.getOffsetWidth() + "," + layoutTable.getOffsetHeight() + ")", null);
+				updateGenes(geneList);
 			}
 		});
 

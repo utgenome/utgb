@@ -119,6 +119,11 @@ public class Read implements Serializable, AcceptReadVisitor {
 			this.strand = (byte) strand.charAt(0);
 	}
 
+	public int length() {
+		// when [start:1, end:4), its length = 3
+		return getEnd() - getStart();
+	}
+
 	public void accept(ReadVisitor visitor) {
 		visitor.visitRead(this);
 	}

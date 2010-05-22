@@ -22,14 +22,15 @@
 // $URL$ 
 // $Author$
 //--------------------------------------
-package org.utgenome.format.sam;
+package org.utgenome.gwt.utgb;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.utgenome.format.sam.CIGAR.Type;
+import org.utgenome.gwt.utgb.client.bio.CIGAR;
+import org.utgenome.gwt.utgb.client.bio.CIGAR.Type;
 
 public class CIGARTest {
 
@@ -73,10 +74,12 @@ public class CIGARTest {
 		c.add(3, Type.Deletions);
 		c.add(43, Type.SkippedRegion);
 		c.add(100, Type.Matches);
+		c.add(1, Type.Padding);
 		c.add(134, Type.HardClip);
 
-		assertEquals(8, c.size());
-		assertEquals("10S5M10I2M3D43N100M134H", c.toCIGARString());
+		assertEquals(9, c.size());
+		assertEquals("10S5M10I2M3D43N100M1P134H", c.toCIGARString());
+		assertEquals("10S5M10I2M3D43N100M1P134H", c.toString());
 	}
 
 }
