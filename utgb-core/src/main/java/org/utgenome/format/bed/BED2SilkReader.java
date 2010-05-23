@@ -34,7 +34,7 @@ import org.utgenome.format.FormatConversionReader;
 import org.xerial.lens.Lens;
 
 /**
- * BED2SilkReader translates the input BED data into a Silk format
+ * BED2SilkReader read the input BED data, and the user can read it as if it were a Silk format.
  * 
  * @author leo
  * 
@@ -53,6 +53,15 @@ public class BED2SilkReader extends FormatConversionReader {
 
 	}
 
+	/**
+	 * Read an input BED data, and retrieves {@link BEDTrack} and {@link BEDGene} information through the
+	 * {@link BEDQuery} interface.
+	 * 
+	 * @param input
+	 * @param query
+	 * @return
+	 * @throws UTGBException
+	 */
 	public static BEDQuery scan(Reader input, BEDQuery query) throws UTGBException {
 
 		try {
