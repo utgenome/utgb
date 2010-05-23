@@ -27,7 +27,7 @@ package org.utgenome.gwt.utgb.client.track.lib.old;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.utgenome.gwt.utgb.client.GenomeBrowser;
+import org.utgenome.gwt.utgb.client.RPCServiceManager;
 import org.utgenome.gwt.utgb.client.track.TrackGroup;
 import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChange;
 import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyWriter;
@@ -124,7 +124,7 @@ public class OldUTGBTrackGroup extends TrackGroup {
 					parameterMap.put("target", target);
 					final String url = GET_TARGET_LENGTH_URL.getURL(parameterMap);
 
-					GenomeBrowser.getService().getHTTPContent(url, new AsyncCallback<String>() {
+					RPCServiceManager.getRPCService().getHTTPContent(url, new AsyncCallback<String>() {
 						public void onFailure(Throwable caught) {
 							GWT.log("cannot retrieve: " + url, caught);
 						}
@@ -180,7 +180,7 @@ public class OldUTGBTrackGroup extends TrackGroup {
 					parameterMap.put("target", target);
 					final String url = GET_TARGET_LENGTH_URL.getURL(parameterMap);
 
-					GenomeBrowser.getService().getHTTPContent(url, new AsyncCallback<String>() {
+					getBrowserService().getHTTPContent(url, new AsyncCallback<String>() {
 						public void onFailure(Throwable caught) {
 							GWT.log("cannot retrieve: " + url, caught);
 						}

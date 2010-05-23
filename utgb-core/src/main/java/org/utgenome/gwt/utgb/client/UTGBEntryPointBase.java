@@ -49,6 +49,7 @@ import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
@@ -125,7 +126,7 @@ public class UTGBEntryPointBase implements EntryPoint {
 	}
 
 	public void onModuleLoad() {
-		GenomeBrowser.initServices();
+		RPCServiceManager.initServices();
 		queryParam = BrowserInfo.getURLQueryRequestParameters();
 		basePanel.add(trackQueue, DockPanel.CENTER);
 
@@ -184,7 +185,7 @@ public class UTGBEntryPointBase implements EntryPoint {
 	 */
 	public void loadView(String viewName) {
 
-		GenomeBrowser.getService().getTrackView(viewName, new AsyncCallback<TrackView>() {
+		RPCServiceManager.getRPCService().getTrackView(viewName, new AsyncCallback<TrackView>() {
 			public void onFailure(Throwable e) {
 
 			}
@@ -296,6 +297,20 @@ public class UTGBEntryPointBase implements EntryPoint {
 
 	public void main() {
 		displayTrackView();
+	}
+
+	public static void hideLoadingMessage() {
+		Element _loadingMessage = DOM.getElementById("loading");
+		if (_loadingMessage != null) {
+			RootPanel.setVisible(_loadingMessage, false);
+		}
+	}
+
+	public static void showLoadingMessage() {
+		Element _loadingMessage = DOM.getElementById("loading");
+		if (_loadingMessage != null) {
+			RootPanel.setVisible(_loadingMessage, true);
+		}
 	}
 
 }

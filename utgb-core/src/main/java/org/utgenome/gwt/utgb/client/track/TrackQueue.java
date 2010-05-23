@@ -26,7 +26,7 @@ package org.utgenome.gwt.utgb.client.track;
 
 import java.util.Iterator;
 
-import org.utgenome.gwt.utgb.client.GenomeBrowser;
+import org.utgenome.gwt.utgb.client.UTGBEntryPointBase;
 import org.utgenome.gwt.utgb.client.ui.DraggableTable;
 import org.utgenome.gwt.utgb.client.ui.WindowBox;
 import org.utgenome.gwt.utgb.client.ui.WindowListener;
@@ -151,7 +151,7 @@ public class TrackQueue extends Composite implements TrackUpdateListener, TrackL
 		}
 		adjustHeight();
 		// remove loading message
-		GenomeBrowser.hideLoadingMessage();
+		UTGBEntryPointBase.hideLoadingMessage();
 	}
 
 	public void onButtonClick(WindowBox window, int buttonType) {

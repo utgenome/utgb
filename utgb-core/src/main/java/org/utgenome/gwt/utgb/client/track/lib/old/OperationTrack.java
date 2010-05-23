@@ -29,7 +29,6 @@ package org.utgenome.gwt.utgb.client.track.lib.old;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.utgenome.gwt.utgb.client.GenomeBrowser;
 import org.utgenome.gwt.utgb.client.track.Design;
 import org.utgenome.gwt.utgb.client.track.Track;
 import org.utgenome.gwt.utgb.client.track.TrackBase;
@@ -184,7 +183,7 @@ public class OperationTrack extends TrackBase {
 	}
 
 	private void parseDescriptionXML(final String _descriptionXMLURL) {
-		GenomeBrowser.getService().getHTTPContent(_descriptionXMLURL, new AsyncCallback<String>() {
+		getBrowserService().getHTTPContent(_descriptionXMLURL, new AsyncCallback<String>() {
 			public void onFailure(Throwable caught) {
 				GWT.log("cannot retrieve: " + _descriptionXMLURL, caught);
 			}
@@ -331,7 +330,7 @@ public class OperationTrack extends TrackBase {
 
 		_label.setText("Now Operation XML parsing ...");
 
-		GenomeBrowser.getService().getHTTPContent(operationURL, new AsyncCallback<String>() {
+		getBrowserService().getHTTPContent(operationURL, new AsyncCallback<String>() {
 			public void onFailure(Throwable caught) {
 			}
 

@@ -1,6 +1,7 @@
 <html>
 <head>
-<title>$projectName$</title>
+<link rel="StyleSheet" href="theme/style/utgb.css" type="text/css">
+<title>$projectName$ - UTGB</title>
 </head>
 <body>
 <p>Welcome to $projectName$</p>

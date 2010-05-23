@@ -1,7 +1,7 @@
 <html>
 <head>
-
-<title>UTGB: 404 File Not Found</title></head>
+<link rel="StyleSheet" href="theme/style/utgb.css" type="text/css">
+<title>404 File Not Found - UTGB</title></head>
 </head>
 <body>
 <h1>File Not Found</h1> 

@@ -24,7 +24,7 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.track.operation;
 
-import org.utgenome.gwt.utgb.client.GenomeBrowser;
+import org.utgenome.gwt.utgb.client.RPCServiceManager;
 import org.utgenome.gwt.utgb.client.track.Track;
 import org.utgenome.gwt.utgb.client.util.GETMethodURL;
 import org.utgenome.gwt.utgb.client.util.Utilities;
@@ -52,7 +52,7 @@ public class SubOperation extends OperationImpl {
 	public void execute(Widget sender, int x, int y) {
 		final String fullURL = url.getURL();
 
-		GenomeBrowser.getService().getHTTPContent(fullURL, new Command(sender, x, y));
+		RPCServiceManager.getRPCService().getHTTPContent(fullURL, new Command(sender, x, y));
 	}
 
 	private class Command implements AsyncCallback<String> {

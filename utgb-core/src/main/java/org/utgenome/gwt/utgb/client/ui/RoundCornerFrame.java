@@ -34,7 +34,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.HTMLTable.CellFormatter;
 
 /**
- * A frame with round corners. You can set arbitrary widgets to this frame, via setWidget() method.
+ * A frame with round corners. You can set arbitrary widgets to this frame by using {@link #setWidget(Widget)}.
  * 
  * @author leo
  * 

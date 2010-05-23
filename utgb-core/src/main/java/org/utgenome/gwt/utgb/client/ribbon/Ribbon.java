@@ -34,12 +34,15 @@ import java.util.List;
  * xOffset:            1 2 3 4 5 6 7 8 9
  * normal coordinate:  1 2 3 4 5 6 7 8 9  
  *                     - - - - - - - - - 
+ * -cigar: 9M                    
+ *                     
  * [insertion]
  * xOffset:            1 2 3 4 5 6 7 8 9 10 11
  * ribbon coordinate:  1 2 3 - - - - - 4  5  6
  *                          /         \
  *                     - - -           -  -  -  
  * -insertion(pos:4, length:5)
+ * -cigar: 3M5I3M
  * 
  * 
  * 
@@ -50,6 +53,7 @@ import java.util.List;
  *                         / \
  *                         ---
  * -deletion(pos:4, length:3)
+ * -cigar: 3M3D7M
  * </pre>
  * 
  * @author leo

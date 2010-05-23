@@ -26,7 +26,6 @@ package org.utgenome.gwt.utgb.client.track.lib;
 
 import java.util.List;
 
-import org.utgenome.gwt.utgb.client.GenomeBrowser;
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.canvas.SAMCanvas;
 import org.utgenome.gwt.utgb.client.db.Value;
@@ -59,7 +58,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class SAMQueryTrack extends TrackBase {
 	private final boolean isDebug = true;
 	private boolean isC2T = false;
-	
+
 	protected TrackConfig config = new TrackConfig(this);
 
 	protected String trackBaseURL;
@@ -67,23 +66,23 @@ public class SAMQueryTrack extends TrackBase {
 	protected String target = "chr13";
 	protected int start = 3000000;
 	protected int end = 3100000;
-	
+
 	protected String bamFileName = null;
 	protected String indexFileName = null;
 	protected String refSeqFileName = null;
 	protected String colorMode = "nucleotide";
-	
+
 	private final FlexTable layoutTable = new FlexTable();
 	private final SAMCanvas samCanvas = new SAMCanvas();
 	private final AbsolutePanel labelPanel = new AbsolutePanel();
-	
+
 	private int height = 500;
 	private int leftMargin = 100;
 	private int labelWidth = 100;
-	
+
 	private List<SAMRead> readDataList;
 	private String refSeq;
-	
+
 	public static TrackFactory factory() {
 		return new TrackFactory() {
 			public Track newInstance() {
@@ -100,21 +99,21 @@ public class SAMQueryTrack extends TrackBase {
 		layoutTable.setCellSpacing(0);
 		layoutTable.setBorderWidth(0);
 		layoutTable.setWidth("100%");
-//		layoutTable.getCellFormatter().setWidth(0, 0, leftMargin + "px");
+		//		layoutTable.getCellFormatter().setWidth(0, 0, leftMargin + "px");
 		layoutTable.setWidget(1, 0, labelPanel);
 		layoutTable.setWidget(1, 1, samCanvas);
-		
+
 	}
 
 	public Widget getWidget() {
 		return layoutTable;
 	}
-	
+
 	@Override
 	public void setUp(TrackFrame trackFrame, TrackGroup group) {
-		
+
 		config.addConfigParameter("BAM File Name", new StringType("bamFileName"), bamFileName);
-//		config.addConfigParameter("Index File Name", new StringType("indexFileName"), indexFileName);
+		//		config.addConfigParameter("Index File Name", new StringType("indexFileName"), indexFileName);
 		indexFileName = bamFileName + ".bai";
 		config.addConfigParameter("Reference Sequence File Name", new StringType("refSeqFileName"), refSeqFileName);
 		ValueDomain colorModeDomain = new ValueDomain();
@@ -133,7 +132,7 @@ public class SAMQueryTrack extends TrackBase {
 	class UpdateCommand implements Command {
 		private final List<SAMRead> readList;
 		private final String refSeq;
-		
+
 		public UpdateCommand(List<SAMRead> readList, String refSeq) {
 			this.readList = readList;
 			this.refSeq = refSeq;
@@ -157,24 +156,24 @@ public class SAMQueryTrack extends TrackBase {
 			samCanvas.setColorMode(colorMode);
 
 			// draw data graph
-//	        int count = 0;
-//	        for(SAMRead read : readList){
-//	        	samCanvas.drawSAMRead(count, read);
-//	        	samCanvas.drawLabelPanel(count, read, labelPanel, leftMargin);
-//	        	count++;
-//	        }
-        	samCanvas.drawSAMRead(readList);
-        	samCanvas.drawLabelPanel(readList, labelPanel, leftMargin);
+			//	        int count = 0;
+			//	        for(SAMRead read : readList){
+			//	        	samCanvas.drawSAMRead(count, read);
+			//	        	samCanvas.drawLabelPanel(count, read, labelPanel, leftMargin);
+			//	        	count++;
+			//	        }
+			samCanvas.drawSAMRead(readList);
+			samCanvas.drawLabelPanel(readList, labelPanel, leftMargin);
 
 			refresh();
-        	getFrame().loadingDone();
+			getFrame().loadingDone();
 		}
 	}
-	
+
 	public void update(TrackWindow newWindow) {
 		getFrame().setNowLoading();
 
-		GenomeBrowser.getService().querySAMReadList(bamFileName, indexFileName, refSeqFileName, target, start, end, new AsyncCallback<List<SAMRead>>() {
+		getBrowserService().querySAMReadList(bamFileName, indexFileName, refSeqFileName, target, start, end, new AsyncCallback<List<SAMRead>>() {
 
 			public void onFailure(Throwable e) {
 				GWT.log("failed to retrieve sam data", e);
@@ -184,44 +183,44 @@ public class SAMQueryTrack extends TrackBase {
 			public void onSuccess(List<SAMRead> dataList) {
 				GWT.log("read sam", null);
 				readDataList = dataList;
-				
-				if (isDebug) 
+
+				if (isDebug)
 					for (SAMRead read : dataList) {
-						GWT.log("read : " + read.qname , null);
+						GWT.log("read : " + read.qname, null);
 					}
 
-//				GenomeBrowser.getService().getRefSeq(refSeqFileName, target, start, end, new AsyncCallback<String>() {
-//
-//					public void onFailure(Throwable e) {
-//						GWT.log("failed to retrieve sam data", e);
-//						getFrame().loadingDone();
-//					}
-//
-//					public void onSuccess(String sequence) {
-//						GWT.log("read refSeq", null);
-//						refSeq = sequence;
-//						
-//						if (isDebug) 
-//							GWT.log("refSeq : " + refSeq , null);
+				//				GenomeBrowser.getService().getRefSeq(refSeqFileName, target, start, end, new AsyncCallback<String>() {
+				//
+				//					public void onFailure(Throwable e) {
+				//						GWT.log("failed to retrieve sam data", e);
+				//						getFrame().loadingDone();
+				//					}
+				//
+				//					public void onSuccess(String sequence) {
+				//						GWT.log("read refSeq", null);
+				//						refSeq = sequence;
+				//						
+				//						if (isDebug) 
+				//							GWT.log("refSeq : " + refSeq , null);
 
-						DeferredCommand.addCommand(new UpdateCommand(readDataList, refSeq));
-//					}
-//				});
+				DeferredCommand.addCommand(new UpdateCommand(readDataList, refSeq));
+				//					}
+				//				});
 			}
 		});
 
 	}
 
 	public void onChangeTrackWindow(TrackWindow newWindow) {
-//		samCanvas.setWindow(newWindow, leftMargin);
+		//		samCanvas.setWindow(newWindow, leftMargin);
 	}
-	
+
 	public void onChangeTrackConfig(TrackConfigChange change) {
 		boolean isUpdate = false;
 
 		if (isDebug) {
-			for(String key : change.getChangedParamSet()){
-				GWT.log("Change : " + key+" : " + change.getValue(key), null);
+			for (String key : change.getChangedParamSet()) {
+				GWT.log("Change : " + key + " : " + change.getValue(key), null);
 			}
 		}
 
@@ -230,10 +229,10 @@ public class SAMQueryTrack extends TrackBase {
 			indexFileName = bamFileName + ".bai";
 			isUpdate = true;
 		}
-//		if (change.contains("indexFileName")) {
-//			indexFileName = change.getValue("indexFileName");
-//			isUpdate = true;
-//		}
+		//		if (change.contains("indexFileName")) {
+		//			indexFileName = change.getValue("indexFileName");
+		//			isUpdate = true;
+		//		}
 		if (change.contains("refSeqFileName")) {
 			refSeqFileName = change.getValue("refSeqFileName");
 			isUpdate = true;
@@ -268,35 +267,35 @@ public class SAMQueryTrack extends TrackBase {
 
 	public void saveProperties(Properties saveData) {
 		saveData.add("bamFileName", bamFileName);
-//		saveData.add("indexFileName", indexFileName);
+		//		saveData.add("indexFileName", indexFileName);
 		saveData.add("redSeqFileName", refSeqFileName);
 		saveData.add("colorMode", colorMode);
 		saveData.add("isC2T", isC2T);
 		saveData.add("leftMargin", leftMargin);
 		saveData.add("target", target);
 		saveData.add("start", start);
-		saveData.add("end", end);		
+		saveData.add("end", end);
 	}
 
 	public void restoreProperties(Properties properties) {
 		bamFileName = properties.get("bamFileName", bamFileName);
-//		indexFileName = properties.get("indexFileName", indexFileName);
+		//		indexFileName = properties.get("indexFileName", indexFileName);
 		refSeqFileName = properties.get("refSeqFileName", refSeqFileName);
 		colorMode = properties.get("colorMode", colorMode);
 		isC2T = properties.getBoolean("isC2T", isC2T);
 		leftMargin = properties.getInt("leftMargin", leftMargin);
-		
+
 		target = properties.get("target", target);
 		start = properties.getInt("start", start);
 		end = properties.getInt("end", end);
-		
+
 		String p = properties.get("changeParamOnClick");
 		if (p != null) {
 			// set canvas action
 
 		}
 	}
-	
+
 	public TrackConfig getConfig() {
 		return config;
 	}

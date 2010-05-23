@@ -13,28 +13,28 @@
   -name: UTGB Navigator
   -height: 41
   -pack: true
-  -class: org.utgenome.gwt.utgb.client.track.lib.NavigatorTrack
+  -class: NavigatorTrack
   -property
     -sequenceList: [{"species":"human", "revision":["hg18", "hg17"]},{"species":"medaka", "revision":["version1.0", "version0.9"]}]
 -track
   -name: Sequence Overview
   -height: 14
   -pack: true
-  -class: org.utgenome.gwt.utgb.client.track.lib.SequenceRulerTrack
+  -class: SequenceRulerTrack
   -property
     -leftMargin: 100
 -track
   -name: Ruler
   -height: 14
   -pack: true
-  -class: org.utgenome.gwt.utgb.client.track.lib.RulerTrack
+  -class: RulerTrack
   -property
     -leftMargin: 100
 -track
   -name: DAS Track
   -height: 0
   -pack: true
-  -class: org.utgenome.gwt.utgb.client.track.lib.DASTrack
+  -class: DASTrack
   -property
     -dasBaseURL: http://www.ensembl.org/das/Homo_sapiens.NCBI36.transcript/
     -trackBaseURL: utgb-core/DASViewer
@@ -45,7 +45,7 @@
   -name: BED Track
   -height: 0
   -pack: true
-  -class: org.utgenome.gwt.utgb.client.track.lib.BEDTrack
+  -class: BEDTrack
   -property
     -trackBaseURL: utgb-core/BEDViewer
     -fileName: db/sample.bed
@@ -55,7 +55,7 @@
   -name: RefSeq Gene Demo
   -height: 0
   -pack: true
-  -class: org.utgenome.gwt.utgb.client.track.lib.GenomeTrack
+  -class: GenomeTrack
   -property
     -trackBaseURL: utgb-core/GeneViewer?%q
     -leftMargin: 100
@@ -64,7 +64,7 @@
   -name: RefSeq Gene Table Demo
   -height: 100
   -pack: true
-  -class: org.utgenome.gwt.utgb.client.track.lib.GenomeTrack
+  -class: GenomeTrack
   -property
     -trackBaseURL: utgb-core/GeneViewer.tab?%q
     -leftMargin: 100

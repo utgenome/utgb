@@ -27,7 +27,6 @@ package org.utgenome.gwt.utgb.client.track.lib;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.utgenome.gwt.utgb.client.GenomeBrowser;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.Gene;
 import org.utgenome.gwt.utgb.client.bio.Locus;
@@ -201,7 +200,7 @@ public class BEDCanvasTrack extends TrackBase {
 
 		getFrame().setNowLoading();
 
-		GenomeBrowser.getService().getBEDEntryList(fileName, new ChrLoc(target, s, e), new AsyncCallback<List<Gene>>() {
+		getBrowserService().getBEDEntryList(fileName, new ChrLoc(target, s, e), new AsyncCallback<List<Gene>>() {
 
 			public void onFailure(Throwable e) {
 				GWT.log("failed to retrieve gene data", e);

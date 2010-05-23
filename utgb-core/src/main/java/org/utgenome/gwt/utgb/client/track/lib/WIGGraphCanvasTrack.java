@@ -26,7 +26,6 @@ package org.utgenome.gwt.utgb.client.track.lib;
 
 import java.util.List;
 
-import org.utgenome.gwt.utgb.client.GenomeBrowser;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.WigGraphData;
 import org.utgenome.gwt.utgb.client.canvas.GWTGenomeCanvas;
@@ -225,15 +224,15 @@ public class WIGGraphCanvasTrack extends TrackBase {
 					if (c.length == 3)
 						color = new Color(Integer.valueOf(c[0]), Integer.valueOf(c[1]), Integer.valueOf(c[2])).toString();
 				}
-				
+
 				geneCanvas.drawWigGraph(data, new Color(color));
 
 				// adjust name label length
-//				while (nameLabel.getOffsetWidth() > getLabelWidth(nameLabel, labelPanel)) {
-//					nameLabel.setText(nameLabel.getText().substring(0, nameLabel.getText().length() - 1));
-//					if (nameLabel.getText().equals(""))
-//						break;
-//				}
+				//				while (nameLabel.getOffsetWidth() > getLabelWidth(nameLabel, labelPanel)) {
+				//					nameLabel.setText(nameLabel.getText().substring(0, nameLabel.getText().length() - 1));
+				//					if (nameLabel.getText().equals(""))
+				//						break;
+				//				}
 				while (nameLabel.getOffsetWidth() > 60) {
 					nameLabel.setText(nameLabel.getText().substring(0, nameLabel.getText().length() - 1));
 					if (nameLabel.getText().equals(""))
@@ -278,7 +277,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 
 		getFrame().setNowLoading();
 
-		GenomeBrowser.getService().getWigDataList(fileName, newWindow.getWindowWidth() - 100, l, new AsyncCallback<List<WigGraphData>>() {
+		getBrowserService().getWigDataList(fileName, newWindow.getWindowWidth() - 100, l, new AsyncCallback<List<WigGraphData>>() {
 
 			public void onFailure(Throwable e) {
 				GWT.log("failed to retrieve wig data", e);
@@ -287,7 +286,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 
 			public void onSuccess(List<WigGraphData> dataList) {
 				wigDataList = dataList;
-//				DeferredCommand.addCommand(new UpdateCommand(dataList));
+				//				DeferredCommand.addCommand(new UpdateCommand(dataList));
 				new UpdateCommand(dataList).execute();
 			}
 		});
@@ -351,7 +350,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 
 	@Override
 	public void restoreProperties(Properties properties) {
-		
+
 		fileName = properties.get("fileName", fileName);
 		height = properties.getInt("trackHeight", height);
 		leftMargin = properties.getInt("leftMargin", leftMargin);
@@ -362,19 +361,20 @@ public class WIGGraphCanvasTrack extends TrackBase {
 
 		alpha = properties.getFloat("alpha", alpha);
 		color = properties.get("color", color);
-		if(!color.isEmpty()) {
+		if (!color.isEmpty()) {
 			isTrackColor = true;
-			if(color.startsWith("#")){
+			if (color.startsWith("#")) {
 				color = hexValue2Color(color).toString();
 			}
 		}
-		
+
 		String p = properties.get("changeParamOnClick");
 		if (p != null) {
 			// set canvas action
 
 		}
 	}
+
 	public Color hexValue2Color(String hex) {
 		int r_value = Integer.parseInt(hex.substring(1, 3), 16);
 		int g_value = Integer.parseInt(hex.substring(3, 5), 16);

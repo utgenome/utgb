@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.utgenome.gwt.utgb.client.BrowserServiceAsync;
+import org.utgenome.gwt.utgb.client.RPCServiceManager;
 import org.utgenome.gwt.utgb.client.UTGBClientErrorCode;
 import org.utgenome.gwt.utgb.client.UTGBClientException;
 import org.utgenome.gwt.utgb.client.UTGBEntryPointBase;
@@ -42,6 +44,12 @@ import org.utgenome.gwt.utgb.client.util.xml.XMLWriter;
 import org.utgenome.gwt.utgb.client.view.TrackView;
 import org.utgenome.gwt.utgb.client.view.TrackView.Coordinate;
 
+/**
+ * Any TrackGroup must implement this interface to enable instantiation of track groups using a given properties.
+ * 
+ * @author leo
+ * 
+ */
 interface HasFactory {
 	public static abstract class TrackGroupFactory {
 		/**
@@ -717,7 +725,7 @@ public class TrackGroup implements TrackEntry, Comparable<TrackGroup>, HasFactor
 			c.pixelWidth = UTGBEntryPointBase.computeTrackWidth();
 		group.setTrackWindow(new TrackWindowImpl(c.pixelWidth, c.start, c.end));
 
-		// instantiate tracks in the track group 
+		// instantiate tracks defined in the track group 
 		for (TrackView.Track t : view.track) {
 			String className = t.class_;
 			TrackFactory trackFactory = TrackFactoryHolder.getTrackFactory(className);
@@ -736,6 +744,10 @@ public class TrackGroup implements TrackEntry, Comparable<TrackGroup>, HasFactor
 
 		return group;
 
+	}
+
+	public BrowserServiceAsync getBrowserService() {
+		return RPCServiceManager.getRPCService();
 	}
 
 }

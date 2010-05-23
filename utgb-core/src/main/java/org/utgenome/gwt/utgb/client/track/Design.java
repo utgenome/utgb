@@ -51,7 +51,6 @@ public class Design {
 	public static String PREFIX = "theme/image/";
 
 	public static String IMAGE_NOT_AVAILABLE = PREFIX + "na.png";
-	public static String IMAGE_GENE = PREFIX + "gene.png";
 	public static String IMAGE_RULER_TICK = PREFIX + "ruler-tick.gif";
 	public static String IMAGE_TRANSPARENT = PREFIX + "transparent.gif";
 	public static String IMAGE_DELETE_BUTTON = PREFIX + "tree_closed.gif";
@@ -62,7 +61,6 @@ public class Design {
 	static {
 		// prefetch images
 		Image.prefetch(IMAGE_NOT_AVAILABLE);
-		Image.prefetch(IMAGE_GENE);
 		Image.prefetch(IMAGE_RULER_TICK);
 		Image.prefetch(IMAGE_TRANSPARENT);
 		Image.prefetch(IMAGE_DELETE_BUTTON);

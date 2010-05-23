@@ -2,7 +2,7 @@ target
 .classpath
 .project
 war/utgb
-db
+db/imported
 
 syntax: glob
 *~

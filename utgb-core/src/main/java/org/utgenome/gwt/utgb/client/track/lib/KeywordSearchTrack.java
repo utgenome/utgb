@@ -27,7 +27,6 @@ package org.utgenome.gwt.utgb.client.track.lib;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.utgenome.gwt.utgb.client.GenomeBrowser;
 import org.utgenome.gwt.utgb.client.bio.KeywordSearchResult;
 import org.utgenome.gwt.utgb.client.bio.KeywordSearchResult.Entry;
 import org.utgenome.gwt.utgb.client.track.Track;
@@ -222,7 +221,7 @@ public class KeywordSearchTrack extends TrackBase {
 		if (!speciesScope.equals("any"))
 			species = getTrackGroup().getPropertyReader().getProperty(UTGBProperty.SPECIES, "");
 		String revision = getTrackGroup().getPropertyReader().getProperty(UTGBProperty.REVISION, "");
-		GenomeBrowser.getService().keywordSearch(species, revision, keyword, entriesPerPage, numPage, new AsyncCallback<KeywordSearchResult>() {
+		getBrowserService().keywordSearch(species, revision, keyword, entriesPerPage, numPage, new AsyncCallback<KeywordSearchResult>() {
 			public void onFailure(Throwable caught) {
 				getFrame().loadingDone();
 				GWT.log("search failed:", caught);

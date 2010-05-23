@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import org.utgenome.gwt.utgb.client.GenomeBrowser;
 import org.utgenome.gwt.utgb.client.db.datatype.StringType;
 import org.utgenome.gwt.utgb.client.track.Design;
 import org.utgenome.gwt.utgb.client.track.Track;
@@ -332,7 +331,7 @@ public class OldUTGBTrack extends TrackBase {
 		mainGraphicPanel.addErrorHandler(new ErrorHandler() {
 			public void onError(ErrorEvent e) {
 				GWT.log("failed to load " + mainGraphicPanel.getUrl(), null);
-				mainGraphicPanel.setUrl("image/na.png");
+				mainGraphicPanel.setUrl("theme/image/na.png");
 				_frame.loadingDone();
 			}
 		});
@@ -368,7 +367,7 @@ public class OldUTGBTrack extends TrackBase {
 	protected void parseDescriptionXML(String descriptionXMLURL) {
 		final String resolvedDescriptionXMLURL = (descriptionXMLURL.startsWith("http:")) ? descriptionXMLURL : GWT.getModuleBaseURL() + descriptionXMLURL;
 
-		GenomeBrowser.getService().getHTTPContent(resolvedDescriptionXMLURL, new AsyncCallback<String>() {
+		getBrowserService().getHTTPContent(resolvedDescriptionXMLURL, new AsyncCallback<String>() {
 			public void onFailure(Throwable caught) {
 				GWT.log("cannot retrieve: " + resolvedDescriptionXMLURL, caught);
 				remainingDescriptionXMLCount--;
@@ -637,7 +636,7 @@ public class OldUTGBTrack extends TrackBase {
 			return;
 		if (loadingMessage != null)
 			writeMessage(loadingMessage);
-		GenomeBrowser.getService().getHTTPContent(operationURL, new AsyncCallback<String>() {
+		getBrowserService().getHTTPContent(operationURL, new AsyncCallback<String>() {
 			public void onFailure(Throwable caught) {
 			}
 

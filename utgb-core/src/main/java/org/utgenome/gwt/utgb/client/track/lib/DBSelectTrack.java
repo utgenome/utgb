@@ -27,7 +27,6 @@ package org.utgenome.gwt.utgb.client.track.lib;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.utgenome.gwt.utgb.client.GenomeBrowser;
 import org.utgenome.gwt.utgb.client.bean.DatabaseEntry;
 import org.utgenome.gwt.utgb.client.track.Track;
 import org.utgenome.gwt.utgb.client.track.TrackBase;
@@ -175,7 +174,7 @@ public class DBSelectTrack extends TrackBase {
 
 	private void updateDBGroupList() {
 		parentDBGroup = DatabaseEntry.parent(getTrackGroupProperty(UTGBProperty.DB_GROUP));
-		GenomeBrowser.getService().getChildDBGroups(parentDBGroup, new AsyncCallback<List<String>>() {
+		getBrowserService().getChildDBGroups(parentDBGroup, new AsyncCallback<List<String>>() {
 			public void onFailure(Throwable e) {
 				GWT.log(e.getMessage(), e);
 			}
@@ -202,7 +201,7 @@ public class DBSelectTrack extends TrackBase {
 	}
 
 	private void updateDBNameList() {
-		GenomeBrowser.getService().getDBEntry(getTrackGroupProperty(UTGBProperty.DB_GROUP), new AsyncCallback<List<DatabaseEntry>>() {
+		getBrowserService().getDBEntry(getTrackGroupProperty(UTGBProperty.DB_GROUP), new AsyncCallback<List<DatabaseEntry>>() {
 			public void onFailure(Throwable e) {
 				GWT.log(e.getMessage(), e);
 			}

@@ -27,7 +27,7 @@ package org.utgenome.gwt.utgb.client.track;
 import java.util.HashMap;
 
 import org.utgenome.gwt.utgb.client.BrowserServiceAsync;
-import org.utgenome.gwt.utgb.client.GenomeBrowser;
+import org.utgenome.gwt.utgb.client.RPCServiceManager;
 import org.utgenome.gwt.utgb.client.bio.Coordinate;
 import org.utgenome.gwt.utgb.client.track.bean.TrackBean;
 import org.utgenome.gwt.utgb.client.util.Properties;
@@ -336,7 +336,7 @@ public abstract class TrackBase implements Track {
 	 * @return
 	 */
 	public BrowserServiceAsync getBrowserService() {
-		return GenomeBrowser.getService();
+		return RPCServiceManager.getRPCService();
 	}
 
 }

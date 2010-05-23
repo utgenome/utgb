@@ -26,7 +26,6 @@ package org.utgenome.gwt.utgb.client.track.lib;
 
 import java.util.ArrayList;
 
-import org.utgenome.gwt.utgb.client.GenomeBrowser;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.ChrRange;
 import org.utgenome.gwt.utgb.client.bio.Coordinate;
@@ -201,7 +200,7 @@ public class ChromosomeMapTrack extends TrackBase {
 	public void draw() {
 
 		TrackGroupProperty propertyReader = getTrackGroup().getPropertyReader();
-		GenomeBrowser.getService().getChrRegion(propertyReader.getProperty(UTGBProperty.SPECIES), propertyReader.getProperty(UTGBProperty.REVISION),
+		getBrowserService().getChrRegion(propertyReader.getProperty(UTGBProperty.SPECIES), propertyReader.getProperty(UTGBProperty.REVISION),
 				new AsyncCallback<ChrRange>() {
 
 					public void onFailure(Throwable arg0) {

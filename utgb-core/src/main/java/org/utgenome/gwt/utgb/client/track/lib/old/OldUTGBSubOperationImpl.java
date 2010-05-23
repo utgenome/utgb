@@ -27,7 +27,7 @@ package org.utgenome.gwt.utgb.client.track.lib.old;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.utgenome.gwt.utgb.client.GenomeBrowser;
+import org.utgenome.gwt.utgb.client.RPCServiceManager;
 import org.utgenome.gwt.utgb.client.track.Track;
 import org.utgenome.gwt.utgb.client.track.TrackGroup;
 import org.utgenome.gwt.utgb.client.track.TrackGroupProperty;
@@ -101,7 +101,7 @@ public class OldUTGBSubOperationImpl extends SubOperation {
 
 		final String fullURL = url.getURL(parameterMap);
 
-		GenomeBrowser.getService().getHTTPContent(fullURL, new Command(sender, x, y));
+		RPCServiceManager.getRPCService().getHTTPContent(fullURL, new Command(sender, x, y));
 	}
 
 	private class Command implements AsyncCallback<String> {

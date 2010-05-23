@@ -22,18 +22,10 @@ public class TrackFactorySetup {
 				.factory());
 		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.AlignmentViewTrack",
 				org.utgenome.gwt.utgb.client.track.lib.AlignmentViewTrack.factory());
-		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.debug.BrowserTrack",
-				org.utgenome.gwt.utgb.client.track.lib.debug.BrowserTrack.factory());
 		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.debug.DebugToolBoxTrack",
 				org.utgenome.gwt.utgb.client.track.lib.debug.DebugToolBoxTrack.factory());
 		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.debug.PropertyEditTrack",
 				org.utgenome.gwt.utgb.client.track.lib.debug.PropertyEditTrack.factory());
-		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.debug.SampleGeneTableTrack",
-				org.utgenome.gwt.utgb.client.track.lib.debug.SampleGeneTableTrack.factory());
-		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.debug.SampleGeneTrack",
-				org.utgenome.gwt.utgb.client.track.lib.debug.SampleGeneTrack.factory());
-		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.debug.SQLiteTrack", org.utgenome.gwt.utgb.client.track.lib.debug.SQLiteTrack
-				.factory());
 		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.debug.URLQueryArgumentTrack",
 				org.utgenome.gwt.utgb.client.track.lib.debug.URLQueryArgumentTrack.factory());
 		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.KeywordSearchTrack",
@@ -101,10 +93,6 @@ public class TrackFactorySetup {
 				.factory());
 		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.ReadTrack", org.utgenome.gwt.utgb.client.track.lib.ReadTrack.factory());
 
-		TrackFactoryHolder.addTrackGroupFactory("org.utgenome.gwt.utgb.client.track.lib.debug.DrosophilaTrackGroup",
-				org.utgenome.gwt.utgb.client.track.lib.debug.DrosophilaTrackGroup.factory());
-		TrackFactoryHolder.addTrackGroupFactory("org.utgenome.gwt.utgb.client.track.lib.debug.SampleGeneTrackGroup",
-				org.utgenome.gwt.utgb.client.track.lib.debug.SampleGeneTrackGroup.factory());
 		TrackFactoryHolder.addTrackGroupFactory("org.utgenome.gwt.utgb.client.track.lib.old.OldUTGBTrackGroup",
 				org.utgenome.gwt.utgb.client.track.lib.old.OldUTGBTrackGroup.factory());
 		TrackFactoryHolder.addTrackGroupFactory("org.utgenome.gwt.utgb.client.track.TrackGroup", org.utgenome.gwt.utgb.client.track.TrackGroup.factory());

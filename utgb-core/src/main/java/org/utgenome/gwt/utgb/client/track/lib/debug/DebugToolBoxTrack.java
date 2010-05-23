@@ -51,9 +51,7 @@ public class DebugToolBoxTrack extends ToolBoxTrack {
 
 	public void setupToolbox() {
 		addTrackFactory("Operation", OperationTrack.factory("http://medaka3.gi.k.u-tokyo.ac.jp/~kobayashi/EnsemblPredGene/EnsemblTranscript.xml"));
-		addTrackFactory("Browser", BrowserTrack.factory());
 		addTrackFactory("Property", PropertyEditTrack.factory());
-		addTrackFactory("SQLite", SQLiteTrack.factory());
 		addTrackFactory("URL Query", URLQueryArgumentTrack.factory());
 		addTrackFactory("Legacy Track", LegacyTrack.factory());
 		addTrackFactory("Legacy Track Loader", OldUTGBAddTrackTrack.factory());

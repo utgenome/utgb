@@ -26,7 +26,6 @@ package org.utgenome.gwt.utgb.client.track.lib;
 
 import java.util.List;
 
-import org.utgenome.gwt.utgb.client.GenomeBrowser;
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.canvas.SAMCanvas;
 import org.utgenome.gwt.utgb.client.db.Value;
@@ -188,7 +187,7 @@ public class SAMTrack extends TrackBase {
 
 		getFrame().setNowLoading();
 
-		GenomeBrowser.getService().getSAMReadList(readFileName, refSeqFileName, new AsyncCallback<List<SAMRead>>() {
+		getBrowserService().getSAMReadList(readFileName, refSeqFileName, new AsyncCallback<List<SAMRead>>() {
 
 			public void onFailure(Throwable e) {
 				GWT.log("failed to retrieve sam data", e);

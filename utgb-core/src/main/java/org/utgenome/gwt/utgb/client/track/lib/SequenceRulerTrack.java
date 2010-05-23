@@ -26,7 +26,6 @@ package org.utgenome.gwt.utgb.client.track.lib;
 
 import java.util.ArrayList;
 
-import org.utgenome.gwt.utgb.client.GenomeBrowser;
 import org.utgenome.gwt.utgb.client.db.Value;
 import org.utgenome.gwt.utgb.client.db.ValueDomain;
 import org.utgenome.gwt.utgb.client.db.datatype.IntegerType;
@@ -278,7 +277,7 @@ public class SequenceRulerTrack extends TrackBase implements RangeSelectable {
 		queryArg.add(UTGBProperty.REVISION + "=" + property.getProperty(UTGBProperty.REVISION, ""));
 		queryArg.add(UTGBProperty.TARGET + "=" + property.getProperty(UTGBProperty.TARGET, ""));
 		String apiURL = "http://utgenome.org/api/sequencelength?" + StringUtil.join(queryArg, "&");
-		GenomeBrowser.getService().getHTTPContent(apiURL, new AsyncCallback<String>() {
+		getBrowserService().getHTTPContent(apiURL, new AsyncCallback<String>() {
 			public void onFailure(Throwable caught) {
 				GWT.log("sequence size retrieval failed: ", caught);
 			}

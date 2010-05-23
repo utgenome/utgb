@@ -26,7 +26,6 @@ package org.utgenome.gwt.utgb.client.track.lib;
 
 import java.util.List;
 
-import org.utgenome.gwt.utgb.client.GenomeBrowser;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.Locus;
 import org.utgenome.gwt.utgb.client.canvas.GWTGenomeCanvas;
@@ -159,7 +158,7 @@ public class BSSCanvasTrack extends TrackBase {
 
 		getFrame().setNowLoading();
 
-		GenomeBrowser.getService().getLocusList(dbGroup, dbName, l, new AsyncCallback<List<Locus>>() {
+		getBrowserService().getLocusList(dbGroup, dbName, l, new AsyncCallback<List<Locus>>() {
 
 			public void onFailure(Throwable e) {
 				GWT.log("failed to retrieve gene data", e);

@@ -24,8 +24,8 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.track.lib;
 
-import org.utgenome.gwt.utgb.client.GenomeBrowser;
 import org.utgenome.gwt.utgb.client.UTGBClientException;
+import org.utgenome.gwt.utgb.client.UTGBEntryPointBase;
 import org.utgenome.gwt.utgb.client.track.Track;
 import org.utgenome.gwt.utgb.client.track.TrackBase;
 import org.utgenome.gwt.utgb.client.track.TrackGroup;
@@ -134,7 +134,7 @@ public class ViewLoaderTrack extends TrackBase {
 
 	private void downloadView(final String url) {
 		getFrame().setNowLoading();
-		GenomeBrowser.getService().getHTTPContent(url, new AsyncCallback<String>() {
+		getBrowserService().getHTTPContent(url, new AsyncCallback<String>() {
 			public void onFailure(Throwable caught) {
 				GWT.log("failed to load " + url, caught);
 				getFrame().loadingDone();
@@ -152,14 +152,14 @@ public class ViewLoaderTrack extends TrackBase {
 		if (viewSilk == null)
 			return;
 
-		GenomeBrowser.showLoadingMessage();
-		GenomeBrowser.getService().createTrackView(viewSilk, new AsyncCallback<TrackView>() {
+		UTGBEntryPointBase.showLoadingMessage();
+		getBrowserService().createTrackView(viewSilk, new AsyncCallback<TrackView>() {
 			public void onFailure(Throwable e) {
 				GWT.log(e.getMessage(), e);
 				DialogBox dialog = new DialogBox();
 				dialog.setText(e.getMessage());
 				dialog.show();
-				GenomeBrowser.hideLoadingMessage();
+				UTGBEntryPointBase.hideLoadingMessage();
 			}
 
 			public void onSuccess(TrackView v) {
@@ -177,7 +177,7 @@ public class ViewLoaderTrack extends TrackBase {
 					dialog.show();
 				}
 
-				GenomeBrowser.hideLoadingMessage();
+				UTGBEntryPointBase.hideLoadingMessage();
 			}
 		});
 

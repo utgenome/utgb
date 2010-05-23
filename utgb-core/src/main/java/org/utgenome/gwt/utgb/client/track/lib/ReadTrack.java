@@ -26,7 +26,6 @@ package org.utgenome.gwt.utgb.client.track.lib;
 
 import java.util.ArrayList;
 
-import org.utgenome.gwt.utgb.client.GenomeBrowser;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.Locus;
 import org.utgenome.gwt.utgb.client.bio.Read;
@@ -182,7 +181,7 @@ public class ReadTrack extends TrackBase {
 		String dbID = "db";
 		getFrame().setNowLoading();
 
-		GenomeBrowser.getService().getReadSet(dbID, revision, new ChrLoc(target, s, e), new AsyncCallback<ReadSet>() {
+		getBrowserService().getReadSet(dbID, revision, new ChrLoc(target, s, e), new AsyncCallback<ReadSet>() {
 
 			public void onFailure(Throwable e) {
 				GWT.log("failed to retrieve gene data", e);
