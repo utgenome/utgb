@@ -135,10 +135,12 @@ public class TrackGroup implements TrackEntry, Comparable<TrackGroup>, HasFactor
 		return new TrackGroupFactory() {
 			String name = "";
 
+			@Override
 			public TrackGroup newInstance() {
 				return new TrackGroup(name);
 			}
 
+			@Override
 			public void setProperty(String key, String value) {
 				if (key.equals("name"))
 					name = value;
@@ -632,7 +634,7 @@ public class TrackGroup implements TrackEntry, Comparable<TrackGroup>, HasFactor
 	 */
 	public int compareTo(TrackGroup o) {
 		if (o instanceof TrackGroup) {
-			final TrackGroup _o = (TrackGroup) o;
+			final TrackGroup _o = o;
 			return getTrackGroupName().compareTo(_o.getTrackGroupName());
 		}
 		else if (o instanceof Track) {
@@ -721,10 +723,10 @@ public class TrackGroup implements TrackEntry, Comparable<TrackGroup>, HasFactor
 			TrackFactory trackFactory = TrackFactoryHolder.getTrackFactory(className);
 			if (trackFactory == null) {
 				// search for default package
-				String defaultClass = String.format("org.utgenome.gwt.utgb.client.track.lib.%s", className);
+				String defaultClass = "org.utgenome.gwt.utgb.client.track.lib." + className;
 				trackFactory = TrackFactoryHolder.getTrackFactory(defaultClass);
 				if (trackFactory == null)
-					throw new UTGBClientException(UTGBClientErrorCode.UNKNOWN_TRACK, "unknown track class: " + className);
+					throw new UTGBClientException(UTGBClientErrorCode.UNKNOWN_TRACK, "unknown track class: " + defaultClass);
 			}
 
 			Track track = trackFactory.newInstance();

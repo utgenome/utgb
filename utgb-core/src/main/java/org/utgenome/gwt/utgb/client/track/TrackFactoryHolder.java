@@ -59,11 +59,7 @@ public class TrackFactoryHolder {
 	}
 
 	public static TrackFactory getTrackFactory(String name) throws UTGBClientException {
-		TrackFactory factory = trackFactoryTable.get(name);
-		if (factory == null)
-			throw new UTGBClientException(UTGBClientErrorCode.UNKNOWN_TRACK, "unknown track name: " + name);
-		else
-			return factory;
+		return trackFactoryTable.get(name);
 	}
 
 	public static TrackGroupFactory getTrackGroupFactory(String name) throws UTGBClientException {

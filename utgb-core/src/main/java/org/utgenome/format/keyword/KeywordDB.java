@@ -43,6 +43,7 @@ import org.utgenome.gwt.utgb.client.bio.KeywordSearchResult;
 import org.xerial.db.DBException;
 import org.xerial.db.sql.ResultSetHandler;
 import org.xerial.db.sql.SQLExpression;
+import org.xerial.db.sql.SQLUtil;
 import org.xerial.db.sql.sqlite.SQLiteAccess;
 import org.xerial.db.sql.sqlite.SQLiteCatalog;
 import org.xerial.util.StringUtil;
@@ -91,30 +92,41 @@ public class KeywordDB {
 
 		final KeywordSearchResult r = new KeywordSearchResult();
 		r.page = page;
-		String keywordSegments = splitKeyword(keyword);
-		if (keywordSegments == null)
+		String sKeyword = sanitize(keyword);
+		String keywordSegmentsWithStar = splitAndAddStar(keyword);
+		if (keywordSegmentsWithStar == null)
 			return r;
 
 		// search alias
-		String aliasQuery = SQLExpression.fillTemplate("select distinct(keyword), alias from alias_table where alias match \"$1\"", keywordSegments);
+		String aliasSearchKeyword = null;
+		String aliasQuery = SQLExpression.fillTemplate("select distinct(keyword), alias from alias_table where alias match \"$1\"", keywordSegmentsWithStar);
 		List<KeywordAlias> aliases = db.query(aliasQuery, GenomeKeywordEntry.KeywordAlias.class);
-		if (aliases.size() > 0) {
-			ArrayList<String> keywords = new ArrayList<String>();
-			keywords.add(keywordSegments);
-			for (KeywordAlias each : aliases) {
-				keywords.add(sanitize(each.keyword));
-			}
-			keywordSegments = StringUtil.join(keywords, " OR ");
+		ArrayList<String> keywords = new ArrayList<String>();
+		//keywords.add(sKeyword);
+		for (KeywordAlias each : aliases) {
+			keywords.add(sanitize(each.keyword));
 		}
+		aliasSearchKeyword = StringUtil.join(keywords, " OR ");
 
 		String refCondition = (ref == null) ? "" : SQLExpression.fillTemplate("ref=\"$1\" and ", ref);
 
-		// count the search results
-		String countSQL = SQLExpression
-				.fillTemplate("select count(*) as count from keyword_index where $1 keyword match \"$2\"", refCondition, keywordSegments);
+		String perfectMatchQuery = SQLExpression.fillTemplate(
+				"select rowid as id, 1 as priority, offsets(keyword_index) as offsets, * from keyword_index where $1 keyword match $2", refCondition, SQLUtil
+						.doubleQuote(sKeyword));
 
-		if (_logger.isDebugEnabled())
-			_logger.debug(countSQL);
+		String aliasPerfectMatchQuery = SQLExpression.fillTemplate(
+				"select rowid as id, 2 as priority, offsets(keyword_index) as offsets, * from keyword_index where $1 keyword match $2", refCondition, SQLUtil
+						.doubleQuote(aliasSearchKeyword));
+
+		String forwardMatchQuery = SQLExpression.fillTemplate(
+				"select rowid as id, 3 as priority, offsets(keyword_index) as offsets, * from keyword_index where $1 keyword match $2", refCondition, SQLUtil
+						.doubleQuote(keywordSegmentsWithStar + " -" + sKeyword));
+
+		String unionSQL = SQLExpression.fillTemplate("select * from ($1 union all $2 union all $3)", perfectMatchQuery, aliasPerfectMatchQuery,
+				forwardMatchQuery);
+
+		// count the search results
+		String countSQL = SQLExpression.fillTemplate("select count(*) as count from (select distinct(id) from ($1))", unionSQL);
 
 		db.query(countSQL, new ResultSetHandler<Void>() {
 			@Override
@@ -126,17 +138,16 @@ public class KeywordDB {
 
 		r.maxPage = r.count / pageSize + (r.count % pageSize == 0 ? 0 : 1);
 
-		String searchSQLTemplate = "select original_keyword as name, offsets(keyword_index) as offsets, ref, chr, start, end "
-				+ "from keyword_index, entry where $1 keyword match \"$2\" " + "and keyword_index.rowid = entry.rowid limit $3 offset $4";
-
-		String keywordSearchSQL = SQLExpression.fillTemplate(searchSQLTemplate, refCondition, keywordSegments, pageSize, pageSize * (page - 1));
+		String searchSQLTemplate = "select distinct(t.id) as id, original_keyword as name, offsets, ref, chr, start, end "
+				+ "from ($1) t, entry where t.id = entry.rowid order by priority, chr, start limit $2 offset $3";
+		String keywordSearchSQL = SQLExpression.fillTemplate(searchSQLTemplate, unionSQL, pageSize, pageSize * (page - 1));
 
 		r.result = db.query(keywordSearchSQL, KeywordSearchResult.Entry.class);
 
 		return r;
 	}
 
-	public static String splitKeyword(String keyword) {
+	public static String splitAndAddStar(String keyword) {
 		if (keyword != null) {
 			String sunitizedKeyword = sanitize(keyword);
 			String[] segment = sunitizedKeyword.split("\\s+");
@@ -157,8 +168,7 @@ public class KeywordDB {
 		if (text == null)
 			return null;
 
-		String s = text.replaceAll("[_+\\.-]", "");
-		return s.replaceAll("['\"]", " ");
+		return text.replaceAll("[\\p{Punct}]", "");
 	}
 
 	public void add(GenomeKeywordEntry entry) throws DBException {

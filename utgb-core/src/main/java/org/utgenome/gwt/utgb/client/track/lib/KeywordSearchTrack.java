@@ -37,6 +37,7 @@ import org.utgenome.gwt.utgb.client.track.TrackGroup;
 import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyWriter;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.track.UTGBProperty;
+import org.utgenome.gwt.utgb.client.ui.FixedWidthLabel;
 import org.utgenome.gwt.utgb.client.ui.FormLabel;
 import org.utgenome.gwt.utgb.client.util.JSONUtil;
 import org.utgenome.gwt.utgb.client.util.Properties;
@@ -249,10 +250,9 @@ public class KeywordSearchTrack extends TrackBase {
 						Image icon = new Image("theme/image/item.gif");
 						Style.margin(icon, Style.LEFT, 10);
 						hp.add(icon);
-						FormLabel tagLabel = new FormLabel(e.name);
-						tagLabel.setWidth("120px");
+						FixedWidthLabel tagLabel = new FixedWidthLabel(e.name, 140);
+						tagLabel.setStyleName("label");
 						Style.margin(tagLabel, Style.LEFT, 3);
-						Style.trimOverflowedText(tagLabel);
 						hp.add(tagLabel);
 
 						String label = e.ref + "/" + e.chr + ":" + e.start + "-" + e.end + "";

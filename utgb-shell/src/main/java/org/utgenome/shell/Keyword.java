@@ -81,7 +81,7 @@ public class Keyword extends UTGBShellCommand {
 	public void execute(String[] args) throws Exception {
 
 		if (subCommand == null)
-			throw new UTGBShellException("specify one of the sub command: utgb keyword (import|alias)");
+			throw new UTGBShellException("specify one of the sub command: utgb keyword (import | alias | search)");
 
 		_logger.info("keyword database: " + dbFile);
 		File dbPath = new File(getProjectRoot(), dbFile);

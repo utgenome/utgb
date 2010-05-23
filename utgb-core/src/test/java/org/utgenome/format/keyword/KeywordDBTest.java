@@ -30,6 +30,7 @@ import java.io.File;
 
 import org.junit.Test;
 import org.utgenome.gwt.utgb.client.bio.KeywordSearchResult;
+import org.xerial.lens.Lens;
 import org.xerial.util.FileResource;
 import org.xerial.util.FileUtil;
 import org.xerial.util.log.Logger;
@@ -51,6 +52,7 @@ public class KeywordDBTest {
 		try {
 			db.importFromBED("ce6", FileResource.open(KeywordDBTest.class, "wormbase-keyword.bed"));
 			KeywordSearchResult query = db.query("ce6", "Y74C9A.4b", 1, 10);
+			_logger.info(Lens.toSilk(query));
 			assertEquals(1, query.count);
 			assertEquals(1, query.result.size());
 
@@ -59,6 +61,8 @@ public class KeywordDBTest {
 			// reopen 
 			db = new KeywordDB(tmpKeywordDB);
 			query = db.query("ce6", "Y74C9A.2", 1, 10);
+			_logger.info(Lens.toSilk(query));
+			assertEquals("Y74C9A.2", query.result.get(0).name);
 			assertEquals(6, query.count);
 			assertEquals(6, query.result.size());
 
@@ -79,7 +83,7 @@ public class KeywordDBTest {
 		}
 		finally {
 			db.close();
-			tmpKeywordDB.delete();
+			//tmpKeywordDB.delete();
 		}
 
 	}
@@ -91,7 +95,7 @@ public class KeywordDBTest {
 		String[] sanitizedKeywords = new String[] { "Y74C9A4b*", "chrI* AND NM0*" };
 		int index = 0;
 		for (String each : keywords) {
-			String s = KeywordDB.splitKeyword(each);
+			String s = KeywordDB.splitAndAddStar(each);
 			_logger.info(s);
 			assertEquals(sanitizedKeywords[index++], s);
 		}
