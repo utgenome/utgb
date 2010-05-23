@@ -54,7 +54,7 @@ public class Design {
 	public static String IMAGE_RULER_TICK = PREFIX + "ruler-tick.gif";
 	public static String IMAGE_TRANSPARENT = PREFIX + "transparent.gif";
 	public static String IMAGE_DELETE_BUTTON = PREFIX + "tree_closed.gif";
-	public static String IMAGE_NOW_LOADING = PREFIX + "loading4.gif";
+	public static String IMAGE_NOW_LOADING = PREFIX + "nowloading.gif";
 
 	private static HashMap<Integer, IconImage> _iconTable = new HashMap<Integer, IconImage>();
 
