@@ -66,6 +66,7 @@ public class UpgradeTest {
 	public void upgradeView() throws Exception {
 
 		// copy oldview.xml to src/main/webapp/view/oldview.xml
+		FileUtil.mkdirs(new File(appDir, "src/main/webapp/view"));
 		FileUtil.copy(FileResource.openByteStream(UpgradeTest.class, "oldview.xml"), new File(appDir, "src/main/webapp/view/oldview.xml"));
 		UTGBShell.runCommand(new String[] { "upgrade", "-d", appDir });
 
