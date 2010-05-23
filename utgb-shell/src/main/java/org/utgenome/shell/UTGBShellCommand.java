@@ -83,7 +83,11 @@ public abstract class UTGBShellCommand implements Comparable<UTGBShellCommand> {
 	}
 
 	public File getConfigFile() {
-		return new File(globalOption.projectDir, String.format("config/%s.silk", globalOption.environment));
+		String configFileRelativePath = String.format("config/%s.silk", globalOption.environment);
+		if (globalOption.projectDir == null)
+			return new File(configFileRelativePath);
+		else
+			return new File(globalOption.projectDir, configFileRelativePath);
 	}
 
 	public File getObsolteConfigurationFile() {

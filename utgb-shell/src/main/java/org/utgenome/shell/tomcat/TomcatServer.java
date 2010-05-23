@@ -180,13 +180,16 @@ public class TomcatServer {
 			if (parent != null)
 				cl = parent;
 		}
+		else {
+			cl = ClassLoader.getSystemClassLoader();
+		}
 
 		return cl;
 
 	}
 
 	/**
-	 * Starts the tomcat server
+	 * Starts a Tomcat server
 	 * 
 	 * @throws TomcatException
 	 *             when failed to launch tomcat
@@ -231,6 +234,7 @@ public class TomcatServer {
 		String appBase = configuration.getCatalinaBase() + "/webapps";
 		_logger.debug("appBase: " + appBase);
 		tomcatHost = (StandardHost) embeddedTomcat.createHost("localhost", appBase);
+		tomcatHost.setParentClassLoader(getExtensionClassLoader());
 
 		// Hook up a host config to search for and pull in webapps.
 		HostConfig hostConfig = new HostConfig();

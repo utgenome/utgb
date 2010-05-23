@@ -22,4 +22,23 @@
     </fileSet>
   </fileSets>
 
+<!--
+  <dependencySets>
+    <dependencySet>
+      <outputDirectory></outputDirectory>
+      <outputFileNameMapping></outputFileNameMapping>
+      <unpack>false</unpack>
+      <scope>compile</scope>
+      <excludes>
+        <exclude>com.google.gwt:gwt-servlet</exclude>
+        <exclude>com.google.gwt:gwt-user</exclude>
+        <exclude>com.google.gwt:gwt-dev</exclude>
+        <exclude>com.google.gwt.gears:gwt-google-apis</exclude>
+        <exclude>com.allen_sauer.gwt:gwt-dnd</exclude>
+        <exclude>org.utgenome.thirdparty:gwt-incubator</exclude>
+      </excludes>
+    </dependencySet>
+  </dependencySets>
+-->
+
 </assembly>

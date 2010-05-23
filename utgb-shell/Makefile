@@ -23,7 +23,7 @@ SCRIPT_DIR = src/main/java/org/utgenome/shell/script
 
 JAVA_SRC=$(shell find src/main/java -name '*.java')
 
-.phony: all install clean package 
+.phony: all install clean package test
 
 
 all: package
@@ -32,13 +32,16 @@ package: $(ARCHIVE)
 
 
 $(ARCHIVE): $(JAVA_SRC)
-	$(MVN) package
+	$(MVN) package -Dmaven.test.skip=true
 
 install: $(ARCHIVE) $(SCRIPT_DIR)/bin/utgb
 	mkdir -p "$(PREFIX)"
 	unzip -o $(ARCHIVE) -d target
 	cp -rp target/utgb/* "$(PREFIX)"
 	rm -rf target/utgb
+
+test: 
+	$(MVN) test
 
 dist:	
 

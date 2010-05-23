@@ -60,7 +60,7 @@ public class Server extends UTGBShellCommand {
 		FileUtil.mkdirs(new File(getProjectRoot(), "war/utgb"));
 
 		// copy resources
-		Maven.runMaven("war:exploded");
+		maven("war:exploded");
 
 		UTGBConfig config = loadUTGBConfig();
 		String projectName = config.projectName;

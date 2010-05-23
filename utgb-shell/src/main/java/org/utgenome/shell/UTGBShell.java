@@ -25,7 +25,6 @@
 package org.utgenome.shell;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Modifier;
@@ -118,7 +117,7 @@ public class UTGBShell {
 		private LogLevel logLevel = null;
 
 		@Option(symbol = "d", longName = "projectDir", description = "specify the project directory (default = current directory)")
-		public String projectDir = new File("").getAbsolutePath();
+		public String projectDir = ".";
 
 		@Option(symbol = "e", longName = "env", varName = "test|development|production", description = "switch the configuration file (default: development)")
 		public String environment = "development";

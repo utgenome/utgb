@@ -66,7 +66,7 @@ public class SVNAdd extends UTGBShellCommand {
 
 		// svn add the current directory
 
-		svnAddDir(globalOption.projectDir, false);
+		svnAddDir(globalOption.projectDir != null ? globalOption.projectDir : "", false);
 
 		// svn add
 		for (String target : addTargetDirs) {
