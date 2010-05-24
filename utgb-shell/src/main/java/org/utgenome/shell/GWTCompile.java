@@ -34,7 +34,7 @@ public class GWTCompile extends UTGBShellCommand {
 	@Override
 	public void execute(String[] args) throws Exception {
 
-		Maven.runMaven("-q dependency:build-classpath -Dmdep.outputFile=target/classpath");
+		maven("-q dependency:build-classpath -Dmdep.outputFile=target/classpath");
 
 		_logger.info("executing java task...");
 

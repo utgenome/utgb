@@ -104,7 +104,8 @@ public class BEDViewer extends WebTrackBase implements Serializable {
 				// use db
 				SQLiteAccess dbAccess = new SQLiteAccess(dbInput.getAbsolutePath());
 
-				String sql = createSQLStatement("select start, end, name, score, strand, cds, exon, color from gene "
+				// correct 0-based BED data into 1-origin 
+				String sql = createSQLStatement("select start + 1 as start, end + 1 as start, name, score, strand, cds, exon, color from gene "
 						+ "where coordinate = '$1' and ((start between $2 and $3) or (start <= $2 and end >= $3))", location.chr, sqlEnd, sqlStart);
 
 				if (_logger.isDebugEnabled())
@@ -155,6 +156,10 @@ public class BEDViewer extends WebTrackBase implements Serializable {
 		public BEDTrack track;
 
 		public void addGene(BEDGene gene) {
+			// correct 0-based BED data into 1-origin 
+			gene.start += 1;
+			gene.end += 1;
+
 			long geneStart = gene.getEnd() >= gene.getStart() ? gene.getStart() : gene.getEnd();
 			long geneEnd = gene.getEnd() >= gene.getStart() ? gene.getEnd() : gene.getStart();
 

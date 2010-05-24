@@ -629,6 +629,7 @@ public class BrowserServiceImpl extends RpcServlet implements BrowserService {
 	public ReadSet getReadSet(String dbID, String ref, ChrLoc range) {
 
 		ReadSet result = new ReadSet();
+		List<SAMRead> overlapQuery = ReadView.overlapQuery(dbID, range);
 
 		result.location = range;
 		result.read.add(new Locus("r1", 10, 200));
