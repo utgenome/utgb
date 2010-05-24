@@ -65,7 +65,9 @@ public class ReadView extends WebTrackBase {
 		// output result in Silk format
 		SilkWriter w = new SilkWriter(response.getWriter());
 		w.preamble();
-		w.toSilk(readList);
+		for (SAMRead each : readList) {
+			w.leafObject("read", each);
+		}
 		w.endDocument();
 	}
 
@@ -75,7 +77,10 @@ public class ReadView extends WebTrackBase {
 
 		// TODO dbID to actual files
 		// TODO switch SAM/BAM (with index) format
-		SAMFileReader sam = new SAMFileReader(new File(WebTrackBase.getProjectRootPath(), dbID));
+
+		File bamFile = new File(WebTrackBase.getProjectRootPath(), dbID);
+		File baiFile = new File(WebTrackBase.getProjectRootPath(), dbID + ".bai");
+		SAMFileReader sam = new SAMFileReader(bamFile, baiFile);
 		for (CloseableIterator<SAMRecord> it = sam.queryOverlapping(loc.chr, loc.start, loc.end); it.hasNext();) {
 			SAMRead r = convertToSAMRead(it.next());
 			result.add(r);

@@ -94,8 +94,6 @@ public class Import extends UTGBShellCommand {
 			in = new BufferedReader(new FileReader(input));
 		}
 
-		_logger.info("output file: " + outputFileName);
-
 		if (fileType == FileType.AUTO)
 			fileType = detectFileType(inputFilePath);
 		_logger.info("file type: " + fileType);
@@ -124,6 +122,7 @@ public class Import extends UTGBShellCommand {
 				}
 			}
 		}
+		_logger.info("output file: " + outputFileName);
 
 		switch (fileType) {
 		case READ: {
