@@ -78,8 +78,15 @@ public class GWTGenomeCanvas extends Composite {
 	private GeneNamePopup popupLabel = new GeneNamePopup(null);
 	private LocusClickHandler clickHandler = null;
 	private PrioritySearchTree<LocusLayout> locusLayout = new PrioritySearchTree<LocusLayout>();
-	private boolean showLabels = true;
+
+	private boolean showLabelsIfPossible = true;
+	private boolean canDisplayLabel = true;
+
 	private List<Widget> labels = new ArrayList<Widget>();
+
+	public void setShowLabels(boolean show) {
+		this.showLabelsIfPossible = show;
+	}
 
 	public GWTGenomeCanvas() {
 		initWidget();
@@ -252,6 +259,8 @@ public class GWTGenomeCanvas extends Composite {
 		}
 	}
 
+	
+	
 	public void clear() {
 		canvas.clear();
 		locusLayout.clear();
@@ -260,8 +269,6 @@ public class GWTGenomeCanvas extends Composite {
 			w.removeFromParent();
 		}
 		labels.clear();
-
-		showLabels = true;
 
 		if (popupLabel != null)
 			popupLabel.removeFromParent();
@@ -313,7 +320,7 @@ public class GWTGenomeCanvas extends Composite {
 	<T extends Interval> int createLayout(List<T> locusList) {
 
 		int maxYOffset = 0;
-		boolean showLabelsFlag = locusList.size() < 500;
+		boolean showLabelsFlag = showLabelsIfPossible && (locusList.size() < 500);
 		boolean toContinue = false;
 
 		do {
@@ -363,7 +370,7 @@ public class GWTGenomeCanvas extends Composite {
 		if (maxYOffset <= 0)
 			maxYOffset = 1;
 
-		showLabels = showLabelsFlag;
+		canDisplayLabel = showLabelsFlag;
 		return maxYOffset;
 	}
 
@@ -420,7 +427,7 @@ public class GWTGenomeCanvas extends Composite {
 					draw(g, g.getExon(), cds, gl.getYOffset());
 				}
 
-				if (showLabels) {
+				if (canDisplayLabel) {
 					String n = g.getName();
 					if (n != null) {
 						int textWidth = estimiateLabelWidth(g);
@@ -464,11 +471,11 @@ public class GWTGenomeCanvas extends Composite {
 
 	}
 
-	public Color getGeneColor(Interval l) {
+	public static Color getGeneColor(Interval l) {
 		return getGeneColor(l, 1f);
 	}
 
-	public Color getGeneColor(Interval l, float alpha) {
+	public static Color getGeneColor(Interval l, float alpha) {
 		String hex = getExonColorText(l);
 		int r = Integer.parseInt(hex.substring(1, 3), 16);
 		int g = Integer.parseInt(hex.substring(3, 5), 16);
@@ -476,7 +483,7 @@ public class GWTGenomeCanvas extends Composite {
 		return new Color(r, g, b, alpha);
 	}
 
-	private String getExonColorText(Interval g) {
+	private static String getExonColorText(Interval g) {
 		final String senseColor = "#d80067";
 		final String antiSenseColor = "#0067d8";
 		if (g instanceof Read) {

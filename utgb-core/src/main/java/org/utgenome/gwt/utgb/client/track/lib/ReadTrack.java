@@ -115,7 +115,7 @@ public class ReadTrack extends TrackBase {
 
 		geneCanvas.clear();
 		geneCanvas.setWindow(new TrackWindowImpl(width, s, e));
-		//geneCanvas.setShowLabels(showLabels);
+		geneCanvas.setShowLabels(showLabels);
 		//geneCanvas.draw(onGenomeData);
 
 		getFrame().loadingDone();
