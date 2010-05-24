@@ -55,7 +55,7 @@ public class ReadView extends WebTrackBase {
 	public void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		// validating input
-		if (start == -1 || end == -1 || ref == null || chr == null)
+		if (start == -1 || end == -1 || chr == null)
 			return;
 
 		List<SAMRead> readList = overlapQuery(dbID, new ChrLoc(chr, start, end));
@@ -105,6 +105,7 @@ public class ReadView extends WebTrackBase {
 			read.mapq = record.getMappingQuality();
 			read.cigar = record.getCigarString();
 			read.mrnm = record.getMateReferenceName();
+			read.mStart = record.getMateAlignmentStart();
 			read.iSize = record.getInferredInsertSize();
 			read.seq = record.getReadString();
 			read.qual = record.getBaseQualityString();

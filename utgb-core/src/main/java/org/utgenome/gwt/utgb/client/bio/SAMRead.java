@@ -45,6 +45,7 @@ public class SAMRead implements Serializable, AcceptReadVisitor {
 	public int mapq;
 	public String cigar;
 	public String mrnm; // mate reference name
+	public int mStart; // mate start
 	public int iSize;
 	public String seq;
 	public String qual;
@@ -52,6 +53,7 @@ public class SAMRead implements Serializable, AcceptReadVisitor {
 
 	public String refSeq;
 
+	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 
