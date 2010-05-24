@@ -16,7 +16,7 @@
 //--------------------------------------
 // utgb-core Project
 //
-// ReadSet.java
+// OnGenomeDataSet.java
 // Since: May 16, 2010
 //
 // $URL$ 
@@ -29,16 +29,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Set of read sequences.
+ * A set of on-genome data used for transferring genome data between server and client (GWT)
  * 
  * @author leo
  * 
  */
-public class ReadSet implements Serializable {
+public class OnGenomeDataSet implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	public ChrLoc location;
-	public List<Read> read = new ArrayList<Read>();
+	public List<OnGenome> read = new ArrayList<OnGenome>();
 
 }

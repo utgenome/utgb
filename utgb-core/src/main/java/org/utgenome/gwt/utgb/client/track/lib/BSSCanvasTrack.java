@@ -27,7 +27,7 @@ package org.utgenome.gwt.utgb.client.track.lib;
 import java.util.List;
 
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
-import org.utgenome.gwt.utgb.client.bio.Locus;
+import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.utgenome.gwt.utgb.client.canvas.GWTGenomeCanvas;
 import org.utgenome.gwt.utgb.client.canvas.LocusClickHandler;
 import org.utgenome.gwt.utgb.client.track.Track;
@@ -75,7 +75,7 @@ public class BSSCanvasTrack extends TrackBase {
 		//CSS.border(geneCanvas, 2, "solid", "cyan");
 
 		geneCanvas.setLocusClickHandler(new LocusClickHandler() {
-			public void onClick(Locus locus) {
+			public void onClick(Interval locus) {
 				getTrackGroup().getPropertyWriter().setProperty("bss.query", locus.getName());
 			}
 		});
@@ -120,9 +120,9 @@ public class BSSCanvasTrack extends TrackBase {
 	}
 
 	class UpdateCommand implements Command {
-		private final List<Locus> geneList;
+		private final List<Interval> geneList;
 
-		public UpdateCommand(List<Locus> geneList) {
+		public UpdateCommand(List<Interval> geneList) {
 			this.geneList = geneList;
 		}
 
@@ -135,7 +135,7 @@ public class BSSCanvasTrack extends TrackBase {
 
 			geneCanvas.clear();
 			geneCanvas.setWindow(new TrackWindowImpl(width, s, e));
-			geneCanvas.drawLocus(geneList);
+			geneCanvas.drawInterval(geneList);
 
 			refresh();
 
@@ -158,14 +158,14 @@ public class BSSCanvasTrack extends TrackBase {
 
 		getFrame().setNowLoading();
 
-		getBrowserService().getLocusList(dbGroup, dbName, l, new AsyncCallback<List<Locus>>() {
+		getBrowserService().getLocusList(dbGroup, dbName, l, new AsyncCallback<List<Interval>>() {
 
 			public void onFailure(Throwable e) {
 				GWT.log("failed to retrieve gene data", e);
 				getFrame().loadingDone();
 			}
 
-			public void onSuccess(List<Locus> geneList) {
+			public void onSuccess(List<Interval> geneList) {
 				DeferredCommand.addCommand(new UpdateCommand(geneList));
 			}
 		});

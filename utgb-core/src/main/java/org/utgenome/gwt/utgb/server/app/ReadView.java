@@ -21,6 +21,7 @@ import net.sf.samtools.SAMRecord.SAMTagAndValue;
 import net.sf.samtools.util.CloseableIterator;
 
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
+import org.utgenome.gwt.utgb.client.bio.OnGenome;
 import org.utgenome.gwt.utgb.client.bio.Read;
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.bio.Read.ReadType;
@@ -58,22 +59,22 @@ public class ReadView extends WebTrackBase {
 		if (start == -1 || end == -1 || chr == null)
 			return;
 
-		List<SAMRead> readList = overlapQuery(dbID, new ChrLoc(chr, start, end));
+		List<OnGenome> readList = overlapQuery(dbID, new ChrLoc(chr, start, end));
 
 		response.setContentType("text/html");
 
 		// output the result in Silk format
 		SilkWriter w = new SilkWriter(response.getWriter());
 		w.preamble();
-		for (SAMRead each : readList) {
+		for (OnGenome each : readList) {
 			w.leafObject("read", each);
 		}
 		w.endDocument();
 	}
 
-	public static List<SAMRead> overlapQuery(String dbID, ChrLoc loc) {
+	public static List<OnGenome> overlapQuery(String dbID, ChrLoc loc) {
 
-		ArrayList<SAMRead> result = new ArrayList<SAMRead>();
+		ArrayList<OnGenome> result = new ArrayList<OnGenome>();
 
 		// TODO properly nresolve actual file names from dbID 
 		File bamFile = new File(WebTrackBase.getProjectRootPath(), dbID);

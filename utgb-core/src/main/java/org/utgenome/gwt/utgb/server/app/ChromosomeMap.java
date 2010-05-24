@@ -32,7 +32,7 @@ import org.utgenome.graphics.ChromosomeWindow;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.ChrRange;
 import org.utgenome.gwt.utgb.client.bio.CytoBand;
-import org.utgenome.gwt.utgb.client.bio.Locus;
+import org.utgenome.gwt.utgb.client.bio.Read;
 import org.utgenome.gwt.utgb.server.WebTrackBase;
 import org.xerial.db.sql.DatabaseAccess;
 import org.xerial.db.sql.ResultSetHandler;
@@ -277,7 +277,7 @@ public class ChromosomeMap extends WebTrackBase {
 
 	}
 
-	public static class ReadLocus extends Locus {
+	public static class ReadLocus extends Read {
 		private static final long serialVersionUID = 1L;
 		public String target;
 

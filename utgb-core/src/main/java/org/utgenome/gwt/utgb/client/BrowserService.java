@@ -32,9 +32,9 @@ import org.utgenome.gwt.utgb.client.bio.AlignmentResult;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.ChrRange;
 import org.utgenome.gwt.utgb.client.bio.Gene;
+import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.utgenome.gwt.utgb.client.bio.KeywordSearchResult;
-import org.utgenome.gwt.utgb.client.bio.Locus;
-import org.utgenome.gwt.utgb.client.bio.ReadSet;
+import org.utgenome.gwt.utgb.client.bio.OnGenomeDataSet;
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.bio.WigGraphData;
 import org.utgenome.gwt.utgb.client.track.bean.TrackBean;
@@ -80,7 +80,7 @@ public interface BrowserService extends RpcService {
 
 	public ChrRange getChrRegion(String species, String revision);
 
-	public List<Locus> getLocusList(String dbGroup, String dbName, ChrLoc location);
+	public List<Interval> getLocusList(String dbGroup, String dbName, ChrLoc location);
 
 	public List<String> getChildDBGroups(String parentDBGroup);
 
@@ -109,6 +109,6 @@ public interface BrowserService extends RpcService {
 	 *            (chr, start, end)
 	 * @return
 	 */
-	public ReadSet getReadSet(String dbID, String ref, ChrLoc range);
+	public OnGenomeDataSet getOnGenomeData(String dbID, String ref, ChrLoc range);
 
 }

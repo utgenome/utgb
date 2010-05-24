@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.utgenome.graphics.GeneCanvas;
 import org.utgenome.graphics.GenomeWindow;
-import org.utgenome.gwt.utgb.client.bio.Locus;
+import org.utgenome.gwt.utgb.client.bio.Read;
 import org.utgenome.gwt.utgb.server.WebTrackBase;
 import org.xerial.db.sql.BeanResultHandler;
 import org.xerial.db.sql.DatabaseAccess;
@@ -43,7 +43,7 @@ public class MethylViewer extends WebTrackBase {
 	public MethylViewer() {
 	}
 
-	public static class MethlEntry extends Locus {
+	public static class MethlEntry extends Read {
 		public String scaffold;
 		public String genome;
 		public String tag;

@@ -57,10 +57,10 @@ import org.utgenome.gwt.utgb.client.bio.AlignmentResult;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.ChrRange;
 import org.utgenome.gwt.utgb.client.bio.Gene;
+import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.utgenome.gwt.utgb.client.bio.KeywordSearchResult;
-import org.utgenome.gwt.utgb.client.bio.Locus;
-import org.utgenome.gwt.utgb.client.bio.Read;
-import org.utgenome.gwt.utgb.client.bio.ReadSet;
+import org.utgenome.gwt.utgb.client.bio.OnGenome;
+import org.utgenome.gwt.utgb.client.bio.OnGenomeDataSet;
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.bio.WigGraphData;
 import org.utgenome.gwt.utgb.client.track.bean.TrackBean;
@@ -434,7 +434,7 @@ public class BrowserServiceImpl extends RpcServlet implements BrowserService {
 		return ChromosomeMap.getChrRegion(species, revision);
 	}
 
-	public List<Locus> getLocusList(String dbGroup, String dbName, ChrLoc location) {
+	public List<Interval> getLocusList(String dbGroup, String dbName, ChrLoc location) {
 
 		String bssFolder = UTGBMaster.getUTGBConfig().getProperty("utgb.db.folder", WebTrackBase.getProjectRootPath() + "/db");
 		File dbFile = new File(bssFolder, String.format("%s/%s", dbGroup, dbName));
@@ -448,7 +448,7 @@ public class BrowserServiceImpl extends RpcServlet implements BrowserService {
 								location.chr, location.start, location.end, 1000);
 				//_logger.info(sql);
 
-				List<Locus> result = dbAccess.query(sql, Locus.class);
+				List<Interval> result = dbAccess.query(sql, Interval.class);
 				//_logger.info(Lens.toJSON(result));
 				return result;
 			}
@@ -457,7 +457,7 @@ public class BrowserServiceImpl extends RpcServlet implements BrowserService {
 			}
 		}
 
-		return new ArrayList<Locus>();
+		return new ArrayList<Interval>();
 	}
 
 	public List<String> getChildDBGroups(String parentDBGroup) {
@@ -626,15 +626,13 @@ public class BrowserServiceImpl extends RpcServlet implements BrowserService {
 		return refSeq;
 	}
 
-	public ReadSet getReadSet(String dbID, String ref, ChrLoc range) {
+	public OnGenomeDataSet getOnGenomeData(String dbID, String ref, ChrLoc range) {
 
-		ReadSet result = new ReadSet();
-		List<SAMRead> overlapQuery = ReadView.overlapQuery(dbID, range);
+		OnGenomeDataSet result = new OnGenomeDataSet();
+		List<OnGenome> overlapQueryResult = ReadView.overlapQuery(dbID, range);
 
+		result.read = overlapQueryResult;
 		result.location = range;
-		result.read.add(new Locus("r1", 10, 200));
-		result.read.add(new Read(100, 240));
-
 		return result;
 	}
 

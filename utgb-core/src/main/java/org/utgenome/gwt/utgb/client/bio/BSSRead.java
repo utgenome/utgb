@@ -30,7 +30,12 @@ package org.utgenome.gwt.utgb.client.bio;
  * @author leo
  * 
  */
-public class BSSRead extends Locus {
+public class BSSRead extends Read {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	public int queryLength;
 	public double similarity;

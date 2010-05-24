@@ -37,7 +37,8 @@ import javax.imageio.ImageIO;
 import org.utgenome.gwt.utgb.client.bio.CDS;
 import org.utgenome.gwt.utgb.client.bio.Exon;
 import org.utgenome.gwt.utgb.client.bio.Gene;
-import org.utgenome.gwt.utgb.client.bio.Locus;
+import org.utgenome.gwt.utgb.client.bio.Interval;
+import org.utgenome.gwt.utgb.client.bio.Read;
 import org.utgenome.gwt.utgb.client.canvas.PrioritySearchTree;
 import org.utgenome.gwt.utgb.server.app.MethylViewer;
 import org.xerial.util.Pair;
@@ -83,15 +84,15 @@ public class GeneCanvas {
 	}
 
 	public class LocusLayout {
-		private Locus gene;
+		private Interval gene;
 		private int yOffset;
 
-		public LocusLayout(Locus gene, int yOffset) {
+		public LocusLayout(Interval gene, int yOffset) {
 			this.gene = gene;
 			this.yOffset = yOffset;
 		}
 
-		public Locus getLocus() {
+		public Interval getLocus() {
 			return gene;
 		}
 
@@ -113,7 +114,7 @@ public class GeneCanvas {
 		this.gapWidth = gapWidth;
 	}
 
-	<T extends Locus> int createLayout(List<T> locusList) {
+	<T extends Interval> int createLayout(List<T> locusList) {
 		int maxYOffset = 0;
 		locusLayout.clear();
 
@@ -124,7 +125,7 @@ public class GeneCanvas {
 		FontMetrics fontMetrics = canvas.getGraphics().getFontMetrics(f);
 		long leftOnGenome = canvas.getGenomeWindow().startIndexOnGenome;
 
-		for (Locus l : locusList) {
+		for (Interval l : locusList) {
 
 			int x1 = l.getStart();
 			int x2 = l.getEnd();
@@ -161,7 +162,7 @@ public class GeneCanvas {
 		return maxYOffset;
 	}
 
-	public <E extends Locus> void draw(List<E> geneList) {
+	public <E extends Interval> void draw(List<E> geneList) {
 
 		// create a gene layout
 		int maxOffset = createLayout(geneList);
@@ -180,7 +181,7 @@ public class GeneCanvas {
 
 			public void visit(LocusLayout layout) {
 				layout.yOffset = layout.yOffset * h;
-				Locus l = layout.getLocus();
+				Interval l = layout.getLocus();
 				long lx = l.getStart();
 				long lx2 = l.getEnd();
 
@@ -224,7 +225,7 @@ public class GeneCanvas {
 						}
 
 					}
-					else if (Locus.class.isInstance(l)) {
+					else if (Interval.class.isInstance(l)) {
 						draw(l, layout.getYOffset());
 					}
 				}
@@ -236,7 +237,7 @@ public class GeneCanvas {
 
 	}
 
-	public void draw(Locus locus, int yOffset) {
+	public void draw(Interval locus, int yOffset) {
 		if (Gene.class.isInstance(locus))
 			draw((Gene) locus, yOffset);
 		else
@@ -278,10 +279,7 @@ public class GeneCanvas {
 	}
 
 	public void draw(Gene gene, int yPosition) {
-
-		//canvas.setGlobalAlpha(0.5f);
 		drawGeneRect(gene.getStart(), gene.getEnd(), yPosition, getCDSColor(gene));
-		//canvas.setGlobalAlpha(1f);
 	}
 
 	public void draw(Gene gene, Exon exon, CDS cds, int yPosition) {
@@ -303,23 +301,7 @@ public class GeneCanvas {
 			}
 
 		}
-
-		//		int boxWidth = ex2 - ex;
-		//		if (boxWidth <= 0)
-		//			boxWidth = 1;
-		//		canvas.setLineWidth(1);
-		//		canvas.setStrokeStyle(new Color("#333333"));
-		//		canvas.strokeRect(drawPosition(ex + 0.5f), yPosition + 0.5f, boxWidth, geneHeight);
 	}
-
-	//	public void draw(CDS cds, int yPosition) {
-	//		int cx = pixelPositionOnWindow(cds.getStart());
-	//		int cx2 = pixelPositionOnWindow(cds.getEnd());
-	//
-	//		canvas.setGlobalAlpha(0.8f);
-	//		drawGeneRect(cx, cx2, yPosition, new Color("#EFCF8F"));
-	//		canvas.setGlobalAlpha(1f);
-	//	}
 
 	public void drawGeneRect(long x1, long x2, int y, Color c) {
 		canvas.drawRect(x1, x2, y, geneHeight, c);
@@ -329,38 +311,43 @@ public class GeneCanvas {
 		ImageIO.write(canvas.getBufferedImage(), "png", out);
 	}
 
-	public Color getExonColor(Locus g) {
+	public Color getExonColor(Interval g) {
 		return hexValue2Color(getExonColorText(g), 0.3f);
 	}
 
-	public Color getGeneColor(Locus g) {
+	public Color getGeneColor(Interval g) {
 		return hexValue2Color(getExonColorText(g), 0.7f);
 	}
 
-	public Color getGeneColor(Locus g, float offset) {
+	public Color getGeneColor(Interval g, float offset) {
 		return hexValue2Color(getExonColorText(g), offset);
 	}
 
-	public Color getCDSColor(Locus g) {
+	public Color getCDSColor(Interval g) {
 		return hexValue2Color(getExonColorText(g), 0.5f);
 	}
 
-	public Color getIntronColor(Locus g) {
+	public Color getIntronColor(Interval g) {
 		return hexValue2Color(getExonColorText(g), 0.5f);
 	}
 
-	public String getExonColorText(Locus g) {
-		if (g.getColor() == null) {
-			if (g.isSense()) {
-				return "#d80067";
+	public String getExonColorText(Interval g) {
+		if (g instanceof Read) {
+			Read r = (Read) g;
+			if (r.getColor() == null) {
+				if (r.isSense()) {
+					return "#d80067";
+				}
+				else {
+					return "#0067d8";
+				}
 			}
-			else {
-				return "#0067d8";
-			}
+			else
+				return r.getColor();
+
 		}
-		else {
-			return g.getColor();
-		}
+		else
+			return "#d80067";
 	}
 
 	public Color hexValue2Color(String hex, float offset) {
@@ -373,51 +360,5 @@ public class GeneCanvas {
 	public int colorOffset(int color, float offset) {
 		return (int) (color + ((255 - color) * offset));
 	}
-
-	//	public Color getExonColor(Gene g) {
-	//		if(g.getColor()==null){
-	//			if (g.getStrand().equals("+")) {
-	//				//return new Color("#3686AA");
-	//				return new Color(0xd8, 0x00, 0x67);
-	//			}
-	//			else {
-	//				//return new Color("#AA8636");
-	//				return new Color(0x00, 0x67, 0xd8);
-	//			}
-	//		}
-	//		else{
-	//			return hexValue2Color(g.getColor(),0.0f);
-	//		}
-	//	}
-	//
-	//	public Color getCDSColor(Gene g) {
-	//		if(g.getColor()==null){
-	//			if (g.getStrand().equals("+")) {
-	//				//return new Color("#F7B357");
-	//				return new Color(0xED, 0x9D, 0xB9);
-	//			}
-	//			else {
-	//				//return new Color("#57B3F7");
-	//				return new Color(0x9D, 0xB9, 0xED);
-	//			}
-	//		}
-	//		else{
-	//			return hexValue2Color(g.getColor(),0.6f);			
-	//		}
-	//	}
-	//
-	//	public Color getIntronColor(Gene g) {
-	//		if(g.getColor()==null){
-	//			if (g.getStrand().equals("+")) {
-	//				return new Color(0xED, 0x9D, 0xB9);
-	//			}
-	//			else {
-	//				return new Color(0x9D, 0xB9, 0xED);
-	//			}
-	//		}
-	//		else{
-	//			return hexValue2Color(g.getColor(),0.6f);			
-	//		}
-	//	}
 
 }

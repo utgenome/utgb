@@ -29,7 +29,7 @@ import java.util.List;
 
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.Gene;
-import org.utgenome.gwt.utgb.client.bio.Locus;
+import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.utgenome.gwt.utgb.client.canvas.GWTGenomeCanvas;
 import org.utgenome.gwt.utgb.client.canvas.LocusClickHandler;
 import org.utgenome.gwt.utgb.client.db.ValueDomain;
@@ -174,7 +174,7 @@ public class BEDCanvasTrack extends TrackBase {
 		}
 		else if ("link".equals(clickAction)) {
 			geneCanvas.setLocusClickHandler(new LocusClickHandler() {
-				public void onClick(Locus locus) {
+				public void onClick(Interval locus) {
 					String url = clickURLtemplate;
 					if (url.contains("%q") && locus.getName() != null)
 						url = url.replace("%q", locus.getName());

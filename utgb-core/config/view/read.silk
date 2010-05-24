@@ -4,21 +4,23 @@
   -class: org.utgenome.gwt.utgb.client.track.TrackGroup
   -coordinate
     -species: human
-    -ref: hg17
-    -chr: chr1
-    -start: 10000
-    -end: 100000
-    -pixel width: 700
+    -ref: hg18
+    -chr: chr20
+    -start: 1
+    -end: 60000
 -track
   -name: UTGB Navigator
   -height: 41
   -pack: true
-  -class: org.utgenome.gwt.utgb.client.track.lib.NavigatorTrack
+  -class: NavigatorTrack
   -property
     -sequenceList: [{"species":"human", "revision":["hg18","hg17"]},{"species":"mouse", "revision":["mm9"]},{"species":"drosophila", "revision":["dm3"]},{"species":"c.elegance", "revision":["ce6"]}]
 -track
   -name: Read
   -pack: true
-  -class: org.utgenome.gwt.utgb.client.track.lib.ReadTrack
+  -class: ReadTrack
+  -property
+    -db: db/testdata/genomic_sorted_5_plus.bam
+
 
 

@@ -24,9 +24,9 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.canvas;
 
-import org.utgenome.gwt.utgb.client.bio.Locus;
+import org.utgenome.gwt.utgb.client.bio.Interval;
 
 public interface LocusClickHandler {
 
-	public void onClick(Locus locus);
+	public void onClick(Interval locus);
 }

@@ -28,19 +28,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.utgenome.gwt.utgb.client.canvas.ReadVisitor;
-
 /**
  * Gene with Exon and CDS regions
  * 
  * @author leo
  * 
  */
-public class Gene extends Locus implements Serializable {
+public class Gene extends Read implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	ArrayList<Exon> exonList = new ArrayList<Exon>();
 	ArrayList<CDS> cdsList = new ArrayList<CDS>();
@@ -55,11 +50,12 @@ public class Gene extends Locus implements Serializable {
 	}
 
 	public Gene(int start, int end) {
-		super(start, end);
+		this(null, start, end);
 	}
 
 	public Gene(String name, int start, int end) {
-		super(name, start, end);
+		super(start, end);
+		setName(name);
 	}
 
 	public void addExon(Exon exon) {
@@ -89,7 +85,7 @@ public class Gene extends Locus implements Serializable {
 	}
 
 	@Override
-	public void accept(ReadVisitor visitor) {
+	public void accept(OnGenomeDataVisitor visitor) {
 		visitor.visitGene(this);
 	}
 }

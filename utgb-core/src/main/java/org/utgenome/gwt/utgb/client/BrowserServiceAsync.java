@@ -32,9 +32,9 @@ import org.utgenome.gwt.utgb.client.bio.AlignmentResult;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.ChrRange;
 import org.utgenome.gwt.utgb.client.bio.Gene;
+import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.utgenome.gwt.utgb.client.bio.KeywordSearchResult;
-import org.utgenome.gwt.utgb.client.bio.Locus;
-import org.utgenome.gwt.utgb.client.bio.ReadSet;
+import org.utgenome.gwt.utgb.client.bio.OnGenomeDataSet;
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.bio.WigGraphData;
 import org.utgenome.gwt.utgb.client.track.bean.TrackBean;
@@ -71,7 +71,7 @@ public interface BrowserServiceAsync extends RpcService {
 
 	public void getChrRegion(String species, String revision, AsyncCallback<ChrRange> callback);
 
-	public void getLocusList(String dbGroup, String dbName, ChrLoc location, AsyncCallback<List<Locus>> callback);
+	public void getLocusList(String dbGroup, String dbName, ChrLoc location, AsyncCallback<List<Interval>> callback);
 
 	public void getChildDBGroups(String parentDBGroup, AsyncCallback<List<String>> callback);
 
@@ -90,6 +90,6 @@ public interface BrowserServiceAsync extends RpcService {
 
 	public void getRefSeq(String refSeqFileName, String rname, int start, int end, AsyncCallback<String> callback);
 
-	public void getReadSet(String dbID, String ref, ChrLoc range, AsyncCallback<ReadSet> callback);
+	public void getOnGenomeData(String dbID, String ref, ChrLoc range, AsyncCallback<OnGenomeDataSet> callback);
 
 }

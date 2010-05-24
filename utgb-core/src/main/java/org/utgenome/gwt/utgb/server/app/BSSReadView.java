@@ -14,7 +14,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.utgenome.gwt.utgb.client.bio.Locus;
+import org.utgenome.gwt.utgb.client.bio.Read;
 import org.utgenome.gwt.utgb.server.WebTrackBase;
 import org.xerial.db.sql.sqlite.SQLiteAccess;
 import org.xerial.util.StringUtil;
@@ -38,7 +38,9 @@ public class BSSReadView extends WebTrackBase {
 
 	}
 
-	public static class BSSAlignment extends Locus {
+	public static class BSSAlignment extends Read {
+		private static final long serialVersionUID = 1L;
+
 		public double similarity;
 		public double queryCoverage;
 		public int queryLength;

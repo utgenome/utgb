@@ -16,29 +16,22 @@
 //--------------------------------------
 // utgb-core Project
 //
-// ReadVisitor.java
+// OnGenome.java
 // Since: May 16, 2010
 //
 // $URL$ 
 // $Author$
 //--------------------------------------
-package org.utgenome.gwt.utgb.client.canvas;
+package org.utgenome.gwt.utgb.client.bio;
 
-import org.utgenome.gwt.utgb.client.bio.BSSRead;
-import org.utgenome.gwt.utgb.client.bio.Gene;
-import org.utgenome.gwt.utgb.client.bio.Locus;
-import org.utgenome.gwt.utgb.client.bio.Read;
-import org.utgenome.gwt.utgb.client.bio.SAMRead;
 
-public interface ReadVisitor {
+/**
+ * A common interface for data mapped onto a genome sequence (e.g., Read, Gene, SAMRead, WigGraphData, etc.)
+ * 
+ * @author leo
+ * 
+ */
+public interface OnGenome {
 
-	public void visitRead(Read r);
-
-	public void visitLocus(Locus locus);
-
-	public void visitGene(Gene g);
-
-	public void visitBSSRead(BSSRead b);
-
-	public void visitSAMRead(SAMRead r);
+	public void accept(OnGenomeDataVisitor visitor);
 }

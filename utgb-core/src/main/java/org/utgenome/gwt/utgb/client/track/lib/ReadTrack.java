@@ -27,9 +27,9 @@ package org.utgenome.gwt.utgb.client.track.lib;
 import java.util.ArrayList;
 
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
-import org.utgenome.gwt.utgb.client.bio.Locus;
-import org.utgenome.gwt.utgb.client.bio.Read;
-import org.utgenome.gwt.utgb.client.bio.ReadSet;
+import org.utgenome.gwt.utgb.client.bio.Interval;
+import org.utgenome.gwt.utgb.client.bio.OnGenome;
+import org.utgenome.gwt.utgb.client.bio.OnGenomeDataSet;
 import org.utgenome.gwt.utgb.client.canvas.GWTGenomeCanvas;
 import org.utgenome.gwt.utgb.client.canvas.LocusClickHandler;
 import org.utgenome.gwt.utgb.client.db.datatype.BooleanType;
@@ -47,8 +47,6 @@ import org.utgenome.gwt.utgb.client.track.impl.TrackWindowImpl;
 import org.utgenome.gwt.utgb.client.util.Properties;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -63,12 +61,12 @@ import com.google.gwt.user.client.ui.Widget;
 public class ReadTrack extends TrackBase {
 
 	protected TrackConfig config = new TrackConfig(this);
-	private String fileName;
 	private boolean showLabels = true;
 	private String clickURLtemplate = "http://www.ncbi.nlm.nih.gov/entrez/viewer.fcgi?val=%q";
 	private int leftMargin = 0;
+	private String db;
 
-	private ArrayList<Read> genes = new ArrayList<Read>();
+	private ArrayList<OnGenome> onGenomeData = new ArrayList<OnGenome>();
 
 	public static TrackFactory factory() {
 		return new TrackFactory() {
@@ -88,7 +86,7 @@ public class ReadTrack extends TrackBase {
 		layoutTable.setWidget(0, 1, geneCanvas);
 
 		geneCanvas.setLocusClickHandler(new LocusClickHandler() {
-			public void onClick(Locus locus) {
+			public void onClick(Interval locus) {
 				String url = clickURLtemplate;
 				if (url.contains("%q") && locus.getName() != null)
 					url = url.replace("%q", locus.getName());
@@ -118,7 +116,7 @@ public class ReadTrack extends TrackBase {
 		geneCanvas.clear();
 		geneCanvas.setWindow(new TrackWindowImpl(width, s, e));
 		//geneCanvas.setShowLabels(showLabels);
-		//geneCanvas.draw(genes);
+		//geneCanvas.draw(onGenomeData);
 
 		getFrame().loadingDone();
 	}
@@ -151,22 +149,9 @@ public class ReadTrack extends TrackBase {
 	@Override
 	public void setUp(TrackFrame trackFrame, TrackGroup group) {
 		update(group.getTrackWindow());
-		config.addConfigParameter("File Name", new StringType("fileName"), fileName);
+		config.addConfigParameter("DB ID", new StringType("dbID"), db);
 		config.addConfigParameter("Show Labels", new BooleanType("showLabels"), Boolean.toString(showLabels));
-	}
 
-	class UpdateCommand implements Command {
-		private final ReadSet readSet;
-
-		public UpdateCommand(ReadSet readSet) {
-			this.readSet = readSet;
-		}
-
-		public void execute() {
-			genes.clear();
-			genes.addAll(readSet.read);
-			refresh();
-		}
 	}
 
 	public void update(TrackWindow newWindow) {
@@ -174,22 +159,23 @@ public class ReadTrack extends TrackBase {
 		int s = newWindow.getStartOnGenome();
 		int e = newWindow.getEndOnGenome();
 		TrackGroupProperty prop = getTrackGroup().getPropertyReader();
-		//String species = prop.getProperty(UTGBProperty.SPECIES);
 		String revision = prop.getProperty(UTGBProperty.REVISION);
 		String target = prop.getProperty(UTGBProperty.TARGET);
 
-		String dbID = "db";
 		getFrame().setNowLoading();
 
-		getBrowserService().getReadSet(dbID, revision, new ChrLoc(target, s, e), new AsyncCallback<ReadSet>() {
+		getBrowserService().getOnGenomeData(db, revision, new ChrLoc(target, s, e), new AsyncCallback<OnGenomeDataSet>() {
 
 			public void onFailure(Throwable e) {
 				GWT.log("failed to retrieve gene data", e);
 				getFrame().loadingDone();
 			}
 
-			public void onSuccess(ReadSet readSet) {
-				DeferredCommand.addCommand(new UpdateCommand(readSet));
+			public void onSuccess(OnGenomeDataSet readSet) {
+				onGenomeData.clear();
+				onGenomeData.addAll(readSet.read);
+
+				getFrame().loadingDone();
 			}
 
 		});
@@ -198,18 +184,18 @@ public class ReadTrack extends TrackBase {
 
 	@Override
 	public void saveProperties(Properties saveData) {
-		saveData.add("fileName", fileName);
 		saveData.add("clickURL", clickURLtemplate);
 		saveData.add("leftMargin", leftMargin);
 		saveData.add("showLabels", showLabels);
+		saveData.add("db", db);
 	}
 
 	@Override
 	public void restoreProperties(Properties properties) {
-		fileName = properties.get("fileName", fileName);
 		clickURLtemplate = properties.get("clickURL", clickURLtemplate);
 		leftMargin = properties.getInt("leftMargin", leftMargin);
 		showLabels = properties.getBoolean("showLabels", showLabels);
+		db = properties.get("db", db);
 	}
 
 }

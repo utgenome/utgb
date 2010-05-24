@@ -24,17 +24,13 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.bio;
 
-import java.io.Serializable;
-
-import org.utgenome.gwt.utgb.client.canvas.ReadVisitor;
-
 /**
- * A range on a genome sequence
+ * An interval with starnd information
  * 
  * @author leo
  * 
  */
-public class Read implements Serializable, AcceptReadVisitor {
+public class Read extends Interval {
 
 	public static enum ReadType {
 		BED, SAM, BAM, BSS, WIG
@@ -45,65 +41,40 @@ public class Read implements Serializable, AcceptReadVisitor {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public int start = -1; // 1-origin (inclusive, -1 means undefined value)
-	public int end = -1; // 1-origin (exclusive, -1 means undefined value)
-	public byte strand = '+';
+	private String name;
+	private String color;
+	private byte strand = '+';
 
 	public Read() {
-
+		super();
 	}
 
 	public Read(int start, int end) {
-		this.start = start;
-		this.end = end;
-		correctInterval();
+		super(start, end);
 	}
 
-	public void adjustToOneOrigin() {
-		if (start != -1)
-			start += 1;
-		if (end != -1)
-			end += 1;
+	protected Read(Read other) {
+		super(other.start, other.end);
+		this.name = other.name;
+		this.color = other.color;
+		this.strand = other.strand;
 	}
 
-	/**
-	 * Get the start position of the locus. (start <= end)
-	 * 
-	 * @return the start position
-	 */
-	public int getStart() {
-		return start;
+	@Override
+	public String getName() {
+		return name;
 	}
 
-	public void setStart(int start) {
-		this.start = start;
-		correctInterval();
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	protected void correctInterval() {
-		// do not swap start and end when one of them is undefined
-		if (start == -1 || end == -1)
-			return;
-
-		if (start > end) {
-			int tmp = start;
-			start = end;
-			end = tmp;
-		}
+	public String getColor() {
+		return color;
 	}
 
-	/**
-	 * Get the end position of the locus (start <= end)
-	 * 
-	 * @return the end position
-	 */
-	public int getEnd() {
-		return end;
-	}
-
-	public void setEnd(int end) {
-		this.end = end;
-		correctInterval();
+	public void setColor(String color) {
+		this.color = color;
 	}
 
 	public char getStrand() {
@@ -123,12 +94,7 @@ public class Read implements Serializable, AcceptReadVisitor {
 			this.strand = (byte) strand.charAt(0);
 	}
 
-	public int length() {
-		// when [start:1, end:4), its length = 3
-		return getEnd() - getStart();
-	}
-
-	public void accept(ReadVisitor visitor) {
+	public void accept(OnGenomeDataVisitor visitor) {
 		visitor.visitRead(this);
 	}
 

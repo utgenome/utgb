@@ -26,7 +26,6 @@ package org.utgenome.gwt.utgb.client.bio;
 
 import java.io.Serializable;
 
-import org.utgenome.gwt.utgb.client.canvas.ReadVisitor;
 import org.utgenome.gwt.utgb.client.util.Properties;
 
 /**
@@ -35,7 +34,7 @@ import org.utgenome.gwt.utgb.client.util.Properties;
  * @author yoshimura
  * 
  */
-public class SAMRead implements Serializable, AcceptReadVisitor {
+public class SAMRead implements Serializable, OnGenome {
 	private static final long serialVersionUID = 1L;
 
 	//schema record(qname, flag, rname, start, end, mapq, cigar, mrnm, mpos, isize, seq, qual, tag*)
@@ -77,7 +76,7 @@ public class SAMRead implements Serializable, AcceptReadVisitor {
 		return (flag & SAMReadFlag.FLAG_STRAND_OF_QUERY) == 1;
 	}
 
-	public void accept(ReadVisitor visitor) {
+	public void accept(OnGenomeDataVisitor visitor) {
 		visitor.visitSAMRead(this);
 	}
 

@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.utgenome.gwt.utgb.client.bio.Gene;
-import org.utgenome.gwt.utgb.client.bio.Locus;
+import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.utgenome.gwt.utgb.client.canvas.GWTGenomeCanvas;
 import org.utgenome.gwt.utgb.client.canvas.LocusClickHandler;
 import org.utgenome.gwt.utgb.client.track.Track;
@@ -86,7 +86,7 @@ public class GeneCanvasTrack extends TrackBase {
 		//CSS.border(geneCanvas, 2, "solid", "cyan");
 
 		geneCanvas.setLocusClickHandler(new LocusClickHandler() {
-			public void onClick(Locus locus) {
+			public void onClick(Interval locus) {
 				String url = "http://www.ncbi.nlm.nih.gov/entrez/viewer.fcgi?val=" + locus.getName();
 				Window.open(url, "ncbi", "");
 			}

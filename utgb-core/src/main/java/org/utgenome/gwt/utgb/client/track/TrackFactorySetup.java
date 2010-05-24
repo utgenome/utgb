@@ -20,8 +20,6 @@ public class TrackFactorySetup {
 	public static void initialize() {
 		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.AnnotationTrack", org.utgenome.gwt.utgb.client.track.lib.AnnotationTrack
 				.factory());
-		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.AlignmentViewTrack",
-				org.utgenome.gwt.utgb.client.track.lib.AlignmentViewTrack.factory());
 		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.debug.DebugToolBoxTrack",
 				org.utgenome.gwt.utgb.client.track.lib.debug.DebugToolBoxTrack.factory());
 		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.debug.PropertyEditTrack",

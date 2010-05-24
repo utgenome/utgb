@@ -16,7 +16,7 @@
 //--------------------------------------
 // utgb-core Project
 //
-// AcceptReadVisitor.java
+// OnGenomeDataVisitor.java
 // Since: May 16, 2010
 //
 // $URL$ 
@@ -24,9 +24,23 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.bio;
 
-import org.utgenome.gwt.utgb.client.canvas.ReadVisitor;
+/**
+ * Visitor interface for traversing data mapped onto a genome sequence
+ * 
+ * @author leo
+ * 
+ */
+public interface OnGenomeDataVisitor {
 
-public interface AcceptReadVisitor {
+	public void visitInterval(Interval interval);
 
-	public void accept(ReadVisitor visitor);
+	public void visitRead(Read r);
+
+	public void visitGene(Gene g);
+
+	public void visitBSSRead(BSSRead b);
+
+	public void visitSAMRead(SAMRead r);
+
+	public void visitSequence(ReferenceSequence referenceSequence);
 }

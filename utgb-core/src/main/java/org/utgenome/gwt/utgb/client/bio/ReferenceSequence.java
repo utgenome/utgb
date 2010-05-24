@@ -30,72 +30,18 @@ package org.utgenome.gwt.utgb.client.bio;
  * @author leo
  * 
  */
-public class ReferenceSequence {
-	private int id;
-	private String text;
-	private long start;
-	private String strand;
-	private int tag;
-	private int score;
-	private String sequence;
+public class ReferenceSequence implements OnGenome {
+
+	private static final long serialVersionUID = 1L;
+
+	public int start;
+	public String sequence;
 
 	public ReferenceSequence() {
 	}
 
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public String getText() {
-		return text;
-	}
-
-	public void setText(String text) {
-		this.text = text;
-	}
-
-	public long getStart() {
-		return start;
-	}
-
-	public void setStart(long start) {
-		this.start = start;
-	}
-
-	public String getStrand() {
-		return strand;
-	}
-
-	public void setStrand(String strand) {
-		this.strand = strand;
-	}
-
-	public int getTag() {
-		return tag;
-	}
-
-	public void setTag(int tag) {
-		this.tag = tag;
-	}
-
-	public int getScore() {
-		return score;
-	}
-
-	public void setScore(int score) {
-		this.score = score;
-	}
-
-	public String getSequence() {
-		return sequence;
-	}
-
-	public void setSequence(String sequence) {
-		this.sequence = sequence;
+	public void accept(OnGenomeDataVisitor visitor) {
+		visitor.visitSequence(this);
 	}
 
 }
