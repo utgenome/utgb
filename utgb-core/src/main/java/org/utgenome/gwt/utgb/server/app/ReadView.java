@@ -62,7 +62,7 @@ public class ReadView extends WebTrackBase {
 
 		response.setContentType("text/html");
 
-		// output result in Silk format
+		// output the result in Silk format
 		SilkWriter w = new SilkWriter(response.getWriter());
 		w.preamble();
 		for (SAMRead each : readList) {
@@ -75,9 +75,7 @@ public class ReadView extends WebTrackBase {
 
 		ArrayList<SAMRead> result = new ArrayList<SAMRead>();
 
-		// TODO dbID to actual files
-		// TODO switch SAM/BAM (with index) format
-
+		// TODO properly nresolve actual file names from dbID 
 		File bamFile = new File(WebTrackBase.getProjectRootPath(), dbID);
 		File baiFile = new File(WebTrackBase.getProjectRootPath(), dbID + ".bai");
 		SAMFileReader sam = new SAMFileReader(bamFile, baiFile);
