@@ -273,7 +273,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 		ChrLoc l = new ChrLoc();
 		l.start = s < e ? s : e;
 		l.end = s > e ? s : e;
-		l.target = target;
+		l.chr = target;
 
 		getFrame().setNowLoading();
 

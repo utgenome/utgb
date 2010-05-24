@@ -26,10 +26,14 @@ package org.utgenome.shell;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.xerial.util.FileResource;
+import org.xerial.util.FileUtil;
 
 public class ImportTest {
 
@@ -55,6 +59,18 @@ public class ImportTest {
 		assertEquals(Import.FileType.FASTA, Import.detectFileType("sample.fasta"));
 		assertEquals(Import.FileType.BED, Import.detectFileType("sample.bed"));
 		assertEquals(Import.FileType.AUTO, Import.detectFileType("sample.fdasfa.dfa"));
+		assertEquals(Import.FileType.SAM, Import.detectFileType("sample.sam"));
+	}
+
+	@Test
+	public void importSAM() throws Exception {
+
+		File tmpSAM = FileUtil.createTempFile(new File("target"), "sample", ".sam");
+		// tmpSAM.deleteOnExit();
+		FileUtil.copy(FileResource.openByteStream(ImportTest.class, "sample.sam"), tmpSAM);
+		// File tmpBAM = FileUtil.createTempFile(new File("target"), "sample", ".bam");
+		UTGBShell.runCommand(new String[] { "import", tmpSAM.getAbsolutePath() });
+
 	}
 
 }

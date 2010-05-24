@@ -298,11 +298,13 @@ public class Maven extends UTGBShellCommand {
 
 				// pipe the program's stdout and stderr to the logger
 				stdoutReader = threadManager.submit(new ProcessOutputReader(proc.getInputStream()) {
+					@Override
 					public void output(String line) {
 						_logger.info(line);
 					}
 				});
 				stderrReader = threadManager.submit(new ProcessOutputReader(proc.getErrorStream()) {
+					@Override
 					public void output(String line) {
 						_logger.error(line);
 					}
@@ -387,10 +389,6 @@ public class Maven extends UTGBShellCommand {
 		}
 	}
 
-	public static void explodeWar() throws UTGBShellException {
-		runMaven(new String[] { "compile", "war:exploded" });
-	}
-
 	@Override
 	public void execute(String[] args) throws Exception {
 		runMaven(args);
@@ -401,6 +399,7 @@ public class Maven extends UTGBShellCommand {
 		return "maven";
 	}
 
+	@Override
 	public String getOneLinerDescription() {
 		return "execute maven tasks";
 	}

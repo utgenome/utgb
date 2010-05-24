@@ -29,7 +29,14 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Iterator;
 
+import net.sf.samtools.SAMFileReader;
+import net.sf.samtools.SAMFileWriter;
+import net.sf.samtools.SAMFileWriterFactory;
+import net.sf.samtools.SAMRecord;
+
+import org.apache.tools.ant.util.ReaderInputStream;
 import org.utgenome.format.bed.BEDDatabaseGenerator;
 import org.utgenome.format.fasta.FASTA2Db;
 import org.utgenome.format.silk.read.ReadDBBuilder;
@@ -50,7 +57,7 @@ public class Import extends UTGBShellCommand {
 	private static Logger _logger = Logger.getLogger(Import.class);
 
 	public static enum FileType {
-		AUTO, READ, BED, FASTA, WIG, UNKNOWN
+		AUTO, READ, BED, SAM, FASTA, WIG, UNKNOWN
 	}
 
 	@Option(symbol = "t", longName = "type", description = "specify the input file type: (AUTO, FASTA, READ, BED, WIG)")
@@ -87,24 +94,35 @@ public class Import extends UTGBShellCommand {
 			in = new BufferedReader(new FileReader(input));
 		}
 
+		if (fileType == FileType.AUTO)
+			fileType = detectFileType(inputFilePath);
+		_logger.info("file type: " + fileType);
+
 		if (outputFileName == null) {
 			// new File("db").mkdirs();
 
 			String inputName = inputFilePath == null ? "out" : inputFilePath;
-			outputFileName = String.format("%s.sqlite", inputName);
+
+			if (fileType == FileType.SAM) {
+				outputFileName = org.xerial.util.FileType.replaceFileExt(inputName, "bam");
+			}
+			else {
+				outputFileName = String.format("%s.sqlite", inputName);
+			}
 			int count = 1;
 			if (!overwriteDB) {
 				while (new File(outputFileName).exists()) {
-					outputFileName = String.format("%s.sqlite.%d", inputName, count++);
+					if (fileType == FileType.SAM) {
+						outputFileName = org.xerial.util.FileType.replaceFileExt(inputName, String.format("%d.bam", count));
+					}
+					else {
+						outputFileName = String.format("%s.%d.sqlite", inputName, count);
+					}
+					count++;
 				}
 			}
 		}
-
 		_logger.info("output file: " + outputFileName);
-
-		if (fileType == FileType.AUTO)
-			fileType = detectFileType(inputFilePath);
-		_logger.info("file type: " + fileType);
 
 		switch (fileType) {
 		case READ: {
@@ -124,6 +142,23 @@ public class Import extends UTGBShellCommand {
 			break;
 		case WIG:
 			WIGDatabaseGenerator.toSQLiteDB(in, outputFileName);
+			break;
+		case SAM: {
+			_logger.info("creating BAM and BAI files from SAM.");
+			SAMFileReader reader = new SAMFileReader(new ReaderInputStream(in));
+			String bamOut = outputFileName;
+			if (!bamOut.endsWith(".bam"))
+				bamOut += ".bam";
+			_logger.info("output BAM: " + bamOut);
+			final SAMFileWriter writer = new SAMFileWriterFactory().makeBAMWriter(reader.getFileHeader(), true, new File(bamOut));
+			final Iterator<SAMRecord> iterator = reader.iterator();
+			while (iterator.hasNext()) {
+				writer.addAlignment(iterator.next());
+			}
+			reader.close();
+			writer.close();
+		}
+			break;
 		case UNKNOWN:
 		default: {
 			_logger.warn("specify the input file type with -t option. Type utgb import --help to see the list of the supported file types");
@@ -143,6 +178,8 @@ public class Import extends UTGBShellCommand {
 			return FileType.BED;
 		else if (fileName.endsWith(".wig"))
 			return FileType.WIG;
+		else if (fileName.endsWith(".sam"))
+			return FileType.SAM;
 
 		return FileType.AUTO;
 	}

@@ -50,7 +50,7 @@ public class Clean extends UTGBShellCommand {
 		FileUtil.rmdir(new File(getProjectRoot(), "war/utgb"));
 
 		// clean target folder
-		Maven.runMaven(new String[] { "clean" });
+		maven("clean");
 	}
 
 	@Override
@@ -58,6 +58,7 @@ public class Clean extends UTGBShellCommand {
 		return "clean";
 	}
 
+	@Override
 	public String getOneLinerDescription() {
 		return "clean the target folder";
 	}

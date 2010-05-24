@@ -67,7 +67,7 @@ public class LegacyTrackInfo implements IsSerializable {
 	/**
 	 * @param speciesInfo
 	 * @param name
-	 * @param target
+	 * @param chr
 	 * @param baseURL
 	 * @param start
 	 * @param end

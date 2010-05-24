@@ -150,7 +150,7 @@ public class ChromosomeMapTrack extends TrackBase {
 
 				TrackGroupPropertyWriter propertyWriter = getTrackGroup().getPropertyWriter();
 				Properties p = new Properties();
-				p.put(UTGBProperty.TARGET, chrLoc.target);
+				p.put(UTGBProperty.TARGET, chrLoc.chr);
 				propertyWriter.setProperty(p, getTrackWindow().newWindow(chrLoc.start, chrLoc.end));
 			}
 
@@ -174,7 +174,7 @@ public class ChromosomeMapTrack extends TrackBase {
 					x = trackImage.getHeight() - y;
 				}
 
-				chrLoc.target = chrRange.ranges.get(index).target;
+				chrLoc.chr = chrRange.ranges.get(index).chr;
 
 				chrLoc.start = (int) ((x - chrNameWidth) * chrRange.maxLength / (double) windowWidth) - (viewWidth / 2);
 				if (chrLoc.start <= 0) {
@@ -213,7 +213,7 @@ public class ChromosomeMapTrack extends TrackBase {
 
 						if (isDebug) {
 							for (ChrLoc loc : chrRange.ranges) {
-								GWT.log(loc.target + ":" + loc.start + "-" + loc.end, null);
+								GWT.log(loc.chr + ":" + loc.start + "-" + loc.end, null);
 							}
 							GWT.log("max:" + chrRange.maxLength, null);
 						}

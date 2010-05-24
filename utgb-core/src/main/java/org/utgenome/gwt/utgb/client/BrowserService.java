@@ -98,6 +98,17 @@ public interface BrowserService extends RpcService {
 
 	public String getRefSeq(String refSeqFileName, String rname, int start, int end);
 
+	/**
+	 * Get read data from the specified DB and location
+	 * 
+	 * @param dbID
+	 *            database to search
+	 * @param ref
+	 *            reference sequence
+	 * @param range
+	 *            (chr, start, end)
+	 * @return
+	 */
 	public ReadSet getReadSet(String dbID, String ref, ChrLoc range);
 
 }

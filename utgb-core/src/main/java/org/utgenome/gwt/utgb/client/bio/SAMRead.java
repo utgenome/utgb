@@ -36,15 +36,18 @@ import org.utgenome.gwt.utgb.client.util.Properties;
  * 
  */
 public class SAMRead implements Serializable, AcceptReadVisitor {
+	private static final long serialVersionUID = 1L;
+
 	//schema record(qname, flag, rname, start, end, mapq, cigar, mrnm, mpos, isize, seq, qual, tag*)
 	public String qname;
 	public int flag;
 	public String rname;
-	public int start;
+	public int start; // left-most position on the reference sequence
 	public int end;
-	public int mapq;
+	public int mapq; // Mapping Quality
 	public String cigar;
 	public String mrnm; // mate reference name
+	public int mStart; // mate start (new parameter!) 
 	public int iSize;
 	public String seq;
 	public String qual;
@@ -52,6 +55,7 @@ public class SAMRead implements Serializable, AcceptReadVisitor {
 
 	public String refSeq;
 
+	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 

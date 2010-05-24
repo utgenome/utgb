@@ -34,7 +34,7 @@ public class Eclipse extends UTGBShellCommand {
 
 	@Override
 	public void execute(String[] args) throws UTGBShellException {
-		Maven.runMaven("eclipse:eclipse");
+		maven("eclipse:eclipse");
 	}
 
 	@Override
@@ -42,6 +42,7 @@ public class Eclipse extends UTGBShellCommand {
 		return "eclipse";
 	}
 
+	@Override
 	public String getOneLinerDescription() {
 		return "create (or updates) Eclipse project files";
 	}
