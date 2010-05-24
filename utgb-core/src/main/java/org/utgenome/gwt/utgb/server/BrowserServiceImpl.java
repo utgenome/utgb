@@ -42,7 +42,6 @@ import javax.servlet.http.HttpSession;
 
 import net.sf.samtools.SAMFileReader;
 import net.sf.samtools.SAMRecord;
-import net.sf.samtools.SAMRecord.SAMTagAndValue;
 
 import org.utgenome.UTGBException;
 import org.utgenome.format.fasta.CompactFASTA;
@@ -65,10 +64,10 @@ import org.utgenome.gwt.utgb.client.bio.ReadSet;
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.bio.WigGraphData;
 import org.utgenome.gwt.utgb.client.track.bean.TrackBean;
-import org.utgenome.gwt.utgb.client.util.Properties;
 import org.utgenome.gwt.utgb.client.view.TrackView;
 import org.utgenome.gwt.utgb.server.app.BEDViewer;
 import org.utgenome.gwt.utgb.server.app.ChromosomeMap;
+import org.utgenome.gwt.utgb.server.app.ReadView;
 import org.utgenome.gwt.utgb.server.util.WebApplicationResource;
 import org.xerial.core.XerialException;
 import org.xerial.db.DBException;
@@ -446,7 +445,7 @@ public class BrowserServiceImpl extends RpcServlet implements BrowserService {
 				String sql = WebTrackBase
 						.createSQLStatement(
 								"select rowid, queryID as name, targetStart as start, targetEnd as end, strand from alignment where target = '$1' and start between $2 - $4 and $3 + $4 and (start <= $3 or end >= $2) order by start, end-start desc",
-								location.target, location.start, location.end, 1000);
+								location.chr, location.start, location.end, 1000);
 				//_logger.info(sql);
 
 				List<Locus> result = dbAccess.query(sql, Locus.class);
@@ -535,7 +534,7 @@ public class BrowserServiceImpl extends RpcServlet implements BrowserService {
 
 		try {
 			WIGDatabaseReader reader = new WIGDatabaseReader(WebTrackBase.getProjectRootPath() + "/" + fileName);
-			wigDataList = reader.getWigDataList(windowWidth, location.target, location.start, location.end);
+			wigDataList = reader.getWigDataList(windowWidth, location.chr, location.start, location.end);
 			reader.close();
 		}
 		catch (Exception e) {
@@ -594,22 +593,8 @@ public class BrowserServiceImpl extends RpcServlet implements BrowserService {
 				_logger.info(record.format());
 
 				// convert SAMRecord to SAMRead
-				SAMRead read = new SAMRead();
-				read.qname = record.getReadName();
-				read.flag = record.getFlags();
-				read.rname = record.getReferenceName();
-				read.start = record.getAlignmentStart();
-				read.end = record.getAlignmentEnd();
-				read.mapq = record.getMappingQuality();
-				read.cigar = record.getCigarString();
-				read.mrnm = record.getMateReferenceName();
-				read.iSize = record.getInferredInsertSize();
-				read.seq = record.getReadString();
-				read.qual = record.getBaseQualityString();
-				read.tag = new Properties();
-				for (SAMTagAndValue tag : record.getAttributes()) {
-					read.tag.add(tag.tag, String.valueOf(tag.value));
-				}
+
+				SAMRead read = ReadView.convertToSAMRead(record);
 				// get refseq
 				read.refSeq = cf.getSequence(read.rname, read.start - 1, read.end).toString();
 

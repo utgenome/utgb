@@ -38,6 +38,9 @@ public class Deploy extends UTGBShellCommand {
 	@Option(symbol = "n", description = "do not generate context.xml")
 	boolean noContextXML = false;
 
+	@Option(symbol = "c", longName = "clean", description = "recompile the project (utgb clean, utgb compile), then deploy")
+	boolean recompile = true;
+
 	public Deploy() {
 	}
 
@@ -48,6 +51,11 @@ public class Deploy extends UTGBShellCommand {
 
 		// create war/utgb folder
 		FileUtil.mkdirs(new File(getProjectRoot(), "war/utgb"));
+
+		if (recompile) {
+			UTGBShell.runCommand(globalOption, "clean");
+			UTGBShell.runCommand(globalOption, "compile");
+		}
 
 		UTGBConfig config = loadUTGBConfig();
 		// generate context.xml file
@@ -61,6 +69,7 @@ public class Deploy extends UTGBShellCommand {
 		return "deploy";
 	}
 
+	@Override
 	public String getOneLinerDescription() {
 		return "deploy the project (a war file) to a remote Tomcat server";
 	}

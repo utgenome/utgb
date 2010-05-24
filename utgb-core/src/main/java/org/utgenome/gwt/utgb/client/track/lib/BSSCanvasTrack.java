@@ -154,7 +154,7 @@ public class BSSCanvasTrack extends TrackBase {
 		ChrLoc l = new ChrLoc();
 		l.start = s;
 		l.end = e;
-		l.target = target;
+		l.chr = target;
 
 		getFrame().setNowLoading();
 

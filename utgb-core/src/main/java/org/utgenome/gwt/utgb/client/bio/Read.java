@@ -36,6 +36,10 @@ import org.utgenome.gwt.utgb.client.canvas.ReadVisitor;
  */
 public class Read implements Serializable, AcceptReadVisitor {
 
+	public static enum ReadType {
+		BED, SAM, BAM, BSS, WIG
+	}
+
 	/**
 	 * 
 	 */

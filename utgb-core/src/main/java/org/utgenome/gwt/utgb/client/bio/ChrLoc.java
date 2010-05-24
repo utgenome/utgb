@@ -29,13 +29,13 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class ChrLoc implements IsSerializable {
 	public int start;
 	public int end;
-	public String target;
+	public String chr;
 
 	public ChrLoc() {
 	}
 
-	public ChrLoc(String target, int start, int end) {
-		this.target = target;
+	public ChrLoc(String chr, int start, int end) {
+		this.chr = chr;
 		this.start = start;
 		this.end = end;
 	}

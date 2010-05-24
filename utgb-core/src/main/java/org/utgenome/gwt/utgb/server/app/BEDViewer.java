@@ -105,7 +105,7 @@ public class BEDViewer extends WebTrackBase implements Serializable {
 				SQLiteAccess dbAccess = new SQLiteAccess(dbInput.getAbsolutePath());
 
 				String sql = createSQLStatement("select start, end, name, score, strand, cds, exon, color from gene "
-						+ "where coordinate = '$1' and ((start between $2 and $3) or (start <= $2 and end >= $3))", location.target, sqlEnd, sqlStart);
+						+ "where coordinate = '$1' and ((start between $2 and $3) or (start <= $2 and end >= $3))", location.chr, sqlEnd, sqlStart);
 
 				if (_logger.isDebugEnabled())
 					_logger.debug(sql);
@@ -113,7 +113,7 @@ public class BEDViewer extends WebTrackBase implements Serializable {
 				dbAccess.query(sql, new ResultSetHandler() {
 					@Override
 					public Object handle(ResultSet rs) throws SQLException {
-						geneList.add(new Gene(BEDGene.createFromResultSet(location.target, rs)));
+						geneList.add(new Gene(BEDGene.createFromResultSet(location.chr, rs)));
 						return null;
 					}
 				});
@@ -123,7 +123,7 @@ public class BEDViewer extends WebTrackBase implements Serializable {
 				BED2SilkReader in = null;
 				try {
 					in = new BED2SilkReader(new FileReader(input));
-					BEDQuery query = new BEDQuery(geneList, location.target, sqlStart, sqlEnd);
+					BEDQuery query = new BEDQuery(geneList, location.chr, sqlStart, sqlEnd);
 					Lens.loadSilk(query, in);
 				}
 				finally {

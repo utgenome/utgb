@@ -82,8 +82,8 @@ public class Ribbon {
 			this.type = type;
 		}
 
-		public boolean overlap(int start, int end) {
-			// TODO 
+		public boolean overlap(int start, int length) {
+
 			return false;
 		}
 
@@ -105,7 +105,7 @@ public class Ribbon {
 	public List<Crease> getCreaseInRange(int start, int end) {
 		ArrayList<Crease> result = new ArrayList<Crease>();
 		for (Crease each : crease) {
-			// TODO
+
 		}
 		return result;
 	}
