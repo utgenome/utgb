@@ -47,6 +47,7 @@ import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.track.UTGBProperty;
 import org.utgenome.gwt.utgb.client.track.impl.TrackWindowImpl;
 import org.utgenome.gwt.utgb.client.util.BrowserInfo;
+import org.utgenome.gwt.utgb.client.util.Properties;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
@@ -246,6 +247,12 @@ public class ReadTrack extends TrackBase {
 		if (change.containsOneOf(new String[] { CONFIG_SHOW_LABELS, CONFIG_LEFT_MARGIN, CONFIG_PATH, CONFIG_DB_TYPE })) {
 			refresh();
 		}
+	}
+
+	@Override
+	public void restoreProperties(Properties properties) {
+		super.restoreProperties(properties);
+		updateClickAction();
 	}
 
 }

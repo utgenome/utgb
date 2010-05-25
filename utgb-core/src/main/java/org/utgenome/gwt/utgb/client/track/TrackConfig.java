@@ -274,6 +274,8 @@ class ConfigurationTable extends Composite {
 		String currentValue = _config.getParameter(dataType.getName());
 		if (currentValue == null)
 			currentValue = defaultValue;
+
+		_config.properties.put(dataType.getName(), currentValue);
 		form.setValue(currentValue);
 		Entry entry = new Entry(label, dataType.getName(), form);
 		_table.add(entry, entry.getDragEdge());
