@@ -41,7 +41,6 @@ import org.utgenome.gwt.utgb.client.util.Properties;
  */
 public class DASTrack extends ReadTrack {
 
-	private String dasBaseURL = null;
 	private String dasType = null;
 
 	public static TrackFactory factory() {

@@ -201,21 +201,22 @@ public class ReadTrack extends TrackBase {
 
 		getFrame().setNowLoading();
 
-		getBrowserService().getOnGenomeData(getGenomeDB(), new ChrLoc(chr, s, e), BrowserInfo.getUserAgent(), new AsyncCallback<OnGenomeDataSet>() {
+		getBrowserService().getOnGenomeData(getGenomeDB(), new ChrLoc(chr, s, e), BrowserInfo.getUserAgent(), newWindow.getWindowWidth(),
+				new AsyncCallback<OnGenomeDataSet>() {
 
-			public void onFailure(Throwable e) {
-				GWT.log("failed to retrieve gene data", e);
-				getFrame().loadingDone();
-			}
+					public void onFailure(Throwable e) {
+						GWT.log("failed to retrieve gene data", e);
+						getFrame().loadingDone();
+					}
 
-			public void onSuccess(OnGenomeDataSet readSet) {
-				onGenomeData.clear();
-				onGenomeData.addAll(readSet.read);
+					public void onSuccess(OnGenomeDataSet readSet) {
+						onGenomeData.clear();
+						onGenomeData.addAll(readSet.read);
 
-				refresh();
-			}
+						refresh();
+					}
 
-		});
+				});
 
 	}
 

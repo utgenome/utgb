@@ -25,7 +25,6 @@
 package org.utgenome.gwt.utgb.client.track.lib.debug;
 
 import org.utgenome.gwt.utgb.client.track.Track;
-import org.utgenome.gwt.utgb.client.track.lib.LegacyTrack;
 import org.utgenome.gwt.utgb.client.track.lib.ToolBoxTrack;
 import org.utgenome.gwt.utgb.client.track.lib.old.OldUTGBAddTrackTrack;
 import org.utgenome.gwt.utgb.client.track.lib.old.OperationTrack;
@@ -53,7 +52,6 @@ public class DebugToolBoxTrack extends ToolBoxTrack {
 		addTrackFactory("Operation", OperationTrack.factory("http://medaka3.gi.k.u-tokyo.ac.jp/~kobayashi/EnsemblPredGene/EnsemblTranscript.xml"));
 		addTrackFactory("Property", PropertyEditTrack.factory());
 		addTrackFactory("URL Query", URLQueryArgumentTrack.factory());
-		addTrackFactory("Legacy Track", LegacyTrack.factory());
 		addTrackFactory("Legacy Track Loader", OldUTGBAddTrackTrack.factory());
 	}
 

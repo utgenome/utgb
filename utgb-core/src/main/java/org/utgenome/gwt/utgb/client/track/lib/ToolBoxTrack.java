@@ -101,10 +101,6 @@ public class ToolBoxTrack extends TrackBase {
 		addTrackFactory("Window Controller", WindowControlTrack.factory());
 		addTrackFactory("Sequence Ruler", SequenceRulerTrack.factory());
 		addTrackFactory("Track Ruler", RulerTrack.factory());
-		addTrackFactory("Species", SpeciesSelectTrack.factory());
-		addTrackFactory("Revision", RevisionSelectTrack.factory());
-		addTrackFactory("Target", TargetSelectTrack.factory());
-		addTrackFactory("Annotation", AnnotationTrack.factory());
 		addTrackFactory("Debug Toolbox", DebugToolBoxTrack.factory());
 
 	}
