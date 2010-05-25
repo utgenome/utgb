@@ -39,6 +39,7 @@ import org.utgenome.gwt.utgb.client.track.bean.SequenceInfo;
 import org.utgenome.gwt.utgb.client.ui.FormLabel;
 import org.utgenome.gwt.utgb.client.util.JSONUtil;
 import org.utgenome.gwt.utgb.client.util.Properties;
+import org.utgenome.gwt.utgb.client.util.StringUtil;
 import org.utgenome.gwt.utgb.client.util.xml.XMLWriter;
 import org.utgenome.gwt.widget.client.Style;
 
@@ -108,7 +109,7 @@ public class NavigatorTrack extends TrackBase {
 			int keyCode = e.getNativeKeyCode();
 			if (keyCode == KeyCodes.KEY_ENTER || keyCode == KeyCodes.KEY_TAB) {
 				try {
-					getTrackGroup().setTrackWindowLocation(Integer.parseInt(startBox.getText()), Integer.parseInt(endBox.getText()));
+					getTrackGroup().setTrackWindowLocation(StringUtil.toInt(startBox.getText()), StringUtil.toInt(endBox.getText()));
 				}
 				catch (NumberFormatException ex) {
 					GWT.log("(" + startBox.getText() + ", " + endBox.getText() + ") is invalid range", ex);
@@ -397,9 +398,8 @@ public class NavigatorTrack extends TrackBase {
 	}
 
 	public void updateRangeBox() {
-		startBox.setText(Long.toString(getTrackWindow().getStartOnGenome()));
-		endBox.setText(Long.toString(getTrackWindow().getEndOnGenome()));
-
+		startBox.setText(StringUtil.formatNumber(getTrackWindow().getStartOnGenome()));
+		endBox.setText(StringUtil.formatNumber(getTrackWindow().getEndOnGenome()));
 	}
 
 	@Override
