@@ -40,5 +40,6 @@ public class OnGenomeDataSet implements Serializable {
 
 	public ChrLoc location;
 	public List<OnGenome> read = new ArrayList<OnGenome>();
+	public List<OnGenome> block = new ArrayList<OnGenome>();
 
 }

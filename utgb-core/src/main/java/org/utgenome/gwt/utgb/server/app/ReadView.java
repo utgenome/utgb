@@ -26,12 +26,15 @@ import net.sf.samtools.util.CloseableIterator;
 
 import org.utgenome.UTGBErrorCode;
 import org.utgenome.UTGBException;
+import org.utgenome.graphics.GenomeWindow;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.DASLocation;
 import org.utgenome.gwt.utgb.client.bio.DASResult;
 import org.utgenome.gwt.utgb.client.bio.GenomeDB;
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
+import org.utgenome.gwt.utgb.client.bio.OnGenomeDataSet;
 import org.utgenome.gwt.utgb.client.bio.Read;
+import org.utgenome.gwt.utgb.client.bio.ReadCoverage;
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.bio.DASResult.Segment.DASFeature;
 import org.utgenome.gwt.utgb.client.bio.GenomeDB.DBType;
@@ -73,23 +76,25 @@ public class ReadView extends WebTrackBase {
 		if (start == -1 || end == -1 || chr == null)
 			return;
 
-		List<OnGenome> readList = overlapQuery(new GenomeDB(dbID, ref), new ChrLoc(chr, start, end), this.getServletContext());
+		OnGenomeDataSet result = overlapQuery(new GenomeDB(dbID, ref), new ChrLoc(chr, start, end), width, this.getServletContext());
 
 		response.setContentType("text/html");
 
 		// output the result in Silk format
 		SilkWriter w = new SilkWriter(response.getWriter());
 		w.preamble();
-		for (OnGenome each : readList) {
+		for (OnGenome each : result.read) {
 			w.leafObject("read", each);
+		}
+		for (OnGenome each : result.block) {
+			w.leafObject("block", each);
 		}
 		w.endDocument();
 	}
 
-	public static List<OnGenome> overlapQuery(GenomeDB db, ChrLoc loc, ServletContext context) {
+	public static OnGenomeDataSet overlapQuery(GenomeDB db, ChrLoc loc, int pixelWidth, ServletContext context) {
 
-		List<OnGenome> result = new ArrayList<OnGenome>();
-
+		OnGenomeDataSet result = new OnGenomeDataSet();
 		StopWatch sw = new StopWatch();
 		DBType dbType = db.resolveDBType();
 		try {
@@ -98,18 +103,17 @@ public class ReadView extends WebTrackBase {
 
 			switch (dbType) {
 			case BAM: {
-				// TODO properly resolve actual file names from dbID 
 				File bamFile = new File(WebTrackBase.getProjectRootPath(), db.path);
 				File baiFile = new File(WebTrackBase.getProjectRootPath(), db.path + ".bai");
 				SAMFileReader sam = new SAMFileReader(bamFile, baiFile);
 				for (CloseableIterator<SAMRecord> it = sam.queryOverlapping(loc.chr, loc.start, loc.end); it.hasNext();) {
 					SAMRead r = convertToSAMRead(it.next());
-					result.add(r);
+					result.read.add(r);
 				}
 			}
 				break;
 			case BED: {
-				result = BEDViewer.query(db.path, loc);
+				result.read = BEDViewer.query(db.path, loc);
 				break;
 			}
 			case DAS: {
@@ -120,7 +124,7 @@ public class ReadView extends WebTrackBase {
 				DASResult queryDAS = DASViewer.queryDAS(db.path, dasType, loc);
 				if (queryDAS != null) {
 					for (DASFeature each : queryDAS.segment.feature) {
-						result.add(each);
+						result.read.add(each);
 					}
 				}
 				break;
@@ -147,7 +151,42 @@ public class ReadView extends WebTrackBase {
 
 		_logger.debug("query done. " + sw.getElapsedTime() + " sec.");
 
+		if (result.read.size() > 1000) {
+			// compute coverage
+			ReadCoverage coverage = computeCoverage(result.read, loc.start, loc.end, 500);
+			result.read.clear();
+			result.block.add(coverage);
+		}
+
 		return result;
+	}
+
+	public static ReadCoverage computeCoverage(List<OnGenome> readList, int start, int end, int pixelWidth) {
+
+		int[] coverage = new int[pixelWidth];
+		for (int i = 0; i < coverage.length; ++i)
+			coverage[i] = 0;
+
+		GenomeWindow w = new GenomeWindow(start, end);
+
+		//  ------      ------
+		//    --------  ---
+		//      ----    --
+		// 0112233332200332111000 (coverage)
+		for (OnGenome eachRead : readList) {
+			int bucketStart = w.getXPosOnWindow(eachRead.getStart(), pixelWidth);
+			int bucketEnd = w.getXPosOnWindow(eachRead.getEnd(), pixelWidth);
+			if (bucketStart < 0)
+				bucketStart = 0;
+			if (bucketEnd < bucketStart)
+				bucketEnd = bucketStart;
+			if (bucketEnd >= pixelWidth)
+				bucketEnd = pixelWidth - 1;
+			for (int i = bucketStart; i < bucketEnd; ++i)
+				coverage[i]++;
+		}
+
+		return new ReadCoverage(start, end, pixelWidth, coverage);
 	}
 
 	private static class OnGenomeDataRetriever<T extends OnGenome> implements ObjectHandler<T> {

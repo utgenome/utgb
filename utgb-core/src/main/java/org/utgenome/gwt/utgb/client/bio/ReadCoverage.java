@@ -16,8 +16,8 @@
 //--------------------------------------
 // utgb-core Project
 //
-// OnGenome.java
-// Since: May 16, 2010
+// ReadCoverage.java
+// Since: 2010/05/25
 //
 // $URL$ 
 // $Author$
@@ -25,20 +25,39 @@
 package org.utgenome.gwt.utgb.client.bio;
 
 /**
- * A common interface for data mapped onto a genome sequence (e.g., Read, Gene, SAMRead, WigGraphData, etc.)
+ * Read coverage histogram
  * 
  * @author leo
  * 
  */
-public interface OnGenome {
+public class ReadCoverage extends Interval {
 
-	public int getStart();
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
-	public int getEnd();
+	public String name = "read coverage";
+	/**
+	 * Coverage of each pixel position
+	 */
+	public int[] coverage;
+	public int pixelWidth;
 
-	public String getName();
+	public ReadCoverage() {
+	}
 
-	public int length();
+	public ReadCoverage(int start, int end, int pixelWidth, int[] coverage) {
+		super(start, end);
+		this.pixelWidth = pixelWidth;
+		this.coverage = coverage;
+	}
 
-	public void accept(OnGenomeDataVisitor visitor);
+	public void accept(OnGenomeDataVisitor visitor) {
+		visitor.visitReadCoverage(this);
+	}
+
+	public String getName() {
+		return name;
+	}
 }

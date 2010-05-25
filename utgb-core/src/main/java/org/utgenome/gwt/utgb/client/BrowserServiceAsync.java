@@ -80,6 +80,6 @@ public interface BrowserServiceAsync extends RpcService {
 
 	public void getRefSeq(String refSeqFileName, String rname, int start, int end, AsyncCallback<String> callback);
 
-	public void getOnGenomeData(GenomeDB db, ChrLoc range, String userAgent, AsyncCallback<OnGenomeDataSet> callback);
+	public void getOnGenomeData(GenomeDB db, ChrLoc range, String userAgent, int pixelWidth, AsyncCallback<OnGenomeDataSet> callback);
 
 }

@@ -93,6 +93,6 @@ public interface BrowserService extends RpcService {
 	 *            browser information
 	 * @return
 	 */
-	public OnGenomeDataSet getOnGenomeData(GenomeDB db, ChrLoc range, String userAgent);
+	public OnGenomeDataSet getOnGenomeData(GenomeDB db, ChrLoc range, String userAgent, int pixelWidth);
 
 }

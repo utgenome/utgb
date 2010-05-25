@@ -49,6 +49,13 @@ public class ReferenceSequence implements OnGenome {
 		return start;
 	}
 
+	public int getEnd() {
+		if (sequence == null)
+			return start;
+		else
+			return start + sequence.length();
+	}
+
 	public String getName() {
 		return this.name;
 	}

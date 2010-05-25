@@ -37,6 +37,7 @@ import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
 import org.utgenome.gwt.utgb.client.bio.OnGenomeDataVisitor;
 import org.utgenome.gwt.utgb.client.bio.Read;
+import org.utgenome.gwt.utgb.client.bio.ReadCoverage;
 import org.utgenome.gwt.utgb.client.bio.ReferenceSequence;
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.bio.WigGraphData;
@@ -477,6 +478,10 @@ public class GWTGenomeCanvas extends Composite {
 
 		public void visitSequence(ReferenceSequence referenceSequence) {
 			// TODO Auto-generated method stub
+
+		}
+
+		public void visitReadCoverage(ReadCoverage readCoverage) {
 
 		}
 
