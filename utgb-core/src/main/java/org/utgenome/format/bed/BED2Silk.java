@@ -168,10 +168,12 @@ public class BED2Silk {
 
 					StringBuilder sb = new StringBuilder();
 					if (gene.length >= 3) {
+						int start = Integer.parseInt(gene[1]) + 1;
+						int end = Integer.parseInt(gene[2]) + 1;
+
 						// print "coordinate.name, start, end"
-						sb.append(gene[0] + "\t" + shiftOneBase(Long.parseLong(gene[1])) + "\t" + shiftOneBase(Long.parseLong(gene[2])));
+						sb.append(String.format("%s\t%d\t%d\t", gene[0], start, end));
 						// print "name"
-						sb.append("\t");
 						if (gene.length >= 4) {
 							sb.append(gene[3]);
 						}
@@ -189,7 +191,9 @@ public class BED2Silk {
 						// print "cds"
 						sb.append("\t");
 						if (gene.length >= 8) {
-							sb.append("[" + shiftOneBase(Long.parseLong(gene[6])) + ", " + shiftOneBase(Long.parseLong(gene[7])) + "]");
+							int cdsStart = Integer.parseInt(gene[6]) + 1;
+							int cdsEnd = Integer.parseInt(gene[7]) + 1;
+							sb.append(String.format("[%d, %d]", cdsStart, cdsEnd));
 						}
 						// print "exon"
 						sb.append("\t");
@@ -200,8 +204,8 @@ public class BED2Silk {
 							sb.append("[");
 							Integer nExons = Integer.parseInt(gene[9]);
 							for (int i = 0; i < nExons; i++) {
-								Long startExon = Long.parseLong(gene[1]) + Long.parseLong(shiftOneBase(Long.parseLong(blockStarts[i])));
-								Long endExon = startExon + Long.parseLong(blockSizes[i]) - 1;
+								int startExon = start + Integer.parseInt(blockStarts[i]);
+								int endExon = startExon + Integer.parseInt(blockSizes[i]);
 								sb.append("[" + startExon + ", " + endExon + "]");
 								if (i < nExons - 1) {
 									sb.append(", ");

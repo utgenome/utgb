@@ -18,5 +18,10 @@ draft:
 
 compile: 
 	mvn dependency:build-classpath -Dmdep.outputFile="target/classpath"
+	mvn compile
 	ant -f build-gwt.xml compile -Dgwt.module=org.utgenome.gwt.utgb.UTGBEntry
-	
+
+
+clean:
+	rm -rf war/utgb
+	mvn clean
