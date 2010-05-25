@@ -45,6 +45,8 @@ import org.xerial.util.bean.impl.BeanUtilImpl;
 import org.xerial.util.log.Logger;
 
 /**
+ * Converting BED into Silk format
+ * 
  * @author yoshimura
  * 
  */
@@ -167,7 +169,7 @@ public class BED2Silk {
 					StringBuilder sb = new StringBuilder();
 					if (gene.length >= 3) {
 						// print "coordinate.name, start, end"
-						sb.append(gene[0] + "\t" + shiftOneBase(Long.parseLong(gene[1])) + "\t" + Long.parseLong(gene[2]));
+						sb.append(gene[0] + "\t" + shiftOneBase(Long.parseLong(gene[1])) + "\t" + shiftOneBase(Long.parseLong(gene[2])));
 						// print "name"
 						sb.append("\t");
 						if (gene.length >= 4) {
@@ -187,7 +189,7 @@ public class BED2Silk {
 						// print "cds"
 						sb.append("\t");
 						if (gene.length >= 8) {
-							sb.append("[" + shiftOneBase(Long.parseLong(gene[6])) + ", " + Long.parseLong(gene[7]) + "]");
+							sb.append("[" + shiftOneBase(Long.parseLong(gene[6])) + ", " + shiftOneBase(Long.parseLong(gene[7])) + "]");
 						}
 						// print "exon"
 						sb.append("\t");

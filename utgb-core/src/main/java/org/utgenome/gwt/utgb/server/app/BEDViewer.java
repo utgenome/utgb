@@ -39,6 +39,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.utgenome.format.bed.BED2SilkReader;
 import org.utgenome.format.bed.BEDGene;
+import org.utgenome.format.bed.BEDQuery;
 import org.utgenome.format.bed.BEDTrack;
 import org.utgenome.graphics.GeneCanvas;
 import org.utgenome.graphics.GenomeWindow;
@@ -95,8 +96,8 @@ public class BEDViewer extends WebTrackBase implements Serializable {
 	public static List<OnGenome> query(String bedPath, final ChrLoc location) {
 
 		final ArrayList<OnGenome> geneList = new ArrayList<OnGenome>();
-		long sqlStart = location.end >= location.start ? location.start : location.end;
-		long sqlEnd = location.end >= location.start ? location.end : location.start;
+		int sqlStart = location.end >= location.start ? location.start : location.end;
+		int sqlEnd = location.end >= location.start ? location.end : location.start;
 
 		try {
 			File input = new File(getProjectRootPath(), bedPath);
@@ -125,7 +126,7 @@ public class BEDViewer extends WebTrackBase implements Serializable {
 				BED2SilkReader in = null;
 				try {
 					in = new BED2SilkReader(new FileReader(input));
-					BEDQuery query = new BEDQuery(geneList, location.chr, sqlStart, sqlEnd);
+					BEDRangeQuery query = new BEDRangeQuery(geneList, location.chr, sqlStart, sqlEnd);
 					Lens.loadSilk(query, in);
 				}
 				finally {
@@ -141,13 +142,13 @@ public class BEDViewer extends WebTrackBase implements Serializable {
 		return geneList;
 	}
 
-	public static class BEDQuery {
+	public static class BEDRangeQuery implements BEDQuery {
 		private String coordinate;
-		private long start;
-		private long end;
-		private final List<OnGenome> geneList;
+		private int start;
+		private int end;
+		public List<OnGenome> geneList;
 
-		public BEDQuery(List<OnGenome> geneList, String coordinate, long start, long end) {
+		public BEDRangeQuery(List<OnGenome> geneList, String coordinate, int start, int end) {
 			this.geneList = geneList;
 			this.coordinate = coordinate;
 			this.start = end >= start ? start : end;
@@ -158,15 +159,23 @@ public class BEDViewer extends WebTrackBase implements Serializable {
 
 		public void addGene(BEDGene gene) {
 			// correct 0-based BED data into 1-origin 
-			gene.setStart(gene.getStart() + 1);
-			gene.setEnd(gene.getEnd() + 1);
+			int geneStart = gene.getEnd() >= gene.getStart() ? gene.getStart() : gene.getEnd();
+			int geneEnd = gene.getEnd() >= gene.getStart() ? gene.getEnd() : gene.getStart();
 
-			long geneStart = gene.getEnd() >= gene.getStart() ? gene.getStart() : gene.getEnd();
-			long geneEnd = gene.getEnd() >= gene.getStart() ? gene.getEnd() : gene.getStart();
+			geneStart += 1;
+			geneEnd += 1;
 
 			if (coordinate.equals(gene.coordinate) && (start <= geneEnd) && (end >= geneStart)) {
 				geneList.add(new Gene(gene));
 			}
+		}
+
+		public void addTrack(BEDTrack track) {
+
+		}
+
+		public void reportError(Exception e) {
+			_logger.error(e);
 		}
 	}
 

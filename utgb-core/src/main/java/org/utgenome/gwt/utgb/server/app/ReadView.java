@@ -88,7 +88,7 @@ public class ReadView extends WebTrackBase {
 
 	public static List<OnGenome> overlapQuery(GenomeDB db, ChrLoc loc, ServletContext context) {
 
-		ArrayList<OnGenome> result = new ArrayList<OnGenome>();
+		List<OnGenome> result = new ArrayList<OnGenome>();
 
 		StopWatch sw = new StopWatch();
 		DBType dbType = db.resolveDBType();
@@ -109,7 +109,7 @@ public class ReadView extends WebTrackBase {
 			}
 				break;
 			case BED: {
-				result.addAll(BEDViewer.query(db.path, loc));
+				result = BEDViewer.query(db.path, loc);
 				break;
 			}
 			case DAS: {

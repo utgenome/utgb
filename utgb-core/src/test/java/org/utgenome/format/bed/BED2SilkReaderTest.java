@@ -24,10 +24,11 @@
 //--------------------------------------
 package org.utgenome.format.bed;
 
+import static org.junit.Assert.fail;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.utgenome.gwt.utgb.server.app.BEDViewer.BEDQuery;
 import org.xerial.lens.Lens;
 import org.xerial.util.FileResource;
 import org.xerial.util.log.Logger;
@@ -47,8 +48,19 @@ public class BED2SilkReaderTest {
 	@Test
 	public void testGen() throws Exception {
 		BED2SilkReader r = new BED2SilkReader(FileResource.open(BED2SilkReaderTest.class, "sample.bed"));
-		BEDQuery q = Lens.loadSilk(BEDQuery.class, r);
-		_logger.info(Lens.toSilk(q));
+		Lens.loadSilk(new BEDQuery() {
+			public void addGene(BEDGene gene) {
+				_logger.info(Lens.toSilk(gene));
+			}
+
+			public void addTrack(BEDTrack track) {
+				_logger.info(Lens.toSilk(track));
+			}
+
+			public void reportError(Exception e) {
+				fail(e.getMessage());
+			}
+		}, r);
 	}
 
 }
