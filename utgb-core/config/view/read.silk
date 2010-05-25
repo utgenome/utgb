@@ -16,11 +16,16 @@
   -property
     -sequenceList: [{"species":"human", "revision":["hg18","hg17"]},{"species":"mouse", "revision":["mm9"]},{"species":"drosophila", "revision":["dm3"]},{"species":"c.elegance", "revision":["ce6"]}]
 -track
+  -name: Sequence Overview
+  -pack: true
+  -class: SequenceRulerTrack
+-track
+  -name: Ruler
+  -pack: true
+  -class: RulerTrack
+-track
   -name: Read
   -pack: true
   -class: ReadTrack
   -property
     -db: db/testdata/genomic_sorted_5_plus.bam
-
-
-

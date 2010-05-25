@@ -39,8 +39,8 @@ public class Interval implements OnGenome, Comparable<Interval>, Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public int start = -1; // 1-origin (inclusive, -1 means undefined value)
-	public int end = -1; // 1-origin (exclusive, -1 means undefined value)
+	int start = -1; // 1-origin (inclusive, -1 means undefined value)
+	int end = -1; // 1-origin (exclusive, -1 means undefined value)
 
 	public Interval() {
 	}

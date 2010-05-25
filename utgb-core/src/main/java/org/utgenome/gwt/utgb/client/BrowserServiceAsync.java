@@ -34,6 +34,7 @@ import org.utgenome.gwt.utgb.client.bio.ChrRange;
 import org.utgenome.gwt.utgb.client.bio.Gene;
 import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.utgenome.gwt.utgb.client.bio.KeywordSearchResult;
+import org.utgenome.gwt.utgb.client.bio.OnGenome;
 import org.utgenome.gwt.utgb.client.bio.OnGenomeDataSet;
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.bio.WigGraphData;
@@ -83,7 +84,7 @@ public interface BrowserServiceAsync extends RpcService {
 
 	public void getSAMReadList(String readFileName, String refSeqFileName, AsyncCallback<List<SAMRead>> callback);
 
-	public void getBEDEntryList(String bedPath, ChrLoc location, AsyncCallback<List<Gene>> callback);
+	public void getBEDEntryList(String bedPath, ChrLoc location, AsyncCallback<List<OnGenome>> callback);
 
 	public void querySAMReadList(String bamFileName, String indexFileName, String refSeqFileName, String rname, int start, int end,
 			AsyncCallback<List<SAMRead>> callback);

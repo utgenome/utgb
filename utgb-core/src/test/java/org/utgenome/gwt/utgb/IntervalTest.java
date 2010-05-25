@@ -44,8 +44,8 @@ public class IntervalTest {
 	@Test
 	public void constructor() {
 		Interval i = new Interval(10, 200);
-		assertEquals(10, i.start);
-		assertEquals(200, i.end);
+		assertEquals(10, i.getStart());
+		assertEquals(200, i.getEnd());
 	}
 
 	@Test

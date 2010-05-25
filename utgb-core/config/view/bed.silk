@@ -35,7 +35,6 @@
   -class: RulerTrack
 -track
   -name: BED Track
-  -height: 0
   -pack: true
   -class: BEDTrack
   -property
@@ -44,10 +43,9 @@
     -type: image
 -track
   -name: BED Canvas
-  -height: 0
   -pack: true
-  -class: BEDCanvasTrack
+  -class: ReadTrack
   -property
-    -fileName: db/sample.bed
+    -db: db/sample.bed
     -onclick.action: link
     -onclick.url: http://www.ncbi.nlm.nih.gov/entrez/viewer.fcgi?val=%q

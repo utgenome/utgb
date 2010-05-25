@@ -35,6 +35,7 @@ public class ReferenceSequence implements OnGenome {
 	private static final long serialVersionUID = 1L;
 
 	public int start;
+	public String name;
 	public String sequence;
 
 	public ReferenceSequence() {
@@ -44,4 +45,15 @@ public class ReferenceSequence implements OnGenome {
 		visitor.visitSequence(this);
 	}
 
+	public int getStart() {
+		return start;
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+	public int length() {
+		return sequence != null ? sequence.length() : 0;
+	}
 }

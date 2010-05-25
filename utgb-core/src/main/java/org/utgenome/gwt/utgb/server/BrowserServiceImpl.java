@@ -555,7 +555,7 @@ public class BrowserServiceImpl extends RpcServlet implements BrowserService {
 			Lens.findFromSilk(new SAM2SilkReader(new FileReader(new File(WebTrackBase.getProjectRootPath() + "/" + readFileName))), "record", SAMRead.class,
 					new ObjectHandler<SAMRead>() {
 						public void handle(SAMRead input) throws Exception {
-							input.refSeq = cf.getSequence(input.rname, input.start - 1, input.end).toString();
+							input.refSeq = cf.getSequence(input.rname, input.getStart() - 1, input.getEnd()).toString();
 							_logger.info(Lens.toSilk(input));
 							readDataList.add(input);
 						}
@@ -567,7 +567,7 @@ public class BrowserServiceImpl extends RpcServlet implements BrowserService {
 		return readDataList;
 	}
 
-	public List<Gene> getBEDEntryList(String bedPath, ChrLoc location) {
+	public List<OnGenome> getBEDEntryList(String bedPath, ChrLoc location) {
 		return BEDViewer.query(bedPath, location);
 	}
 
@@ -596,7 +596,7 @@ public class BrowserServiceImpl extends RpcServlet implements BrowserService {
 
 				SAMRead read = ReadView.convertToSAMRead(record);
 				// get refseq
-				read.refSeq = cf.getSequence(read.rname, read.start - 1, read.end).toString();
+				read.refSeq = cf.getSequence(read.rname, read.getStart() - 1, read.getEnd()).toString();
 
 				readDataList.add(read);
 			}

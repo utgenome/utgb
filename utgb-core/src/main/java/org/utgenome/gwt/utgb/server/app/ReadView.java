@@ -72,18 +72,45 @@ public class ReadView extends WebTrackBase {
 		w.endDocument();
 	}
 
+	public static ReadType getDBType(String dbID) {
+		// TODO properly resolve actual DB type
+
+		if (dbID.endsWith("bam")) {
+			return ReadType.BAM;
+		}
+		else if (dbID.endsWith("bed")) {
+			return ReadType.BED;
+		}
+		else if (dbID.endsWith("wig")) {
+			return ReadType.WIG;
+		}
+
+		return ReadType.INTERVAL;
+	}
+
 	public static List<OnGenome> overlapQuery(String dbID, ChrLoc loc) {
 
 		ArrayList<OnGenome> result = new ArrayList<OnGenome>();
 
-		// TODO properly nresolve actual file names from dbID 
-		File bamFile = new File(WebTrackBase.getProjectRootPath(), dbID);
-		File baiFile = new File(WebTrackBase.getProjectRootPath(), dbID + ".bai");
-		SAMFileReader sam = new SAMFileReader(bamFile, baiFile);
-		for (CloseableIterator<SAMRecord> it = sam.queryOverlapping(loc.chr, loc.start, loc.end); it.hasNext();) {
-			SAMRead r = convertToSAMRead(it.next());
-			result.add(r);
+		ReadType readType = getDBType(dbID);
+		switch (readType) {
+		case BAM: {
+			// TODO properly resolve actual file names from dbID 
+			File bamFile = new File(WebTrackBase.getProjectRootPath(), dbID);
+			File baiFile = new File(WebTrackBase.getProjectRootPath(), dbID + ".bai");
+			SAMFileReader sam = new SAMFileReader(bamFile, baiFile);
+			for (CloseableIterator<SAMRecord> it = sam.queryOverlapping(loc.chr, loc.start, loc.end); it.hasNext();) {
+				SAMRead r = convertToSAMRead(it.next());
+				result.add(r);
+			}
 		}
+			break;
+		case BED: {
+			result.addAll(BEDViewer.query(dbID, loc));
+		}
+			break;
+		}
+
 		return result;
 	}
 
@@ -94,13 +121,11 @@ public class ReadView extends WebTrackBase {
 	 * @return
 	 */
 	public static SAMRead convertToSAMRead(SAMRecord record) {
-		SAMRead read = new SAMRead();
+		SAMRead read = new SAMRead(record.getAlignmentStart(), record.getAlignmentEnd());
 		if (record != null) {
 			read.qname = record.getReadName();
 			read.flag = record.getFlags();
 			read.rname = record.getReferenceName();
-			read.start = record.getAlignmentStart();
-			read.end = record.getAlignmentEnd();
 			read.mapq = record.getMappingQuality();
 			read.cigar = record.getCigarString();
 			read.mrnm = record.getMateReferenceName();

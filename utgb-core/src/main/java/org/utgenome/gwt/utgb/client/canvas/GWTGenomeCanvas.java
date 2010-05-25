@@ -28,11 +28,16 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import org.utgenome.gwt.utgb.client.bio.BSSRead;
 import org.utgenome.gwt.utgb.client.bio.CDS;
 import org.utgenome.gwt.utgb.client.bio.Exon;
 import org.utgenome.gwt.utgb.client.bio.Gene;
 import org.utgenome.gwt.utgb.client.bio.Interval;
+import org.utgenome.gwt.utgb.client.bio.OnGenome;
+import org.utgenome.gwt.utgb.client.bio.OnGenomeDataVisitor;
 import org.utgenome.gwt.utgb.client.bio.Read;
+import org.utgenome.gwt.utgb.client.bio.ReferenceSequence;
+import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.bio.WigGraphData;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.ui.FixedWidthLabel;
@@ -101,9 +106,9 @@ public class GWTGenomeCanvas extends Composite {
 
 	class GeneNamePopup extends PopupPanel {
 
-		public final Interval locus;
+		public final OnGenome locus;
 
-		public GeneNamePopup(Interval l) {
+		public GeneNamePopup(OnGenome l) {
 			super(true);
 			this.locus = l;
 
@@ -138,7 +143,7 @@ public class GWTGenomeCanvas extends Composite {
 		case Event.ONMOUSEOVER:
 		case Event.ONMOUSEMOVE: {
 			// show labels 
-			Interval g = overlappedInterval(event, 2);
+			OnGenome g = overlappedInterval(event, 2);
 			if (g != null) {
 				if (popupLabel.locus != g) {
 					popupLabel.removeFromParent();
@@ -160,7 +165,7 @@ public class GWTGenomeCanvas extends Composite {
 		}
 		case Event.ONMOUSEDOWN: {
 			// invoke a click event 
-			Interval g = overlappedInterval(event, 2);
+			OnGenome g = overlappedInterval(event, 2);
 			if (g != null) {
 				if (clickHandler != null)
 					clickHandler.onClick(g);
@@ -178,19 +183,19 @@ public class GWTGenomeCanvas extends Composite {
 	 * @param xBorder
 	 * @return
 	 */
-	private Interval overlappedInterval(Event event, int xBorder) {
+	private OnGenome overlappedInterval(Event event, int xBorder) {
 
 		int x = drawPosition(getXOnCanvas(event));
 		int y = getYOnCanvas(event);
 
 		for (LocusLayout gl : locusLayout.rangeQuery(x, Integer.MAX_VALUE, x)) {
-			Interval g = gl.getLocus();
+			OnGenome g = gl.getLocus();
 			int y1 = gl.getYOffset();
 			int y2 = y1 + geneHeight;
 
 			if (y1 <= y && y <= y2) {
 				int x1 = pixelPositionOnWindow(g.getStart()) - xBorder;
-				int x2 = pixelPositionOnWindow(g.getEnd()) + xBorder;
+				int x2 = pixelPositionOnWindow(g.getStart() + g.length()) + xBorder;
 				if (x1 <= x && x <= x2)
 					return g;
 			}
@@ -259,8 +264,6 @@ public class GWTGenomeCanvas extends Composite {
 		}
 	}
 
-	
-	
 	public void clear() {
 		canvas.clear();
 		locusLayout.clear();
@@ -287,16 +290,16 @@ public class GWTGenomeCanvas extends Composite {
 		return (x1 < x2) ? x2 - x1 : x1 - x2;
 	}
 
-	public class LocusLayout implements Comparable<LocusLayout> {
-		private Interval locus;
+	public class LocusLayout {
+		private OnGenome locus;
 		private int yOffset;
 
-		public LocusLayout(Interval locus, int yOffset) {
+		public LocusLayout(OnGenome locus, int yOffset) {
 			this.locus = locus;
 			this.yOffset = yOffset;
 		}
 
-		public Interval getLocus() {
+		public OnGenome getLocus() {
 			return locus;
 		}
 
@@ -304,20 +307,17 @@ public class GWTGenomeCanvas extends Composite {
 			return yOffset;
 		}
 
-		public int compareTo(LocusLayout other) {
-			return locus.compareTo(other.locus);
-		}
-
 	}
 
-	private int estimiateLabelWidth(Interval l) {
-		int labelWidth = l.getName() != null ? (int) (l.getName().length() * DEFAULT_GENE_HEIGHT * 0.9) : 0;
+	private int estimiateLabelWidth(OnGenome l) {
+		String name = l.getName();
+		int labelWidth = name != null ? (int) (name.length() * DEFAULT_GENE_HEIGHT * 0.9) : 0;
 		if (labelWidth > 150)
 			labelWidth = 150;
 		return labelWidth;
 	}
 
-	<T extends Interval> int createLayout(List<T> locusList) {
+	<T extends OnGenome> int createLayout(List<T> locusList) {
 
 		int maxYOffset = 0;
 		boolean showLabelsFlag = showLabelsIfPossible && (locusList.size() < 500);
@@ -328,10 +328,10 @@ public class GWTGenomeCanvas extends Composite {
 			maxYOffset = 0;
 			locusLayout.clear();
 
-			for (Interval l : locusList) {
+			for (OnGenome l : locusList) {
 
 				int x1 = pixelPositionOnWindow(l.getStart());
-				int x2 = pixelPositionOnWindow(l.getEnd());
+				int x2 = pixelPositionOnWindow(l.getStart() + l.length());
 
 				if (showLabelsFlag) {
 					int labelWidth = estimiateLabelWidth(l);
@@ -374,101 +374,119 @@ public class GWTGenomeCanvas extends Composite {
 		return maxYOffset;
 	}
 
-	public void drawInterval(List<Interval> locusList) {
+	class ReadPainter implements OnGenomeDataVisitor {
 
-		int maxOffset = createLayout(locusList);
+		private LocusLayout gl;
+		private int h = GWTGenomeCanvas.this.geneHeight + GWTGenomeCanvas.this.geneMargin;
 
-		int h = geneHeight + geneMargin;
-		int height = maxOffset * h;
+		public void setLayoutInfo(LocusLayout layout) {
+			this.gl = layout;
+			gl.yOffset = gl.yOffset * h;
+		}
 
-		setPixelSize(windowWidth, height);
+		public void visitBSSRead(BSSRead b) {
+			// TODO Auto-generated method stub
+
+		}
+
+		public void visitGene(Gene g) {
+			int gx1 = pixelPositionOnWindow(g.getStart());
+			int gx2 = pixelPositionOnWindow(g.getEnd());
+
+			int geneWidth = gx2 - gx1;
+			if (geneWidth <= 10) {
+				draw(g, gl.getYOffset());
+			}
+			else {
+				CDS cds = g.getCDS().size() > 0 ? g.getCDS().get(0) : null;
+				draw(g, g.getExon(), cds, gl.getYOffset());
+			}
+
+			if (canDisplayLabel) {
+				String n = g.getName();
+				if (n != null) {
+					int textWidth = estimiateLabelWidth(g);
+
+					FixedWidthLabel label = new FixedWidthLabel(n, textWidth);
+					Style.fontSize(label, geneHeight);
+					Style.fontColor(label, getExonColorText(g));
+
+					Style.verticalAlign(label, "middle");
+
+					int yPos = gl.getYOffset() - 1;
+
+					if (gx1 - textWidth < 0) {
+						if (reverse) {
+							Style.textAlign(label, "right");
+							panel.add(label, drawPosition(gx2) - textWidth - 1, yPos);
+						}
+						else {
+							Style.textAlign(label, "left");
+							panel.add(label, drawPosition(gx2) + 1, yPos);
+						}
+					}
+					else {
+						if (reverse) {
+							Style.textAlign(label, "left");
+							panel.add(label, drawPosition(gx1) + 1, yPos);
+						}
+						else {
+							Style.textAlign(label, "right");
+							panel.add(label, drawPosition(gx1) - textWidth - 1, yPos);
+						}
+					}
+
+					labels.add(label);
+				}
+			}
+
+		}
+
+		public void visitInterval(Interval interval) {
+			draw(interval, gl.getYOffset());
+		}
+
+		public void visitRead(Read r) {
+			draw(r, gl.getYOffset());
+		}
+
+		public void visitSAMRead(SAMRead r) {
+			draw(r, gl.getYOffset());
+		}
+
+		public void visitSequence(ReferenceSequence referenceSequence) {
+			// TODO Auto-generated method stub
+
+		}
+
+	};
+
+	public <T extends OnGenome> void draw(List<T> locusList) {
+
+		layoutRead(locusList);
+
+		final ReadPainter painter = new ReadPainter();
 
 		locusLayout.depthFirstSearch(new PrioritySearchTree.Visitor<LocusLayout>() {
-			private int h = GWTGenomeCanvas.this.geneHeight + GWTGenomeCanvas.this.geneMargin;
-
 			public void visit(LocusLayout gl) {
-				gl.yOffset = gl.yOffset * h;
-				draw(gl.getLocus(), gl.getYOffset());
+				painter.setLayoutInfo(gl);
+				gl.getLocus().accept(painter);
 			}
 		});
 
 	}
 
-	public void drawGene(List<Gene> geneList) {
-
-		int maxOffset = createLayout(geneList);
-		if (maxOffset > 30) {
+	private <T extends OnGenome> void layoutRead(List<T> readList) {
+		int maxOffset = createLayout(readList);
+		if (maxOffset > 30)
 			geneHeight = 2;
-		}
-		else {
+		else
 			geneHeight = DEFAULT_GENE_HEIGHT;
-		}
 
 		int h = geneHeight + geneMargin;
 		int height = (maxOffset + 1) * h;
 
 		setPixelSize(windowWidth, height);
-
-		locusLayout.depthFirstSearch(new PrioritySearchTree.Visitor<LocusLayout>() {
-			private int h = GWTGenomeCanvas.this.geneHeight + GWTGenomeCanvas.this.geneMargin;
-
-			public void visit(LocusLayout gl) {
-				gl.yOffset = gl.yOffset * h;
-				Gene g = (Gene) gl.getLocus();
-				int gx1 = pixelPositionOnWindow(g.getStart());
-				int gx2 = pixelPositionOnWindow(g.getEnd());
-
-				int geneWidth = gx2 - gx1;
-				if (geneWidth <= 10) {
-					draw(g, gl.getYOffset());
-				}
-				else {
-					CDS cds = g.getCDS().size() > 0 ? g.getCDS().get(0) : null;
-					draw(g, g.getExon(), cds, gl.getYOffset());
-				}
-
-				if (canDisplayLabel) {
-					String n = g.getName();
-					if (n != null) {
-						int textWidth = estimiateLabelWidth(g);
-
-						FixedWidthLabel label = new FixedWidthLabel(n, textWidth);
-						Style.fontSize(label, geneHeight);
-						Style.fontColor(label, getExonColorText(g));
-
-						Style.verticalAlign(label, "middle");
-
-						int yPos = gl.getYOffset() - 1;
-
-						if (gx1 - textWidth < 0) {
-							if (reverse) {
-								Style.textAlign(label, "right");
-								panel.add(label, drawPosition(gx2) - textWidth - 1, yPos);
-							}
-							else {
-								Style.textAlign(label, "left");
-								panel.add(label, drawPosition(gx2) + 1, yPos);
-							}
-						}
-						else {
-							if (reverse) {
-								Style.textAlign(label, "left");
-								panel.add(label, drawPosition(gx1) + 1, yPos);
-							}
-							else {
-								Style.textAlign(label, "right");
-								panel.add(label, drawPosition(gx1) - textWidth - 1, yPos);
-							}
-						}
-
-						labels.add(label);
-					}
-				}
-
-			}
-
-		});
-
 	}
 
 	public static Color getGeneColor(Interval l) {
@@ -560,11 +578,11 @@ public class GWTGenomeCanvas extends Composite {
 			return (int) x;
 	}
 
-	public Color getExonColor(Gene g) {
+	public static Color getExonColor(Gene g) {
 		return getGeneColor(g, 0.5f);
 	}
 
-	public Color getCDSColor(Interval g) {
+	public static Color getCDSColor(Interval g) {
 		return getGeneColor(g);
 	}
 

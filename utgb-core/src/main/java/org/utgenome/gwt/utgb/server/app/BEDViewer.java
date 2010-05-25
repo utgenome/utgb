@@ -44,6 +44,7 @@ import org.utgenome.graphics.GeneCanvas;
 import org.utgenome.graphics.GenomeWindow;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.Gene;
+import org.utgenome.gwt.utgb.client.bio.OnGenome;
 import org.utgenome.gwt.utgb.server.WebTrackBase;
 import org.xerial.db.sql.ResultSetHandler;
 import org.xerial.db.sql.sqlite.SQLiteAccess;
@@ -73,7 +74,7 @@ public class BEDViewer extends WebTrackBase implements Serializable {
 	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		List<Gene> geneList = query(fileName, new ChrLoc(name, start, end));
+		List<OnGenome> geneList = query(fileName, new ChrLoc(name, start, end));
 
 		String suffix = getActionSuffix(request);
 
@@ -91,9 +92,9 @@ public class BEDViewer extends WebTrackBase implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static List<Gene> query(String bedPath, final ChrLoc location) {
+	public static List<OnGenome> query(String bedPath, final ChrLoc location) {
 
-		final ArrayList<Gene> geneList = new ArrayList<Gene>();
+		final ArrayList<OnGenome> geneList = new ArrayList<OnGenome>();
 		long sqlStart = location.end >= location.start ? location.start : location.end;
 		long sqlEnd = location.end >= location.start ? location.end : location.start;
 
@@ -144,9 +145,9 @@ public class BEDViewer extends WebTrackBase implements Serializable {
 		private String coordinate;
 		private long start;
 		private long end;
-		private final List<Gene> geneList;
+		private final List<OnGenome> geneList;
 
-		public BEDQuery(List<Gene> geneList, String coordinate, long start, long end) {
+		public BEDQuery(List<OnGenome> geneList, String coordinate, long start, long end) {
 			this.geneList = geneList;
 			this.coordinate = coordinate;
 			this.start = end >= start ? start : end;
@@ -157,8 +158,8 @@ public class BEDViewer extends WebTrackBase implements Serializable {
 
 		public void addGene(BEDGene gene) {
 			// correct 0-based BED data into 1-origin 
-			gene.start += 1;
-			gene.end += 1;
+			gene.setStart(gene.getStart() + 1);
+			gene.setEnd(gene.getEnd() + 1);
 
 			long geneStart = gene.getEnd() >= gene.getStart() ? gene.getStart() : gene.getEnd();
 			long geneEnd = gene.getEnd() >= gene.getStart() ? gene.getEnd() : gene.getStart();

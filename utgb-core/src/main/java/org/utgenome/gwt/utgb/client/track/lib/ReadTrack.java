@@ -27,7 +27,6 @@ package org.utgenome.gwt.utgb.client.track.lib;
 import java.util.ArrayList;
 
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
-import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
 import org.utgenome.gwt.utgb.client.bio.OnGenomeDataSet;
 import org.utgenome.gwt.utgb.client.canvas.GWTGenomeCanvas;
@@ -86,7 +85,7 @@ public class ReadTrack extends TrackBase {
 		layoutTable.setWidget(0, 1, geneCanvas);
 
 		geneCanvas.setLocusClickHandler(new LocusClickHandler() {
-			public void onClick(Interval locus) {
+			public void onClick(OnGenome locus) {
 				String url = clickURLtemplate;
 				if (url.contains("%q") && locus.getName() != null)
 					url = url.replace("%q", locus.getName());
@@ -116,7 +115,7 @@ public class ReadTrack extends TrackBase {
 		geneCanvas.clear();
 		geneCanvas.setWindow(new TrackWindowImpl(width, s, e));
 		geneCanvas.setShowLabels(showLabels);
-		//geneCanvas.draw(onGenomeData);
+		geneCanvas.draw(onGenomeData);
 
 		getFrame().loadingDone();
 	}
@@ -175,7 +174,7 @@ public class ReadTrack extends TrackBase {
 				onGenomeData.clear();
 				onGenomeData.addAll(readSet.read);
 
-				getFrame().loadingDone();
+				draw();
 			}
 
 		});

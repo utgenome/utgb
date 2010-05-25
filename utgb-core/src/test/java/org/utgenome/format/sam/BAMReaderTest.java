@@ -30,13 +30,12 @@ import java.util.Iterator;
 
 import net.sf.samtools.SAMFileReader;
 import net.sf.samtools.SAMRecord;
-import net.sf.samtools.SAMRecord.SAMTagAndValue;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
-import org.utgenome.gwt.utgb.client.util.Properties;
+import org.utgenome.gwt.utgb.server.app.ReadView;
 import org.xerial.util.FileResource;
 import org.xerial.util.FileUtil;
 import org.xerial.util.log.Logger;
@@ -59,7 +58,7 @@ public class BAMReaderTest {
 		for (SAMRecord each : reader)
 			_logger.info(each.format());
 	}
-	
+
 	@Test
 	public void queryTest() throws Exception {
 		_logger.info("query test");
@@ -72,30 +71,15 @@ public class BAMReaderTest {
 
 		temp_bam.deleteOnExit();
 		temp_bam_bai.deleteOnExit();
-		
+
 		Iterator<SAMRecord> iterator = new SAMFileReader(temp_bam, temp_bam_bai).query("chr13", 0, 0, true);
-		while (iterator.hasNext()){
+		while (iterator.hasNext()) {
 			SAMRecord each = iterator.next();
 			_logger.info(each.format());
-			
-			SAMRead read = new SAMRead();
-			read.qname = each.getReadName();
-			read.flag = each.getFlags();
-			read.rname = each.getReferenceName();
-			read.start = each.getAlignmentStart();
-			read.end = each.getAlignmentEnd();
-			read.mapq = each.getMappingQuality();
-			read.cigar = each.getCigarString();
-			read.mrnm = each.getMateReferenceName(); // mate reference name
-			read.iSize = each.getInferredInsertSize();
-			read.seq = each.getReadString();
-			read.qual = each.getBaseQualityString();
-			read.tag = new Properties();
-			for (SAMTagAndValue tag : each.getAttributes()) {
-				read.tag.add(tag.tag, String.valueOf(tag.value));
-			}
+
+			SAMRead read = ReadView.convertToSAMRead(each);
 			_logger.info(read);
-			
+
 			readDataList.add(read);
 
 		}

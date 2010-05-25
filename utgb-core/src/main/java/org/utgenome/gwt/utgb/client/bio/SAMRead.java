@@ -24,8 +24,6 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.bio;
 
-import java.io.Serializable;
-
 import org.utgenome.gwt.utgb.client.util.Properties;
 
 /**
@@ -34,15 +32,16 @@ import org.utgenome.gwt.utgb.client.util.Properties;
  * @author yoshimura
  * 
  */
-public class SAMRead implements Serializable, OnGenome {
+public class SAMRead extends Interval {
 	private static final long serialVersionUID = 1L;
 
 	//schema record(qname, flag, rname, start, end, mapq, cigar, mrnm, mpos, isize, seq, qual, tag*)
 	public String qname;
 	public int flag;
 	public String rname;
-	public int start; // left-most position on the reference sequence
-	public int end;
+	// left-most position on the reference sequence
+	//public int start; 
+	//public int end;
 	public int mapq; // Mapping Quality
 	public String cigar;
 	public String mrnm; // mate reference name
@@ -53,6 +52,14 @@ public class SAMRead implements Serializable, OnGenome {
 	public Properties tag;
 
 	public String refSeq;
+
+	public SAMRead() {
+		super();
+	}
+
+	public SAMRead(int start, int end) {
+		super(start, end);
+	}
 
 	@Override
 	public String toString() {

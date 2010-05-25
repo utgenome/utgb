@@ -83,7 +83,7 @@ public class TrackView implements Serializable {
 		public TrackGroup trackGroup;
 
 		public String name;
-		public int height;
+		public int height = 0;
 		public boolean pack;
 
 		/**

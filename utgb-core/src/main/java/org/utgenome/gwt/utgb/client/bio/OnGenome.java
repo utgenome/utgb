@@ -24,7 +24,6 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.bio;
 
-
 /**
  * A common interface for data mapped onto a genome sequence (e.g., Read, Gene, SAMRead, WigGraphData, etc.)
  * 
@@ -32,6 +31,12 @@ package org.utgenome.gwt.utgb.client.bio;
  * 
  */
 public interface OnGenome {
+
+	public int getStart();
+
+	public String getName();
+
+	public int length();
 
 	public void accept(OnGenomeDataVisitor visitor);
 }

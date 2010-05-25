@@ -28,6 +28,7 @@ import java.util.List;
 
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.Interval;
+import org.utgenome.gwt.utgb.client.bio.OnGenome;
 import org.utgenome.gwt.utgb.client.canvas.GWTGenomeCanvas;
 import org.utgenome.gwt.utgb.client.canvas.LocusClickHandler;
 import org.utgenome.gwt.utgb.client.track.Track;
@@ -75,7 +76,7 @@ public class BSSCanvasTrack extends TrackBase {
 		//CSS.border(geneCanvas, 2, "solid", "cyan");
 
 		geneCanvas.setLocusClickHandler(new LocusClickHandler() {
-			public void onClick(Interval locus) {
+			public void onClick(OnGenome locus) {
 				getTrackGroup().getPropertyWriter().setProperty("bss.query", locus.getName());
 			}
 		});
@@ -135,7 +136,7 @@ public class BSSCanvasTrack extends TrackBase {
 
 			geneCanvas.clear();
 			geneCanvas.setWindow(new TrackWindowImpl(width, s, e));
-			geneCanvas.drawInterval(geneList);
+			geneCanvas.draw(geneList);
 
 			refresh();
 

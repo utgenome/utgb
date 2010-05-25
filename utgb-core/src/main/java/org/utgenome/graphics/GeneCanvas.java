@@ -38,6 +38,7 @@ import org.utgenome.gwt.utgb.client.bio.CDS;
 import org.utgenome.gwt.utgb.client.bio.Exon;
 import org.utgenome.gwt.utgb.client.bio.Gene;
 import org.utgenome.gwt.utgb.client.bio.Interval;
+import org.utgenome.gwt.utgb.client.bio.OnGenome;
 import org.utgenome.gwt.utgb.client.bio.Read;
 import org.utgenome.gwt.utgb.client.canvas.PrioritySearchTree;
 import org.utgenome.gwt.utgb.server.app.MethylViewer;
@@ -84,15 +85,15 @@ public class GeneCanvas {
 	}
 
 	public class LocusLayout {
-		private Interval gene;
+		private OnGenome gene;
 		private int yOffset;
 
-		public LocusLayout(Interval gene, int yOffset) {
+		public LocusLayout(OnGenome gene, int yOffset) {
 			this.gene = gene;
 			this.yOffset = yOffset;
 		}
 
-		public Interval getLocus() {
+		public OnGenome getLocus() {
 			return gene;
 		}
 
@@ -114,7 +115,7 @@ public class GeneCanvas {
 		this.gapWidth = gapWidth;
 	}
 
-	<T extends Interval> int createLayout(List<T> locusList) {
+	<T extends OnGenome> int createLayout(List<T> locusList) {
 		int maxYOffset = 0;
 		locusLayout.clear();
 
@@ -125,10 +126,10 @@ public class GeneCanvas {
 		FontMetrics fontMetrics = canvas.getGraphics().getFontMetrics(f);
 		long leftOnGenome = canvas.getGenomeWindow().startIndexOnGenome;
 
-		for (Interval l : locusList) {
+		for (OnGenome l : locusList) {
 
 			int x1 = l.getStart();
-			int x2 = l.getEnd();
+			int x2 = l.getStart() + l.length();
 
 			if (drawLabel) {
 				int width = fontMetrics.stringWidth(l.getName()) + gapWidth;
@@ -162,7 +163,7 @@ public class GeneCanvas {
 		return maxYOffset;
 	}
 
-	public <E extends Interval> void draw(List<E> geneList) {
+	public <E extends OnGenome> void draw(List<E> geneList) {
 
 		// create a gene layout
 		int maxOffset = createLayout(geneList);
@@ -181,9 +182,9 @@ public class GeneCanvas {
 
 			public void visit(LocusLayout layout) {
 				layout.yOffset = layout.yOffset * h;
-				Interval l = layout.getLocus();
+				OnGenome l = layout.getLocus();
 				long lx = l.getStart();
-				long lx2 = l.getEnd();
+				long lx2 = l.getStart() + l.length();
 
 				long geneWidth = lx2 - lx;
 				if (geneWidth <= 10) {
@@ -198,10 +199,10 @@ public class GeneCanvas {
 					else if (MethylViewer.MethlEntry.class.isInstance(l)) {
 						MethylViewer.MethlEntry m = MethylViewer.MethlEntry.class.cast(l);
 
-						drawGeneRect(l.getStart(), l.getEnd(), layout.getYOffset(), getGeneColor(l, 0.7f));
+						drawGeneRect(l.getStart(), l.getStart() + l.length(), layout.getYOffset(), getGeneColor(l, 0.7f));
 
 						int s = canvas.getXPosOnWindow(l.getStart());
-						int e = canvas.getXPosOnWindow(l.getEnd());
+						int e = canvas.getXPosOnWindow(l.getStart() + l.length());
 						int w = e - s;
 						if (w < 0)
 							w = -w;
@@ -237,11 +238,11 @@ public class GeneCanvas {
 
 	}
 
-	public void draw(Interval locus, int yOffset) {
+	public void draw(OnGenome locus, int yOffset) {
 		if (Gene.class.isInstance(locus))
 			draw((Gene) locus, yOffset);
 		else
-			drawGeneRect(locus.getStart(), locus.getEnd(), yOffset, getGeneColor(locus));
+			drawGeneRect(locus.getStart(), locus.getStart() + locus.length(), yOffset, getGeneColor(locus));
 	}
 
 	public void draw(Gene gene, List<Exon> exonList, CDS cds, int yPosition) {
@@ -311,27 +312,27 @@ public class GeneCanvas {
 		ImageIO.write(canvas.getBufferedImage(), "png", out);
 	}
 
-	public Color getExonColor(Interval g) {
+	public Color getExonColor(OnGenome g) {
 		return hexValue2Color(getExonColorText(g), 0.3f);
 	}
 
-	public Color getGeneColor(Interval g) {
+	public Color getGeneColor(OnGenome g) {
 		return hexValue2Color(getExonColorText(g), 0.7f);
 	}
 
-	public Color getGeneColor(Interval g, float offset) {
+	public Color getGeneColor(OnGenome g, float offset) {
 		return hexValue2Color(getExonColorText(g), offset);
 	}
 
-	public Color getCDSColor(Interval g) {
+	public Color getCDSColor(OnGenome g) {
 		return hexValue2Color(getExonColorText(g), 0.5f);
 	}
 
-	public Color getIntronColor(Interval g) {
+	public Color getIntronColor(OnGenome g) {
 		return hexValue2Color(getExonColorText(g), 0.5f);
 	}
 
-	public String getExonColorText(Interval g) {
+	public String getExonColorText(OnGenome g) {
 		if (g instanceof Read) {
 			Read r = (Read) g;
 			if (r.getColor() == null) {

@@ -28,8 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
-import org.utgenome.gwt.utgb.client.bio.Gene;
-import org.utgenome.gwt.utgb.client.bio.Interval;
+import org.utgenome.gwt.utgb.client.bio.OnGenome;
 import org.utgenome.gwt.utgb.client.canvas.GWTGenomeCanvas;
 import org.utgenome.gwt.utgb.client.canvas.LocusClickHandler;
 import org.utgenome.gwt.utgb.client.db.ValueDomain;
@@ -69,7 +68,7 @@ public class BEDCanvasTrack extends TrackBase {
 	private String clickURLtemplate = "http://www.google.com/search?q=%q";
 	private int leftMargin = 0;
 
-	private ArrayList<Gene> genes = new ArrayList<Gene>();
+	private ArrayList<OnGenome> genes = new ArrayList<OnGenome>();
 
 	public static TrackFactory factory() {
 		return new TrackFactory() {
@@ -111,8 +110,8 @@ public class BEDCanvasTrack extends TrackBase {
 
 		geneCanvas.clear();
 		geneCanvas.setWindow(new TrackWindowImpl(width, s, e));
-		//geneCanvas.setShowLabels(showLabels);
-		geneCanvas.drawGene(genes);
+		geneCanvas.setShowLabels(showLabels);
+		geneCanvas.draw(genes);
 
 		getFrame().loadingDone();
 	}
@@ -164,6 +163,11 @@ public class BEDCanvasTrack extends TrackBase {
 			clickAction = change.getValue("onclick.action");
 		}
 
+		if (change.contains("showLabels")) {
+			showLabels = change.getBoolValue("showLabels");
+			refresh();
+		}
+
 		updateClickAction();
 	}
 
@@ -174,7 +178,7 @@ public class BEDCanvasTrack extends TrackBase {
 		}
 		else if ("link".equals(clickAction)) {
 			geneCanvas.setLocusClickHandler(new LocusClickHandler() {
-				public void onClick(Interval locus) {
+				public void onClick(OnGenome locus) {
 					String url = clickURLtemplate;
 					if (url.contains("%q") && locus.getName() != null)
 						url = url.replace("%q", locus.getName());
@@ -185,7 +189,7 @@ public class BEDCanvasTrack extends TrackBase {
 
 	}
 
-	private void updateGenes(List<Gene> geneList) {
+	private void updateGenes(List<OnGenome> geneList) {
 		genes.clear();
 		genes.addAll(geneList);
 		refresh();
@@ -200,14 +204,14 @@ public class BEDCanvasTrack extends TrackBase {
 
 		getFrame().setNowLoading();
 
-		getBrowserService().getBEDEntryList(fileName, new ChrLoc(target, s, e), new AsyncCallback<List<Gene>>() {
+		getBrowserService().getBEDEntryList(fileName, new ChrLoc(target, s, e), new AsyncCallback<List<OnGenome>>() {
 
 			public void onFailure(Throwable e) {
 				GWT.log("failed to retrieve gene data", e);
 				getFrame().loadingDone();
 			}
 
-			public void onSuccess(List<Gene> geneList) {
+			public void onSuccess(List<OnGenome> geneList) {
 				updateGenes(geneList);
 			}
 		});

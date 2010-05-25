@@ -33,7 +33,7 @@ package org.utgenome.gwt.utgb.client.bio;
 public class Read extends Interval {
 
 	public static enum ReadType {
-		BED, SAM, BAM, BSS, WIG
+		INTERVAL, BED, SAM, BAM, BSS, WIG
 	}
 
 	/**
