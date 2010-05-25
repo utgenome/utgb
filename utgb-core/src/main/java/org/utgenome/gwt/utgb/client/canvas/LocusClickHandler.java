@@ -28,5 +28,5 @@ import org.utgenome.gwt.utgb.client.bio.OnGenome;
 
 public interface LocusClickHandler {
 
-	public void onClick(OnGenome locus);
+	public void onClick(int clientX, int clientY, OnGenome locus);
 }

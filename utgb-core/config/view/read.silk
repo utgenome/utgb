@@ -28,4 +28,4 @@
   -pack: true
   -class: ReadTrack
   -property
-    -db: db/testdata/genomic_sorted_5_plus.bam
+    -path: db/testdata/genomic_sorted_5_plus.bam

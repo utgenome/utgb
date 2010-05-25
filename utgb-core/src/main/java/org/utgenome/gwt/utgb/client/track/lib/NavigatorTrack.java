@@ -428,8 +428,8 @@ public class NavigatorTrack extends TrackBase {
 	public void setUp(TrackFrame trackFrame, TrackGroup group) {
 		trackFrame.disableClose();
 		TrackWindow w = group.getTrackWindow();
-		startBox.setText(Long.toString(w.getStartOnGenome()));
-		endBox.setText(Long.toString(w.getEndOnGenome()));
+		startBox.setText(StringUtil.formatNumber(w.getStartOnGenome()));
+		endBox.setText(StringUtil.formatNumber(w.getEndOnGenome()));
 		targetBox.setText(group.getPropertyReader().getProperty("target", "chr1"));
 
 		retrieveSpeciesList();

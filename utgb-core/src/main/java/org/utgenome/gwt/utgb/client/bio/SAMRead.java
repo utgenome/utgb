@@ -75,6 +75,11 @@ public class SAMRead extends Interval {
 		return sb.toString();
 	}
 
+	@Override
+	public String getName() {
+		return qname;
+	}
+
 	public boolean isSense() {
 		return (flag & SAMReadFlag.FLAG_STRAND_OF_QUERY) == 0;
 	}
@@ -83,6 +88,7 @@ public class SAMRead extends Interval {
 		return (flag & SAMReadFlag.FLAG_STRAND_OF_QUERY) == 1;
 	}
 
+	@Override
 	public void accept(OnGenomeDataVisitor visitor) {
 		visitor.visitSAMRead(this);
 	}

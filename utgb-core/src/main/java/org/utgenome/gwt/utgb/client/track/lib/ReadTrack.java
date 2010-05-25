@@ -112,11 +112,18 @@ public class ReadTrack extends TrackBase {
 		}
 		else if ("link".equals(clickAction)) {
 			geneCanvas.setLocusClickHandler(new LocusClickHandler() {
-				public void onClick(OnGenome locus) {
+				public void onClick(int x, int y, OnGenome locus) {
 					String url = clickURLtemplate;
 					if (url.contains("%q") && locus.getName() != null)
 						url = url.replace("%q", locus.getName());
 					Window.open(url, "locus", "");
+				}
+			});
+		}
+		else if ("info".equals(clickAction)) {
+			geneCanvas.setLocusClickHandler(new LocusClickHandler() {
+				public void onClick(int x, int y, OnGenome locus) {
+					geneCanvas.displayInfo(x, y, locus);
 				}
 			});
 		}
@@ -180,7 +187,7 @@ public class ReadTrack extends TrackBase {
 		config.addConfigParameter("DB Type", new StringType("dbType", dbTypes), dbType);
 
 		config.addConfigParameter("Show Labels", new BooleanType("showLabels"), Boolean.toString(showLabels));
-		ValueDomain actionTypes = ValueDomain.createNewValueDomain(new String[] { "none", "link" });
+		ValueDomain actionTypes = ValueDomain.createNewValueDomain(new String[] { "none", "link", "info" });
 		config.addConfigParameter("On Click Action", new StringType("onclick.action", actionTypes), clickAction);
 		config.addConfigParameter("On Click URL", new StringType("onclick.url"), clickURLtemplate);
 
@@ -205,7 +212,7 @@ public class ReadTrack extends TrackBase {
 				onGenomeData.clear();
 				onGenomeData.addAll(readSet.read);
 
-				draw();
+				refresh();
 			}
 
 		});
@@ -263,6 +270,8 @@ public class ReadTrack extends TrackBase {
 		clickAction = properties.get("onclick.action", clickAction);
 		path = properties.get("path", path);
 		dbType = properties.get("dbType", dbType);
+
+		updateClickAction();
 	}
 
 }

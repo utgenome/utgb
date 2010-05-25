@@ -32,6 +32,7 @@ import org.utgenome.gwt.utgb.client.bio.BSSRead;
 import org.utgenome.gwt.utgb.client.bio.CDS;
 import org.utgenome.gwt.utgb.client.bio.Exon;
 import org.utgenome.gwt.utgb.client.bio.Gene;
+import org.utgenome.gwt.utgb.client.bio.InfoSilkGenerator;
 import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
 import org.utgenome.gwt.utgb.client.bio.OnGenomeDataVisitor;
@@ -42,16 +43,16 @@ import org.utgenome.gwt.utgb.client.bio.WigGraphData;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.ui.FixedWidthLabel;
 import org.utgenome.gwt.utgb.client.ui.FormLabel;
+import org.utgenome.gwt.utgb.client.ui.RoundCornerFrame;
 import org.utgenome.gwt.widget.client.Style;
 
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.widgetideas.graphics.client.Color;
@@ -80,7 +81,7 @@ public class GWTGenomeCanvas extends Composite {
 	private FlexTable layoutTable = new FlexTable();
 	private GWTCanvas canvas = new GWTCanvas();
 	private AbsolutePanel panel = new AbsolutePanel();
-	private GeneNamePopup popupLabel = new GeneNamePopup(null);
+	private PopupInfo popupLabel = new PopupInfo();
 	private LocusClickHandler clickHandler = null;
 	private PrioritySearchTree<LocusLayout> locusLayout = new PrioritySearchTree<LocusLayout>();
 
@@ -104,29 +105,31 @@ public class GWTGenomeCanvas extends Composite {
 		initWidget();
 	}
 
-	class GeneNamePopup extends PopupPanel {
+	class PopupInfo extends PopupPanel {
 
-		public final OnGenome locus;
+		OnGenome locus;
+		private HTML info = new HTML();
 
-		public GeneNamePopup(OnGenome l) {
+		public PopupInfo() {
 			super(true);
-			this.locus = l;
 
-			Style.border(this, 1, "solid", "#666666");
-			Style.backgroundColor(this, "#FFFFF8");
-			Style.padding(this, 2);
-			Style.fontSize(this, 12);
+			Style.padding(info, Style.LEFT | Style.RIGHT, 5);
+			Style.fontColor(info, "white");
+			Style.fontSize(info, 14);
+			RoundCornerFrame infoFrame = new RoundCornerFrame("336699", 0.7f, 4);
+			infoFrame.setWidget(info);
+			this.setWidget(infoFrame);
+
 		}
 
-		public void setName(String name) {
-			this.clear();
-			this.add(new Label(name));
+		public void setLocus(OnGenome g) {
+			this.locus = g;
+
+			InfoSilkGenerator silk = new InfoSilkGenerator();
+			g.accept(silk);
+			info.setHTML("<pre>" + silk.getSilk() + "</pre>");
 		}
 
-		public void onClick(ClickEvent e) {
-			if (clickHandler != null)
-				clickHandler.onClick(locus);
-		}
 	}
 
 	public void setLocusClickHandler(LocusClickHandler handler) {
@@ -146,16 +149,12 @@ public class GWTGenomeCanvas extends Composite {
 			OnGenome g = overlappedInterval(event, 2);
 			if (g != null) {
 				if (popupLabel.locus != g) {
-					popupLabel.removeFromParent();
-					popupLabel = new GeneNamePopup(g);
 
 					Style.cursor(canvas, Style.CURSOR_POINTER);
 
 					int clientX = DOM.eventGetClientX(event) + Window.getScrollLeft();
 					int clientY = DOM.eventGetClientY(event) + Window.getScrollTop();
-					popupLabel.setPopupPosition(clientX + 10, clientY + 3);
-					popupLabel.setName(g.getName());
-					popupLabel.show();
+					displayInfo(clientX, clientY, g);
 				}
 			}
 			else
@@ -165,15 +164,28 @@ public class GWTGenomeCanvas extends Composite {
 		}
 		case Event.ONMOUSEDOWN: {
 			// invoke a click event 
+			int clientX = DOM.eventGetClientX(event) + Window.getScrollLeft();
+			int clientY = DOM.eventGetClientY(event) + Window.getScrollTop();
 			OnGenome g = overlappedInterval(event, 2);
 			if (g != null) {
 				if (clickHandler != null)
-					clickHandler.onClick(g);
+					clickHandler.onClick(clientX, clientY, g);
 			}
 			break;
 		}
 		}
 
+	}
+
+	public void displayInfo(int clientX, int clientY, OnGenome g) {
+		if (popupLabel == null)
+			popupLabel = new PopupInfo();
+
+		popupLabel.removeFromParent();
+
+		popupLabel.setLocus(g);
+		popupLabel.setPopupPosition(clientX + 10, clientY + 3);
+		popupLabel.show();
 	}
 
 	/**
@@ -405,9 +417,9 @@ public class GWTGenomeCanvas extends Composite {
 			drawLabel(g);
 		}
 
-		private void drawLabel(Read r) {
+		private void drawLabel(OnGenome r) {
 			int gx1 = pixelPositionOnWindow(r.getStart());
-			int gx2 = pixelPositionOnWindow(r.getEnd());
+			int gx2 = pixelPositionOnWindow(r.getStart() + r.length());
 
 			if (canDisplayLabel) {
 				String n = r.getName();
@@ -460,6 +472,7 @@ public class GWTGenomeCanvas extends Composite {
 
 		public void visitSAMRead(SAMRead r) {
 			draw(r, gl.getYOffset());
+			drawLabel(r);
 		}
 
 		public void visitSequence(ReferenceSequence referenceSequence) {
@@ -509,7 +522,7 @@ public class GWTGenomeCanvas extends Composite {
 		return new Color(r, g, b, alpha);
 	}
 
-	private static String getExonColorText(Interval g) {
+	private static String getExonColorText(OnGenome g) {
 		final String senseColor = "#d80067";
 		final String antiSenseColor = "#0067d8";
 		if (g instanceof Read) {
