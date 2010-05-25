@@ -59,8 +59,6 @@ public class SAMQueryTrack extends TrackBase {
 	private final boolean isDebug = true;
 	private boolean isC2T = false;
 
-	protected TrackConfig config = new TrackConfig(this);
-
 	protected String trackBaseURL;
 
 	protected String target = "chr13";
@@ -112,6 +110,7 @@ public class SAMQueryTrack extends TrackBase {
 	@Override
 	public void setUp(TrackFrame trackFrame, TrackGroup group) {
 
+		TrackConfig config = getConfig();
 		config.addConfigParameter("BAM File Name", new StringType("bamFileName"), bamFileName);
 		//		config.addConfigParameter("Index File Name", new StringType("indexFileName"), indexFileName);
 		indexFileName = bamFileName + ".bai";
@@ -265,19 +264,21 @@ public class SAMQueryTrack extends TrackBase {
 		}
 	}
 
-	public void saveProperties(Properties saveData) {
-		saveData.add("bamFileName", bamFileName);
-		//		saveData.add("indexFileName", indexFileName);
-		saveData.add("redSeqFileName", refSeqFileName);
-		saveData.add("colorMode", colorMode);
-		saveData.add("isC2T", isC2T);
-		saveData.add("leftMargin", leftMargin);
-		saveData.add("target", target);
-		saveData.add("start", start);
-		saveData.add("end", end);
-	}
+	//	public void saveProperties(Properties saveData) {
+	//		saveData.add("bamFileName", bamFileName);
+	//		//		saveData.add("indexFileName", indexFileName);
+	//		saveData.add("redSeqFileName", refSeqFileName);
+	//		saveData.add("colorMode", colorMode);
+	//		saveData.add("isC2T", isC2T);
+	//		saveData.add("leftMargin", leftMargin);
+	//		saveData.add("target", target);
+	//		saveData.add("start", start);
+	//		saveData.add("end", end);
+	//	}
 
 	public void restoreProperties(Properties properties) {
+		super.restoreProperties(properties);
+
 		bamFileName = properties.get("bamFileName", bamFileName);
 		//		indexFileName = properties.get("indexFileName", indexFileName);
 		refSeqFileName = properties.get("refSeqFileName", refSeqFileName);
@@ -296,7 +297,4 @@ public class SAMQueryTrack extends TrackBase {
 		}
 	}
 
-	public TrackConfig getConfig() {
-		return config;
-	}
 }

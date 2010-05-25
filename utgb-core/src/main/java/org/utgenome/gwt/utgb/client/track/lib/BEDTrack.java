@@ -41,7 +41,7 @@ import org.utgenome.gwt.utgb.client.util.Properties;
  */
 public class BEDTrack extends GenomeTrack {
 
-	protected String fileName = null;
+	protected final String CONFIG_FILENAME = "fileName";
 
 	public static TrackFactory factory() {
 		return new TrackFactory() {
@@ -66,6 +66,7 @@ public class BEDTrack extends GenomeTrack {
 		p.add("start", w.getStartOnGenome());
 		p.add("end", w.getEndOnGenome());
 		p.add("width", w.getWindowWidth() - leftMargin);
+		String fileName = getConfig().getParameter(CONFIG_FILENAME);
 		p.add("fileName", fileName);
 
 		return c.getTrackURL(trackBaseURL, p);
@@ -74,30 +75,16 @@ public class BEDTrack extends GenomeTrack {
 	@Override
 	public void setUp(TrackFrame trackFrame, TrackGroup group) {
 		super.setUp(trackFrame, group);
-
-		config.addConfigParameter("File Name", new StringType("fileName"), fileName);
+		config.addConfigParameter("File Name", new StringType(CONFIG_FILENAME));
 	}
 
 	@Override
 	public void onChangeTrackConfig(TrackConfigChange change) {
 		super.onChangeTrackConfig(change);
 
-		if (change.contains("fileName")) {
-			fileName = change.getValue("fileName");
-			draw();
+		if (change.contains(CONFIG_FILENAME)) {
+			refresh();
 		}
-	}
-
-	@Override
-	public void saveProperties(Properties saveData) {
-		super.saveProperties(saveData);
-		saveData.add("fileName", fileName);
-	}
-
-	@Override
-	public void restoreProperties(Properties properties) {
-		super.restoreProperties(properties);
-		fileName = properties.get("fileName", fileName);
 	}
 
 }

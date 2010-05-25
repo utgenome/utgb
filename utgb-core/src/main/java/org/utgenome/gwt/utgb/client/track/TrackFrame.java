@@ -392,7 +392,7 @@ public class TrackFrame extends SimplePanel {
 				xPos -= ICON_WIDTH;
 				basePanel.add(packButton, xPos, yOffset);
 			}
-			if (_track.getConfig() != null && !_disableConfigButton) {
+			if ((_track.getConfig() != null && _track.getConfig().hasProperties()) && !_disableConfigButton) {
 				xPos -= ICON_WIDTH;
 				basePanel.add(configButton, xPos, yOffset);
 			}

@@ -52,14 +52,17 @@ public abstract class TrackBase implements Track {
 	private boolean _isInitialized = false;
 	private int defaultTrackHeight = TrackFrameState.DEFAULT_MIN_TRACKFRAME_HEIGHT;
 
+	private final TrackConfig __config;
+
 	private TrackBean _loadedState = null;
 
 	public TrackBase(String trackName) {
-		_trackInfo = new TrackInfo(trackName);
+		this(new TrackInfo(trackName));
 	}
 
 	public TrackBase(TrackInfo trackInfo) {
 		_trackInfo = trackInfo;
+		__config = new TrackConfig(this);
 	}
 
 	public void setUp(TrackFrame trackFrame, TrackGroup group) {
@@ -178,7 +181,7 @@ public abstract class TrackBase implements Track {
 	}
 
 	public TrackConfig getConfig() {
-		return null;
+		return __config;
 	}
 
 	public String getName() {
@@ -239,6 +242,7 @@ public abstract class TrackBase implements Track {
 	 * @param xmlWriter
 	 */
 	public void saveProperties(Properties saveData) {
+		__config.saveProperties(saveData);
 	}
 
 	/**
@@ -247,6 +251,7 @@ public abstract class TrackBase implements Track {
 	 * @param properties
 	 */
 	public void restoreProperties(Properties properties) {
+		__config.restoreProperties(properties);
 	}
 
 	public String getTrackGroupProperty(String key) {

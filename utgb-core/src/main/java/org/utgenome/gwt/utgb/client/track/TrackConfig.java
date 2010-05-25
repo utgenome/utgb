@@ -26,13 +26,13 @@ package org.utgenome.gwt.utgb.client.track;
 
 import java.util.HashMap;
 
-import org.utgenome.gwt.utgb.client.UTGBClientException;
 import org.utgenome.gwt.utgb.client.db.datatype.DataType;
 import org.utgenome.gwt.utgb.client.db.datatype.InputForm;
 import org.utgenome.gwt.utgb.client.track.impl.TrackConfigChangeImpl;
 import org.utgenome.gwt.utgb.client.ui.DraggableTable;
 import org.utgenome.gwt.utgb.client.ui.Icon;
 import org.utgenome.gwt.utgb.client.ui.MouseMoveListener;
+import org.utgenome.gwt.utgb.client.util.Properties;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -75,7 +75,7 @@ public class TrackConfig extends PopupPanel {
 	private DockPanel _panel = new DockPanel();
 	private ConfigurationTable _configTable = new ConfigurationTable(this);
 	private Label _label;
-	private TrackConfig _self = this;
+	Properties properties = new Properties();
 
 	public TrackConfig(Track track) {
 		super(true);
@@ -120,6 +120,10 @@ public class TrackConfig extends PopupPanel {
 		setWidth("500px");
 	}
 
+	public void addHiddenConfiguration(String paramName, String defaultValue) {
+		properties.put(paramName, properties.get(paramName, defaultValue));
+	}
+
 	public void addConfigParameter(DataType dataType, String defaultValue) {
 		_configTable.addConfiguration(dataType, defaultValue);
 	}
@@ -128,22 +132,52 @@ public class TrackConfig extends PopupPanel {
 		_configTable.addConfiguration(dataType, label, defaultValue);
 	}
 
+	public void addConfigParameter(String label, DataType dataType) {
+		String defaultValue = properties.get(dataType.getName());
+		addConfigParameter(label, dataType, defaultValue);
+	}
+
 	public String getParameter(String parameterName) {
-		return _configTable.getValue(parameterName);
+		return properties.get(parameterName);
+	}
+
+	public String getString(String parameterName, String defaultValue) {
+		return properties.get(parameterName, defaultValue);
+	}
+
+	public int getInt(String parameterName, int devaultValue) {
+		return properties.getInt(parameterName, devaultValue);
+	}
+
+	public boolean getBoolean(String parameterName, boolean devaultValue) {
+		return properties.getBoolean(parameterName, devaultValue);
 	}
 
 	/**
-	 * Set teh parameter value. This method does not notify the configuration change to the {@link TrackConfig}
+	 * Set the parameter value. This method does not notify the configuration change to the {@link TrackConfig}
 	 * 
 	 * @param parameterName
 	 * @param value
 	 */
 	public void setParameter(String parameterName, String value) {
+		properties.put(parameterName, value);
 		_configTable.setValue(parameterName, value);
 	}
 
 	public void notifyConfigChange(String parameterName) {
 		_track.onChangeTrackConfig(new TrackConfigChangeImpl(this, parameterName));
+	}
+
+	public void saveProperties(Properties toSave) {
+		toSave.putAll(properties);
+	}
+
+	public void restoreProperties(Properties forLoad) {
+		properties.putAll(forLoad);
+	}
+
+	public boolean hasProperties() {
+		return !properties.isEmpty();
 	}
 
 }
@@ -158,6 +192,7 @@ class ConfigurationTable extends Composite {
 
 			public void onKeyPress(KeyPressEvent e) {
 				if (e.getCharCode() == KeyboardHandler.KEY_ENTER) {
+					_config.properties.put(_parameterName, _form.getUserInput());
 					_config.notifyConfigChange(_parameterName);
 				}
 				else {
@@ -166,6 +201,7 @@ class ConfigurationTable extends Composite {
 			}
 
 			public void onChange(ChangeEvent e) {
+				_config.properties.put(_parameterName, _form.getUserInput());
 				_config.notifyConfigChange(_parameterName);
 			}
 
@@ -235,7 +271,10 @@ class ConfigurationTable extends Composite {
 
 	public void addConfiguration(DataType dataType, String label, String defaultValue) {
 		InputForm form = dataType.getInputForm();
-		form.setValue(defaultValue);
+		String currentValue = _config.getParameter(dataType.getName());
+		if (currentValue == null)
+			currentValue = defaultValue;
+		form.setValue(currentValue);
 		Entry entry = new Entry(label, dataType.getName(), form);
 		_table.add(entry, entry.getDragEdge());
 		_paramToEntryMap.put(dataType.getName(), entry);
@@ -248,7 +287,7 @@ class ConfigurationTable extends Composite {
 		if (_paramToEntryMap.containsKey(parameterName))
 			return true;
 		else {
-			GWT.log("no input form for the given parameter name " + parameterName + " is found", new UTGBClientException());
+			GWT.log("[WARN] no input form for the given parameter name " + parameterName + " is found", null);
 			return false;
 		}
 	}

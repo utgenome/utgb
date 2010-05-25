@@ -24,12 +24,9 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.track.lib;
 
-import java.util.ArrayList;
-
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.ChrRange;
 import org.utgenome.gwt.utgb.client.bio.Coordinate;
-import org.utgenome.gwt.utgb.client.db.Value;
 import org.utgenome.gwt.utgb.client.db.ValueDomain;
 import org.utgenome.gwt.utgb.client.db.datatype.StringType;
 import org.utgenome.gwt.utgb.client.track.Design;
@@ -44,7 +41,6 @@ import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChange;
 import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyWriter;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.track.UTGBProperty;
-import org.utgenome.gwt.utgb.client.util.JSONUtil;
 import org.utgenome.gwt.utgb.client.util.Properties;
 import org.utgenome.gwt.widget.client.Style;
 
@@ -71,23 +67,14 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ChromosomeMapTrack extends TrackBase {
 
-	protected String type = "image";
-	protected String trackBaseURL;
-	protected String displayType = "normal";
-
-	protected int leftMargin = 0;
 	protected FlexTable layoutPanel = new FlexTable();
 
 	protected Image trackImage = new Image();
 	protected Frame frame = new Frame();
 	protected boolean isWidgetReady = false;
 
-	protected TrackConfig config = new TrackConfig(this);
-
 	protected ChrRange chrRange = null;
-
 	private boolean isDebug = false;
-	private ArrayList<String> chrList = new ArrayList<String>();
 
 	public static TrackFactory factory() {
 		return new TrackFactory() {
@@ -162,6 +149,7 @@ public class ChromosomeMapTrack extends TrackBase {
 				int index;
 				int chrNameWidth = chrRange.chrNameWidth;
 
+				String displayType = getConfig().getString(CONFIG_DISPLAY_TYPE, "normal");
 				if (!displayType.equals("rotate")) {
 					windowWidth = (trackImage.getWidth() - chrNameWidth);
 					index = (y * chrRange.ranges.size() / trackImage.getHeight());
@@ -220,18 +208,30 @@ public class ChromosomeMapTrack extends TrackBase {
 					}
 				});
 
+		int leftMargin = getLeftMargin();
 		if (leftMargin > 0)
 			layoutPanel.getCellFormatter().setWidth(0, 0, leftMargin + "px");
 		if (isDebug)
 			GWT.log("left margin:" + leftMargin, null);
 
-		String trackURL = getTrackURL();
 		if (!isWidgetReady) {
 			layoutPanel.setWidget(0, 1, trackImage);
 			isWidgetReady = true;
 		}
 		trackImage.setUrl(getTrackURL());
 		getFrame().setNowLoading();
+	}
+
+	protected int getLeftMargin() {
+		return getConfig().getInt(CONFIG_LEFT_MARGIN, 0);
+	}
+
+	protected String getDisplayType() {
+		return getConfig().getString(CONFIG_DISPLAY_TYPE, "normal");
+	}
+
+	protected String getTrackBaseURL() {
+		return "utgb-core/ChromosomeMap";
 	}
 
 	protected String getTrackURL() {
@@ -241,8 +241,8 @@ public class ChromosomeMapTrack extends TrackBase {
 		TrackWindow w = getTrackGroup().getTrackWindow();
 		p.add("start", w.getStartOnGenome());
 		p.add("end", w.getEndOnGenome());
-		p.add("width", w.getWindowWidth() - leftMargin);
-		p.add("displayType", displayType);
+		p.add("width", w.getWindowWidth() - getLeftMargin());
+		p.add("displayType", getDisplayType());
 
 		for (String key : new String[] { "dbGroup", "dbName", "bss.query" }) {
 			String v = getTrackGroup().getProperty(key);
@@ -250,12 +250,7 @@ public class ChromosomeMapTrack extends TrackBase {
 				p.add(key, v);
 		}
 
-		return c.getTrackURL(trackBaseURL, p);
-	}
-
-	@Override
-	public TrackConfig getConfig() {
-		return config;
+		return c.getTrackURL(getTrackBaseURL(), p);
 	}
 
 	@Override
@@ -281,12 +276,11 @@ public class ChromosomeMapTrack extends TrackBase {
 		}
 
 		// set up the configuration panel
-		config.addConfigParameter("Track Base URL", new StringType("baseURL"), trackBaseURL);
-		ValueDomain displayTypeDomain = new ValueDomain();
-		displayTypeDomain.addValueList(new Value("normal"));
-		displayTypeDomain.addValueList(new Value("compact"));
-		displayTypeDomain.addValueList(new Value("rotate"));
-		config.addConfigParameter("Display Type", new StringType("displayType", displayTypeDomain), displayType);
+		TrackConfig config = getConfig();
+		//config.addConfigParameter("Track Base URL", new StringType(CONFIG_TRACK_BASE_URL));
+		ValueDomain displayTypeDomain = ValueDomain.createNewValueDomain(new String[] { "normal", "compact", "rotate" });
+		config.addConfigParameter("Display Type", new StringType(CONFIG_DISPLAY_TYPE, displayTypeDomain), "normal");
+		config.addHiddenConfiguration(CONFIG_LEFT_MARGIN, "0");
 	}
 
 	@Override
@@ -300,35 +294,12 @@ public class ChromosomeMapTrack extends TrackBase {
 
 	@Override
 	public void onChangeTrackConfig(TrackConfigChange change) {
-		if (change.contains("baseURL")) {
-			trackBaseURL = change.getValue("baseURL");
-			if (isDebug)
-				GWT.log("onChangeTrackConfig:baseURL", null);
-			draw();
-		}
-		if (change.contains("displayType")) {
-			displayType = change.getValue("displayType");
-			if (isDebug)
-				GWT.log("DisplayType: " + displayType, null);
-			draw();
+		if (change.containsOneOf(new String[] { CONFIG_DISPLAY_TYPE })) {
+			refresh();
 		}
 	}
 
-	@Override
-	public void saveProperties(Properties saveData) {
-		saveData.add("type", type);
-		saveData.add("trackBaseURL", trackBaseURL);
-		saveData.add("leftMargin", leftMargin);
-		saveData.add("displayType", displayType);
-		saveData.add("chrList", JSONUtil.toJSONArray(chrList));
-	}
+	private final String CONFIG_LEFT_MARGIN = "leftMargin";
+	private final String CONFIG_DISPLAY_TYPE = "displayType";
 
-	@Override
-	public void restoreProperties(Properties properties) {
-		trackBaseURL = properties.get("trackBaseURL", trackBaseURL);
-		leftMargin = properties.getInt("leftMargin", leftMargin);
-		type = properties.get("type", type);
-		displayType = properties.get("displayType", displayType);
-		chrList = JSONUtil.parseJSONArray(properties.get("chrList", "[]"));
-	}
 }

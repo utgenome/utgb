@@ -47,7 +47,6 @@ import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.track.UTGBProperty;
 import org.utgenome.gwt.utgb.client.track.impl.TrackWindowImpl;
 import org.utgenome.gwt.utgb.client.util.BrowserInfo;
-import org.utgenome.gwt.utgb.client.util.Properties;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
@@ -63,16 +62,15 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ReadTrack extends TrackBase {
 
-	protected TrackConfig config = new TrackConfig(this);
-
 	// track configuration parameters
-	private boolean showLabels = true;
-	private String clickAction = "link";
-	private String clickURLtemplate = "http://www.google.com/search?q=%q";
-	private int leftMargin = 0;
-	private String path;
-	private String dbType;
+	private final String CONFIG_LEFT_MARGIN = "leftMargin";
+	private final String CONFIG_DB_TYPE = "dbType";
+	private final String CONFIG_PATH = "path";
+	private final String CONFIG_SHOW_LABELS = "showLabels";
+	private final String CONFIG_ONCLICK_ACTION = "onclick.action";
+	private final String CONFIG_ONCLICK_URL = "onclick.url";
 
+	// read data
 	private ArrayList<OnGenome> onGenomeData = new ArrayList<OnGenome>();
 
 	// widgets
@@ -95,7 +93,8 @@ public class ReadTrack extends TrackBase {
 
 	public ReadTrack(String trackName, String dbType) {
 		super("Read Track");
-		this.dbType = dbType;
+
+		getConfig().setParameter(CONFIG_DB_TYPE, dbType);
 
 		layoutTable.setBorderWidth(0);
 		layoutTable.setCellPadding(0);
@@ -107,13 +106,14 @@ public class ReadTrack extends TrackBase {
 
 	private void updateClickAction() {
 
+		String clickAction = getConfig().getParameter(CONFIG_ONCLICK_ACTION);
 		if ("none".equals(clickAction)) {
 			geneCanvas.setLocusClickHandler(null);
 		}
 		else if ("link".equals(clickAction)) {
 			geneCanvas.setLocusClickHandler(new LocusClickHandler() {
 				public void onClick(int x, int y, OnGenome locus) {
-					String url = clickURLtemplate;
+					String url = getConfig().getParameter(CONFIG_ONCLICK_URL);
 					if (url.contains("%q") && locus.getName() != null)
 						url = url.replace("%q", locus.getName());
 					Window.open(url, "locus", "");
@@ -137,6 +137,9 @@ public class ReadTrack extends TrackBase {
 	@Override
 	public void draw() {
 		TrackWindow w = getTrackGroup().getTrackWindow();
+
+		int leftMargin = getConfig().getInt(CONFIG_LEFT_MARGIN, 0);
+		boolean showLabels = getConfig().getBoolean(CONFIG_SHOW_LABELS, true);
 
 		int s = w.getStartOnGenome();
 		int e = w.getEndOnGenome();
@@ -174,26 +177,24 @@ public class ReadTrack extends TrackBase {
 	}
 
 	@Override
-	public TrackConfig getConfig() {
-		return config;
-	}
-
-	@Override
 	public void setUp(TrackFrame trackFrame, TrackGroup group) {
 		update(group.getTrackWindow());
-		config.addConfigParameter("DB Path", new StringType("path"), path);
+		TrackConfig config = getConfig();
+		config.addHiddenConfiguration(CONFIG_LEFT_MARGIN, "0");
+		config.addConfigParameter("DB Path", new StringType(CONFIG_PATH));
 
 		ValueDomain dbTypes = ValueDomain.createNewValueDomain(DBType.getDBTypeList());
-		config.addConfigParameter("DB Type", new StringType("dbType", dbTypes), dbType);
+		config.addConfigParameter("DB Type", new StringType(CONFIG_DB_TYPE, dbTypes), "AUTO");
 
-		config.addConfigParameter("Show Labels", new BooleanType("showLabels"), Boolean.toString(showLabels));
+		config.addConfigParameter("Show Labels", new BooleanType(CONFIG_SHOW_LABELS), "true");
 		ValueDomain actionTypes = ValueDomain.createNewValueDomain(new String[] { "none", "link", "info" });
-		config.addConfigParameter("On Click Action", new StringType("onclick.action", actionTypes), clickAction);
-		config.addConfigParameter("On Click URL", new StringType("onclick.url"), clickURLtemplate);
+		config.addConfigParameter("On Click Action", new StringType(CONFIG_ONCLICK_ACTION, actionTypes), "link");
+		config.addConfigParameter("On Click URL", new StringType(CONFIG_ONCLICK_URL), "http://www.google.com/search?q=%q");
 
+		updateClickAction();
 	}
 
-	public void update(TrackWindow newWindow) {
+	protected void update(TrackWindow newWindow) {
 		// retrieve gene data from the API
 		int s = newWindow.getStartOnGenome();
 		int e = newWindow.getEndOnGenome();
@@ -221,7 +222,7 @@ public class ReadTrack extends TrackBase {
 	}
 
 	public String getPath() {
-		return path;
+		return getConfig().getParameter(CONFIG_PATH);
 	}
 
 	/**
@@ -231,48 +232,20 @@ public class ReadTrack extends TrackBase {
 	 */
 	public GenomeDB getGenomeDB() {
 		String ref = getTrackGroupProperty(UTGBProperty.REVISION);
-		return new GenomeDB(DBType.valueOf(DBType.class, dbType), path, ref);
+		String dbType = getConfig().getString("dbType", "AUTO");
+		return new GenomeDB(DBType.valueOf(DBType.class, dbType), getPath(), ref);
 	}
 
 	@Override
 	public void onChangeTrackConfig(TrackConfigChange change) {
 
-		if (change.contains("onclick.url")) {
-			clickURLtemplate = change.getValue("onclick.url");
+		if (change.containsOneOf(new String[] { CONFIG_ONCLICK_ACTION, CONFIG_ONCLICK_URL })) {
+			updateClickAction();
 		}
 
-		if (change.contains("onclick.action")) {
-			clickAction = change.getValue("onclick.action");
-		}
-
-		if (change.contains("showLabels")) {
-			showLabels = change.getBoolValue("showLabels");
+		if (change.containsOneOf(new String[] { CONFIG_SHOW_LABELS, CONFIG_LEFT_MARGIN, CONFIG_PATH, CONFIG_DB_TYPE })) {
 			refresh();
 		}
-
-		updateClickAction();
-	}
-
-	@Override
-	public void saveProperties(Properties saveData) {
-		saveData.add("leftMargin", leftMargin);
-		saveData.add("showLabels", showLabels);
-		saveData.add("onclick.url", clickURLtemplate);
-		saveData.add("onclick.action", clickAction);
-		saveData.add("path", path);
-		saveData.add("dbType", path);
-	}
-
-	@Override
-	public void restoreProperties(Properties properties) {
-		leftMargin = properties.getInt("leftMargin", leftMargin);
-		showLabels = properties.getBoolean("showLabels", showLabels);
-		clickURLtemplate = properties.get("onclick.url", clickURLtemplate);
-		clickAction = properties.get("onclick.action", clickAction);
-		path = properties.get("path", path);
-		dbType = properties.get("dbType", dbType);
-
-		updateClickAction();
 	}
 
 }

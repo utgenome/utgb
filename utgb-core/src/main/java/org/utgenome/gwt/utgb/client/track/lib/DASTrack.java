@@ -31,7 +31,6 @@ import org.utgenome.gwt.utgb.client.track.Track;
 import org.utgenome.gwt.utgb.client.track.TrackConfigChange;
 import org.utgenome.gwt.utgb.client.track.TrackFrame;
 import org.utgenome.gwt.utgb.client.track.TrackGroup;
-import org.utgenome.gwt.utgb.client.util.Properties;
 
 /**
  * DASTrack is for visualizing data that can be located on das data.
@@ -40,8 +39,6 @@ import org.utgenome.gwt.utgb.client.util.Properties;
  * 
  */
 public class DASTrack extends ReadTrack {
-
-	private String dasType = null;
 
 	public static TrackFactory factory() {
 		return new TrackFactory() {
@@ -56,39 +53,27 @@ public class DASTrack extends ReadTrack {
 		super("DAS Track", "DAS");
 	}
 
+	private final String CONFIG_DAS_TYPE = "dasType";
+
 	@Override
 	public void setUp(TrackFrame trackFrame, TrackGroup group) {
 		super.setUp(trackFrame, group);
 
-		config.addConfigParameter("DAS Data Type", new StringType("dasType"), dasType);
+		getConfig().addConfigParameter("DAS Data Type", new StringType(CONFIG_DAS_TYPE));
 	}
 
 	@Override
 	public void onChangeTrackConfig(TrackConfigChange change) {
 		super.onChangeTrackConfig(change);
 
-		if (change.contains("dasType")) {
-			dasType = change.getValue("dasType");
+		if (change.contains(CONFIG_DAS_TYPE)) {
 			refresh();
 		}
 	}
 
 	@Override
 	public GenomeDB getGenomeDB() {
-		return new DASLocation(super.getGenomeDB(), dasType);
+		return new DASLocation(super.getGenomeDB(), getConfig().getParameter(CONFIG_DAS_TYPE));
 	}
 
-	@Override
-	public void saveProperties(Properties saveData) {
-		super.saveProperties(saveData);
-		if (dasType != null) {
-			saveData.add("dasType", dasType);
-		}
-	}
-
-	@Override
-	public void restoreProperties(Properties properties) {
-		super.restoreProperties(properties);
-		dasType = properties.get("dasType", dasType);
-	}
 }

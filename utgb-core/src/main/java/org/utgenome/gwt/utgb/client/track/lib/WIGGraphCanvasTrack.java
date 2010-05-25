@@ -58,7 +58,6 @@ import com.google.gwt.widgetideas.graphics.client.Color;
 
 public class WIGGraphCanvasTrack extends TrackBase {
 
-	protected TrackConfig config = new TrackConfig(this);
 	protected String fileName = "db/sample.wig.sqlite";
 	private final boolean isDebug = false;
 	private boolean isTrackColor = false;
@@ -143,6 +142,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 
 	@Override
 	public void setUp(TrackFrame trackFrame, TrackGroup group) {
+		TrackConfig config = getConfig();
 		config.addConfigParameter("File Name", new StringType("fileName"), fileName);
 		config.addConfigParameter("maxValue", new FloatType("maxValue"), String.valueOf(maxValue));
 		config.addConfigParameter("minValue", new FloatType("minValue"), String.valueOf(minValue));
@@ -335,22 +335,22 @@ public class WIGGraphCanvasTrack extends TrackBase {
 		}
 	}
 
-	@Override
-	public void saveProperties(Properties saveData) {
-		saveData.add("fileName", fileName);
-		saveData.add("trackHeight", height);
-		saveData.add("color", color.toString());
-		saveData.add("alpha", alpha);
-		saveData.add("leftMargin", leftMargin);
-		saveData.add("maxValue", maxValue);
-		saveData.add("minValue", minValue);
-		saveData.add("isAutoRange", isAutoRange);
-		saveData.add("isLog", isLog);
-	}
+	//	@Override
+	//	public void saveProperties(Properties saveData) {
+	//		saveData.add("fileName", fileName);
+	//		saveData.add("trackHeight", height);
+	//		saveData.add("color", color.toString());
+	//		saveData.add("alpha", alpha);
+	//		saveData.add("leftMargin", leftMargin);
+	//		saveData.add("maxValue", maxValue);
+	//		saveData.add("minValue", minValue);
+	//		saveData.add("isAutoRange", isAutoRange);
+	//		saveData.add("isLog", isLog);
+	//	}
 
 	@Override
 	public void restoreProperties(Properties properties) {
-
+		super.restoreProperties(properties);
 		fileName = properties.get("fileName", fileName);
 		height = properties.getInt("trackHeight", height);
 		leftMargin = properties.getInt("leftMargin", leftMargin);
@@ -380,11 +380,6 @@ public class WIGGraphCanvasTrack extends TrackBase {
 		int g_value = Integer.parseInt(hex.substring(3, 5), 16);
 		int b_value = Integer.parseInt(hex.substring(5, 7), 16);
 		return new Color(r_value, g_value, b_value, alpha);
-	}
-
-	@Override
-	public TrackConfig getConfig() {
-		return config;
 	}
 
 }

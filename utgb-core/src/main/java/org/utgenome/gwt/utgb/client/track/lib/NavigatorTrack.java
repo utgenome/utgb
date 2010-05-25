@@ -278,8 +278,8 @@ public class NavigatorTrack extends TrackBase {
 		hp.add(new FormLabel("Chr."));
 		hp.add(targetBox);
 		// window locator
-		startBox.setWidth("80px");
-		endBox.setWidth("80px");
+		startBox.setWidth("95px");
+		endBox.setWidth("95px");
 		HorizontalPanel hp2 = new HorizontalPanel();
 		hp2.setVerticalAlignment(HorizontalPanel.ALIGN_MIDDLE);
 		hp2.add(new FormLabel("Start"));

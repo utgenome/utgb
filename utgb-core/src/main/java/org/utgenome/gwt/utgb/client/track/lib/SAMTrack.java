@@ -62,8 +62,6 @@ import com.google.gwt.user.client.ui.Widget;
 public class SAMTrack extends TrackBase {
 	private final boolean isDebug = true;
 	private boolean isC2T = false;
-
-	protected TrackConfig config = new TrackConfig(this);
 	protected String readFileName = null;
 	protected String refSeqFileName = null;
 	protected String colorMode = "nucleotide";
@@ -117,6 +115,7 @@ public class SAMTrack extends TrackBase {
 
 	@Override
 	public void setUp(TrackFrame trackFrame, TrackGroup group) {
+		TrackConfig config = getConfig();
 		config.addConfigParameter("Read File Name", new StringType("readFileName"), readFileName);
 		config.addConfigParameter("Reference Sequence File Name", new StringType("refSeqFileName"), refSeqFileName);
 		ValueDomain colorModeDomain = new ValueDomain();
@@ -249,15 +248,17 @@ public class SAMTrack extends TrackBase {
 		}
 	}
 
-	public void saveProperties(Properties saveData) {
-		saveData.add("readFileName", readFileName);
-		saveData.add("redSeqFileName", refSeqFileName);
-		saveData.add("colorMode", colorMode);
-		saveData.add("isC2T", isC2T);
-		saveData.add("leftMargin", leftMargin);
-	}
+	//	public void saveProperties(Properties saveData) {
+	//		saveData.add("readFileName", readFileName);
+	//		saveData.add("redSeqFileName", refSeqFileName);
+	//		saveData.add("colorMode", colorMode);
+	//		saveData.add("isC2T", isC2T);
+	//		saveData.add("leftMargin", leftMargin);
+	//	}
 
 	public void restoreProperties(Properties properties) {
+		super.restoreProperties(properties);
+
 		readFileName = properties.get("readFileName", readFileName);
 		refSeqFileName = properties.get("refSeqFileName", refSeqFileName);
 		colorMode = properties.get("colorMode", colorMode);
@@ -271,7 +272,4 @@ public class SAMTrack extends TrackBase {
 		}
 	}
 
-	public TrackConfig getConfig() {
-		return config;
-	}
 }

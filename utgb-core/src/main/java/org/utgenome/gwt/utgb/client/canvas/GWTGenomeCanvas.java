@@ -344,7 +344,7 @@ public class GWTGenomeCanvas extends Composite {
 			for (OnGenome l : locusList) {
 
 				int x1 = pixelPositionOnWindow(l.getStart());
-				int x2 = pixelPositionOnWindow(l.getStart() + l.length());
+				int x2 = pixelPositionOnWindow(l.getEnd());
 
 				if (showLabelsFlag) {
 					int labelWidth = estimiateLabelWidth(l);
