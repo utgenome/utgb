@@ -99,4 +99,8 @@ public class BrowserInfo {
 	public static native String getUserAgent() /*-{
 			return navigator.userAgent;
 	}-*/;
+	
+	public static native boolean isCanvasSupported() /*-{
+		return !!document.createElement('canvas').getContext;
+	}-*/;
 }

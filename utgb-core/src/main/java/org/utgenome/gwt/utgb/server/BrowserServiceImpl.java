@@ -625,8 +625,10 @@ public class BrowserServiceImpl extends RpcServlet implements BrowserService {
 	public OnGenomeDataSet getOnGenomeData(GenomeDB db, ChrLoc range, String userAgent) {
 
 		OnGenomeDataSet result = new OnGenomeDataSet();
-		List<OnGenome> overlapQueryResult = ReadView.overlapQuery(db, range, this.getServletContext());
 
+		_logger.info(String.format("user agent: %s", userAgent));
+
+		List<OnGenome> overlapQueryResult = ReadView.overlapQuery(db, range, this.getServletContext());
 		result.read = overlapQueryResult;
 		result.location = range;
 		return result;
