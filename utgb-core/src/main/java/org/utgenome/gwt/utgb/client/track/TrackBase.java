@@ -31,8 +31,6 @@ import org.utgenome.gwt.utgb.client.RPCServiceManager;
 import org.utgenome.gwt.utgb.client.bio.Coordinate;
 import org.utgenome.gwt.utgb.client.track.bean.TrackBean;
 import org.utgenome.gwt.utgb.client.util.Properties;
-import org.utgenome.gwt.utgb.client.util.Utilities;
-import org.utgenome.gwt.utgb.client.util.xml.DOMUtil;
 import org.utgenome.gwt.utgb.client.util.xml.XMLAttribute;
 import org.utgenome.gwt.utgb.client.util.xml.XMLUtil;
 import org.utgenome.gwt.utgb.client.util.xml.XMLWriter;
@@ -40,8 +38,6 @@ import org.utgenome.gwt.utgb.client.view.TrackView;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
-import com.google.gwt.xml.client.Node;
-import com.google.gwt.xml.client.NodeList;
 
 /**
  * {@link TrackBase} is a base class that supports to implement your own {@link Track}s.
@@ -231,40 +227,6 @@ public abstract class TrackBase implements Track {
 		saveProperties(trackProperties);
 		XMLUtil.toXML(trackProperties, xmlWriter);
 		xmlWriter.end(); // track
-	}
-
-	public void loadXML(Node trackNode) {
-		TrackBean trackInfo = new TrackBean();
-		trackInfo.setName(DOMUtil.getAttributeValue(trackNode, "name", getName()));
-		trackInfo.setHeight(DOMUtil.getIntAttributeValue(trackNode, "height", getDefaultWindowHeight()));
-		trackInfo.setPack(new Boolean(DOMUtil.getBooleanAttributeValue(trackNode, "pack", true)));
-		// load track properties
-		Properties trackProperties = new Properties();
-		{
-			final NodeList propertiesNodeList = DOMUtil.getChildNodeList(trackNode, "property");
-
-			final int SIZE = propertiesNodeList.getLength();
-			for (int i = 0; i < SIZE; i++) {
-				final Node propertyNode = propertiesNodeList.item(i);
-				final Node valueNode = propertyNode.getFirstChild();
-
-				final String key = Utilities.getAttributeValue(propertyNode, "key");
-				final String value = valueNode != null ? valueNode.getNodeValue() : "";
-
-				trackInfo.putProperty(key, value);
-			}
-		}
-		load(trackInfo);
-	}
-
-	public void load(TrackBean trackInfo) {
-		_loadedState = trackInfo;
-
-		// track name
-		getTrackInfo().setTrackName(trackInfo.getName());
-		// track frame state
-		// set track properties
-		restoreProperties(new Properties(trackInfo.getProperty()));
 	}
 
 	public String getClassName() {

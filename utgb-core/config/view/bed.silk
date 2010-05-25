@@ -44,6 +44,7 @@
 -track
   -name: BED Canvas
   -pack: true
+  -height: 0
   -class: ReadTrack
   -property
     -db: db/sample.bed

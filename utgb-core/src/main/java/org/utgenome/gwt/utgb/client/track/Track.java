@@ -24,7 +24,6 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.track;
 
-import org.utgenome.gwt.utgb.client.track.bean.TrackBean;
 import org.utgenome.gwt.utgb.client.track.lib.ToolBoxTrack;
 import org.utgenome.gwt.utgb.client.util.Properties;
 import org.utgenome.gwt.utgb.client.util.xml.XMLWriter;
@@ -32,7 +31,6 @@ import org.utgenome.gwt.utgb.client.view.TrackView;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.xml.client.Node;
 
 /**
  * Track is an interface for implementing your own track.
@@ -264,10 +262,6 @@ public interface Track extends TrackEntry, TrackGroupPropertyChangeListener {
 	public String toXML();
 
 	public void toXML(XMLWriter xmlWriter);
-
-	public void loadXML(Node trackNode);
-
-	public void load(TrackBean trackInfo);
 
 	/**
 	 * load the track parameters from the view definition

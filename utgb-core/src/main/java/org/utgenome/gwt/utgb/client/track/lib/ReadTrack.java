@@ -31,11 +31,13 @@ import org.utgenome.gwt.utgb.client.bio.OnGenome;
 import org.utgenome.gwt.utgb.client.bio.OnGenomeDataSet;
 import org.utgenome.gwt.utgb.client.canvas.GWTGenomeCanvas;
 import org.utgenome.gwt.utgb.client.canvas.LocusClickHandler;
+import org.utgenome.gwt.utgb.client.db.ValueDomain;
 import org.utgenome.gwt.utgb.client.db.datatype.BooleanType;
 import org.utgenome.gwt.utgb.client.db.datatype.StringType;
 import org.utgenome.gwt.utgb.client.track.Track;
 import org.utgenome.gwt.utgb.client.track.TrackBase;
 import org.utgenome.gwt.utgb.client.track.TrackConfig;
+import org.utgenome.gwt.utgb.client.track.TrackConfigChange;
 import org.utgenome.gwt.utgb.client.track.TrackFrame;
 import org.utgenome.gwt.utgb.client.track.TrackGroup;
 import org.utgenome.gwt.utgb.client.track.TrackGroupProperty;
@@ -60,12 +62,19 @@ import com.google.gwt.user.client.ui.Widget;
 public class ReadTrack extends TrackBase {
 
 	protected TrackConfig config = new TrackConfig(this);
+
+	// track configuration parameters
 	private boolean showLabels = true;
-	private String clickURLtemplate = "http://www.ncbi.nlm.nih.gov/entrez/viewer.fcgi?val=%q";
+	private String clickAction = "link";
+	private String clickURLtemplate = "http://www.google.com/search?q=%q";
 	private int leftMargin = 0;
 	private String db;
 
 	private ArrayList<OnGenome> onGenomeData = new ArrayList<OnGenome>();
+
+	// widgets
+	private FlexTable layoutTable = new FlexTable();
+	private GWTGenomeCanvas geneCanvas = new GWTGenomeCanvas();
 
 	public static TrackFactory factory() {
 		return new TrackFactory() {
@@ -84,18 +93,26 @@ public class ReadTrack extends TrackBase {
 		layoutTable.setCellSpacing(0);
 		layoutTable.setWidget(0, 1, geneCanvas);
 
-		geneCanvas.setLocusClickHandler(new LocusClickHandler() {
-			public void onClick(OnGenome locus) {
-				String url = clickURLtemplate;
-				if (url.contains("%q") && locus.getName() != null)
-					url = url.replace("%q", locus.getName());
-				Window.open(url, "locus", "");
-			}
-		});
+		updateClickAction();
 	}
 
-	private FlexTable layoutTable = new FlexTable();
-	private GWTGenomeCanvas geneCanvas = new GWTGenomeCanvas();
+	private void updateClickAction() {
+
+		if ("none".equals(clickAction)) {
+			geneCanvas.setLocusClickHandler(null);
+		}
+		else if ("link".equals(clickAction)) {
+			geneCanvas.setLocusClickHandler(new LocusClickHandler() {
+				public void onClick(OnGenome locus) {
+					String url = clickURLtemplate;
+					if (url.contains("%q") && locus.getName() != null)
+						url = url.replace("%q", locus.getName());
+					Window.open(url, "locus", "");
+				}
+			});
+		}
+
+	}
 
 	public Widget getWidget() {
 		return layoutTable;
@@ -151,6 +168,10 @@ public class ReadTrack extends TrackBase {
 		config.addConfigParameter("DB ID", new StringType("dbID"), db);
 		config.addConfigParameter("Show Labels", new BooleanType("showLabels"), Boolean.toString(showLabels));
 
+		ValueDomain actionTypes = ValueDomain.createNewValueDomain(new String[] { "none", "link" });
+		config.addConfigParameter("On Click Action", new StringType("onclick.action", actionTypes), clickAction);
+		config.addConfigParameter("On Click URL", new StringType("onclick.url"), clickURLtemplate);
+
 	}
 
 	public void update(TrackWindow newWindow) {
@@ -182,18 +203,39 @@ public class ReadTrack extends TrackBase {
 	}
 
 	@Override
+	public void onChangeTrackConfig(TrackConfigChange change) {
+
+		if (change.contains("onclick.url")) {
+			clickURLtemplate = change.getValue("onclick.url");
+		}
+
+		if (change.contains("onclick.action")) {
+			clickAction = change.getValue("onclick.action");
+		}
+
+		if (change.contains("showLabels")) {
+			showLabels = change.getBoolValue("showLabels");
+			refresh();
+		}
+
+		updateClickAction();
+	}
+
+	@Override
 	public void saveProperties(Properties saveData) {
-		saveData.add("clickURL", clickURLtemplate);
 		saveData.add("leftMargin", leftMargin);
 		saveData.add("showLabels", showLabels);
+		saveData.add("onclick.url", clickURLtemplate);
+		saveData.add("onclick.action", clickAction);
 		saveData.add("db", db);
 	}
 
 	@Override
 	public void restoreProperties(Properties properties) {
-		clickURLtemplate = properties.get("clickURL", clickURLtemplate);
 		leftMargin = properties.getInt("leftMargin", leftMargin);
 		showLabels = properties.getBoolean("showLabels", showLabels);
+		clickURLtemplate = properties.get("onclick.url", clickURLtemplate);
+		clickAction = properties.get("onclick.action", clickAction);
 		db = properties.get("db", db);
 	}
 
