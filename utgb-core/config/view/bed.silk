@@ -47,6 +47,6 @@
   -height: 0
   -class: ReadTrack
   -property
-    -db: db/sample.bed
+    -path: db/sample.bed
     -onclick.action: link
     -onclick.url: http://www.ncbi.nlm.nih.gov/entrez/viewer.fcgi?val=%q
