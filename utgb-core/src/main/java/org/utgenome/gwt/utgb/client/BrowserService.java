@@ -28,13 +28,10 @@ import java.util.List;
 
 import org.utgenome.gwt.utgb.client.bean.DatabaseEntry;
 import org.utgenome.gwt.utgb.client.bean.track.TrackDescription;
-import org.utgenome.gwt.utgb.client.bio.AlignmentResult;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.ChrRange;
-import org.utgenome.gwt.utgb.client.bio.Gene;
-import org.utgenome.gwt.utgb.client.bio.Interval;
+import org.utgenome.gwt.utgb.client.bio.GenomeDB;
 import org.utgenome.gwt.utgb.client.bio.KeywordSearchResult;
-import org.utgenome.gwt.utgb.client.bio.OnGenome;
 import org.utgenome.gwt.utgb.client.bio.OnGenomeDataSet;
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.bio.WigGraphData;
@@ -69,19 +66,7 @@ public interface BrowserService extends RpcService {
 
 	public KeywordSearchResult keywordSearch(String species, String revision, String keyword, int entriesPerPage, int page) throws UTGBClientException;
 
-	/**
-	 * Retrieves the gene list by accessing the specified URI
-	 * 
-	 * @param serviceURI
-	 * @return
-	 */
-	public List<Gene> getGeneList(String serviceURI);
-
-	public AlignmentResult getAlignment(String serviceURI, String target, String sequence);
-
 	public ChrRange getChrRegion(String species, String revision);
-
-	public List<Interval> getLocusList(String dbGroup, String dbName, ChrLoc location);
 
 	public List<String> getChildDBGroups(String parentDBGroup);
 
@@ -93,8 +78,6 @@ public interface BrowserService extends RpcService {
 
 	public List<SAMRead> getSAMReadList(String readFileName, String refSeqFileName);
 
-	public List<OnGenome> getBEDEntryList(String bedPath, ChrLoc location);
-
 	public List<SAMRead> querySAMReadList(String bamFileName, String indexFileName, String refSeqFileName, String rname, int start, int end);
 
 	public String getRefSeq(String refSeqFileName, String rname, int start, int end);
@@ -102,14 +85,14 @@ public interface BrowserService extends RpcService {
 	/**
 	 * Get read data from the specified DB and location
 	 * 
-	 * @param dbID
+	 * @param db
 	 *            database to search
-	 * @param ref
-	 *            reference sequence
 	 * @param range
 	 *            (chr, start, end)
+	 * @param userAgent
+	 *            browser information
 	 * @return
 	 */
-	public OnGenomeDataSet getOnGenomeData(String dbID, String ref, ChrLoc range);
+	public OnGenomeDataSet getOnGenomeData(GenomeDB db, ChrLoc range, String userAgent);
 
 }

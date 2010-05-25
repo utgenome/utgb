@@ -7,20 +7,22 @@
 package org.utgenome.gwt.utgb.server.app;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.utgenome.UTGBErrorCode;
+import org.utgenome.UTGBException;
 import org.utgenome.graphics.GeneCanvas;
 import org.utgenome.graphics.GenomeWindow;
-import org.utgenome.gwt.utgb.client.bio.Read;
+import org.utgenome.gwt.utgb.client.bio.ChrLoc;
+import org.utgenome.gwt.utgb.client.bio.DASResult;
 import org.utgenome.gwt.utgb.server.WebTrackBase;
 import org.xerial.core.XerialException;
 import org.xerial.lens.Lens;
-import org.xerial.lens.ObjectLens;
 import org.xerial.util.log.Logger;
 
 /**
@@ -29,64 +31,72 @@ import org.xerial.util.log.Logger;
  */
 public class DASViewer extends WebTrackBase {
 
-	public void setStart(long start) {
-		this.start = start;
-	}
-
-	public void setEnd(long end) {
-		this.end = end;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public void setWidth(int width) {
-		this.width = width;
-	}
-
 	private static final long serialVersionUID = 1L;
 	private static Logger _logger = Logger.getLogger(DASViewer.class);
 
-	private long start = 1;
-	private long end = 1;
-	private int width = 800;
-	private String name = "";
-	private String baseurl = "";
-	private String dasType = null;
+	public int start = 1;
+	public int end = 1;
+	public int width = 800;
+	public String name = "";
+	public String dasBaseURL = "";
+	public String dasType = null;
 
 	public DASViewer() {
 	}
 
+	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		//		String baseurl = "http://www.ensembl.org/das/Homo_sapiens.NCBI36.transcript";
-		if (!baseurl.endsWith("/"))
-			baseurl += "/";
+
+		try {
+			DASResult result = queryDAS(dasBaseURL, dasType, new ChrLoc(name, start, end));
+
+			GeneCanvas geneCanvas = new GeneCanvas(width, 300, new GenomeWindow(start, end));
+			if (result.segment.feature != null)
+				geneCanvas.draw(result.segment.feature);
+
+			response.setContentType("image/png");
+			geneCanvas.toPNG(response.getOutputStream());
+		}
+		catch (UTGBException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static DASResult queryDAS(String baseURL, String dasType, ChrLoc chrLoc) throws UTGBException {
+		if (!baseURL.endsWith("/"))
+			baseURL += "/";
 
 		String format = "%sfeatures?segment=%s:%d,%d";
 		if (dasType != null && !dasType.matches(""))
 			format += ";type=" + dasType;
 
-		String url = String.format(format, baseurl, name.substring(3), start <= end ? start : end, start <= end ? end : start);
+		String chr = chrLoc.chr;
+		if (chr == null)
+			chr = "1";
+		else
+			chr = chr.replace("chr", "");
+
+		int start = chrLoc.start;
+		int end = chrLoc.end;
+
+		String url = String.format(format, baseURL, chr, start <= end ? start : end, start <= end ? end : start);
+
+		if (_logger.isDebugEnabled())
+			_logger.debug(String.format("accessing DAS: %s", url));
+
 		try {
-			_logger.info(url);
-			DASFeature feature = Lens.loadXML(DASFeature.class, new URL(url));
-
-			if (_logger.isTraceEnabled())
-				_logger.trace(ObjectLens.toJSON(feature));
-
-			GeneCanvas geneCanvas = new GeneCanvas(width, 300, new GenomeWindow(start, end));
-			if (feature.segment.feature != null)
-				geneCanvas.draw(feature.segment.feature);
-
-			response.setContentType("image/png");
-			geneCanvas.toPNG(response.getOutputStream());
-
+			return Lens.loadXML(DASResult.class, new URL(url));
+		}
+		catch (MalformedURLException e) {
+			throw new UTGBException(UTGBErrorCode.INVALID_INPUT, e);
+		}
+		catch (IOException e) {
+			throw new UTGBException(UTGBErrorCode.IO_ERROR, e);
 		}
 		catch (XerialException e) {
-			_logger.error(e);
+			throw new UTGBException(UTGBErrorCode.PARSE_ERROR, e);
 		}
-
 	}
 
 	/*
@@ -109,84 +119,4 @@ public class DASViewer extends WebTrackBase {
 	</pre>
 	 */
 
-	public static class DASFeature {
-		public DASGFF gff;
-		public Segment segment;
-
-		@Override
-		public String toString() {
-			return ObjectLens.toJSON(this);
-		}
-	}
-
-	public static class DASGFF {
-		public String version;
-		public String href;
-
-	}
-
-	public static class Segment {
-		public String id;
-		public long start;
-		public long stop;
-		public List<Feature> feature;
-	}
-
-	public static class Feature extends Read {
-		public String id;
-
-		public String label;
-		public String score;
-		public String orientation;
-		public String phase;
-
-		public Method method;
-		public FeatureType type;
-		public Group group;
-		public Target target;
-
-		public void setId(String id) {
-			setName(id);
-		}
-	}
-
-	public static class Target {
-		public String id;
-		public long start;
-		public long stop;
-		public String value;
-	}
-
-	public static class FeatureType {
-		public String id;
-		public String category;
-		public String reference;
-		public String value;
-	}
-
-	public static class Group {
-		public String id;
-		public String type;
-		public String label;
-		public Link link;
-		public Target target;
-	}
-
-	public static class Link {
-		public String href;
-		public String value;
-	}
-
-	public static class Method {
-		public String id;
-		public String value;
-	}
-
-	public void setDasBaseURL(String dasBaseURL) {
-		this.baseurl = dasBaseURL;
-	}
-
-	public void setDasType(String dasType) {
-		this.dasType = dasType;
-	}
 }

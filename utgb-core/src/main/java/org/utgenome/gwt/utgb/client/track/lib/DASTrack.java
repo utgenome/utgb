@@ -24,17 +24,14 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.track.lib;
 
-import org.utgenome.gwt.utgb.client.bio.Coordinate;
+import org.utgenome.gwt.utgb.client.bio.DASLocation;
+import org.utgenome.gwt.utgb.client.bio.GenomeDB;
 import org.utgenome.gwt.utgb.client.db.datatype.StringType;
 import org.utgenome.gwt.utgb.client.track.Track;
 import org.utgenome.gwt.utgb.client.track.TrackConfigChange;
 import org.utgenome.gwt.utgb.client.track.TrackFrame;
 import org.utgenome.gwt.utgb.client.track.TrackGroup;
-import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.util.Properties;
-
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.Frame;
 
 /**
  * DASTrack is for visualizing data that can be located on das data.
@@ -42,111 +39,57 @@ import com.google.gwt.user.client.ui.Frame;
  * @author yoshimura
  * 
  */
-public class DASTrack extends GenomeTrack
-{
+public class DASTrack extends ReadTrack {
 
-    private String dasBaseURL = null;
-    private String dasType = null;
+	private String dasBaseURL = null;
+	private String dasType = null;
 
-    public static TrackFactory factory()
-    {
-        return new TrackFactory() {
-            public Track newInstance()
-            {
-                return new DASTrack();
-            }
-        };
-    }
+	public static TrackFactory factory() {
+		return new TrackFactory() {
+			@Override
+			public Track newInstance() {
+				return new DASTrack();
+			}
+		};
+	}
 
-    private class ContentFrame extends Frame
-    {
-        @Override
-        protected void onLoad()
-        {}
+	public DASTrack() {
+		super("DAS Track", "DAS");
+	}
 
-        @Override
-        public void onBrowserEvent(Event event)
-        {
+	@Override
+	public void setUp(TrackFrame trackFrame, TrackGroup group) {
+		super.setUp(trackFrame, group);
 
-            if (event.getTypeInt() == Event.ONCHANGE)
-            {
-                TrackFrame frame = getFrame();
-                if (frame != null)
-                {
-                    frame.loadingDone();
-                }
-            }
-        }
-    }
+		config.addConfigParameter("DAS Data Type", new StringType("dasType"), dasType);
+	}
 
-    public DASTrack()
-    {
-        super("DAS Track");
-    }
+	@Override
+	public void onChangeTrackConfig(TrackConfigChange change) {
+		super.onChangeTrackConfig(change);
 
-    protected String getTrackURL()
-    {
-        Coordinate c = getCoordinate();
+		if (change.contains("dasType")) {
+			dasType = change.getValue("dasType");
+			refresh();
+		}
+	}
 
-        Properties p = new Properties();
-        TrackWindow w = getTrackGroup().getTrackWindow();
-        p.add("start", w.getStartOnGenome());
-        p.add("end", w.getEndOnGenome());
-        p.add("width", w.getWindowWidth() - leftMargin);
-        p.add("dasBaseURL", dasBaseURL);
-        if (dasType != null)
-        {
-            p.add("dasType", dasType);
-        }
+	@Override
+	public GenomeDB getGenomeDB() {
+		return new DASLocation(super.getGenomeDB(), dasType);
+	}
 
-        return c.getTrackURL(trackBaseURL, p);
-    }
+	@Override
+	public void saveProperties(Properties saveData) {
+		super.saveProperties(saveData);
+		if (dasType != null) {
+			saveData.add("dasType", dasType);
+		}
+	}
 
-    @Override
-    public void setUp(TrackFrame trackFrame, TrackGroup group)
-    {
-
-        super.setUp(trackFrame, group);
-
-        config.addConfigParameter("DAS Base URL", new StringType("dasBaseURL"), dasBaseURL);
-        config.addConfigParameter("DAS Data Type", new StringType("dasType"), dasType);
-    }
-
-    @Override
-    public void onChangeTrackConfig(TrackConfigChange change)
-    {
-        super.onChangeTrackConfig(change);
-
-        if (change.containsOneOf(new String[] { "dasBaseURL", "dasType" }))
-        {
-            if (change.contains("dasBaseURL"))
-            {
-                dasBaseURL = change.getValue("dasBaseURL");
-            }
-            if (change.contains("dasType"))
-            {
-                dasType = change.getValue("dasType");
-            }
-            draw();
-        }
-    }
-
-    @Override
-    public void saveProperties(Properties saveData)
-    {
-        super.saveProperties(saveData);
-        saveData.add("dasBaseURL", dasBaseURL);
-        if (dasType != null)
-        {
-            saveData.add("dasType", dasType);
-        }
-    }
-
-    @Override
-    public void restoreProperties(Properties properties)
-    {
-        super.restoreProperties(properties);
-        dasBaseURL = properties.get("dasBaseURL", dasBaseURL);
-        dasType = properties.get("dasType", dasType);
-    }
+	@Override
+	public void restoreProperties(Properties properties) {
+		super.restoreProperties(properties);
+		dasType = properties.get("dasType", dasType);
+	}
 }

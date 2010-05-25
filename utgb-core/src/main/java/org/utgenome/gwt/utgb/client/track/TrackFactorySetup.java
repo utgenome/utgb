@@ -50,8 +50,7 @@ public class TrackFactorySetup {
 		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.GenomeTrack", org.utgenome.gwt.utgb.client.track.lib.GenomeTrack.factory());
 		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.DASTrack", org.utgenome.gwt.utgb.client.track.lib.DASTrack.factory());
 		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.BEDTrack", org.utgenome.gwt.utgb.client.track.lib.BEDTrack.factory());
-		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.BEDCanvasTrack", org.utgenome.gwt.utgb.client.track.lib.BEDCanvasTrack
-				.factory());
+
 		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.RulerTrack", org.utgenome.gwt.utgb.client.track.lib.RulerTrack.factory());
 		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.ScrollButtonTrack", org.utgenome.gwt.utgb.client.track.lib.ScrollButtonTrack
 				.factory());
@@ -71,15 +70,12 @@ public class TrackFactorySetup {
 				.factory());
 		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.WindowControlTrack",
 				org.utgenome.gwt.utgb.client.track.lib.WindowControlTrack.factory());
-		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.GeneCanvasTrack", org.utgenome.gwt.utgb.client.track.lib.GeneCanvasTrack
-				.factory());
+
 		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.RibbonRulerTrack", org.utgenome.gwt.utgb.client.track.lib.RibbonRulerTrack
 				.factory());
 
 		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.ChromosomeMapTrack",
 				org.utgenome.gwt.utgb.client.track.lib.ChromosomeMapTrack.factory());
-		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.BSSCanvasTrack", org.utgenome.gwt.utgb.client.track.lib.BSSCanvasTrack
-				.factory());
 		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.DBSelectTrack", org.utgenome.gwt.utgb.client.track.lib.DBSelectTrack
 				.factory());
 

@@ -91,7 +91,7 @@ public class Properties extends HashMap<String, String> {
 	}
 
 	public int getInt(String key) {
-		return Integer.parseInt(super.get(key));
+		return StringUtil.toInt(super.get(key));
 	}
 
 	/**

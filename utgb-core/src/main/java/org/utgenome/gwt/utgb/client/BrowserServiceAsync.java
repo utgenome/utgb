@@ -28,13 +28,10 @@ import java.util.List;
 
 import org.utgenome.gwt.utgb.client.bean.DatabaseEntry;
 import org.utgenome.gwt.utgb.client.bean.track.TrackDescription;
-import org.utgenome.gwt.utgb.client.bio.AlignmentResult;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.ChrRange;
-import org.utgenome.gwt.utgb.client.bio.Gene;
-import org.utgenome.gwt.utgb.client.bio.Interval;
+import org.utgenome.gwt.utgb.client.bio.GenomeDB;
 import org.utgenome.gwt.utgb.client.bio.KeywordSearchResult;
-import org.utgenome.gwt.utgb.client.bio.OnGenome;
 import org.utgenome.gwt.utgb.client.bio.OnGenomeDataSet;
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.bio.WigGraphData;
@@ -66,13 +63,7 @@ public interface BrowserServiceAsync extends RpcService {
 
 	public void keywordSearch(String species, String revision, String keyword, int entriesPerPage, int page, AsyncCallback<KeywordSearchResult> callback);
 
-	public void getGeneList(String serviceURI, AsyncCallback<List<Gene>> asyncCallback);
-
-	public void getAlignment(String serviceURI, String target, String sequence, AsyncCallback<AlignmentResult> callback);
-
 	public void getChrRegion(String species, String revision, AsyncCallback<ChrRange> callback);
-
-	public void getLocusList(String dbGroup, String dbName, ChrLoc location, AsyncCallback<List<Interval>> callback);
 
 	public void getChildDBGroups(String parentDBGroup, AsyncCallback<List<String>> callback);
 
@@ -84,13 +75,11 @@ public interface BrowserServiceAsync extends RpcService {
 
 	public void getSAMReadList(String readFileName, String refSeqFileName, AsyncCallback<List<SAMRead>> callback);
 
-	public void getBEDEntryList(String bedPath, ChrLoc location, AsyncCallback<List<OnGenome>> callback);
-
 	public void querySAMReadList(String bamFileName, String indexFileName, String refSeqFileName, String rname, int start, int end,
 			AsyncCallback<List<SAMRead>> callback);
 
 	public void getRefSeq(String refSeqFileName, String rname, int start, int end, AsyncCallback<String> callback);
 
-	public void getOnGenomeData(String dbID, String ref, ChrLoc range, AsyncCallback<OnGenomeDataSet> callback);
+	public void getOnGenomeData(GenomeDB db, ChrLoc range, String userAgent, AsyncCallback<OnGenomeDataSet> callback);
 
 }

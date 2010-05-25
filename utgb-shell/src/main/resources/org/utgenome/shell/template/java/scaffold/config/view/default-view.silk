@@ -34,34 +34,14 @@
   -pack: true
   -class: DASTrack
   -property
-    -dasBaseURL: http://www.ensembl.org/das/Homo_sapiens.NCBI36.transcript/
-    -trackBaseURL: utgb-core/DASViewer
+    -path: http://www.ensembl.org/das/Homo_sapiens.NCBI36.transcript/
     -dasType: refGene
     -leftMargin: 100
-    -type: image
 -track
   -name: BED Track
   -height: 0
   -pack: true
-  -class: BEDCanvasTrack
+  -class: ReadTrack
   -property
-    -fileName: db/sample.bed
+    -path: db/sample.bed
     -leftMargin: 100
--track
-  -name: RefSeq Gene Demo
-  -height: 0
-  -pack: true
-  -class: GenomeTrack
-  -property
-    -trackBaseURL: utgb-core/GeneViewer?%q
-    -leftMargin: 100
-    -type: image
--track
-  -name: RefSeq Gene Table Demo
-  -height: 100
-  -pack: true
-  -class: GenomeTrack
-  -property
-    -trackBaseURL: utgb-core/GeneViewer.tab?%q
-    -leftMargin: 100
-    -type: frame

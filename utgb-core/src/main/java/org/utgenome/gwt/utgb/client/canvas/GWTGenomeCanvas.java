@@ -402,14 +402,21 @@ public class GWTGenomeCanvas extends Composite {
 				draw(g, g.getExon(), cds, gl.getYOffset());
 			}
 
+			drawLabel(g);
+		}
+
+		private void drawLabel(Read r) {
+			int gx1 = pixelPositionOnWindow(r.getStart());
+			int gx2 = pixelPositionOnWindow(r.getEnd());
+
 			if (canDisplayLabel) {
-				String n = g.getName();
+				String n = r.getName();
 				if (n != null) {
-					int textWidth = estimiateLabelWidth(g);
+					int textWidth = estimiateLabelWidth(r);
 
 					FixedWidthLabel label = new FixedWidthLabel(n, textWidth);
 					Style.fontSize(label, geneHeight);
-					Style.fontColor(label, getExonColorText(g));
+					Style.fontColor(label, getExonColorText(r));
 
 					Style.verticalAlign(label, "middle");
 
@@ -448,6 +455,7 @@ public class GWTGenomeCanvas extends Composite {
 
 		public void visitRead(Read r) {
 			draw(r, gl.getYOffset());
+			drawLabel(r);
 		}
 
 		public void visitSAMRead(SAMRead r) {
@@ -573,9 +581,9 @@ public class GWTGenomeCanvas extends Composite {
 
 	private int drawPosition(int x) {
 		if (reverse)
-			return (int) (windowWidth - x);
+			return (windowWidth - x);
 		else
-			return (int) x;
+			return x;
 	}
 
 	public static Color getExonColor(Gene g) {
@@ -671,7 +679,7 @@ public class GWTGenomeCanvas extends Composite {
 				continue;
 
 			int x1 = pixelPositionOnWindow(pos);
-			float y1 = (float) getYPosition(value);
+			float y1 = getYPosition(value);
 			int width = pixelPositionOnWindow(pos + span) - x1;
 
 			if (width <= 1) {

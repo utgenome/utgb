@@ -95,4 +95,8 @@ public class BrowserInfo {
 	public static native boolean isGoogleGearsInstalled() /*-{
 	       return ($wnd.google && google.gears);
 	   }-*/;
+	
+	public static native String getUserAgent() /*-{
+			return navigator.userAgent;
+	}-*/;
 }

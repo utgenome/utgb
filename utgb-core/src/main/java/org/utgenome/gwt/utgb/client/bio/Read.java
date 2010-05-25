@@ -33,7 +33,7 @@ package org.utgenome.gwt.utgb.client.bio;
 public class Read extends Interval {
 
 	public static enum ReadType {
-		INTERVAL, BED, SAM, BAM, BSS, WIG
+		INTERVAL, BED, SAM, BAM, BSS, WIG, URI
 	}
 
 	/**
@@ -94,6 +94,7 @@ public class Read extends Interval {
 			this.strand = (byte) strand.charAt(0);
 	}
 
+	@Override
 	public void accept(OnGenomeDataVisitor visitor) {
 		visitor.visitRead(this);
 	}

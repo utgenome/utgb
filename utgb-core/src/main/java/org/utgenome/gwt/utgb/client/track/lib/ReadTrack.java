@@ -27,8 +27,10 @@ package org.utgenome.gwt.utgb.client.track.lib;
 import java.util.ArrayList;
 
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
+import org.utgenome.gwt.utgb.client.bio.GenomeDB;
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
 import org.utgenome.gwt.utgb.client.bio.OnGenomeDataSet;
+import org.utgenome.gwt.utgb.client.bio.GenomeDB.DBType;
 import org.utgenome.gwt.utgb.client.canvas.GWTGenomeCanvas;
 import org.utgenome.gwt.utgb.client.canvas.LocusClickHandler;
 import org.utgenome.gwt.utgb.client.db.ValueDomain;
@@ -40,11 +42,11 @@ import org.utgenome.gwt.utgb.client.track.TrackConfig;
 import org.utgenome.gwt.utgb.client.track.TrackConfigChange;
 import org.utgenome.gwt.utgb.client.track.TrackFrame;
 import org.utgenome.gwt.utgb.client.track.TrackGroup;
-import org.utgenome.gwt.utgb.client.track.TrackGroupProperty;
 import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChange;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.track.UTGBProperty;
 import org.utgenome.gwt.utgb.client.track.impl.TrackWindowImpl;
+import org.utgenome.gwt.utgb.client.util.BrowserInfo;
 import org.utgenome.gwt.utgb.client.util.Properties;
 
 import com.google.gwt.core.client.GWT;
@@ -68,7 +70,8 @@ public class ReadTrack extends TrackBase {
 	private String clickAction = "link";
 	private String clickURLtemplate = "http://www.google.com/search?q=%q";
 	private int leftMargin = 0;
-	private String db;
+	private String path;
+	private String dbType;
 
 	private ArrayList<OnGenome> onGenomeData = new ArrayList<OnGenome>();
 
@@ -86,7 +89,13 @@ public class ReadTrack extends TrackBase {
 	}
 
 	public ReadTrack() {
+		this("Read Track", "AUTO");
+
+	}
+
+	public ReadTrack(String trackName, String dbType) {
 		super("Read Track");
+		this.dbType = dbType;
 
 		layoutTable.setBorderWidth(0);
 		layoutTable.setCellPadding(0);
@@ -165,9 +174,12 @@ public class ReadTrack extends TrackBase {
 	@Override
 	public void setUp(TrackFrame trackFrame, TrackGroup group) {
 		update(group.getTrackWindow());
-		config.addConfigParameter("DB ID", new StringType("dbID"), db);
-		config.addConfigParameter("Show Labels", new BooleanType("showLabels"), Boolean.toString(showLabels));
+		config.addConfigParameter("DB Path", new StringType("path"), path);
 
+		ValueDomain dbTypes = ValueDomain.createNewValueDomain(DBType.getDBTypeList());
+		config.addConfigParameter("DB Type", new StringType("dbType", dbTypes), dbType);
+
+		config.addConfigParameter("Show Labels", new BooleanType("showLabels"), Boolean.toString(showLabels));
 		ValueDomain actionTypes = ValueDomain.createNewValueDomain(new String[] { "none", "link" });
 		config.addConfigParameter("On Click Action", new StringType("onclick.action", actionTypes), clickAction);
 		config.addConfigParameter("On Click URL", new StringType("onclick.url"), clickURLtemplate);
@@ -178,13 +190,11 @@ public class ReadTrack extends TrackBase {
 		// retrieve gene data from the API
 		int s = newWindow.getStartOnGenome();
 		int e = newWindow.getEndOnGenome();
-		TrackGroupProperty prop = getTrackGroup().getPropertyReader();
-		String revision = prop.getProperty(UTGBProperty.REVISION);
-		String target = prop.getProperty(UTGBProperty.TARGET);
+		String chr = getTrackGroupProperty(UTGBProperty.TARGET);
 
 		getFrame().setNowLoading();
 
-		getBrowserService().getOnGenomeData(db, revision, new ChrLoc(target, s, e), new AsyncCallback<OnGenomeDataSet>() {
+		getBrowserService().getOnGenomeData(getGenomeDB(), new ChrLoc(chr, s, e), BrowserInfo.getUserAgent(), new AsyncCallback<OnGenomeDataSet>() {
 
 			public void onFailure(Throwable e) {
 				GWT.log("failed to retrieve gene data", e);
@@ -200,6 +210,20 @@ public class ReadTrack extends TrackBase {
 
 		});
 
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	/**
+	 * Override this method to extend db info parameters
+	 * 
+	 * @return
+	 */
+	public GenomeDB getGenomeDB() {
+		String ref = getTrackGroupProperty(UTGBProperty.REVISION);
+		return new GenomeDB(DBType.valueOf(DBType.class, dbType), path, ref);
 	}
 
 	@Override
@@ -227,7 +251,8 @@ public class ReadTrack extends TrackBase {
 		saveData.add("showLabels", showLabels);
 		saveData.add("onclick.url", clickURLtemplate);
 		saveData.add("onclick.action", clickAction);
-		saveData.add("db", db);
+		saveData.add("path", path);
+		saveData.add("dbType", path);
 	}
 
 	@Override
@@ -236,7 +261,8 @@ public class ReadTrack extends TrackBase {
 		showLabels = properties.getBoolean("showLabels", showLabels);
 		clickURLtemplate = properties.get("onclick.url", clickURLtemplate);
 		clickAction = properties.get("onclick.action", clickAction);
-		db = properties.get("db", db);
+		path = properties.get("path", path);
+		dbType = properties.get("dbType", dbType);
 	}
 
 }

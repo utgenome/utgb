@@ -57,6 +57,7 @@ import org.utgenome.gwt.utgb.client.bio.AlignmentResult;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.ChrRange;
 import org.utgenome.gwt.utgb.client.bio.Gene;
+import org.utgenome.gwt.utgb.client.bio.GenomeDB;
 import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.utgenome.gwt.utgb.client.bio.KeywordSearchResult;
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
@@ -65,7 +66,6 @@ import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.bio.WigGraphData;
 import org.utgenome.gwt.utgb.client.track.bean.TrackBean;
 import org.utgenome.gwt.utgb.client.view.TrackView;
-import org.utgenome.gwt.utgb.server.app.BEDViewer;
 import org.utgenome.gwt.utgb.server.app.ChromosomeMap;
 import org.utgenome.gwt.utgb.server.app.ReadView;
 import org.utgenome.gwt.utgb.server.util.WebApplicationResource;
@@ -567,10 +567,6 @@ public class BrowserServiceImpl extends RpcServlet implements BrowserService {
 		return readDataList;
 	}
 
-	public List<OnGenome> getBEDEntryList(String bedPath, ChrLoc location) {
-		return BEDViewer.query(bedPath, location);
-	}
-
 	public List<SAMRead> querySAMReadList(String bamFileName, String indexFileName, String refSeqFileName, String rname, int start, int end) {
 		final ArrayList<SAMRead> readDataList = new ArrayList<SAMRead>();
 
@@ -626,10 +622,10 @@ public class BrowserServiceImpl extends RpcServlet implements BrowserService {
 		return refSeq;
 	}
 
-	public OnGenomeDataSet getOnGenomeData(String dbID, String ref, ChrLoc range) {
+	public OnGenomeDataSet getOnGenomeData(GenomeDB db, ChrLoc range, String userAgent) {
 
 		OnGenomeDataSet result = new OnGenomeDataSet();
-		List<OnGenome> overlapQueryResult = ReadView.overlapQuery(dbID, range);
+		List<OnGenome> overlapQueryResult = ReadView.overlapQuery(db, range, this.getServletContext());
 
 		result.read = overlapQueryResult;
 		result.location = range;

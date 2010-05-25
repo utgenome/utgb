@@ -95,4 +95,40 @@ public class StringUtil {
 		else
 			return s;
 	}
+
+	/**
+	 * Convert a string representation of an integer with comma into an int value
+	 * 
+	 * @param sInt
+	 * @return
+	 */
+	public static int toInt(String sInt) {
+		if (sInt == null)
+			throw new NullPointerException();
+		String intWithoutComma = sInt.replaceAll(",", "");
+		return Integer.parseInt(intWithoutComma);
+	}
+
+	/**
+	 * insert commas to the given number for the readability
+	 * 
+	 * @param number
+	 * @return
+	 */
+	public static String formatNumber(int number) {
+		StringBuilder s = new StringBuilder();
+		String intValue = Integer.toString(number);
+
+		final int len = intValue.length();
+		for (int i = 0; i < len; ++i) {
+			s.append(intValue.charAt(i));
+
+			int digit = len - i - 1;
+			if (digit != 0 && (digit % 3 == 0)) {
+				s.append(',');
+			}
+		}
+		return s.toString();
+	}
+
 }
