@@ -64,8 +64,8 @@ public class GenomeTrack extends TrackBase {
 	protected String type = "image";
 	protected String trackBaseURL;
 	private String trackURL;
-
 	protected int leftMargin = 0;
+
 	protected FlexTable layoutPanel = new FlexTable();
 	protected Image trackImage = new Image();
 	protected Frame frame = new Frame();
@@ -73,10 +73,9 @@ public class GenomeTrack extends TrackBase {
 
 	protected Set<String> queryParams = new HashSet<String>();
 
-	protected TrackConfig config = new TrackConfig(this);
-
 	public static TrackFactory factory() {
 		return new TrackFactory() {
+			@Override
 			public Track newInstance() {
 				return new GenomeTrack();
 			}
@@ -115,7 +114,7 @@ public class GenomeTrack extends TrackBase {
 			layoutPanel.getCellFormatter().setWidth(0, 0, leftMargin + "px");
 
 		trackURL = getTrackURL();
-		config.setParameter("trackURL", trackURL);
+		getConfig().setParameter("trackURL", trackURL);
 
 		if (type.equals("frame")) {
 			if (!isWidgetReady) {
@@ -155,11 +154,6 @@ public class GenomeTrack extends TrackBase {
 	}
 
 	@Override
-	public TrackConfig getConfig() {
-		return config;
-	}
-
-	@Override
 	public void setUp(TrackFrame trackFrame, TrackGroup group) {
 
 		trackImage.addLoadHandler(new LoadHandler() {
@@ -182,6 +176,7 @@ public class GenomeTrack extends TrackBase {
 		}
 
 		// set up the configuration panel
+		TrackConfig config = getConfig();
 		config.addConfigParameter("Track Base URL", new StringType("baseURL"), trackBaseURL);
 		config.addConfigParameter("Track URL", new StringType("trackURL"), trackURL);
 	}
@@ -219,17 +214,21 @@ public class GenomeTrack extends TrackBase {
 
 	@Override
 	public void saveProperties(Properties saveData) {
-		saveData.add("type", type);
-		saveData.add("trackBaseURL", trackBaseURL);
-		saveData.add("leftMargin", leftMargin);
+		super.saveProperties(saveData);
 		String q = StringUtil.joinIterable(queryParams, ",");
 		saveData.add("queryParams", q);
-		saveData.add("monitorCoordinateChange", monitorCoordinateChange);
-		saveData.add("monitorWindowChange", monitorWindowChange);
+
+		//		saveData.add("type", type);
+		//		saveData.add("trackBaseURL", trackBaseURL);
+		//		saveData.add("leftMargin", leftMargin);
+		//		saveData.add("monitorCoordinateChange", monitorCoordinateChange);
+		//		saveData.add("monitorWindowChange", monitorWindowChange);
 	}
 
 	@Override
 	public void restoreProperties(Properties properties) {
+		super.restoreProperties(properties);
+
 		trackBaseURL = properties.get("trackBaseURL", trackBaseURL);
 		leftMargin = properties.getInt("leftMargin", leftMargin);
 		type = properties.get("type", type);

@@ -52,6 +52,8 @@ public class BrowserInfo {
 		return properties;
 	}
 
+	
+	
 	public native static String unescape(String s) /*-{
 	      return unescape(s);
 	   }-*/;
@@ -100,7 +102,18 @@ public class BrowserInfo {
 			return navigator.userAgent;
 	}-*/;
 	
-	public static native boolean isCanvasSupported() /*-{
+	
+	private static Boolean hasCanvasSupport = null;
+	
+	public static boolean isCanvasSupported() {
+		if(hasCanvasSupport == null) 
+			hasCanvasSupport = isCanvasSupportedInternal();
+		return hasCanvasSupport.booleanValue();
+	}
+	
+	private static native boolean isCanvasSupportedInternal() /*-{
 		return !!document.createElement('canvas').getContext;
 	}-*/;
+	
+	
 }

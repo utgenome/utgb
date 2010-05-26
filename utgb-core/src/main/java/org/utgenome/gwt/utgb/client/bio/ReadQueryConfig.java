@@ -16,31 +16,43 @@
 //--------------------------------------
 // utgb-core Project
 //
-// OnGenomeDataVisitor.java
-// Since: May 16, 2010
+// ReadQueryConfig.java
+// Since: May 26, 2010
 //
 // $URL$ 
 // $Author$
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.bio;
 
+import java.io.Serializable;
+
 /**
- * Visitor interface for traversing data mapped onto a genome sequence
+ * Read query configuration
  * 
  * @author leo
  * 
  */
-public interface OnGenomeDataVisitor {
+public class ReadQueryConfig implements Serializable {
 
-	public void visitInterval(Interval interval);
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
-	public void visitRead(Read r);
+	public static enum Layout {
+		PILEUP, COVERAGE
+	}
 
-	public void visitGene(Gene g);
+	public boolean hasCanvasSupport;
+	public Layout layout;
+	public int pixelWidth;
 
-	public void visitSAMRead(SAMRead r);
+	public ReadQueryConfig() {
+	}
 
-	public void visitSequence(ReferenceSequence referenceSequence);
-
-	public void visitReadCoverage(ReadCoverage readCoverage);
+	public ReadQueryConfig(int pixelWidth, boolean hasCanvasSupport, Layout layout) {
+		this.pixelWidth = pixelWidth;
+		this.layout = layout;
+		this.hasCanvasSupport = hasCanvasSupport;
+	}
 }

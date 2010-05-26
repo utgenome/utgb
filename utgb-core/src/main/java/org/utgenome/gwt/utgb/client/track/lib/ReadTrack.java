@@ -24,13 +24,13 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.track.lib;
 
-import java.util.ArrayList;
-
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.GenomeDB;
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
 import org.utgenome.gwt.utgb.client.bio.OnGenomeDataSet;
+import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig;
 import org.utgenome.gwt.utgb.client.bio.GenomeDB.DBType;
+import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig.Layout;
 import org.utgenome.gwt.utgb.client.canvas.GWTGenomeCanvas;
 import org.utgenome.gwt.utgb.client.canvas.LocusClickHandler;
 import org.utgenome.gwt.utgb.client.db.ValueDomain;
@@ -167,6 +167,7 @@ public class ReadTrack extends TrackBase {
 	private final String CONFIG_LEFT_MARGIN = "leftMargin";
 	private final String CONFIG_DB_TYPE = "dbType";
 	private final String CONFIG_PATH = "path";
+	private final String CONFIG_LAYOUT = "layout";
 	private final String CONFIG_SHOW_LABELS = "showLabels";
 	private final String CONFIG_ONCLICK_ACTION = "onclick.action";
 	private final String CONFIG_ONCLICK_URL = "onclick.url";
@@ -174,7 +175,7 @@ public class ReadTrack extends TrackBase {
 	private final String CONFIG_ONCLICK_P_VALUE = "onclick.p.value";
 
 	// read data
-	private ArrayList<OnGenome> onGenomeData = new ArrayList<OnGenome>();
+	private OnGenomeDataSet dataSet;
 
 	// widgets
 	private FlexTable layoutTable = new FlexTable();
@@ -315,7 +316,17 @@ public class ReadTrack extends TrackBase {
 		geneCanvas.clear();
 		geneCanvas.setWindow(new TrackWindowImpl(width, s, e));
 		geneCanvas.setShowLabels(showLabels);
-		geneCanvas.draw(onGenomeData);
+
+		String layout = getConfig().getString(CONFIG_LAYOUT, "pileup");
+		if ("pileup".equals(layout)) {
+			if (dataSet.read != null && !dataSet.read.isEmpty())
+				geneCanvas.draw(dataSet.read);
+			else
+				geneCanvas.drawBlock(dataSet.block);
+		}
+		else {
+			geneCanvas.drawBlock(dataSet.block);
+		}
 
 		getFrame().loadingDone();
 	}
@@ -350,6 +361,8 @@ public class ReadTrack extends TrackBase {
 		ValueDomain dbTypes = ValueDomain.createNewValueDomain(DBType.getDBTypeList());
 		config.addConfigParameter("DB Type", new StringType(CONFIG_DB_TYPE, dbTypes), "AUTO");
 
+		ValueDomain layoutTypes = ValueDomain.createNewValueDomain(new String[] { "pileup", "coverage" });
+		config.addConfigParameter("Layout", new StringType(CONFIG_LAYOUT, layoutTypes), "pileup");
 		config.addConfigParameter("Show Labels", new BooleanType(CONFIG_SHOW_LABELS), "true");
 		ValueDomain actionTypes = ValueDomain.createNewValueDomain(new String[] { "none", "link", "info", "set" });
 		config.addConfigParameter("On Click Action", new StringType(CONFIG_ONCLICK_ACTION, actionTypes), "link");
@@ -368,22 +381,25 @@ public class ReadTrack extends TrackBase {
 
 		getFrame().setNowLoading();
 
-		getBrowserService().getOnGenomeData(getGenomeDB(), new ChrLoc(chr, s, e), BrowserInfo.getUserAgent(), newWindow.getWindowWidth(),
-				new AsyncCallback<OnGenomeDataSet>() {
+		String layout = getConfig().getString(CONFIG_LAYOUT, "pileup");
 
-					public void onFailure(Throwable e) {
-						GWT.log("failed to retrieve gene data", e);
-						getFrame().loadingDone();
-					}
+		ReadQueryConfig queryConfig = new ReadQueryConfig(newWindow.getWindowWidth(), BrowserInfo.isCanvasSupported(), Layout.valueOf(Layout.class, layout
+				.toUpperCase()));
 
-					public void onSuccess(OnGenomeDataSet readSet) {
-						onGenomeData.clear();
-						onGenomeData.addAll(readSet.read);
+		getBrowserService().getOnGenomeData(getGenomeDB(), new ChrLoc(chr, s, e), queryConfig, new AsyncCallback<OnGenomeDataSet>() {
 
-						refresh();
-					}
+			public void onFailure(Throwable e) {
+				GWT.log("failed to retrieve gene data", e);
+				getFrame().loadingDone();
+			}
 
-				});
+			public void onSuccess(OnGenomeDataSet readSet) {
+				dataSet = readSet;
+
+				refresh();
+			}
+
+		});
 
 	}
 
@@ -409,7 +425,7 @@ public class ReadTrack extends TrackBase {
 			updateClickAction();
 		}
 
-		if (change.containsOneOf(new String[] { CONFIG_SHOW_LABELS, CONFIG_LEFT_MARGIN, CONFIG_PATH, CONFIG_DB_TYPE })) {
+		if (change.containsOneOf(new String[] { CONFIG_LAYOUT, CONFIG_SHOW_LABELS, CONFIG_LEFT_MARGIN, CONFIG_PATH, CONFIG_DB_TYPE })) {
 			refresh();
 		}
 	}

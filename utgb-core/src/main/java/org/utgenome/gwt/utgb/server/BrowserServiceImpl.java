@@ -61,6 +61,7 @@ import org.utgenome.gwt.utgb.client.bio.GenomeDB;
 import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.utgenome.gwt.utgb.client.bio.KeywordSearchResult;
 import org.utgenome.gwt.utgb.client.bio.OnGenomeDataSet;
+import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig;
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.bio.WigGraphData;
 import org.utgenome.gwt.utgb.client.track.bean.TrackBean;
@@ -621,10 +622,8 @@ public class BrowserServiceImpl extends RpcServlet implements BrowserService {
 		return refSeq;
 	}
 
-	public OnGenomeDataSet getOnGenomeData(GenomeDB db, ChrLoc range, String userAgent, int pixelWidth) {
-		_logger.trace(String.format("user agent: %s", userAgent));
-
-		return ReadView.overlapQuery(db, range, pixelWidth);
+	public OnGenomeDataSet getOnGenomeData(GenomeDB db, ChrLoc range, ReadQueryConfig config) {
+		return ReadView.overlapQuery(db, range, config);
 	}
 
 }

@@ -16,8 +16,8 @@
 //--------------------------------------
 // utgb-core Project
 //
-// OnGenomeDataVisitor.java
-// Since: May 16, 2010
+// OnGenomeDataVisitorBase.java
+// Since: May 26, 2010
 //
 // $URL$ 
 // $Author$
@@ -25,22 +25,35 @@
 package org.utgenome.gwt.utgb.client.bio;
 
 /**
- * Visitor interface for traversing data mapped onto a genome sequence
+ * An empty implementation of the {@link OnGenomeDataVisitor}.
  * 
  * @author leo
  * 
  */
-public interface OnGenomeDataVisitor {
+public class OnGenomeDataVisitorBase implements OnGenomeDataVisitor {
 
-	public void visitInterval(Interval interval);
+	public void visitGene(Gene g) {
 
-	public void visitRead(Read r);
+	}
 
-	public void visitGene(Gene g);
+	public void visitInterval(Interval interval) {
 
-	public void visitSAMRead(SAMRead r);
+	}
 
-	public void visitSequence(ReferenceSequence referenceSequence);
+	public void visitRead(Read r) {
 
-	public void visitReadCoverage(ReadCoverage readCoverage);
+	}
+
+	public void visitReadCoverage(ReadCoverage readCoverage) {
+
+	}
+
+	public void visitSAMRead(SAMRead r) {
+
+	}
+
+	public void visitSequence(ReferenceSequence referenceSequence) {
+
+	}
+
 }

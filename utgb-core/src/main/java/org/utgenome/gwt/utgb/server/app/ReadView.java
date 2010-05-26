@@ -35,10 +35,12 @@ import org.utgenome.gwt.utgb.client.bio.OnGenome;
 import org.utgenome.gwt.utgb.client.bio.OnGenomeDataSet;
 import org.utgenome.gwt.utgb.client.bio.Read;
 import org.utgenome.gwt.utgb.client.bio.ReadCoverage;
+import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig;
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.bio.DASResult.Segment.DASFeature;
 import org.utgenome.gwt.utgb.client.bio.GenomeDB.DBType;
 import org.utgenome.gwt.utgb.client.bio.Read.ReadType;
+import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig.Layout;
 import org.utgenome.gwt.utgb.client.util.Properties;
 import org.utgenome.gwt.utgb.server.WebTrackBase;
 import org.utgenome.gwt.utgb.server.util.WebApplicationResource;
@@ -64,6 +66,8 @@ public class ReadView extends WebTrackBase {
 	public String ref;
 	public String chr;
 	public int width = 700;
+	public boolean useCanvas = true;
+	public Layout layout = Layout.PILEUP;
 
 	// resource ID
 	public String path;
@@ -76,7 +80,7 @@ public class ReadView extends WebTrackBase {
 		if (start == -1 || end == -1 || chr == null)
 			return;
 
-		OnGenomeDataSet result = overlapQuery(new GenomeDB(path, ref), new ChrLoc(chr, start, end), width);
+		OnGenomeDataSet result = overlapQuery(new GenomeDB(path, ref), new ChrLoc(chr, start, end), new ReadQueryConfig(width, useCanvas, layout));
 
 		response.setContentType("text/html");
 
@@ -92,7 +96,7 @@ public class ReadView extends WebTrackBase {
 		w.endDocument();
 	}
 
-	public static OnGenomeDataSet overlapQuery(GenomeDB db, ChrLoc loc, int pixelWidth) {
+	public static OnGenomeDataSet overlapQuery(GenomeDB db, ChrLoc loc, ReadQueryConfig config) {
 
 		OnGenomeDataSet result = new OnGenomeDataSet();
 		StopWatch sw = new StopWatch();
@@ -151,9 +155,9 @@ public class ReadView extends WebTrackBase {
 
 		_logger.debug("query done. " + sw.getElapsedTime() + " sec.");
 
-		if (result.read.size() > 1000) {
+		if (config.layout == Layout.COVERAGE || result.read.size() > 1000) {
 			// compute coverage
-			ReadCoverage coverage = computeCoverage(result.read, loc.start, loc.end, pixelWidth);
+			ReadCoverage coverage = computeCoverage(result.read, loc.start, loc.end, config.pixelWidth);
 			result.read.clear();
 			result.block.add(coverage);
 		}

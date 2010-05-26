@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import org.utgenome.gwt.utgb.client.bio.BSSRead;
 import org.utgenome.gwt.utgb.client.bio.CDS;
 import org.utgenome.gwt.utgb.client.bio.Exon;
 import org.utgenome.gwt.utgb.client.bio.Gene;
@@ -36,6 +35,7 @@ import org.utgenome.gwt.utgb.client.bio.InfoSilkGenerator;
 import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
 import org.utgenome.gwt.utgb.client.bio.OnGenomeDataVisitor;
+import org.utgenome.gwt.utgb.client.bio.OnGenomeDataVisitorBase;
 import org.utgenome.gwt.utgb.client.bio.Read;
 import org.utgenome.gwt.utgb.client.bio.ReadCoverage;
 import org.utgenome.gwt.utgb.client.bio.ReferenceSequence;
@@ -435,11 +435,6 @@ public class GWTGenomeCanvas extends Composite {
 			gl.yOffset = gl.yOffset * h;
 		}
 
-		public void visitBSSRead(BSSRead b) {
-			// TODO Auto-generated method stub
-
-		}
-
 		public void visitGene(Gene g) {
 			int gx1 = pixelPositionOnWindow(g.getStart());
 			int gx2 = pixelPositionOnWindow(g.getEnd());
@@ -524,6 +519,60 @@ public class GWTGenomeCanvas extends Composite {
 		}
 
 	};
+
+	private class FindMaximumHeight extends OnGenomeDataVisitorBase {
+		int maxHeight = 15;
+
+		@Override
+		public void visitReadCoverage(ReadCoverage readCoverage) {
+			if (readCoverage.coverage == null)
+				return;
+
+			// set canvas size
+			for (int height : readCoverage.coverage) {
+				if (height > maxHeight)
+					maxHeight = height;
+			}
+		}
+	}
+
+	private class CoveragePainter extends OnGenomeDataVisitorBase {
+		@Override
+		public void visitReadCoverage(ReadCoverage readCoverage) {
+			canvas.saveContext();
+
+			canvas.setStrokeStyle(new Color("rgba(160, 160, 160, 0.8)"));
+			canvas.setLineWidth(1.0f);
+
+			for (int x = 0; x < readCoverage.pixelWidth; ++x) {
+				canvas.saveContext();
+				canvas.translate(x + 0.5f, 0);
+				canvas.beginPath();
+				canvas.moveTo(0, 0);
+				canvas.lineTo(0, readCoverage.coverage[x]);
+				canvas.stroke();
+				canvas.restoreContext();
+			}
+
+			canvas.restoreContext();
+		}
+	}
+
+	public <T extends OnGenome> void drawBlock(List<T> block) {
+
+		// compute max height
+		FindMaximumHeight hFinder = new FindMaximumHeight();
+		for (OnGenome each : block) {
+			each.accept(hFinder);
+		}
+		setPixelSize(windowWidth, hFinder.maxHeight);
+
+		// draw coverages
+		CoveragePainter cPainter = new CoveragePainter();
+		for (OnGenome each : block) {
+			each.accept(cPainter);
+		}
+	}
 
 	public <T extends OnGenome> void draw(List<T> locusList) {
 

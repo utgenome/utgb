@@ -67,7 +67,8 @@ public class BEDTrack extends GenomeTrack {
 		p.add("end", w.getEndOnGenome());
 		p.add("width", w.getWindowWidth() - leftMargin);
 		String fileName = getConfig().getParameter(CONFIG_FILENAME);
-		p.add("fileName", fileName);
+		if (fileName != null)
+			p.add("fileName", fileName);
 
 		return c.getTrackURL(trackBaseURL, p);
 	}
@@ -75,7 +76,7 @@ public class BEDTrack extends GenomeTrack {
 	@Override
 	public void setUp(TrackFrame trackFrame, TrackGroup group) {
 		super.setUp(trackFrame, group);
-		config.addConfigParameter("File Name", new StringType(CONFIG_FILENAME));
+		getConfig().addConfigParameter("File Name", new StringType(CONFIG_FILENAME));
 	}
 
 	@Override
