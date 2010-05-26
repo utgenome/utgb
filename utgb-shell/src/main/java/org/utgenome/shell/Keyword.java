@@ -106,6 +106,10 @@ public class Keyword extends UTGBShellCommand {
 					db.importFromBED(ref, r);
 					_logger.info(String.format("done. %s sec.", timer.getElapsedTime()));
 					break;
+				case KTAB:
+					db.importFromTAB(ref, r);
+					_logger.info(String.format("done. %s sec.", timer.getElapsedTime()));
+					break;
 				default:
 					throw new UTGBShellException(String.format("Unsupported (or unknown) file type. Use -t option to explicitely specify the file type."));
 				}

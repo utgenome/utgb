@@ -36,10 +36,10 @@ import org.utgenome.gwt.utgb.client.track.TrackGroup;
 import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyWriter;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.track.UTGBProperty;
-import org.utgenome.gwt.utgb.client.ui.FixedWidthLabel;
 import org.utgenome.gwt.utgb.client.ui.FormLabel;
 import org.utgenome.gwt.utgb.client.util.JSONUtil;
 import org.utgenome.gwt.utgb.client.util.Properties;
+import org.utgenome.gwt.utgb.client.util.StringUtil;
 import org.utgenome.gwt.widget.client.Style;
 
 import com.google.gwt.core.client.GWT;
@@ -53,6 +53,7 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockPanel;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -242,27 +243,33 @@ public class KeywordSearchTrack extends TrackBase {
 
 					//String species = getTrackGroupProperty(UTGBProperty.SPECIES);
 
+					FlexTable table = new FlexTable();
+					int row = 0;
 					for (Entry e : foundEntryList.result) {
-						HorizontalPanel hp = new HorizontalPanel();
-						hp.setVerticalAlignment(HorizontalPanel.ALIGN_MIDDLE);
 
+						// col1
 						Image icon = new Image("theme/image/item.gif");
 						Style.margin(icon, Style.LEFT, 10);
-						hp.add(icon);
-						FixedWidthLabel tagLabel = new FixedWidthLabel(e.name, 140);
-						tagLabel.setStyleName("label");
-						Style.margin(tagLabel, Style.LEFT, 3);
-						hp.add(tagLabel);
+						table.setWidget(row, 0, icon);
 
-						String label = e.ref + "/" + e.chr + ":" + e.start + "-" + e.end + "";
+						// col2 
+						String label = e.ref + "/" + e.chr + ":" + StringUtil.formatNumber(e.start) + "-" + StringUtil.formatNumber(e.end) + "";
 						Anchor link = new Anchor(label);
 						Style.fontSize(link, 12);
 						//link.setStyleName("searchresult");
 						link.addClickHandler(new LocationMover(e));
+						table.setWidget(row, 1, link);
+						// col3
+						Label tagLabel = new Label(e.name);
+						tagLabel.setStyleName("label");
+						Style.fontSize(tagLabel, 13);
+						Style.margin(tagLabel, Style.LEFT, 3);
+						table.setWidget(row, 2, tagLabel);
 
-						hp.add(link);
-						searchResultPanel.add(hp);
+						table.getRowFormatter().setVerticalAlign(row, HorizontalPanel.ALIGN_MIDDLE);
+						row++;
 					}
+					searchResultPanel.add(table);
 				}
 				refresh();
 				getFrame().loadingDone();

@@ -24,7 +24,9 @@
 //--------------------------------------
 package org.utgenome.format.keyword;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.Reader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -221,6 +223,60 @@ public class KeywordDB {
 		}
 		catch (Exception e) {
 			throw UTGBException.convert(e);
+		}
+	}
+
+	public void importFromTAB(String ref, Reader tabFileReader) throws UTGBException {
+
+		int entryCount = 0;
+		int lineCount = 1;
+		try {
+			initDB();
+			db.update("pragma synchronous = off");
+			db.setAutoCommit(false);
+
+			BufferedReader input = new BufferedReader(tabFileReader);
+			for (String line; (line = input.readLine()) != null; lineCount++) {
+				// skip the comment line
+				if (line.startsWith("#"))
+					continue;
+
+				try {
+					String[] column = line.split("\t");
+					if (column.length < 4) {
+						throw new IllegalArgumentException();
+					}
+					// chr, start, end, text ....
+					String chr = column[0];
+					int start = Integer.parseInt(column[1]);
+					int end = Integer.parseInt(column[2]);
+					StringBuilder buf = new StringBuilder();
+					for (int i = 3; i < column.length; ++i) {
+						if (i != 3)
+							buf.append(" ");
+						buf.append(column[i]);
+					}
+					GenomeKeywordEntry entry = new GenomeKeywordEntry(ref, chr, buf.toString(), start, end);
+
+					if (entryCount > 0 && (entryCount % 10000 == 0))
+						_logger.info("num entries: " + entryCount);
+
+					add(entry);
+				}
+				catch (IllegalArgumentException e) {
+					_logger.warn(String.format("line %d has invalid format: %s", lineCount, line));
+				}
+
+			}
+
+			db.update("commit");
+		}
+		catch (DBException e) {
+			_logger.error("error at line " + lineCount);
+			throw new UTGBException(UTGBErrorCode.DatabaseError, e);
+		}
+		catch (IOException e) {
+			throw new UTGBException(UTGBErrorCode.IO_ERROR, e);
 		}
 	}
 

@@ -83,7 +83,27 @@ public class KeywordDBTest {
 		}
 		finally {
 			db.close();
-			//tmpKeywordDB.delete();
+			tmpKeywordDB.delete();
+		}
+
+	}
+
+	@Test
+	public void importTab() throws Exception {
+		File tmpKeywordDB = FileUtil.createTempFile(new File(tmpFolder), "keyword-tab", ".sqlite");
+		KeywordDB db = new KeywordDB(tmpKeywordDB);
+		try {
+			db.importFromTAB("version1.0", FileResource.open(KeywordDBTest.class, "keyword.tab"));
+			KeywordSearchResult query = db.query("version1.0", "ENSORLG00000020021", 1, 10);
+			_logger.info(Lens.toSilk(query));
+			assertEquals(1, query.count);
+			assertEquals(1, query.result.size());
+
+			db.close();
+		}
+		finally {
+			db.close();
+			tmpKeywordDB.delete();
 		}
 
 	}
