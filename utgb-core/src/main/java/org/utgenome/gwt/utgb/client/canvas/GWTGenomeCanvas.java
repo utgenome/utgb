@@ -542,14 +542,18 @@ public class GWTGenomeCanvas extends Composite {
 			canvas.saveContext();
 			canvas.setStrokeStyle(getColor("#6699AA", 0.6f));
 			canvas.setLineWidth(1.0f);
+			canvas.setLineCap("round");
 
 			for (int x = 0; x < readCoverage.pixelWidth; ++x) {
+				int h = readCoverage.coverage[x];
+				if (h <= 0)
+					continue;
+
 				canvas.saveContext();
 				canvas.translate(x + 0.5f, 0);
-				canvas.setLineCap("round");
 				canvas.beginPath();
 				canvas.moveTo(0, 0);
-				canvas.lineTo(0, readCoverage.coverage[x]);
+				canvas.lineTo(0, h + 0.5f);
 				canvas.stroke();
 				canvas.restoreContext();
 			}
