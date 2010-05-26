@@ -49,6 +49,7 @@ import org.utgenome.gwt.widget.client.Style;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
@@ -128,15 +129,23 @@ public class GWTGenomeCanvas extends Composite {
 		}
 
 		public void setLocus(OnGenome g) {
+			if (this.locus == g)
+				return;
+
 			this.locus = g;
 
+		}
+
+		public void update() {
+			if (locus == null)
+				return;
+
 			InfoSilkGenerator silk = new InfoSilkGenerator();
-			g.accept(silk);
+			locus.accept(silk);
 			info.clear();
 			for (String line : silk.getLines()) {
 				info.add(new HTML(line));
 			}
-
 		}
 
 	}
@@ -166,8 +175,10 @@ public class GWTGenomeCanvas extends Composite {
 					displayInfo(clientX, clientY, g);
 				}
 			}
-			else
+			else {
 				Style.cursor(canvas, Style.CURSOR_AUTO);
+				popupLabel.setLocus(null);
+			}
 
 			break;
 		}
@@ -186,15 +197,25 @@ public class GWTGenomeCanvas extends Composite {
 
 	}
 
-	public void displayInfo(int clientX, int clientY, OnGenome g) {
+	public void displayInfo(final int clientX, final int clientY, final OnGenome g) {
 		if (popupLabel == null)
 			popupLabel = new PopupInfo();
 
-		popupLabel.removeFromParent();
-
 		popupLabel.setLocus(g);
-		popupLabel.setPopupPosition(clientX + 10, clientY + 3);
-		popupLabel.show();
+
+		Timer timer = new Timer() {
+			@Override
+			public void run() {
+				popupLabel.removeFromParent();
+				if (popupLabel.locus == g) {
+					popupLabel.setPopupPosition(clientX + 10, clientY + 3);
+					popupLabel.update();
+					popupLabel.show();
+				}
+			}
+		};
+
+		timer.schedule(20);
 	}
 
 	/**
