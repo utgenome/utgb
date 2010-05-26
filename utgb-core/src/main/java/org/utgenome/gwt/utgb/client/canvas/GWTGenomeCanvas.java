@@ -540,13 +540,13 @@ public class GWTGenomeCanvas extends Composite {
 		@Override
 		public void visitReadCoverage(ReadCoverage readCoverage) {
 			canvas.saveContext();
-
-			canvas.setStrokeStyle(new Color("rgba(160, 160, 160, 0.8)"));
-			canvas.setLineWidth(1.0f);
+			canvas.setStrokeStyle(getColor("#6699AA", 0.6f));
+			canvas.setLineWidth(1.3f);
 
 			for (int x = 0; x < readCoverage.pixelWidth; ++x) {
 				canvas.saveContext();
 				canvas.translate(x + 0.5f, 0);
+				canvas.setLineCap("round");
 				canvas.beginPath();
 				canvas.moveTo(0, 0);
 				canvas.lineTo(0, readCoverage.coverage[x]);
@@ -607,7 +607,10 @@ public class GWTGenomeCanvas extends Composite {
 	}
 
 	public static Color getGeneColor(Interval l, float alpha) {
-		String hex = getExonColorText(l);
+		return getColor(getExonColorText(l), alpha);
+	}
+
+	public static Color getColor(String hex, float alpha) {
 		int r = Integer.parseInt(hex.substring(1, 3), 16);
 		int g = Integer.parseInt(hex.substring(3, 5), 16);
 		int b = Integer.parseInt(hex.substring(5, 7), 16);
