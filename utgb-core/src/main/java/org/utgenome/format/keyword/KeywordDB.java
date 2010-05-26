@@ -265,10 +265,10 @@ public class KeywordDB {
 					add(entry);
 				}
 				catch (IllegalArgumentException e) {
-					_logger.warn(String.format("line %d has invalid format: %s", lineCount, line));
+					_logger.warn(String.format("line %d has invalid format: %s (%s)", lineCount, line, e.getMessage()));
 				}
 				catch (DBException e) {
-					_logger.error(String.format("line %d: insertion error %s", e.getMessage()));
+					_logger.error(String.format("line %d: insertion error %s", lineCount, e.getMessage()));
 					e.printStackTrace(System.err);
 				}
 			}
