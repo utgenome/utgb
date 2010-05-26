@@ -92,6 +92,7 @@ public class BEDDatabaseGenerator {
 
 		public void dispose() throws SQLException {
 
+			_logger.info("creating indexes...");
 			stat.executeUpdate("create index gene_index on gene (coordinate, start)");
 
 			conn.commit();

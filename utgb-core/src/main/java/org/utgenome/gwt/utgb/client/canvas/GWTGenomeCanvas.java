@@ -55,6 +55,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.widgetideas.graphics.client.Color;
 import com.google.gwt.widgetideas.graphics.client.GWTCanvas;
@@ -109,7 +110,7 @@ public class GWTGenomeCanvas extends Composite {
 	static class PopupInfo extends PopupPanel {
 
 		OnGenome locus;
-		private HTML info = new HTML();
+		private VerticalPanel info = new VerticalPanel();
 
 		public PopupInfo() {
 			super(true);
@@ -117,6 +118,9 @@ public class GWTGenomeCanvas extends Composite {
 			Style.padding(info, Style.LEFT | Style.RIGHT, 5);
 			Style.fontColor(info, "white");
 			Style.fontSize(info, 14);
+			Style.margin(info, 0);
+			Style.preserveWhiteSpace(info);
+
 			RoundCornerFrame infoFrame = new RoundCornerFrame("336699", 0.7f, 4);
 			infoFrame.setWidget(info);
 			this.setWidget(infoFrame);
@@ -128,7 +132,11 @@ public class GWTGenomeCanvas extends Composite {
 
 			InfoSilkGenerator silk = new InfoSilkGenerator();
 			g.accept(silk);
-			info.setHTML("<pre>" + silk.getSilk() + "</pre>");
+			info.clear();
+			for (String line : silk.getLines()) {
+				info.add(new HTML(line));
+			}
+
 		}
 
 	}
@@ -209,6 +217,15 @@ public class GWTGenomeCanvas extends Composite {
 			if (y1 <= y && y <= y2) {
 				int x1 = pixelPositionOnWindow(g.getStart()) - xBorder;
 				int x2 = pixelPositionOnWindow(g.getStart() + g.length()) + xBorder;
+
+				if (canDisplayLabel) {
+					int labelWidth = estimiateLabelWidth(g);
+					if (x1 - labelWidth > 0)
+						x1 -= labelWidth;
+					else
+						x2 += labelWidth;
+				}
+
 				if (x1 <= x && x <= x2)
 					return g;
 			}

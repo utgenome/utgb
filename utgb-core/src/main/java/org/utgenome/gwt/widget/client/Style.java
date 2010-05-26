@@ -96,6 +96,10 @@ public class Style {
 		set(w, CSS_WHITESPACE, "nowrap");
 	}
 
+	public static void preserveWhiteSpace(Widget w) {
+		set(w, CSS_WHITESPACE, "pre");
+	}
+
 	public static void overflowHidden(Widget w) {
 		set(w, "overflow", OVERFLOW_HIDDEN);
 	}

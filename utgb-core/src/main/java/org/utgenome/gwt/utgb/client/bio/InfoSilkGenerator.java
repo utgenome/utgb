@@ -24,6 +24,9 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.bio;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Generating read information in Silk format, which is used for displaying mouse over message
  * 
@@ -32,10 +35,23 @@ package org.utgenome.gwt.utgb.client.bio;
  */
 public class InfoSilkGenerator implements OnGenomeDataVisitor {
 
-	public StringBuilder buf = new StringBuilder();
+	public ArrayList<String> lines = new ArrayList<String>();
 
 	public String getSilk() {
+		StringBuilder buf = new StringBuilder();
+		for (String each : lines) {
+			buf.append(each);
+			buf.append("\n");
+		}
 		return buf.toString();
+	}
+
+	public List<String> getLines() {
+		return lines;
+	}
+
+	public void addLine(String text) {
+		lines.add(text);
 	}
 
 	public void visitBSSRead(BSSRead b) {
@@ -49,39 +65,26 @@ public class InfoSilkGenerator implements OnGenomeDataVisitor {
 	}
 
 	public void visitInterval(Interval interval) {
-		buf.append("-name: " + interval.getName());
-		buf.append("\n");
-		buf.append("-start: " + interval.getStart());
-		buf.append("\n");
-		buf.append("-end: " + interval.getEnd());
-		buf.append("\n");
-		buf.append("-length: " + interval.length());
-		buf.append("\n");
+		addLine("-name: " + interval.getName());
+		addLine("-start: " + interval.getStart());
+		addLine("-end: " + interval.getEnd());
+		addLine("-length: " + interval.length());
 	}
 
 	public void visitRead(Read r) {
 		visitInterval(r);
-		buf.append("-strand: " + r.getStrand());
-		buf.append("\n");
+		addLine("-strand: " + r.getStrand());
 	}
 
 	public void visitSAMRead(SAMRead r) {
 		visitInterval(r);
-		buf.append("-cigar: " + r.cigar);
-		buf.append("\n");
-		buf.append("-insert size: " + r.iSize);
-		buf.append("\n");
-		buf.append("-mapq: " + r.mapq);
-		buf.append("\n");
-		buf.append("-mate start: " + r.mStart);
-		buf.append("\n");
-		buf.append("-tag\n");
+		addLine("-cigar: " + r.cigar);
+		addLine("-insert size: " + r.iSize);
+		addLine("-mapq: " + r.mapq);
+		addLine("-mate start: " + r.mStart);
+		addLine("-tag");
 		for (String key : r.tag.keySet()) {
-			buf.append(" -");
-			buf.append(key);
-			buf.append(": ");
-			buf.append(r.tag.get(key));
-			buf.append("\n");
+			addLine("  -" + key + ": " + r.tag.get(key));
 		}
 	}
 
@@ -91,12 +94,9 @@ public class InfoSilkGenerator implements OnGenomeDataVisitor {
 	}
 
 	public void visitReadCoverage(ReadCoverage readCoverage) {
-		buf.append("-name: " + readCoverage.getName());
-		buf.append("\n");
-		buf.append("-start: " + readCoverage.getStart());
-		buf.append("\n");
-		buf.append("-length: " + readCoverage.length());
-		buf.append("\n");
+		addLine("-name: " + readCoverage.getName());
+		addLine("-start: " + readCoverage.getStart());
+		addLine("-length: " + readCoverage.length());
 	}
 
 }
