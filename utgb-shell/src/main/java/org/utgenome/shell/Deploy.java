@@ -38,8 +38,8 @@ public class Deploy extends UTGBShellCommand {
 	@Option(symbol = "n", description = "do not generate context.xml")
 	boolean noContextXML = false;
 
-	@Option(symbol = "c", longName = "clean", description = "recompile the project (utgb clean, utgb compile), then deploy")
-	boolean recompile = true;
+	@Option(symbol = "c", longName = "clean", description = "force recompile the project (utgb clean, utgb compile), then deploy")
+	boolean forceClean = false;
 
 	public Deploy() {
 	}
@@ -52,7 +52,7 @@ public class Deploy extends UTGBShellCommand {
 		// create war/utgb folder
 		FileUtil.mkdirs(new File(getProjectRoot(), "war/utgb"));
 
-		if (recompile) {
+		if (forceClean) {
 			UTGBShell.runCommand(globalOption, "clean");
 			UTGBShell.runCommand(globalOption, "compile");
 		}

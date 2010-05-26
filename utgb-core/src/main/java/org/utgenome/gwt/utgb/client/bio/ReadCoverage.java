@@ -37,7 +37,7 @@ public class ReadCoverage extends Interval {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public String name = "read coverage";
+	private String name = "read coverage";
 	/**
 	 * Coverage of each pixel position
 	 */
@@ -53,10 +53,16 @@ public class ReadCoverage extends Interval {
 		this.coverage = coverage;
 	}
 
+	@Override
 	public void accept(OnGenomeDataVisitor visitor) {
 		visitor.visitReadCoverage(this);
 	}
 
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@Override
 	public String getName() {
 		return name;
 	}

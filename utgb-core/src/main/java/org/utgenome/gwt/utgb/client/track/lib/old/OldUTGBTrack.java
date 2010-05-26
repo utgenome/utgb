@@ -193,7 +193,6 @@ public class OldUTGBTrack extends TrackBase {
 	protected final List<AcceptSpeciesEntry> acceptSpeciesEntries = new ArrayList<AcceptSpeciesEntry>();
 	private static final int INDEX_WINDOW_WIDTH = 100;
 	protected final List<OldUTGBOptionAttribute> optionAttributes = new ArrayList<OldUTGBOptionAttribute>();
-	private TrackConfig _config = new TrackConfig(this);
 
 	public OldUTGBTrack() {
 		super("Operation Track");
@@ -276,7 +275,7 @@ public class OldUTGBTrack extends TrackBase {
 				if (mainGraphicURL != null) {
 					Image.prefetch(mainGraphicURL);
 					mainGraphicPanel.setUrl(mainGraphicURL);
-					_config.setParameter("URL", mainGraphicURL);
+					getConfig().setParameter("URL", mainGraphicURL);
 				}
 			}
 			{ // index
@@ -399,13 +398,13 @@ public class OldUTGBTrack extends TrackBase {
 						if (optAttrStr != null) {
 							final String prefix = Integer.toString(Random.nextInt());
 							parseOptionAttribute(optAttrStr.trim(), prefix);
-							_config = new TrackConfig(OldUTGBTrack.this);
+							setConfig(new TrackConfig(OldUTGBTrack.this));
 							for (int i = 0; i < optionAttributes.size(); i++) {
 								final OldUTGBOptionAttribute optionAttribute = (optionAttributes.get(i));
-								optionAttribute.setConfig(_config);
+								optionAttribute.setConfig(getConfig());
 							}
 						}
-						_config.addConfigParameter(new StringType("URL"), "");
+						getConfig().addConfigParameter(new StringType("URL"), "");
 					}
 					final NodeList layerNodes = dom.getElementsByTagName("layer");
 					for (int i = 0; i < layerNodes.getLength(); i++) {
@@ -487,11 +486,6 @@ public class OldUTGBTrack extends TrackBase {
 	public void eraseMessage() {
 		// _label.setText("");
 		// _frame.eraseMessage(true);
-	}
-
-	@Override
-	public TrackConfig getConfig() {
-		return _config;
 	}
 
 	private final void parseOptionAttribute(final String optAttrStr, final String prefix) {

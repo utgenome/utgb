@@ -52,7 +52,7 @@ public abstract class TrackBase implements Track {
 	private boolean _isInitialized = false;
 	private int defaultTrackHeight = TrackFrameState.DEFAULT_MIN_TRACKFRAME_HEIGHT;
 
-	private final TrackConfig __config;
+	private TrackConfig __config;
 
 	private TrackBean _loadedState = null;
 
@@ -182,6 +182,10 @@ public abstract class TrackBase implements Track {
 
 	public TrackConfig getConfig() {
 		return __config;
+	}
+
+	public void setConfig(TrackConfig config) {
+		this.__config = config;
 	}
 
 	public String getName() {

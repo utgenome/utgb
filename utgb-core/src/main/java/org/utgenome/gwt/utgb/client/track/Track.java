@@ -259,6 +259,8 @@ public interface Track extends TrackEntry, TrackGroupPropertyChangeListener {
 	 */
 	public TrackConfig getConfig();
 
+	public void setConfig(TrackConfig config);
+
 	public String toXML();
 
 	public void toXML(XMLWriter xmlWriter);
