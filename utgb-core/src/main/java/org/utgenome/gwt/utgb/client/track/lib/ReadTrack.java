@@ -56,7 +56,107 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Track for displaying read data
+ * Track for displaying read data.
+ * 
+ * <h3>View Example</h3>
+ * 
+ * <pre>
+ * -track
+ *  -class: ReadTrack
+ *  -path: (database path. e.g, db/imported/hg19/myread.bed)
+ *  -properties
+ *    -onclick.url: http://www.google.com/search?q=%q
+ *    -onclick.action: (none|link|info|set)
+ *    -showLabels: (true|false)
+ *    -onclick.p.key: current.read
+ *    -onclick.p.value: %q
+ * </pre>
+ * 
+ * <p>
+ * You can customize the behavior of the browser when clicking a read using <i>onclick.action</i> parameter:
+ * </p>
+ * 
+ * <h3>On-Click Action Types</h3>
+ * <table>
+ * <tr>
+ * <th>Type</th>
+ * <th>Action</th>
+ * </tr>
+ * <tr>
+ * <td>none</td>
+ * <td>Disables click action</td>
+ * </tr>
+ * <tr>
+ * <td>link</td>
+ * <td>Opens an URL specified in <i>onclick.url</i> parameter.</td>
+ * </tr>
+ * <tr>
+ * <td>info</td>
+ * <td>Displays the detailed read information.</td>
+ * </tr>
+ * <tr>
+ * <td>set</td>
+ * <td>Sets a track group property (specified by <i>onclick.p.key</i>) using the value <i>onclick.p.value</i>.</td>
+ * </tr>
+ * </table>
+ * 
+ * <p>
+ * You can embed track or track group parameters in <i>onclick.url</i> and <i>target.value</i>:
+ * </p>
+ * 
+ * <h3>Parameters for On-Click event</h3>
+ * <table>
+ * <tr>
+ * <th>pattern</th>
+ * <th>to be replaced with</th>
+ * </tr>
+ * <tr>
+ * <td>%q</td>
+ * <td>Clicked read name</td>
+ * </tr>
+ * <tr>
+ * <td>%start</td>
+ * <td>Start position of the clicked read</td>
+ * </tr>
+ * <tr>
+ * <td>%end</td>
+ * <td>End position of the clicked read</td>
+ * </tr>
+ * <tr>
+ * <td>%length</td>
+ * <td>Length of the clicked read</td>
+ * </tr>
+ * <tr>
+ * <td>%species</td>
+ * <td>Species name</td>
+ * </tr>
+ * <tr>
+ * <td>%ref</td>
+ * <td>Reference sequence name</td>
+ * </tr>
+ * <tr>
+ * <td>%chr</td>
+ * <td>Chromosome/contig/scaffold name</td>
+ * </tr>
+ * <tr>
+ * <td>%rstart</td>
+ * <td>Start position on the genome (inclusive)</td>
+ * </tr>
+ * <tr>
+ * <td>%rend</td>
+ * <td>End position on the genome (exclusive)</td>
+ * </tr>
+ * <tr>
+ * <td>%rlength</td>
+ * <td>Sequence length currently displayed</td>
+ * </tr>
+ * <tr>
+ * <td>%pixelwidth</td>
+ * <td>Pixel width of the tracks</td>
+ * </tr>
+ * 
+ * 
+ * </table>
  * 
  * @author leo
  * 
@@ -70,6 +170,8 @@ public class ReadTrack extends TrackBase {
 	private final String CONFIG_SHOW_LABELS = "showLabels";
 	private final String CONFIG_ONCLICK_ACTION = "onclick.action";
 	private final String CONFIG_ONCLICK_URL = "onclick.url";
+	private final String CONFIG_ONCLICK_P_KEY = "onclick.p.key";
+	private final String CONFIG_ONCLICK_P_VALUE = "onclick.p.value";
 
 	// read data
 	private ArrayList<OnGenome> onGenomeData = new ArrayList<OnGenome>();
@@ -105,9 +207,56 @@ public class ReadTrack extends TrackBase {
 		updateClickAction();
 	}
 
+	public String resolveURL(String urlTemplate, OnGenome locus) {
+		String url = urlTemplate;
+		if (url == null)
+			return url;
+
+		if (locus != null) {
+			if (locus.getName() != null) {
+				if (url.contains("%q"))
+					url = url.replaceAll("%q", locus.getName());
+				if (url.contains("%name"))
+					url = url.replaceAll("%name", locus.getName());
+			}
+
+			if (url.contains("%start"))
+				url = url.replaceAll("%start", Integer.toString(locus.getStart()));
+			if (url.contains("%end"))
+				url = url.replaceAll("%end", Integer.toString(locus.getEnd()));
+			if (url.contains("%length"))
+				url = url.replaceAll("%length", Integer.toString(locus.length()));
+
+		}
+
+		// replace track group properties
+		TrackWindow w = getTrackWindow();
+		if (url.contains("%rstart"))
+			url = url.replaceAll("%rstart", Integer.toString(w.getStartOnGenome()));
+		if (url.contains("%rend"))
+			url = url.replaceAll("%rend", Integer.toString(w.getEndOnGenome()));
+		if (url.contains("%rlength"))
+			url = url.replaceAll("%rlength", Integer.toString(w.getWidth()));
+		if (url.contains("%pixelwidth"))
+			url = url.replaceAll("%pixelwidth", Integer.toString(w.getWindowWidth()));
+		String chr = getTrackGroupProperty(UTGBProperty.TARGET);
+		if (chr != null && url.contains("%chr"))
+			url = url.replaceAll("%chr", chr);
+		String ref = getTrackGroupProperty(UTGBProperty.REVISION);
+		if (ref != null && url.contains("%ref"))
+			url = url.replaceAll("%ref", ref);
+		String species = getTrackGroupProperty(UTGBProperty.SPECIES);
+		if (species != null && url.contains("%species"))
+			url = url.replaceAll("%species", species);
+
+		return url;
+	}
+
 	private void updateClickAction() {
 
 		String clickAction = getConfig().getParameter(CONFIG_ONCLICK_ACTION);
+		if (clickAction == null)
+			return;
 		if ("none".equals(clickAction)) {
 			geneCanvas.setLocusClickHandler(null);
 		}
@@ -115,8 +264,7 @@ public class ReadTrack extends TrackBase {
 			geneCanvas.setLocusClickHandler(new LocusClickHandler() {
 				public void onClick(int x, int y, OnGenome locus) {
 					String url = getConfig().getParameter(CONFIG_ONCLICK_URL);
-					if (url.contains("%q") && locus.getName() != null)
-						url = url.replace("%q", locus.getName());
+					url = resolveURL(url, locus);
 					Window.open(url, "locus", "");
 				}
 			});
@@ -125,6 +273,21 @@ public class ReadTrack extends TrackBase {
 			geneCanvas.setLocusClickHandler(new LocusClickHandler() {
 				public void onClick(int x, int y, OnGenome locus) {
 					geneCanvas.displayInfo(x, y, locus);
+				}
+			});
+		}
+		else if ("set".equals(clickAction)) {
+			geneCanvas.setLocusClickHandler(new LocusClickHandler() {
+				public void onClick(int clientX, int clientY, OnGenome locus) {
+					String key = getConfig().getParameter(CONFIG_ONCLICK_P_KEY);
+					if (key == null)
+						return;
+					String value = getConfig().getParameter(CONFIG_ONCLICK_P_VALUE);
+					value = resolveURL(value, locus);
+					if (value == null)
+						return;
+
+					setTrackGroupProperty(key, value);
 				}
 			});
 		}

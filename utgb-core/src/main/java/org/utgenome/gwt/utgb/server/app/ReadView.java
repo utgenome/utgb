@@ -153,7 +153,7 @@ public class ReadView extends WebTrackBase {
 
 		if (result.read.size() > 1000) {
 			// compute coverage
-			ReadCoverage coverage = computeCoverage(result.read, loc.start, loc.end, 500);
+			ReadCoverage coverage = computeCoverage(result.read, loc.start, loc.end, pixelWidth);
 			result.read.clear();
 			result.block.add(coverage);
 		}

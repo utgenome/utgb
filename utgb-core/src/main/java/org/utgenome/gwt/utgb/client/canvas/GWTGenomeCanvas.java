@@ -82,7 +82,7 @@ public class GWTGenomeCanvas extends Composite {
 	private FlexTable layoutTable = new FlexTable();
 	private GWTCanvas canvas = new GWTCanvas();
 	private AbsolutePanel panel = new AbsolutePanel();
-	private PopupInfo popupLabel = new PopupInfo();
+	private static PopupInfo popupLabel = new PopupInfo();
 	private LocusClickHandler clickHandler = null;
 	private PrioritySearchTree<LocusLayout> locusLayout = new PrioritySearchTree<LocusLayout>();
 
@@ -106,7 +106,7 @@ public class GWTGenomeCanvas extends Composite {
 		initWidget();
 	}
 
-	class PopupInfo extends PopupPanel {
+	static class PopupInfo extends PopupPanel {
 
 		OnGenome locus;
 		private HTML info = new HTML();
