@@ -64,16 +64,16 @@ public class Import extends UTGBShellCommand {
 	private FileType fileType = FileType.AUTO;
 
 	@Argument(index = 0, required = false)
-	private final String inputFilePath = null;
+	private String inputFilePath = null;
 
 	@Option(symbol = "d", description = "output directory. default = db")
-	private final String outDir = "db";
+	private String outDir = "db";
 
 	@Option(symbol = "o", longName = "output", varName = "DB FILE NAME", description = "output SQLite DB file name")
 	private String outputFileName;
 
 	@Option(symbol = "w", longName = "overwrite", description = "overwrite existing DB files")
-	private final boolean overwriteDB = false;
+	private boolean overwriteDB = false;
 
 	@Override
 	public void execute(String[] args) throws Exception {
