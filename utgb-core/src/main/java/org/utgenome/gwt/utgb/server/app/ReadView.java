@@ -66,7 +66,7 @@ public class ReadView extends WebTrackBase {
 	public int width = 700;
 
 	// resource ID
-	public String dbID;
+	public String path;
 	public Read.ReadType type = ReadType.SAM;
 
 	@Override
@@ -76,7 +76,7 @@ public class ReadView extends WebTrackBase {
 		if (start == -1 || end == -1 || chr == null)
 			return;
 
-		OnGenomeDataSet result = overlapQuery(new GenomeDB(dbID, ref), new ChrLoc(chr, start, end), width, this.getServletContext());
+		OnGenomeDataSet result = overlapQuery(new GenomeDB(path, ref), new ChrLoc(chr, start, end), width);
 
 		response.setContentType("text/html");
 
@@ -92,7 +92,7 @@ public class ReadView extends WebTrackBase {
 		w.endDocument();
 	}
 
-	public static OnGenomeDataSet overlapQuery(GenomeDB db, ChrLoc loc, int pixelWidth, ServletContext context) {
+	public static OnGenomeDataSet overlapQuery(GenomeDB db, ChrLoc loc, int pixelWidth) {
 
 		OnGenomeDataSet result = new OnGenomeDataSet();
 		StopWatch sw = new StopWatch();

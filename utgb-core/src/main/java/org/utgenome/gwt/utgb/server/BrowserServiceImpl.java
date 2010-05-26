@@ -624,7 +624,7 @@ public class BrowserServiceImpl extends RpcServlet implements BrowserService {
 	public OnGenomeDataSet getOnGenomeData(GenomeDB db, ChrLoc range, String userAgent, int pixelWidth) {
 		_logger.trace(String.format("user agent: %s", userAgent));
 
-		return ReadView.overlapQuery(db, range, pixelWidth, this.getServletContext());
+		return ReadView.overlapQuery(db, range, pixelWidth);
 	}
 
 }

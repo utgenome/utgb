@@ -60,8 +60,7 @@ public class InfoSilkGenerator implements OnGenomeDataVisitor {
 	}
 
 	public void visitGene(Gene g) {
-		visitInterval(g);
-
+		visitRead(g);
 	}
 
 	public void visitInterval(Interval interval) {
