@@ -36,6 +36,7 @@ import org.utgenome.gwt.utgb.client.track.TrackGroup;
 import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyWriter;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.track.UTGBProperty;
+import org.utgenome.gwt.utgb.client.ui.FixedWidthLabel;
 import org.utgenome.gwt.utgb.client.ui.FormLabel;
 import org.utgenome.gwt.utgb.client.util.JSONUtil;
 import org.utgenome.gwt.utgb.client.util.Properties;
@@ -260,7 +261,7 @@ public class KeywordSearchTrack extends TrackBase {
 						link.addClickHandler(new LocationMover(e));
 						table.setWidget(row, 1, link);
 						// col3
-						Label tagLabel = new Label(e.name);
+						FixedWidthLabel tagLabel = new FixedWidthLabel(e.name, 300);
 						tagLabel.setStyleName("label");
 						Style.fontSize(tagLabel, 13);
 						Style.margin(tagLabel, Style.LEFT, 3);

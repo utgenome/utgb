@@ -260,13 +260,17 @@ public class KeywordDB {
 
 					if (entryCount > 0 && (entryCount % 10000 == 0))
 						_logger.info("num entries: " + entryCount);
+					entryCount++;
 
 					add(entry);
 				}
 				catch (IllegalArgumentException e) {
 					_logger.warn(String.format("line %d has invalid format: %s", lineCount, line));
 				}
-
+				catch (DBException e) {
+					_logger.error(String.format("line %d: insertion error %s", e.getMessage()));
+					e.printStackTrace(System.err);
+				}
 			}
 
 			db.update("commit");
