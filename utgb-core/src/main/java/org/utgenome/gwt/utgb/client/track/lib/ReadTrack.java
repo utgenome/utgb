@@ -425,8 +425,12 @@ public class ReadTrack extends TrackBase {
 			updateClickAction();
 		}
 
-		if (change.containsOneOf(new String[] { CONFIG_LAYOUT, CONFIG_SHOW_LABELS, CONFIG_LEFT_MARGIN, CONFIG_PATH, CONFIG_DB_TYPE })) {
+		if (change.containsOneOf(new String[] { CONFIG_SHOW_LABELS, CONFIG_LEFT_MARGIN, CONFIG_PATH, CONFIG_DB_TYPE })) {
 			refresh();
+		}
+
+		if (change.contains(CONFIG_LAYOUT)) {
+			update(getTrackWindow());
 		}
 	}
 
