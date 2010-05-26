@@ -351,9 +351,11 @@ public class ReadTrack extends TrackBase {
 		config.addConfigParameter("DB Type", new StringType(CONFIG_DB_TYPE, dbTypes), "AUTO");
 
 		config.addConfigParameter("Show Labels", new BooleanType(CONFIG_SHOW_LABELS), "true");
-		ValueDomain actionTypes = ValueDomain.createNewValueDomain(new String[] { "none", "link", "info" });
+		ValueDomain actionTypes = ValueDomain.createNewValueDomain(new String[] { "none", "link", "info", "set" });
 		config.addConfigParameter("On Click Action", new StringType(CONFIG_ONCLICK_ACTION, actionTypes), "link");
 		config.addConfigParameter("On Click URL", new StringType(CONFIG_ONCLICK_URL), "http://www.google.com/search?q=%q");
+		config.addConfigParameter("On Click - Set Key", new StringType(CONFIG_ONCLICK_P_KEY), "read");
+		config.addConfigParameter("On Click - Set Value", new StringType(CONFIG_ONCLICK_P_VALUE), "%q");
 
 		updateClickAction();
 	}

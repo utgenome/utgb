@@ -215,7 +215,7 @@ public class GWTGenomeCanvas extends Composite {
 			}
 		};
 
-		timer.schedule(20);
+		timer.schedule(100);
 	}
 
 	/**
