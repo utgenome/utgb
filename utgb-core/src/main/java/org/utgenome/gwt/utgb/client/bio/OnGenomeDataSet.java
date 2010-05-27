@@ -42,4 +42,8 @@ public class OnGenomeDataSet implements Serializable {
 	public List<OnGenome> read = new ArrayList<OnGenome>();
 	public List<OnGenome> block = new ArrayList<OnGenome>();
 
+	public boolean isEmpty() {
+		return read.isEmpty() && block.isEmpty();
+	}
+
 }

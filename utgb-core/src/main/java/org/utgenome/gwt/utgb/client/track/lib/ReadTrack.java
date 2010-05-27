@@ -318,6 +318,7 @@ public class ReadTrack extends TrackBase {
 		geneCanvas.setShowLabels(showLabels);
 
 		String layout = getConfig().getString(CONFIG_LAYOUT, "pileup");
+
 		if ("pileup".equals(layout)) {
 			if (dataSet.read != null && !dataSet.read.isEmpty())
 				geneCanvas.draw(dataSet.read);

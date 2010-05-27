@@ -388,7 +388,7 @@ public class GWTGenomeCanvas extends Composite {
 	};
 
 	private class FindMaximumHeight extends OnGenomeDataVisitorBase {
-		int maxHeight = 15;
+		int maxHeight = 1;
 
 		@Override
 		public void visitReadCoverage(ReadCoverage readCoverage) {
@@ -414,23 +414,26 @@ public class GWTGenomeCanvas extends Composite {
 		@Override
 		public void visitReadCoverage(ReadCoverage readCoverage) {
 			canvas.saveContext();
-			canvas.setStrokeStyle(getColor("#6699AA", 0.6f));
-			canvas.setLineWidth(1.0f);
+			canvas.setStrokeStyle(getColor("#6699CC", 0.55f));
+			canvas.setFillStyle(getColor("#6699CC", 0.5f));
+			canvas.setLineWidth(0.5f);
 			canvas.setLineCap("round");
 
+			canvas.saveContext();
+			canvas.beginPath();
+			canvas.moveTo(-0.5f, -1.0f);
 			for (int x = 0; x < readCoverage.pixelWidth; ++x) {
 				int h = readCoverage.coverage[x];
-				if (h <= 0)
+				if (h <= 0) {
+					canvas.lineTo(x + 0.5f, -1.0f);
 					continue;
-
-				canvas.saveContext();
-				canvas.translate(x + 0.5f, 0);
-				canvas.beginPath();
-				canvas.moveTo(0, 0);
-				canvas.lineTo(0, h * heigtOfRead + 0.5f);
+				}
+				canvas.lineTo(x + 0.5f, h * heigtOfRead + 0.5f);
 				canvas.stroke();
-				canvas.restoreContext();
 			}
+			canvas.moveTo(readCoverage.pixelWidth + 0.5f, -1.0f);
+			canvas.fill();
+			canvas.restoreContext();
 
 			canvas.restoreContext();
 		}
