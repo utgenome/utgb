@@ -182,10 +182,12 @@ public class ReadView extends WebTrackBase {
 			int bucketEnd = w.getXPosOnWindow(eachRead.getEnd(), pixelWidth);
 			if (bucketStart < 0)
 				bucketStart = 0;
-			if (bucketEnd < bucketStart)
-				bucketEnd = bucketStart;
 			if (bucketEnd >= pixelWidth)
 				bucketEnd = pixelWidth - 1;
+
+			if (bucketEnd < bucketStart || bucketEnd - bucketStart <= 0)
+				bucketEnd = bucketStart + 1;
+
 			for (int i = bucketStart; i < bucketEnd; ++i)
 				coverage[i]++;
 		}

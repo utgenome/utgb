@@ -398,18 +398,17 @@ public class TrackFrame extends SimplePanel {
 				xPos -= ICON_WIDTH;
 				basePanel.add(packButton, xPos, yOffset);
 			}
-			if (canDisplayConfigButton()) {
+			if (!isDisabledConfigButton()) {
 				xPos -= ICON_WIDTH;
 				basePanel.add(configButton, xPos, yOffset);
 			}
 		}
 
-		private boolean canDisplayConfigButton() {
+		private boolean isDisabledConfigButton() {
 			if (_disableConfigButton.isDefined())
 				return !_disableConfigButton.value();
 			else {
-				_disableConfigButton.set(_track.getConfig() != null && _track.getConfig().hasProperties());
-				return _disableConfigButton.value();
+				return _track.getConfig() != null && _track.getConfig().hasProperties();
 			}
 		}
 
@@ -424,7 +423,7 @@ public class TrackFrame extends SimplePanel {
 					numIcon++;
 				if (!_disablePackButton)
 					numIcon++;
-				if (canDisplayConfigButton())
+				if (!isDisabledConfigButton())
 					numIcon++;
 				xPos -= ICON_WIDTH * (numIcon + 1);
 				basePanel.add(_loadingIcon, xPos, 1);
