@@ -52,7 +52,7 @@ public class TrackWindowImpl implements TrackWindow {
 	// @see org.utgenome.gwt.utgb.client.track.TrackWindow#calcXPositionOnWindow(int)
 	public int calcXPositionOnWindow(int indexOnGenome) {
 		double v = (indexOnGenome - startIndexOnGenome) * (double) windowWidth;
-		double v2 = v / (double) (endIndexOnGenome - startIndexOnGenome);
+		double v2 = v / (endIndexOnGenome - startIndexOnGenome + 1);
 		return (int) v2;
 	}
 

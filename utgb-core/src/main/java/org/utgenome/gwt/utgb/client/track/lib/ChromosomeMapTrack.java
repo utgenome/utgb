@@ -52,7 +52,6 @@ import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Frame;
@@ -83,23 +82,6 @@ public class ChromosomeMapTrack extends TrackBase {
 				return new ChromosomeMapTrack();
 			}
 		};
-	}
-
-	private class ContentFrame extends Frame {
-		@Override
-		protected void onLoad() {
-		}
-
-		@Override
-		public void onBrowserEvent(Event event) {
-
-			if (event.getTypeInt() == Event.ONCHANGE) {
-				TrackFrame frame = getFrame();
-				if (frame != null) {
-					frame.loadingDone();
-				}
-			}
-		}
 	}
 
 	public ChromosomeMapTrack(String string) {

@@ -25,7 +25,6 @@
 package org.utgenome.gwt.utgb.client.canvas;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import org.utgenome.gwt.utgb.client.bio.CDS;
@@ -41,6 +40,7 @@ import org.utgenome.gwt.utgb.client.bio.ReadCoverage;
 import org.utgenome.gwt.utgb.client.bio.ReferenceSequence;
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.bio.WigGraphData;
+import org.utgenome.gwt.utgb.client.canvas.IntervalLayout.LocusLayout;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.ui.FixedWidthLabel;
 import org.utgenome.gwt.utgb.client.ui.FormLabel;
@@ -69,15 +69,12 @@ import com.google.gwt.widgetideas.graphics.client.GWTCanvas;
  */
 public class GWTGenomeCanvas extends Composite {
 
-	private int windowWidth = 800;
+	//private int windowWidth = 800;
 	private int windowHeight = 100;
-	private long startIndexOnGenome = 1;
-	private long endIndexOnGenome = 1000;
 
 	private final int DEFAULT_GENE_HEIGHT = 9;
 	private int geneHeight = DEFAULT_GENE_HEIGHT;
 	private int geneMargin = 2;
-
 	private boolean reverse = false;
 
 	// widget
@@ -86,25 +83,16 @@ public class GWTGenomeCanvas extends Composite {
 	private AbsolutePanel panel = new AbsolutePanel();
 	private static PopupInfo popupLabel = new PopupInfo();
 	private LocusClickHandler clickHandler = null;
-	private PrioritySearchTree<LocusLayout> locusLayout = new PrioritySearchTree<LocusLayout>();
 
-	private boolean showLabelsIfPossible = true;
-	private boolean canDisplayLabel = true;
+	private IntervalLayout intervalLayout = new IntervalLayout();
+	private TrackWindow trackWindow;
+
+	//private boolean showLabelsIfPossible = true;
+	//	/private boolean canDisplayLabel = true;
 
 	private List<Widget> labels = new ArrayList<Widget>();
 
-	public void setShowLabels(boolean show) {
-		this.showLabelsIfPossible = show;
-	}
-
 	public GWTGenomeCanvas() {
-		initWidget();
-	}
-
-	public GWTGenomeCanvas(int windowPixelWidth, long startIndexOnGenome, long endIndexOnGenome) {
-		this.windowWidth = windowPixelWidth;
-		setWindow(startIndexOnGenome, endIndexOnGenome);
-
 		initWidget();
 	}
 
@@ -218,6 +206,10 @@ public class GWTGenomeCanvas extends Composite {
 		timer.schedule(100);
 	}
 
+	public void setShowLabels(boolean show) {
+		intervalLayout.setKeepSpaceForLabels(show);
+	}
+
 	/**
 	 * compute the overlapped intervals for the mouse over event
 	 * 
@@ -230,29 +222,7 @@ public class GWTGenomeCanvas extends Composite {
 		int x = drawPosition(getXOnCanvas(event));
 		int y = getYOnCanvas(event);
 
-		for (LocusLayout gl : locusLayout.rangeQuery(x, Integer.MAX_VALUE, x)) {
-			OnGenome g = gl.getLocus();
-			int y1 = gl.getYOffset();
-			int y2 = y1 + geneHeight;
-
-			if (y1 <= y && y <= y2) {
-				int x1 = pixelPositionOnWindow(g.getStart()) - xBorder;
-				int x2 = pixelPositionOnWindow(g.getStart() + g.length()) + xBorder;
-
-				if (canDisplayLabel) {
-					int labelWidth = estimiateLabelWidth(g);
-					if (x1 - labelWidth > 0)
-						x1 -= labelWidth;
-					else
-						x2 += labelWidth;
-				}
-
-				if (x1 <= x && x <= x2)
-					return g;
-			}
-		}
-		return null;
-
+		return intervalLayout.overlappedInterval(x, y, xBorder, geneHeight);
 	}
 
 	public int getXOnCanvas(Event event) {
@@ -277,47 +247,23 @@ public class GWTGenomeCanvas extends Composite {
 		sinkEvents(Event.ONMOUSEMOVE | Event.ONMOUSEOVER | Event.ONMOUSEDOWN);
 	}
 
-	public void setWindow(long startIndexOnGenome, long endIndexOnGenome) {
-		if (startIndexOnGenome > endIndexOnGenome) {
-			this.startIndexOnGenome = endIndexOnGenome;
-			this.endIndexOnGenome = startIndexOnGenome;
-			reverse = true;
-		}
-		else {
-			this.startIndexOnGenome = startIndexOnGenome;
-			this.endIndexOnGenome = endIndexOnGenome;
-			reverse = false;
-		}
-	}
-
 	public void setWindow(TrackWindow w) {
-		this.windowWidth = w.getWindowWidth();
-		setWindow(w.getStartOnGenome(), w.getEndOnGenome());
-		canvas.setCoordSize(windowWidth, 100);
-		canvas.setPixelWidth(windowWidth);
+		this.trackWindow = w;
+		canvas.setCoordSize(w.getWindowWidth(), 100);
+		canvas.setPixelWidth(w.getWindowWidth());
+
+		reverse = w.isReverseStrand();
+		intervalLayout.setTrackWindow(w);
+		//update();
 	}
 
 	public int pixelPositionOnWindow(int indexOnGenome) {
-		double v = (indexOnGenome - startIndexOnGenome) * (double) windowWidth;
-		double v2 = v / (endIndexOnGenome - startIndexOnGenome + 1);
-		return (int) v2;
-	}
-
-	public int calcGenomePosition(int xOnWindow) {
-		if (startIndexOnGenome <= endIndexOnGenome) {
-			double genomeLengthPerBit = (double) (endIndexOnGenome - startIndexOnGenome) / (double) windowWidth;
-			return (int) (startIndexOnGenome + xOnWindow * genomeLengthPerBit);
-		}
-		else {
-			// reverse strand
-			double genomeLengthPerBit = (double) (startIndexOnGenome - endIndexOnGenome) / (double) windowWidth;
-			return (int) (endIndexOnGenome + (windowWidth - xOnWindow) * genomeLengthPerBit);
-		}
+		return trackWindow.calcXPositionOnWindow(indexOnGenome);
 	}
 
 	public void clear() {
 		canvas.clear();
-		locusLayout.clear();
+		intervalLayout.clear();
 
 		for (Widget w : labels) {
 			w.removeFromParent();
@@ -328,9 +274,14 @@ public class GWTGenomeCanvas extends Composite {
 			popupLabel.removeFromParent();
 	}
 
+	public void update() {
+		canvas.clear();
+		//List<LocusLayout> q = locusLayout.rangeQuery(x1, x2, upperY);
+
+	}
+
 	@Override
 	public void setPixelSize(int width, int height) {
-		this.windowWidth = width;
 		canvas.setCoordSize(width, height);
 		canvas.setPixelWidth(width);
 		canvas.setPixelHeight(height);
@@ -341,90 +292,6 @@ public class GWTGenomeCanvas extends Composite {
 		return (x1 < x2) ? x2 - x1 : x1 - x2;
 	}
 
-	public class LocusLayout {
-		private OnGenome locus;
-		private int yOffset;
-
-		public LocusLayout(OnGenome locus, int yOffset) {
-			this.locus = locus;
-			this.yOffset = yOffset;
-		}
-
-		public OnGenome getLocus() {
-			return locus;
-		}
-
-		public int getYOffset() {
-			return yOffset;
-		}
-
-	}
-
-	private int estimiateLabelWidth(OnGenome l) {
-		String name = l.getName();
-		int labelWidth = name != null ? (int) (name.length() * DEFAULT_GENE_HEIGHT * 0.9) : 0;
-		if (labelWidth > 150)
-			labelWidth = 150;
-		return labelWidth;
-	}
-
-	<T extends OnGenome> int createLayout(List<T> locusList) {
-
-		int maxYOffset = 0;
-		boolean showLabelsFlag = showLabelsIfPossible && (locusList.size() < 500);
-		boolean toContinue = false;
-
-		do {
-			toContinue = false;
-			maxYOffset = 0;
-			locusLayout.clear();
-
-			for (OnGenome l : locusList) {
-
-				int x1 = pixelPositionOnWindow(l.getStart());
-				int x2 = pixelPositionOnWindow(l.getEnd());
-
-				if (showLabelsFlag) {
-					int labelWidth = estimiateLabelWidth(l);
-					if (x1 - labelWidth > 0)
-						x1 -= labelWidth;
-					else
-						x2 += labelWidth;
-				}
-
-				List<LocusLayout> activeLocus = locusLayout.rangeQuery(x1, Integer.MAX_VALUE, x2);
-
-				HashSet<Integer> filledY = new HashSet<Integer>();
-				// overlap test
-				for (LocusLayout al : activeLocus) {
-					filledY.add(al.yOffset);
-				}
-
-				int blankY = 0;
-				for (; filledY.contains(blankY); blankY++) {
-				}
-
-				locusLayout.insert(new LocusLayout(l, blankY), x2, x1);
-
-				if (blankY > maxYOffset) {
-					maxYOffset = blankY;
-					if (showLabelsFlag && maxYOffset > 30) {
-						showLabelsFlag = false;
-						toContinue = true;
-						break;
-					}
-				}
-			}
-		}
-		while (toContinue);
-
-		if (maxYOffset <= 0)
-			maxYOffset = 1;
-
-		canDisplayLabel = showLabelsFlag;
-		return maxYOffset;
-	}
-
 	class ReadPainter implements OnGenomeDataVisitor {
 
 		private LocusLayout gl;
@@ -432,7 +299,7 @@ public class GWTGenomeCanvas extends Composite {
 
 		public void setLayoutInfo(LocusLayout layout) {
 			this.gl = layout;
-			gl.yOffset = gl.yOffset * h;
+			gl.scaleHeight(h);
 		}
 
 		public void visitGene(Gene g) {
@@ -455,10 +322,10 @@ public class GWTGenomeCanvas extends Composite {
 			int gx1 = pixelPositionOnWindow(r.getStart());
 			int gx2 = pixelPositionOnWindow(r.getStart() + r.length());
 
-			if (canDisplayLabel) {
+			if (intervalLayout.hasEnoughSpaceForLables()) {
 				String n = r.getName();
 				if (n != null) {
-					int textWidth = estimiateLabelWidth(r);
+					int textWidth = IntervalLayout.estimiateLabelWidth(r, geneHeight);
 
 					FixedWidthLabel label = new FixedWidthLabel(n, textWidth);
 					Style.fontSize(label, geneHeight);
@@ -569,7 +436,7 @@ public class GWTGenomeCanvas extends Composite {
 		for (OnGenome each : block) {
 			each.accept(hFinder);
 		}
-		setPixelSize(windowWidth, hFinder.maxHeight);
+		setPixelSize(trackWindow.getWindowWidth(), hFinder.maxHeight);
 
 		// draw coverages
 		CoveragePainter cPainter = new CoveragePainter();
@@ -584,7 +451,7 @@ public class GWTGenomeCanvas extends Composite {
 
 		final ReadPainter painter = new ReadPainter();
 
-		locusLayout.depthFirstSearch(new PrioritySearchTree.Visitor<LocusLayout>() {
+		intervalLayout.depthFirstSearch(new PrioritySearchTree.Visitor<LocusLayout>() {
 			public void visit(LocusLayout gl) {
 				painter.setLayoutInfo(gl);
 				gl.getLocus().accept(painter);
@@ -594,7 +461,7 @@ public class GWTGenomeCanvas extends Composite {
 	}
 
 	private <T extends OnGenome> void layoutRead(List<T> readList) {
-		int maxOffset = createLayout(readList);
+		int maxOffset = intervalLayout.createLayout(readList, geneHeight);
 		if (maxOffset > 30)
 			geneHeight = 2;
 		else
@@ -603,7 +470,7 @@ public class GWTGenomeCanvas extends Composite {
 		int h = geneHeight + geneMargin;
 		int height = (maxOffset + 1) * h;
 
-		setPixelSize(windowWidth, height);
+		setPixelSize(trackWindow.getWindowWidth(), height);
 	}
 
 	public static Color getGeneColor(Interval l) {
@@ -693,7 +560,7 @@ public class GWTGenomeCanvas extends Composite {
 
 	private int drawPosition(int x) {
 		if (reverse)
-			return (windowWidth - x);
+			return (trackWindow.getWindowWidth() - x);
 		else
 			return x;
 	}
@@ -800,7 +667,7 @@ public class GWTGenomeCanvas extends Composite {
 
 			if (reverse) {
 				width *= -1.0f;
-				x1 = windowWidth - x1;
+				x1 = trackWindow.getWindowWidth() - x1;
 			}
 
 			float height;
@@ -825,9 +692,9 @@ public class GWTGenomeCanvas extends Composite {
 		// draw frame
 		canvas.setFillStyle(Color.BLACK);
 		canvas.fillRect(0, 0, 1, windowHeight);
-		canvas.fillRect(windowWidth - 1, 0, 1, windowHeight);
-		canvas.fillRect(0, 0, windowWidth, 1);
-		canvas.fillRect(0, windowHeight - 1, windowWidth, 1);
+		canvas.fillRect(trackWindow.getWindowWidth() - 1, 0, 1, windowHeight);
+		canvas.fillRect(0, 0, trackWindow.getWindowWidth(), 1);
+		canvas.fillRect(0, windowHeight - 1, trackWindow.getWindowWidth(), 1);
 
 		// draw indent line & label
 		Indent indent = new Indent(minValue, maxValue);
@@ -855,12 +722,12 @@ public class GWTGenomeCanvas extends Composite {
 
 			// draw indent line
 			canvas.setGlobalAlpha(0.2);
-			canvas.fillRect(0, getYPosition(value), windowWidth, 1);
+			canvas.fillRect(0, getYPosition(value), trackWindow.getWindowWidth(), 1);
 			// draw zero line
 			canvas.setGlobalAlpha(1.0);
 		}
 
-		canvas.fillRect(0, getYPosition(0.0f), windowWidth, 1);
+		canvas.fillRect(0, getYPosition(0.0f), trackWindow.getWindowWidth(), 1);
 	}
 
 	public class Indent {
@@ -988,7 +855,7 @@ public class GWTGenomeCanvas extends Composite {
 
 	public void setWindowHeight(int windowHeight) {
 		this.windowHeight = windowHeight;
-		setPixelSize(windowWidth, windowHeight);
+		setPixelSize(trackWindow.getWindowWidth(), windowHeight);
 	}
 
 	public int getWindowHeight() {
