@@ -404,6 +404,13 @@ public class GWTGenomeCanvas extends Composite {
 	}
 
 	private class CoveragePainter extends OnGenomeDataVisitorBase {
+
+		private int heigtOfRead = 1;
+
+		public CoveragePainter(int heightOfRead) {
+			this.heigtOfRead = heightOfRead;
+		}
+
 		@Override
 		public void visitReadCoverage(ReadCoverage readCoverage) {
 			canvas.saveContext();
@@ -420,7 +427,7 @@ public class GWTGenomeCanvas extends Composite {
 				canvas.translate(x + 0.5f, 0);
 				canvas.beginPath();
 				canvas.moveTo(0, 0);
-				canvas.lineTo(0, h + 0.5f);
+				canvas.lineTo(0, h * heigtOfRead + 0.5f);
 				canvas.stroke();
 				canvas.restoreContext();
 			}
@@ -436,10 +443,11 @@ public class GWTGenomeCanvas extends Composite {
 		for (OnGenome each : block) {
 			each.accept(hFinder);
 		}
-		setPixelSize(trackWindow.getWindowWidth(), hFinder.maxHeight);
+		int heightOfRead = hFinder.maxHeight > 30 ? 2 : DEFAULT_GENE_HEIGHT;
+		setPixelSize(trackWindow.getWindowWidth(), hFinder.maxHeight * heightOfRead);
 
-		// draw coverages
-		CoveragePainter cPainter = new CoveragePainter();
+		// draw coverage
+		CoveragePainter cPainter = new CoveragePainter(heightOfRead);
 		for (OnGenome each : block) {
 			each.accept(cPainter);
 		}

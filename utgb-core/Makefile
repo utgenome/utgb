@@ -1,4 +1,4 @@
-all: trackloader
+all: compile
 
 
 ant: 

@@ -57,7 +57,7 @@ class MouseListenerOnRulerWidget implements MouseDownHandler {
 }
 
 /**
- * Ruler computes a tick range within ruler trakcs
+ * Ruler computes a tick range within ruler tracks
  * 
  * @author leo
  * 
@@ -121,9 +121,6 @@ class Ruler {
 			range = 1;
 
 		double pixelLengthPerRange = (double) windowWidth / (double) range;
-		//int tickRangeOnRuler = (int) (tickRangeOnGenome * pixelLengthPerRange);
-
-		//int numTicks = range / tickRangeOnGenome;
 
 		long initTickCursor = s;
 		if (((s - 1) % tickRangeOnGenome) != 0)
@@ -147,27 +144,6 @@ class Ruler {
 
 		}
 
-		/*
-		int initTickCursor = (s / tickRangeOnGenome) * tickRangeOnGenome;
-		for(int tickCursor = initTickCursor; tickCursor <= e; tickCursor += tickRangeOnGenome){
-			int tickX;
-			tickX = (int) ((tickCursor - s) * pixelLengthPerRange);
-			if (tickX >= 0) {
-				Image tick = new Image(TICK_IMAGE);
-				RulerLabel label = new RulerLabel(indexOnRuler(tickCursor));
-				if(!isReverseStrand)
-				{
-					panel.add(tick, tickX, 0);
-					panel.add(label, tickX + 2, 0);
-				}
-				else
-				{
-					panel.add(tick, windowWidth - tickX, 0);
-					panel.add(label, windowWidth - tickX + 2, 0);
-				}
-			}
-		}
-		*/
 	}
 
 	private String indexOnRuler(long genomePos) {
@@ -178,22 +154,6 @@ class Ruler {
 		if (range <= 1)
 			return 1;
 		int[] availableTickUnit = { 1, 2, 5, 10, 20, 25 };
-
-		/*
-		int factor = 1;
-		int currentTickLength = tickUnit;
-		int numTicks = range / currentTickLength;
-		
-		int loopCount = 0;
-		while (numTicks > numTicksMax || numTicks < 5) {
-			currentTickLength = availableTickUnit[loopCount % availableTickUnit.length] * factor;
-			numTicks = range / currentTickLength;
-			if (loopCount > 0 && loopCount % availableTickUnit.length == (availableTickUnit.length - 1))
-				factor *= 10;
-			loopCount++;
-		}
-		return currentTickLength;
-		*/
 
 		int numTicksMax = 13;
 		for (int i = numTicksMax; i > 0; i--) {
