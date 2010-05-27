@@ -444,9 +444,9 @@ public class GWTGenomeCanvas extends Composite {
 					canvas.lineTo(x + 0.5f, -1.0f);
 					continue;
 				}
-				h *= scalingFactor;
 
-				canvas.lineTo(x + 0.5f, h * heigtOfRead + 0.5f);
+				int y = (int) ((h * heigtOfRead) * scalingFactor);
+				canvas.lineTo(x + 0.5f, y + 0.5f);
 				canvas.stroke();
 			}
 			canvas.moveTo(readCoverage.pixelWidth + 0.5f, -1.0f);
@@ -479,12 +479,12 @@ public class GWTGenomeCanvas extends Composite {
 				if (h <= 0) {
 					continue;
 				}
-				h *= scalingFactor;
+				int y = (int) ((h * heigtOfRead) * scalingFactor);
 				canvas.saveContext();
 				canvas.translate(x + 0.5f, 0);
 				canvas.beginPath();
 				canvas.moveTo(0, 0);
-				canvas.lineTo(0, h * heigtOfRead + 0.5f);
+				canvas.lineTo(0, y + 0.5f);
 				canvas.stroke();
 				canvas.restoreContext();
 			}
