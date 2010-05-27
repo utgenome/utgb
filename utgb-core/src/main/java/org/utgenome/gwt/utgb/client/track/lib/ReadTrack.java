@@ -359,7 +359,8 @@ public class ReadTrack extends TrackBase {
 		config.addConfigParameter("DB Path", new StringType(CONFIG_PATH));
 
 		ValueDomain dbTypes = ValueDomain.createNewValueDomain(DBType.getDBTypeList());
-		config.addConfigParameter("DB Type", new StringType(CONFIG_DB_TYPE, dbTypes), "AUTO");
+		config.addHiddenConfiguration(CONFIG_DB_TYPE, "AUTO");
+		//config.addConfigParameter("DB Type", new StringType(CONFIG_DB_TYPE, dbTypes), "AUTO");
 
 		ValueDomain layoutTypes = ValueDomain.createNewValueDomain(new String[] { "pileup", "coverage" });
 		config.addConfigParameter("Layout", new StringType(CONFIG_LAYOUT, layoutTypes), "pileup");

@@ -217,12 +217,6 @@ public class GenomeTrack extends TrackBase {
 		super.saveProperties(saveData);
 		String q = StringUtil.joinIterable(queryParams, ",");
 		saveData.add("queryParams", q);
-
-		//		saveData.add("type", type);
-		//		saveData.add("trackBaseURL", trackBaseURL);
-		//		saveData.add("leftMargin", leftMargin);
-		//		saveData.add("monitorCoordinateChange", monitorCoordinateChange);
-		//		saveData.add("monitorWindowChange", monitorWindowChange);
 	}
 
 	@Override
