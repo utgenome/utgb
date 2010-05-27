@@ -507,7 +507,7 @@ public class GWTGenomeCanvas extends Composite {
 
 		final int MAX_CANVAS_HEIGHT = 300;
 		if (canvasHeight > MAX_CANVAS_HEIGHT) {
-			scalingFactor = MAX_CANVAS_HEIGHT / canvasHeight;
+			scalingFactor = (float) (MAX_CANVAS_HEIGHT) / canvasHeight;
 			canvasHeight = MAX_CANVAS_HEIGHT;
 		}
 
