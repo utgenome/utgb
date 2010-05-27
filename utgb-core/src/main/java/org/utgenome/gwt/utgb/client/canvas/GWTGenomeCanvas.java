@@ -420,9 +420,11 @@ public class GWTGenomeCanvas extends Composite {
 	private class CoveragePainter extends OnGenomeDataVisitorBase {
 
 		private int heigtOfRead = 1;
+		private float scalingFactor = 1.0f;
 
-		public CoveragePainter(int heightOfRead) {
+		public CoveragePainter(int heightOfRead, float scalingFactor) {
 			this.heigtOfRead = heightOfRead;
+			this.scalingFactor = scalingFactor;
 		}
 
 		@Override
@@ -442,6 +444,8 @@ public class GWTGenomeCanvas extends Composite {
 					canvas.lineTo(x + 0.5f, -1.0f);
 					continue;
 				}
+				h *= scalingFactor;
+
 				canvas.lineTo(x + 0.5f, h * heigtOfRead + 0.5f);
 				canvas.stroke();
 			}
@@ -456,9 +460,11 @@ public class GWTGenomeCanvas extends Composite {
 	private class RoughCoveragePainter extends OnGenomeDataVisitorBase {
 
 		private int heigtOfRead = 1;
+		private float scalingFactor = 1.0f;
 
-		public RoughCoveragePainter(int heightOfRead) {
+		public RoughCoveragePainter(int heightOfRead, float scalingFactor) {
 			this.heigtOfRead = heightOfRead;
+			this.scalingFactor = scalingFactor;
 		}
 
 		@Override
@@ -473,6 +479,7 @@ public class GWTGenomeCanvas extends Composite {
 				if (h <= 0) {
 					continue;
 				}
+				h *= scalingFactor;
 				canvas.saveContext();
 				canvas.translate(x + 0.5f, 0);
 				canvas.beginPath();
@@ -494,17 +501,27 @@ public class GWTGenomeCanvas extends Composite {
 			each.accept(hFinder);
 		}
 		int heightOfRead = hFinder.maxHeight > 30 ? 2 : DEFAULT_GENE_HEIGHT;
-		setPixelSize(trackWindow.getWindowWidth(), hFinder.maxHeight * heightOfRead);
+
+		int canvasHeight = hFinder.maxHeight * heightOfRead;
+		float scalingFactor = 1.0f;
+
+		final int MAX_CANVAS_HEIGHT = 300;
+		if (canvasHeight > MAX_CANVAS_HEIGHT) {
+			scalingFactor = MAX_CANVAS_HEIGHT / canvasHeight;
+			canvasHeight = MAX_CANVAS_HEIGHT;
+		}
+
+		setPixelSize(trackWindow.getWindowWidth(), canvasHeight);
 
 		// draw coverage
 		OnGenomeDataVisitor cPainter;
 		switch (coverageStyle) {
 		case SMOOTH:
-			cPainter = new CoveragePainter(heightOfRead);
+			cPainter = new CoveragePainter(heightOfRead, scalingFactor);
 			break;
 		case DEFAULT:
 		default:
-			cPainter = new RoughCoveragePainter(heightOfRead);
+			cPainter = new RoughCoveragePainter(heightOfRead, scalingFactor);
 			break;
 		}
 		for (OnGenome each : block) {
