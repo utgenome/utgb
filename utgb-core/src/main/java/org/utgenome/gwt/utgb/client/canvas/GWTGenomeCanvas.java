@@ -439,6 +439,39 @@ public class GWTGenomeCanvas extends Composite {
 		}
 	}
 
+	private class RoughCoveragePainter extends OnGenomeDataVisitorBase {
+
+		private int heigtOfRead = 1;
+
+		public RoughCoveragePainter(int heightOfRead) {
+			this.heigtOfRead = heightOfRead;
+		}
+
+		@Override
+		public void visitReadCoverage(ReadCoverage readCoverage) {
+			canvas.saveContext();
+			canvas.setStrokeStyle(getColor("#6699CC", 0.6f));
+			canvas.setLineWidth(1.0f);
+			canvas.setLineCap("round");
+
+			for (int x = 0; x < readCoverage.pixelWidth; ++x) {
+				int h = readCoverage.coverage[x];
+				if (h <= 0) {
+					continue;
+				}
+				canvas.saveContext();
+				canvas.translate(x + 0.5f, 0);
+				canvas.beginPath();
+				canvas.moveTo(0, 0);
+				canvas.lineTo(0, h * heigtOfRead + 0.5f);
+				canvas.stroke();
+				canvas.restoreContext();
+			}
+
+			canvas.restoreContext();
+		}
+	}
+
 	public <T extends OnGenome> void drawBlock(List<T> block) {
 
 		// compute max height
@@ -450,7 +483,8 @@ public class GWTGenomeCanvas extends Composite {
 		setPixelSize(trackWindow.getWindowWidth(), hFinder.maxHeight * heightOfRead);
 
 		// draw coverage
-		CoveragePainter cPainter = new CoveragePainter(heightOfRead);
+		//OnGenomeDataVisitor cPainter = new CoveragePainter(heightOfRead);
+		OnGenomeDataVisitor cPainter = new RoughCoveragePainter(heightOfRead);
 		for (OnGenome each : block) {
 			each.accept(cPainter);
 		}
