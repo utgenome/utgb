@@ -87,13 +87,27 @@ public class GWTGenomeCanvas extends Composite {
 	private IntervalLayout intervalLayout = new IntervalLayout();
 	private TrackWindow trackWindow;
 
-	//private boolean showLabelsIfPossible = true;
-	//	/private boolean canDisplayLabel = true;
+	public static enum CoverageStyle {
+		DEFAULT, SMOOTH
+	};
+
+	private CoverageStyle coverageStyle = CoverageStyle.DEFAULT;
 
 	private List<Widget> labels = new ArrayList<Widget>();
 
 	public GWTGenomeCanvas() {
 		initWidget();
+	}
+
+	public void setCoverageStyle(String style) {
+		if (style == null)
+			return;
+
+		CoverageStyle s = CoverageStyle.valueOf(CoverageStyle.class, style.toUpperCase());
+		if (s != null) {
+			coverageStyle = s;
+		}
+
 	}
 
 	static class PopupInfo extends PopupPanel {
@@ -483,8 +497,16 @@ public class GWTGenomeCanvas extends Composite {
 		setPixelSize(trackWindow.getWindowWidth(), hFinder.maxHeight * heightOfRead);
 
 		// draw coverage
-		//OnGenomeDataVisitor cPainter = new CoveragePainter(heightOfRead);
-		OnGenomeDataVisitor cPainter = new RoughCoveragePainter(heightOfRead);
+		OnGenomeDataVisitor cPainter;
+		switch (coverageStyle) {
+		case SMOOTH:
+			cPainter = new CoveragePainter(heightOfRead);
+			break;
+		case DEFAULT:
+		default:
+			cPainter = new RoughCoveragePainter(heightOfRead);
+			break;
+		}
 		for (OnGenome each : block) {
 			each.accept(cPainter);
 		}

@@ -38,7 +38,7 @@ public class Deploy extends UTGBShellCommand {
 	@Option(symbol = "n", description = "do not generate context.xml")
 	boolean noContextXML = false;
 
-	@Option(symbol = "c", longName = "clean", description = "force recompile the project (utgb clean, utgb compile), then deploy")
+	@Option(symbol = "c", longName = "clean", description = "force recompilation of the project (utgb clean, utgb compile), then deploy")
 	boolean forceClean = false;
 
 	public Deploy() {

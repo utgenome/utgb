@@ -169,6 +169,7 @@ public class ReadTrack extends TrackBase {
 	private final String CONFIG_PATH = "path";
 	private final String CONFIG_LAYOUT = "layout";
 	private final String CONFIG_SHOW_LABELS = "showLabels";
+	private final String CONFIG_COVERAGE_STYLE = "coverage.style";
 	private final String CONFIG_ONCLICK_ACTION = "onclick.action";
 	private final String CONFIG_ONCLICK_URL = "onclick.url";
 	private final String CONFIG_ONCLICK_P_KEY = "onclick.p.key";
@@ -323,13 +324,19 @@ public class ReadTrack extends TrackBase {
 			if (dataSet.read != null && !dataSet.read.isEmpty())
 				geneCanvas.draw(dataSet.read);
 			else
-				geneCanvas.drawBlock(dataSet.block);
+				drawCoverage();
 		}
 		else {
-			geneCanvas.drawBlock(dataSet.block);
+			drawCoverage();
 		}
 
 		getFrame().loadingDone();
+	}
+
+	private void drawCoverage() {
+		String style = getConfig().getString(CONFIG_COVERAGE_STYLE, "default");
+		geneCanvas.setCoverageStyle(style);
+		geneCanvas.drawBlock(dataSet.block);
 	}
 
 	public static int calcXPositionOnWindow(long indexOnGenome, long startIndexOnGenome, long endIndexOnGenome, int windowWidth) {
@@ -366,6 +373,8 @@ public class ReadTrack extends TrackBase {
 		ValueDomain layoutTypes = ValueDomain.createNewValueDomain(new String[] { "pileup", "coverage" });
 		config.addConfigParameter("Layout", new StringType(CONFIG_LAYOUT, layoutTypes), "pileup");
 		config.addConfigParameter("Show Labels", new BooleanType(CONFIG_SHOW_LABELS), "true");
+		config.addConfigParameter("Coverage Display Style", new StringType(CONFIG_COVERAGE_STYLE, ValueDomain.createNewValueDomain(new String[] { "default",
+				"smooth" })), "default");
 		ValueDomain actionTypes = ValueDomain.createNewValueDomain(new String[] { "none", "link", "info", "set" });
 		config.addConfigParameter("On Click Action", new StringType(CONFIG_ONCLICK_ACTION, actionTypes), "link");
 		config.addConfigParameter("On Click URL", new StringType(CONFIG_ONCLICK_URL), "http://www.google.com/search?q=%q");
@@ -431,7 +440,7 @@ public class ReadTrack extends TrackBase {
 			refresh();
 		}
 
-		if (change.contains(CONFIG_LAYOUT)) {
+		if (change.containsOneOf(new String[] { CONFIG_LAYOUT, CONFIG_COVERAGE_STYLE })) {
 			update(getTrackWindow());
 		}
 	}
