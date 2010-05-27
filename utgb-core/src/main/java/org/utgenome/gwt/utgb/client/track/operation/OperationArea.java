@@ -24,7 +24,7 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.track.operation;
 
-import org.utgenome.gwt.utgb.client.util.Utilities;
+import org.utgenome.gwt.utgb.client.track.lib.old.Utilities;
 
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;

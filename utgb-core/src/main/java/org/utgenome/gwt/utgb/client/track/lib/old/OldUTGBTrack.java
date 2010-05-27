@@ -46,7 +46,6 @@ import org.utgenome.gwt.utgb.client.track.operation.OperationParser;
 import org.utgenome.gwt.utgb.client.util.GETMethodURL;
 import org.utgenome.gwt.utgb.client.util.JSONUtil;
 import org.utgenome.gwt.utgb.client.util.Properties;
-import org.utgenome.gwt.utgb.client.util.Utilities;
 import org.utgenome.gwt.widget.client.Style;
 
 import com.google.gwt.core.client.GWT;
@@ -320,6 +319,7 @@ public class OldUTGBTrack extends TrackBase {
 	@Override
 	public void setUp(TrackFrame trackFrame, TrackGroup group) {
 		trackFrame.pack();
+		trackFrame.enableConfig();
 
 		mainGraphicPanel.addLoadHandler(new LoadHandler() {
 			public void onLoad(LoadEvent e) {
@@ -379,6 +379,7 @@ public class OldUTGBTrack extends TrackBase {
 					final Document dom = XMLParser.parse(text);
 					final DescriptionURLInfo descriptionURLInfo = new DescriptionURLInfo(resolvedDescriptionXMLURL);
 					{
+						// set up the configuration panel
 						final NodeList topLevelTrackNodeList = dom.getElementsByTagName("track");
 						if (topLevelTrackNodeList.getLength() != 1) {
 							throw new AssertionError();

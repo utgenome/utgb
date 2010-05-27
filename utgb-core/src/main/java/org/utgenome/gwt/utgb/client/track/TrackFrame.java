@@ -26,6 +26,7 @@ package org.utgenome.gwt.utgb.client.track;
 
 import org.utgenome.gwt.utgb.client.ui.Icon;
 import org.utgenome.gwt.utgb.client.ui.IconImage;
+import org.utgenome.gwt.utgb.client.util.Optional;
 import org.utgenome.gwt.widget.client.Style;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -315,7 +316,7 @@ public class TrackFrame extends SimplePanel {
 		private final int DRAGBAR_WIDTH = 4;
 		private final int RESIZE_BAR_HEIGHT = 2;
 		private boolean _disablePackButton = false;
-		private boolean _disableConfigButton = false;
+		private Optional<Boolean> _disableConfigButton = new Optional<Boolean>();
 		private boolean _disableCloseButton = false;
 		private boolean _disableHideButton = false;
 		private boolean _nowLoading = false;
@@ -358,8 +359,13 @@ public class TrackFrame extends SimplePanel {
 		}
 
 		void disableConfigButton() {
-			_disableConfigButton = true;
+			_disableConfigButton.set(true);
 			basePanel.remove(configButton);
+			drawIcon();
+		}
+
+		void enableConfigButton() {
+			_disableConfigButton.set(false);
 			drawIcon();
 		}
 
@@ -392,9 +398,18 @@ public class TrackFrame extends SimplePanel {
 				xPos -= ICON_WIDTH;
 				basePanel.add(packButton, xPos, yOffset);
 			}
-			if ((_track.getConfig() != null && _track.getConfig().hasProperties()) && !_disableConfigButton) {
+			if (canDisplayConfigButton()) {
 				xPos -= ICON_WIDTH;
 				basePanel.add(configButton, xPos, yOffset);
+			}
+		}
+
+		private boolean canDisplayConfigButton() {
+			if (_disableConfigButton.isDefined())
+				return !_disableConfigButton.value();
+			else {
+				_disableConfigButton.set(_track.getConfig() != null && _track.getConfig().hasProperties());
+				return _disableConfigButton.value();
 			}
 		}
 
@@ -409,7 +424,7 @@ public class TrackFrame extends SimplePanel {
 					numIcon++;
 				if (!_disablePackButton)
 					numIcon++;
-				if (_track.getConfig() != null && !_disableConfigButton)
+				if (canDisplayConfigButton())
 					numIcon++;
 				xPos -= ICON_WIDTH * (numIcon + 1);
 				basePanel.add(_loadingIcon, xPos, 1);
@@ -566,6 +581,10 @@ public class TrackFrame extends SimplePanel {
 			pack();
 		else
 			unpack();
+	}
+
+	public void enableConfig() {
+		_infoPanel.enableConfigButton();
 	}
 
 	public void disableConfig() {

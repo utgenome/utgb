@@ -29,7 +29,6 @@ import org.utgenome.gwt.utgb.client.track.TrackGroup;
 import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyWriter;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.track.operation.FrameCommand;
-import org.utgenome.gwt.utgb.client.util.Utilities;
 
 import com.google.gwt.xml.client.Node;
 

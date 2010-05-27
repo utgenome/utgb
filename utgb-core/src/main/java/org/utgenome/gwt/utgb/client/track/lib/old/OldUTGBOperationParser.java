@@ -36,7 +36,6 @@ import org.utgenome.gwt.utgb.client.track.operation.Operation;
 import org.utgenome.gwt.utgb.client.track.operation.OperationArea;
 import org.utgenome.gwt.utgb.client.track.operation.OperationParser;
 import org.utgenome.gwt.utgb.client.track.operation.SubOperation;
-import org.utgenome.gwt.utgb.client.util.Utilities;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.AbsolutePanel;

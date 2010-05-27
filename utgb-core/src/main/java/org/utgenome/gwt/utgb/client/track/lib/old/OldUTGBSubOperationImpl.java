@@ -35,7 +35,6 @@ import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.track.operation.Operation;
 import org.utgenome.gwt.utgb.client.track.operation.OperationParser;
 import org.utgenome.gwt.utgb.client.track.operation.SubOperation;
-import org.utgenome.gwt.utgb.client.util.Utilities;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;

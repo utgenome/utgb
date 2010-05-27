@@ -26,7 +26,7 @@ package org.utgenome.gwt.utgb.client.track.operation;
 
 import java.util.ArrayList;
 
-import org.utgenome.gwt.utgb.client.util.Utilities;
+import org.utgenome.gwt.utgb.client.track.lib.old.Utilities;
 
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.Label;

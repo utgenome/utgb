@@ -26,8 +26,8 @@ package org.utgenome.gwt.utgb.client.track.operation;
 
 import org.utgenome.gwt.utgb.client.RPCServiceManager;
 import org.utgenome.gwt.utgb.client.track.Track;
+import org.utgenome.gwt.utgb.client.track.lib.old.Utilities;
 import org.utgenome.gwt.utgb.client.util.GETMethodURL;
-import org.utgenome.gwt.utgb.client.util.Utilities;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;

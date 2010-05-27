@@ -22,7 +22,7 @@
 // $URL$ 
 // $Author$ ssksn
 //--------------------------------------
-package org.utgenome.gwt.utgb.client.util;
+package org.utgenome.gwt.utgb.client.track.lib.old;
 
 import java.util.Iterator;
 import java.util.Set;
@@ -123,9 +123,9 @@ public final class Utilities {
 
 		final Iterator<String> keyIterator = keySet.iterator();
 		while (keyIterator.hasNext()) {
-			final String key = (String) (keyIterator.next());
+			final String key = (keyIterator.next());
 
-			final String value = (String) (trackGroupProperty.getProperty(key));
+			final String value = (trackGroupProperty.getProperty(key));
 
 			if (buf.length() > 0)
 				buf.append('\n');
@@ -144,10 +144,10 @@ public final class Utilities {
 
 		final Iterator<String> keyIterator = keySet.iterator();
 		while (keyIterator.hasNext()) {
-			final String key = (String) (keyIterator.next());
+			final String key = (keyIterator.next());
 
 			if (outputKeySet.contains(key)) {
-				final String value = (String) (trackGroupProperty.getProperty(key));
+				final String value = (trackGroupProperty.getProperty(key));
 
 				if (buf.length() > 0)
 					buf.append('\n');

@@ -40,7 +40,6 @@ import org.utgenome.gwt.utgb.client.track.TrackInfo;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.track.lib.ParameterTrack;
 import org.utgenome.gwt.utgb.client.track.operation.OperationParser;
-import org.utgenome.gwt.utgb.client.util.Utilities;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
