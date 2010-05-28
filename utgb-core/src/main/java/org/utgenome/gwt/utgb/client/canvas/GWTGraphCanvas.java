@@ -24,20 +24,23 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.canvas;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.utgenome.gwt.utgb.client.bio.WigGraphData;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
-import org.utgenome.gwt.utgb.client.ui.FormLabel;
+import org.utgenome.gwt.widget.client.Style;
 
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.widgetideas.graphics.client.Color;
 import com.google.gwt.widgetideas.graphics.client.GWTCanvas;
 
 /**
  * Canvas for drawing bar graph, heat map etc.
  * 
+ * @author yoshimura
  * @author leo
  * 
  */
@@ -45,7 +48,6 @@ public class GWTGraphCanvas extends Composite {
 	// widget
 
 	private int windowHeight = 100;
-	private FlexTable layoutTable = new FlexTable();
 	private GWTCanvas canvas = new GWTCanvas();
 	private AbsolutePanel panel = new AbsolutePanel();
 	private TrackWindow trackWindow;
@@ -62,23 +64,28 @@ public class GWTGraphCanvas extends Composite {
 	}
 
 	private void init() {
-		layoutTable.setBorderWidth(0);
-		layoutTable.setCellPadding(0);
-		layoutTable.setCellSpacing(0);
+		canvas.setBackgroundColor(new Color(255, 255, 255, 0f));
+
+		Style.padding(panel, 0);
+		Style.margin(panel, 0);
 
 		panel.add(canvas, 0, 0);
-		layoutTable.setWidget(0, 1, panel);
-		initWidget(layoutTable);
+		initWidget(panel);
 
-		sinkEvents(Event.ONMOUSEMOVE | Event.ONMOUSEOVER | Event.ONMOUSEDOWN);
+		//sinkEvents(Event.ONMOUSEMOVE | Event.ONMOUSEOVER | Event.ONMOUSEDOWN);
 	}
 
 	public void clear() {
 		canvas.clear();
+		for (Label each : graphLabels) {
+			each.removeFromParent();
+		}
+		graphLabels.clear();
 	}
 
 	public void drawWigGraph(WigGraphData data, Color color) {
 
+		canvas.saveContext();
 		int span = 1;
 		if (data.getTrack().containsKey("span")) {
 			span = Integer.parseInt(data.getTrack().get("span"));
@@ -118,48 +125,85 @@ public class GWTGraphCanvas extends Composite {
 			canvas.setFillStyle(color);
 			canvas.fillRect(x1, y1, width, height);
 		}
+		canvas.restoreContext();
 	}
 
-	public void drawFrame(AbsolutePanel panel, int leftMargin) {
+	private List<Label> graphLabels = new ArrayList<Label>();
+
+	public void drawFrame() {
+
 		// draw frame
-		canvas.setFillStyle(Color.BLACK);
-		canvas.fillRect(0, 0, 1, windowHeight);
-		canvas.fillRect(trackWindow.getWindowWidth() - 1, 0, 1, windowHeight);
-		canvas.fillRect(0, 0, trackWindow.getWindowWidth(), 1);
-		canvas.fillRect(0, windowHeight - 1, trackWindow.getWindowWidth(), 1);
+		canvas.saveContext();
+		canvas.setStrokeStyle(new Color(0, 0, 0, 0.5f));
+		canvas.setLineWidth(1.0f);
+		canvas.beginPath();
+		canvas.rect(0, 0, trackWindow.getWindowWidth(), windowHeight);
+		canvas.stroke();
+		canvas.restoreContext();
 
 		// draw indent line & label
 		Indent indent = new Indent(minValue, maxValue);
 
-		FormLabel[] label = new FormLabel[indent.nSteps + 1];
-		for (int i = 0; i <= indent.nSteps; i++) {
-			float value = indent.getIndentValue(i);
-
-			label[i] = new FormLabel();
-			label[i].setStyleName("search-label");
-			label[i].setText(indent.getIndentString(i));
-
-			panel.add(label[i], 0, 0);
-
-			int labelPosition = 0;
-			if (label[i].getOffsetWidth() < leftMargin)
-				labelPosition = leftMargin - label[i].getOffsetWidth();
-
-			panel.setWidgetPosition(label[i], labelPosition, (int) (getYPosition(value) - (label[i].getOffsetHeight() - indentHeight) / 2.0));
-
-			if (getYPosition(value) < 0.0f || getYPosition(value) > windowHeight) {
-				panel.remove(label[i]);
-				continue;
+		{
+			canvas.saveContext();
+			canvas.setStrokeStyle(Color.BLACK);
+			canvas.setGlobalAlpha(0.2f);
+			canvas.setLineWidth(0.5f);
+			for (int i = 0; i <= indent.nSteps; i++) {
+				float value = indent.getIndentValue(i);
+				// draw indent line
+				canvas.saveContext();
+				canvas.beginPath();
+				canvas.translate(0, getYPosition(value) + 0.5d);
+				canvas.moveTo(0d, 0d);
+				canvas.lineTo(trackWindow.getWindowWidth(), 0);
+				canvas.stroke();
+				canvas.restoreContext();
+			}
+			{
+				// draw zero line
+				canvas.saveContext();
+				canvas.beginPath();
+				canvas.translate(0, getYPosition(0f));
+				canvas.moveTo(0, 0);
+				canvas.lineTo(trackWindow.getWindowWidth(), 0);
+				canvas.stroke();
+				canvas.restoreContext();
 			}
 
-			// draw indent line
-			canvas.setGlobalAlpha(0.2);
-			canvas.fillRect(0, getYPosition(value), trackWindow.getWindowWidth(), 1);
-			// draw zero line
-			canvas.setGlobalAlpha(1.0);
+			canvas.restoreContext();
 		}
 
-		canvas.fillRect(0, getYPosition(0.0f), trackWindow.getWindowWidth(), 1);
+		int fontHeight = 10;
+		for (int i = 0; i <= indent.nSteps; i++) {
+			float value = indent.getIndentValue(i);
+			Label label = new Label(indent.getIndentString(i));
+
+			Style.fontSize(label, fontHeight);
+			Style.textAlign(label, "left");
+			Style.fontColor(label, "#006699");
+
+			int labelX = 1;
+			int labelY = (int) (getYPosition(value) - fontHeight);
+
+			if (labelY > windowHeight)
+				continue;
+
+			graphLabels.add(label);
+			panel.add(label, labelX, labelY);
+
+			//			if (label[i].getOffsetWidth() < leftMargin)
+			//				labelPosition = leftMargin - label[i].getOffsetWidth();
+
+			//panel.setWidgetPosition(label[i], labelX, 
+
+			//			if (getYPosition(value) < 0.0f || getYPosition(value) > windowHeight) {
+			//				panel.remove(label[i]);
+			//				continue;
+			//			}
+
+		}
+
 	}
 
 	public class Indent {
@@ -304,13 +348,6 @@ public class GWTGraphCanvas extends Composite {
 
 	public int getWindowHeight() {
 		return windowHeight;
-	}
-
-	public void setPanelHeight(int height) {
-		if (height > 0) {
-			panel.setHeight(height + "px");
-			panel.setWidgetPosition(canvas, 0, indentHeight / 2);
-		}
 	}
 
 	public float getMaxValue() {

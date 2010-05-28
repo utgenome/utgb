@@ -195,7 +195,7 @@ public class WIGDatabaseReader {
 						else
 							data.put(chromStart, dataValues[i]);
 					}
-					
+
 					minValue = Math.min(minValue, dataValues[i]);
 					maxValue = Math.max(maxValue, dataValues[i]);
 				}

@@ -43,8 +43,8 @@ import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChange;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.track.UTGBProperty;
 import org.utgenome.gwt.utgb.client.track.impl.TrackWindowImpl;
-import org.utgenome.gwt.utgb.client.ui.FormLabel;
 import org.utgenome.gwt.utgb.client.util.Properties;
+import org.utgenome.gwt.widget.client.Style;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
@@ -61,7 +61,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 	protected String fileName = "db/sample.wig.sqlite";
 	private final boolean isDebug = false;
 	private boolean isTrackColor = false;
-	private String color = Color.DARK_BLUE.toString();
+	private String color = "rgba(13,106,209, 0.8f)";
 	private float alpha = 1.0f;
 	private float maxValue = 20.0f;
 	private float minValue = 0.0f;
@@ -70,11 +70,8 @@ public class WIGGraphCanvasTrack extends TrackBase {
 
 	private int height = 100;
 	private int leftMargin = 100;
-	private final int heightMargin = 10;
 
 	private List<WigGraphData> wigDataList;
-
-	//private ArrayList<Locus> genes = new ArrayList<Locus>();
 
 	public static TrackFactory factory() {
 		return new TrackFactory() {
@@ -91,34 +88,18 @@ public class WIGGraphCanvasTrack extends TrackBase {
 		layoutTable.setBorderWidth(0);
 		layoutTable.setCellPadding(0);
 		layoutTable.setCellSpacing(0);
-		layoutTable.getCellFormatter().setWidth(0, 0, leftMargin + "px");
-		layoutTable.setWidget(0, 0, labelPanel);
+		Style.margin(layoutTable, 0);
+		Style.padding(layoutTable, 0);
+
 		layoutTable.setWidget(0, 1, geneCanvas);
-
-		//		layoutTable.setHeight(100 + "px");
-
-		//CSS.border(geneCanvas, 2, "solid", "cyan");
-
-		//		geneCanvas.setLocusClickHandler(new LocusClickHandler() {
-		//			public void onClick(Locus locus) {
-		//				getTrackGroup().getPropertyWriter().setProperty("bss.query", locus.getName());
-		//			}
-		//		});
 
 	}
 
 	private final FlexTable layoutTable = new FlexTable();
 	private final GWTGraphCanvas geneCanvas = new GWTGraphCanvas();
 
-	private final AbsolutePanel labelPanel = new AbsolutePanel();
-
 	public Widget getWidget() {
 		return layoutTable;
-	}
-
-	@Override
-	public void draw() {
-
 	}
 
 	public static int calcXPositionOnWindow(long indexOnGenome, long startIndexOnGenome, long endIndexOnGenome, int windowWidth) {
@@ -163,27 +144,19 @@ public class WIGGraphCanvasTrack extends TrackBase {
 		public void execute() {
 			TrackWindow w = getTrackGroup().getTrackWindow();
 
-			// draw label
-			Label nameLabel = new FormLabel();
-			nameLabel.setStyleName("search-label");
-
-			labelPanel.clear();
-			labelPanel.setPixelSize(leftMargin, height);
-			labelPanel.add(nameLabel, 0, 0);
-			labelPanel.setWidgetPosition(nameLabel, 0, (height - nameLabel.getOffsetHeight()) / 2);
-
 			float tempMinValue = minValue;
 			float tempMaxValue = maxValue;
 
 			// get graph x-range
 			int s = w.getStartOnGenome();
 			int e = w.getEndOnGenome();
-			int width = w.getWindowWidth() - leftMargin;
+			int width = w.getWindowWidth();
+
+			layoutTable.getCellFormatter().setWidth(0, 0, leftMargin + "px");
+
 			geneCanvas.clear();
-			geneCanvas.setTrackWindow(new TrackWindowImpl(width, s, e));
-			geneCanvas.setWindowHeight(height - heightMargin);
-			geneCanvas.setIndentHeight(heightMargin - 1);
-			geneCanvas.setPanelHeight(height);
+			geneCanvas.setTrackWindow(new TrackWindowImpl(width - leftMargin, s, e));
+			geneCanvas.setWindowHeight(height);
 			geneCanvas.setIsLog(isLog);
 
 			// get graph y-range
@@ -201,45 +174,29 @@ public class WIGGraphCanvasTrack extends TrackBase {
 			geneCanvas.setMaxValue(tempMaxValue);
 
 			// draw frame
-			geneCanvas.drawFrame(labelPanel, leftMargin);
+			geneCanvas.drawFrame();
 
 			// draw data graph
-			for (WigGraphData data : dataList) {
-				if (isDebug) {
-					GWT.log(data.toString(), null);
-					for (long pos : data.getData().keySet()) {
-						GWT.log(pos + ":" + data.getData().get(pos), null);
+			if (dataList != null) {
+				for (WigGraphData data : dataList) {
+					if (isDebug) {
+						GWT.log(data.toString(), null);
+						for (long pos : data.getData().keySet()) {
+							GWT.log(pos + ":" + data.getData().get(pos), null);
+						}
 					}
-				}
-				if (data.getTrack().containsKey("name")) {
-					nameLabel.setText(data.getTrack().get("name"));
-				}
-				else {
-					nameLabel.setText(fileName);
+
+					if (!isTrackColor && data.getTrack().containsKey("color")) {
+						String colorStr = data.getTrack().get("color");
+						String c[] = colorStr.split(",");
+						if (c.length == 3)
+							color = new Color(Integer.valueOf(c[0]), Integer.valueOf(c[1]), Integer.valueOf(c[2])).toString();
+					}
+
+					geneCanvas.drawWigGraph(data, new Color(color));
 				}
 
-				if (!isTrackColor && data.getTrack().containsKey("color")) {
-					String colorStr = data.getTrack().get("color");
-					String c[] = colorStr.split(",");
-					if (c.length == 3)
-						color = new Color(Integer.valueOf(c[0]), Integer.valueOf(c[1]), Integer.valueOf(c[2])).toString();
-				}
-
-				geneCanvas.drawWigGraph(data, new Color(color));
-
-				// adjust name label length
-				//				while (nameLabel.getOffsetWidth() > getLabelWidth(nameLabel, labelPanel)) {
-				//					nameLabel.setText(nameLabel.getText().substring(0, nameLabel.getText().length() - 1));
-				//					if (nameLabel.getText().equals(""))
-				//						break;
-				//				}
-				while (nameLabel.getOffsetWidth() > 60) {
-					nameLabel.setText(nameLabel.getText().substring(0, nameLabel.getText().length() - 1));
-					if (nameLabel.getText().equals(""))
-						break;
-				}
 			}
-
 			refresh();
 			getFrame().loadingDone();
 		}
@@ -277,7 +234,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 
 		getFrame().setNowLoading();
 
-		getBrowserService().getWigDataList(fileName, newWindow.getWindowWidth() - 100, l, new AsyncCallback<List<WigGraphData>>() {
+		getBrowserService().getWigDataList(fileName, newWindow.getWindowWidth(), l, new AsyncCallback<List<WigGraphData>>() {
 
 			public void onFailure(Throwable e) {
 				GWT.log("failed to retrieve wig data", e);
@@ -334,19 +291,6 @@ public class WIGGraphCanvasTrack extends TrackBase {
 			DeferredCommand.addCommand(new UpdateCommand(wigDataList));
 		}
 	}
-
-	//	@Override
-	//	public void saveProperties(Properties saveData) {
-	//		saveData.add("fileName", fileName);
-	//		saveData.add("trackHeight", height);
-	//		saveData.add("color", color.toString());
-	//		saveData.add("alpha", alpha);
-	//		saveData.add("leftMargin", leftMargin);
-	//		saveData.add("maxValue", maxValue);
-	//		saveData.add("minValue", minValue);
-	//		saveData.add("isAutoRange", isAutoRange);
-	//		saveData.add("isLog", isLog);
-	//	}
 
 	@Override
 	public void restoreProperties(Properties properties) {

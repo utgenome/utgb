@@ -539,6 +539,7 @@ public class BrowserServiceImpl extends RpcServlet implements BrowserService {
 		}
 		catch (Exception e) {
 			_logger.error(e);
+			e.printStackTrace(System.err);
 		}
 
 		return wigDataList;
