@@ -112,10 +112,10 @@ public class Interval implements OnGenome, Comparable<Interval>, Serializable {
 	}
 
 	public boolean hasOverlap(Interval other) {
-		long s1 = getStart();
-		long e1 = getEnd();
-		long s2 = other.getStart();
-		long e2 = other.getEnd();
+		int s1 = getStart();
+		int e1 = getEnd();
+		int s2 = other.getStart();
+		int e2 = other.getEnd();
 
 		return s1 <= e2 && s2 <= e1;
 	}

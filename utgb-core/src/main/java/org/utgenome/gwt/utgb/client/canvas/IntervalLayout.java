@@ -24,6 +24,7 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.canvas;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -80,6 +81,20 @@ public class IntervalLayout {
 		if (labelWidth > 150)
 			labelWidth = 150;
 		return labelWidth;
+	}
+
+	public List<OnGenome> activeReads() {
+
+		final ArrayList<OnGenome> activeData = new ArrayList<OnGenome>();
+
+		locusLayout.depthFirstSearch(new PrioritySearchTree.Visitor<LocusLayout>() {
+			public void visit(LocusLayout l) {
+				OnGenome g = l.locus;
+				if (w.hasOverlapWith(g))
+					activeData.add(g);
+			}
+		});
+		return activeData;
 	}
 
 	<T extends OnGenome> int createLayout(List<T> locusList, int geneHeight) {

@@ -24,6 +24,7 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.track.impl;
 
+import org.utgenome.gwt.utgb.client.bio.OnGenome;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.util.xml.XMLAttribute;
 import org.utgenome.gwt.utgb.client.util.xml.XMLWriter;
@@ -131,6 +132,16 @@ public class TrackWindowImpl implements TrackWindow {
 
 	public TrackWindow newWindow(int newStartOnGenome, int newEndOnGenome) {
 		return new TrackWindowImpl(this.windowWidth, newStartOnGenome, newEndOnGenome);
+	}
+
+	public boolean hasOverlapWith(OnGenome g) {
+
+		int s1 = getStartOnGenome();
+		int e1 = getEndOnGenome();
+		int s2 = g.getStart();
+		int e2 = g.getEnd();
+
+		return s1 <= e2 && s2 <= e1;
 	}
 
 }

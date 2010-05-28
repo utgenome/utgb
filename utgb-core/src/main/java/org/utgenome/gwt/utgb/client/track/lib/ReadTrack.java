@@ -63,8 +63,9 @@ import com.google.gwt.user.client.ui.Widget;
  * <pre>
  * -track
  *  -class: ReadTrack
- *  -path: (database path. e.g, db/imported/hg19/myread.bed)
+ *  -name: (track name)
  *  -properties
+ *    -path: (database path. e.g, db/imported/hg19/myread.bed)
  *    -onclick.url: http://www.google.com/search?q=%q
  *    -onclick.action: (none|link|info|set)
  *    -showLabels: (true|false)
@@ -366,8 +367,8 @@ public class ReadTrack extends TrackBase {
 		config.addHiddenConfiguration(CONFIG_LEFT_MARGIN, "0");
 		config.addConfigParameter("DB Path", new StringType(CONFIG_PATH));
 
-		ValueDomain dbTypes = ValueDomain.createNewValueDomain(DBType.getDBTypeList());
 		config.addHiddenConfiguration(CONFIG_DB_TYPE, "AUTO");
+		//ValueDomain dbTypes = ValueDomain.createNewValueDomain(DBType.getDBTypeList());
 		//config.addConfigParameter("DB Type", new StringType(CONFIG_DB_TYPE, dbTypes), "AUTO");
 
 		ValueDomain layoutTypes = ValueDomain.createNewValueDomain(new String[] { "pileup", "coverage" });

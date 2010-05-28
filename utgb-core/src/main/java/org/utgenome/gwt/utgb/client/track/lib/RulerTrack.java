@@ -71,7 +71,7 @@ class Ruler {
 	}
 	private int tickUnit = 1;
 	private int tickUnitIndex = 0;
-	private long tickRangeOnGenome = 1;
+	private int tickRangeOnGenome = 1;
 	private final TrackRangeSelector _rangeSelector;
 	private String rulerLabelStyle = "ruler-tick";
 	private final MouseListenerOnRulerWidget _commonMouseListener;
@@ -95,10 +95,10 @@ class Ruler {
 		}
 	}
 
-	public void updateTickUnit(int windowWidth, long s, long e) {
+	public void updateTickUnit(int windowWidth, int s, int e) {
 		// update tick unit
 		e++;
-		long range = (e > s) ? e - s : s - e;
+		int range = (e > s) ? e - s : s - e;
 		if (range <= 0)
 			range = 1;
 		tickRangeOnGenome = suitableTickRangeOnGenome(range);
@@ -112,22 +112,22 @@ class Ruler {
 		tickUnitIndex = unitCount;
 	}
 
-	public void draw(AbsoluteFocusPanel panel, int windowWidth, long s, long e, boolean isReverseStrand) {
+	public void draw(AbsoluteFocusPanel panel, int windowWidth, int s, int e, boolean isReverseStrand) {
 		assert (s <= e);
 		panel.setSize(windowWidth + "px", RULER_HEIGHT + "px");
 		e++;
-		long range = (e > s) ? e - s : s - e;
+		int range = (e > s) ? e - s : s - e;
 		if (range <= 0)
 			range = 1;
 
 		double pixelLengthPerRange = (double) windowWidth / (double) range;
 
-		long initTickCursor = s;
+		int initTickCursor = s;
 		if (((s - 1) % tickRangeOnGenome) != 0)
 			initTickCursor = ((s + tickRangeOnGenome) / tickRangeOnGenome) * tickRangeOnGenome;
 
-		for (long tickCursor = initTickCursor; tickCursor <= e; tickCursor += tickRangeOnGenome) {
-			long pos = tickCursor - s;
+		for (int tickCursor = initTickCursor; tickCursor <= e; tickCursor += tickRangeOnGenome) {
+			int pos = tickCursor - s;
 			int tickX = (int) (pos * pixelLengthPerRange);
 			if (tickX >= 0) {
 				Image tick = new Image(TICK_IMAGE);
@@ -146,27 +146,27 @@ class Ruler {
 
 	}
 
-	private String indexOnRuler(long genomePos) {
+	private String indexOnRuler(int genomePos) {
 		return (genomePos / tickUnit) + _unitSuffix[tickUnitIndex];
 	}
 
-	private long suitableTickRangeOnGenome(long range) {
+	private int suitableTickRangeOnGenome(int range) {
 		if (range <= 1)
 			return 1;
 		int[] availableTickUnit = { 1, 2, 5, 10, 20, 25 };
 
 		int numTicksMax = 13;
 		for (int i = numTicksMax; i > 0; i--) {
-			long tickRange = range / i;
+			int tickRange = range / i;
 			if (tickRange <= 0)
 				continue;
 
-			long tickFraction = range % i;
+			int tickFraction = range % i;
 
-			long factor = (long) (Math.log(tickRange) / Math.log(10));
-			long factor10 = (long) Math.pow(10, factor);
-			long tickUnit = tickRange / factor10;
-			long tickFractionUnit = tickFraction / factor10;
+			int factor = (int) (Math.log(tickRange) / Math.log(10));
+			int factor10 = (int) Math.pow(10, factor);
+			int tickUnit = tickRange / factor10;
+			int tickFractionUnit = tickFraction / factor10;
 			if (tickUnit < tickFractionUnit)
 				continue;
 			for (int m = 0; m < availableTickUnit.length; m++) {
@@ -238,8 +238,8 @@ public class RulerTrack extends TrackBase implements RangeSelectable {
 		_layoutPanel.setWidget(0, 1, _basePanel);
 		TrackWindow w = getTrackGroup().getTrackWindow();
 		int windowWidth = w.getWindowWidth() - _windowLeftMargin;
-		long s = w.getStartOnGenome();
-		long e = w.getEndOnGenome();
+		int s = w.getStartOnGenome();
+		int e = w.getEndOnGenome();
 
 		if (s <= e) {
 			ruler.updateTickUnit(windowWidth, s, e);

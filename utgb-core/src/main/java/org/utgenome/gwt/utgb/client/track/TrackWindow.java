@@ -24,6 +24,7 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.track;
 
+import org.utgenome.gwt.utgb.client.bio.OnGenome;
 import org.utgenome.gwt.utgb.client.util.xml.XMLWriter;
 
 /**
@@ -82,4 +83,6 @@ public interface TrackWindow {
 	public boolean isReverseStrand();
 
 	public TrackWindow newWindow(int newStartOnGenome, int newEndOnGenome);
+
+	public boolean hasOverlapWith(OnGenome g);
 }

@@ -28,7 +28,7 @@ import java.util.List;
 
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.WigGraphData;
-import org.utgenome.gwt.utgb.client.canvas.GWTGenomeCanvas;
+import org.utgenome.gwt.utgb.client.canvas.GWTGraphCanvas;
 import org.utgenome.gwt.utgb.client.db.datatype.BooleanType;
 import org.utgenome.gwt.utgb.client.db.datatype.FloatType;
 import org.utgenome.gwt.utgb.client.db.datatype.StringType;
@@ -108,7 +108,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 	}
 
 	private final FlexTable layoutTable = new FlexTable();
-	private final GWTGenomeCanvas geneCanvas = new GWTGenomeCanvas();
+	private final GWTGraphCanvas geneCanvas = new GWTGraphCanvas();
 
 	private final AbsolutePanel labelPanel = new AbsolutePanel();
 
@@ -180,7 +180,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 			int e = w.getEndOnGenome();
 			int width = w.getWindowWidth() - leftMargin;
 			geneCanvas.clear();
-			geneCanvas.setWindow(new TrackWindowImpl(width, s, e));
+			geneCanvas.setTrackWindow(new TrackWindowImpl(width, s, e));
 			geneCanvas.setWindowHeight(height - heightMargin);
 			geneCanvas.setIndentHeight(heightMargin - 1);
 			geneCanvas.setPanelHeight(height);
