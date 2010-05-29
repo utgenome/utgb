@@ -49,6 +49,12 @@ import org.xerial.util.StopWatch;
 import org.xerial.util.bean.impl.BeanUtilImpl;
 import org.xerial.util.log.Logger;
 
+/**
+ * Generating SQLite database of WIG data
+ * 
+ * @author yoshimur
+ * 
+ */
 public class WIGDatabaseGenerator {
 
 	private static Logger _logger = Logger.getLogger(WIGDatabaseGenerator.class);
@@ -57,8 +63,8 @@ public class WIGDatabaseGenerator {
 	private static CompressedBuffer chromStartBuffer;
 	private static CompressedBuffer dataValueBuffer;
 
-	private static long data_start = 0;
-	private static long data_step = 0;
+	private static int data_start = 0;
+	private static int data_step = 0;
 
 	private static boolean isVariableStep = true;
 	private static boolean isAddTrackId = true;
@@ -71,7 +77,7 @@ public class WIGDatabaseGenerator {
 	private static float buffer_minValue = Float.MAX_VALUE;
 
 	private static int dataSplitUnit = 100000;
-	private static long[] chromStarts;
+	private static int[] chromStarts;
 	private static float[] dataValues;
 
 	public static void toSQLiteDB(Reader wigInput, String dbName) throws IOException, XerialException {
@@ -82,8 +88,8 @@ public class WIGDatabaseGenerator {
 		chromStartBuffer = new CompressedBuffer();
 		dataValueBuffer = new CompressedBuffer();
 
-		long nPoints = 0;
-		chromStarts = new long[dataSplitUnit];
+		int nPoints = 0;
+		chromStarts = new int[dataSplitUnit];
 		dataValues = new float[dataSplitUnit];
 
 		String line = null;
@@ -149,7 +155,7 @@ public class WIGDatabaseGenerator {
 
 					if (isVariableStep) {
 						String[] lineValues = readDataLine(line, lineNum);
-						long currentPoint = Long.parseLong(lineValues[0]);
+						int currentPoint = Integer.parseInt(lineValues[0]);
 						if (buffer_count == 0) {
 							buffer_start = currentPoint;
 						}
@@ -161,7 +167,7 @@ public class WIGDatabaseGenerator {
 					}
 					else {
 						String[] lineValues = readDataLine(line, lineNum);
-						long currentPoint = data_start + (nPoints * data_step);
+						int currentPoint = data_start + (nPoints * data_step);
 						if (buffer_count == 0) {
 							buffer_start = currentPoint;
 						}
@@ -207,7 +213,7 @@ public class WIGDatabaseGenerator {
 
 	private static void insertData(int track_id, PreparedStatement p3) throws SQLException, IOException {
 
-		long[] tempChromStarts = new long[buffer_count];
+		int[] tempChromStarts = new int[buffer_count];
 		float[] tempDataValues = new float[buffer_count];
 
 		System.arraycopy(chromStarts, 0, tempChromStarts, 0, buffer_count);
@@ -240,7 +246,7 @@ public class WIGDatabaseGenerator {
 		_logger.info(String.format("insert data %d:%d-%d", track_id, buffer_start, buffer_end));
 
 		// init variables
-		chromStarts = new long[dataSplitUnit];
+		chromStarts = new int[dataSplitUnit];
 		dataValues = new float[dataSplitUnit];
 		isAddTrackId = true;
 		isBufferEnpty = true;
@@ -293,10 +299,10 @@ public class WIGDatabaseGenerator {
 
 		for (WIGHeaderAttribute a : BeanUtilImpl.createBeanFromParseTree(WIGHeaderDescription.class, (Tree) ret.getTree(), WIGParser.tokenNames).attributes) {
 			if (a.name.equals("start")) {
-				data_start = Long.parseLong(a.value);
+				data_start = Integer.parseInt(a.value);
 			}
 			else if (a.name.equals("step")) {
-				data_step = Long.parseLong(a.value);
+				data_step = Integer.parseInt(a.value);
 			}
 
 			p2.setInt(1, track_id);

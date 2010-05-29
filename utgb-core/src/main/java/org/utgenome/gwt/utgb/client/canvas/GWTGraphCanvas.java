@@ -27,7 +27,7 @@ package org.utgenome.gwt.utgb.client.canvas;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.utgenome.gwt.utgb.client.bio.WigGraphData;
+import org.utgenome.gwt.utgb.client.bio.CompactWIGData;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.widget.client.Style;
 
@@ -83,31 +83,25 @@ public class GWTGraphCanvas extends Composite {
 		graphLabels.clear();
 	}
 
-	public void drawWigGraph(WigGraphData data, Color color) {
+	public void drawWigGraph(CompactWIGData data, Color color) {
 
 		canvas.saveContext();
-		int span = 1;
-		if (data.getTrack().containsKey("span")) {
-			span = Integer.parseInt(data.getTrack().get("span"));
-		}
+		int span = data.getSpan();
+
+		canvas.setLineWidth(1.0f);
+		canvas.setStrokeStyle(color);
+
 		// draw data graph
-		for (int pos : data.getData().keySet()) {
-			float value = data.getData().get(pos);
+		for (int x = 0; x < trackWindow.getWindowWidth(); ++x) {
+			float value = data.getData()[x];
 			if (value == 0.0f)
 				continue;
 
-			int x1 = trackWindow.calcXPositionOnWindow(pos);
 			float y1 = getYPosition(value);
-			int width = trackWindow.calcXPositionOnWindow(pos + span) - x1;
-
-			if (width <= 1) {
-				width = 1;
-			}
-
 			if (trackWindow.isReverseStrand()) {
-				width *= -1.0f;
-				x1 = trackWindow.getWindowWidth() - x1;
+				x = trackWindow.getWindowWidth() - x - 1;
 			}
+			int x2 = x + 1;
 
 			float height;
 			if (y1 == getYPosition(0.0f)) {
@@ -122,8 +116,13 @@ public class GWTGraphCanvas extends Composite {
 				height = getYPosition(0.0f) - y1;
 			}
 
-			canvas.setFillStyle(color);
-			canvas.fillRect(x1, y1, width, height);
+			canvas.saveContext();
+			canvas.beginPath();
+			canvas.translate(x + 0.5f, windowHeight);
+			canvas.moveTo(0, 0);
+			canvas.lineTo(0, -height);
+			canvas.stroke();
+			canvas.restoreContext();
 		}
 		canvas.restoreContext();
 	}

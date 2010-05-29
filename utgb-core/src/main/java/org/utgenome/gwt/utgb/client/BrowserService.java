@@ -30,6 +30,7 @@ import org.utgenome.gwt.utgb.client.bean.DatabaseEntry;
 import org.utgenome.gwt.utgb.client.bean.track.TrackDescription;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.ChrRange;
+import org.utgenome.gwt.utgb.client.bio.CompactWIGData;
 import org.utgenome.gwt.utgb.client.bio.GenomeDB;
 import org.utgenome.gwt.utgb.client.bio.KeywordSearchResult;
 import org.utgenome.gwt.utgb.client.bio.OnGenomeDataSet;
@@ -76,6 +77,8 @@ public interface BrowserService extends RpcService {
 	public List<DatabaseEntry> getDBEntry(String dbGroup);
 
 	public List<WigGraphData> getWigDataList(String fileName, int windowWidth, ChrLoc location);
+
+	public List<CompactWIGData> getCompactWigDataList(String fileName, int windowWidth, ChrLoc location);
 
 	public List<SAMRead> getSAMReadList(String readFileName, String refSeqFileName);
 

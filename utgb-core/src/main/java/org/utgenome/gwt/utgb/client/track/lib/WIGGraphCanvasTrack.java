@@ -27,7 +27,7 @@ package org.utgenome.gwt.utgb.client.track.lib;
 import java.util.List;
 
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
-import org.utgenome.gwt.utgb.client.bio.WigGraphData;
+import org.utgenome.gwt.utgb.client.bio.CompactWIGData;
 import org.utgenome.gwt.utgb.client.canvas.GWTGraphCanvas;
 import org.utgenome.gwt.utgb.client.db.datatype.BooleanType;
 import org.utgenome.gwt.utgb.client.db.datatype.FloatType;
@@ -71,7 +71,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 	private int height = 100;
 	private int leftMargin = 100;
 
-	private List<WigGraphData> wigDataList;
+	private List<CompactWIGData> wigDataList;
 
 	public static TrackFactory factory() {
 		return new TrackFactory() {
@@ -135,9 +135,9 @@ public class WIGGraphCanvasTrack extends TrackBase {
 	}
 
 	class UpdateCommand implements Command {
-		private final List<WigGraphData> dataList;
+		private final List<CompactWIGData> dataList;
 
-		public UpdateCommand(List<WigGraphData> dataList) {
+		public UpdateCommand(List<CompactWIGData> dataList) {
 			this.dataList = dataList;
 		}
 
@@ -163,7 +163,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 			if (isAutoRange) {
 				tempMinValue = 0.0f;
 				tempMaxValue = 0.0f;
-				for (WigGraphData data : dataList) {
+				for (CompactWIGData data : dataList) {
 					tempMinValue = Math.min(tempMinValue, data.getMinValue());
 					tempMaxValue = Math.max(tempMaxValue, data.getMaxValue());
 				}
@@ -178,13 +178,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 
 			// draw data graph
 			if (dataList != null) {
-				for (WigGraphData data : dataList) {
-					if (isDebug) {
-						GWT.log(data.toString(), null);
-						for (long pos : data.getData().keySet()) {
-							GWT.log(pos + ":" + data.getData().get(pos), null);
-						}
-					}
+				for (CompactWIGData data : dataList) {
 
 					if (!isTrackColor && data.getTrack().containsKey("color")) {
 						String colorStr = data.getTrack().get("color");
@@ -234,14 +228,14 @@ public class WIGGraphCanvasTrack extends TrackBase {
 
 		getFrame().setNowLoading();
 
-		getBrowserService().getWigDataList(fileName, newWindow.getWindowWidth(), l, new AsyncCallback<List<WigGraphData>>() {
+		getBrowserService().getCompactWigDataList(fileName, newWindow.getWindowWidth(), l, new AsyncCallback<List<CompactWIGData>>() {
 
 			public void onFailure(Throwable e) {
 				GWT.log("failed to retrieve wig data", e);
 				getFrame().loadingDone();
 			}
 
-			public void onSuccess(List<WigGraphData> dataList) {
+			public void onSuccess(List<CompactWIGData> dataList) {
 				wigDataList = dataList;
 				//				DeferredCommand.addCommand(new UpdateCommand(dataList));
 				new UpdateCommand(dataList).execute();
