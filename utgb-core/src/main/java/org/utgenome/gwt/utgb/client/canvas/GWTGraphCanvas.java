@@ -86,18 +86,18 @@ public class GWTGraphCanvas extends Composite {
 	public void drawWigGraph(CompactWIGData data, Color color) {
 
 		canvas.saveContext();
-		int span = data.getSpan();
 
 		canvas.setLineWidth(1.0f);
 		canvas.setStrokeStyle(color);
 
 		// draw data graph
-		for (int x = 0; x < trackWindow.getWindowWidth(); ++x) {
-			float value = data.getData()[x];
+		for (int i = 0; i < trackWindow.getWindowWidth(); ++i) {
+			float value = data.getData()[i];
 			if (value == 0.0f)
 				continue;
 
 			float y1 = getYPosition(value);
+			int x = i;
 			if (trackWindow.isReverseStrand()) {
 				x = trackWindow.getWindowWidth() - x - 1;
 			}

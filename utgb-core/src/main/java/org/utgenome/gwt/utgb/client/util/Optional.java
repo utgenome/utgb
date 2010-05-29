@@ -46,7 +46,7 @@ public class Optional<T> {
 		return !isDefined;
 	}
 
-	public T value() {
+	public T get() {
 		return holder;
 	}
 

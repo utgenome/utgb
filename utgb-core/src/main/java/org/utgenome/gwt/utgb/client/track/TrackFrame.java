@@ -406,7 +406,7 @@ public class TrackFrame extends SimplePanel {
 
 		private boolean isDisabledConfigButton() {
 			if (_disableConfigButton.isDefined())
-				return !_disableConfigButton.value();
+				return !_disableConfigButton.get();
 			else {
 				return !(_track.getConfig() != null && _track.getConfig().hasProperties());
 			}

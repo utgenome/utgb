@@ -43,6 +43,7 @@ import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChange;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.track.UTGBProperty;
 import org.utgenome.gwt.utgb.client.track.impl.TrackWindowImpl;
+import org.utgenome.gwt.utgb.client.util.Optional;
 import org.utgenome.gwt.utgb.client.util.Properties;
 import org.utgenome.gwt.widget.client.Style;
 
@@ -58,10 +59,11 @@ import com.google.gwt.widgetideas.graphics.client.Color;
 
 public class WIGGraphCanvasTrack extends TrackBase {
 
+	private final String DEFAULT_COLOR = "rgba(12,106,193,0.7)";
+
 	protected String fileName = "db/sample.wig.sqlite";
-	private final boolean isDebug = false;
-	private boolean isTrackColor = false;
-	private String color = "rgba(12,106,193,0.7)";
+	private Optional<String> color = new Optional<String>();
+
 	private float alpha = 1.0f;
 	private float maxValue = 20.0f;
 	private float minValue = 0.0f;
@@ -129,7 +131,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 		config.addConfigParameter("minValue", new FloatType("minValue"), String.valueOf(minValue));
 		config.addConfigParameter("Auto Read", new BooleanType("isAutoRange"), String.valueOf(isAutoRange));
 		config.addConfigParameter("Log Scale", new BooleanType("isLog"), String.valueOf(isLog));
-		config.addConfigParameter("Color", new StringType("color"), color);
+		config.addConfigParameter("Color", new StringType("color"), "");
 
 		update(group.getTrackWindow());
 	}
@@ -180,14 +182,18 @@ public class WIGGraphCanvasTrack extends TrackBase {
 			if (dataList != null) {
 				for (CompactWIGData data : dataList) {
 
-					if (!isTrackColor && data.getTrack().containsKey("color")) {
+					Color graphColor = new Color(DEFAULT_COLOR);
+					if (color.isDefined()) {
+						graphColor = new Color(color.get());
+					}
+					else if (data.getTrack().containsKey("color")) {
 						String colorStr = data.getTrack().get("color");
 						String c[] = colorStr.split(",");
 						if (c.length == 3)
-							color = new Color(Integer.valueOf(c[0]), Integer.valueOf(c[1]), Integer.valueOf(c[2])).toString();
+							graphColor = new Color(Integer.valueOf(c[0]), Integer.valueOf(c[1]), Integer.valueOf(c[2]));
 					}
 
-					geneCanvas.drawWigGraph(data, new Color(color));
+					geneCanvas.drawWigGraph(data, graphColor);
 				}
 
 			}
@@ -269,7 +275,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 			GWT.log("log:" + isLog, null);
 		}
 		if (change.contains("color")) {
-			color = change.getValue("color");
+			setColor(change.getValue("color"));
 			GWT.log("color:" + color, null);
 		}
 		if (change.contains("alpha")) {
@@ -298,19 +304,21 @@ public class WIGGraphCanvasTrack extends TrackBase {
 		isLog = properties.getBoolean("isLog", isLog);
 
 		alpha = properties.getFloat("alpha", alpha);
-		color = properties.get("color", color);
-		if (!color.isEmpty()) {
-			isTrackColor = true;
-			if (color.startsWith("#")) {
-				color = hexValue2Color(color).toString();
-			}
-		}
+		String c = properties.get("color");
+		setColor(c);
 
 		String p = properties.get("changeParamOnClick");
 		if (p != null) {
 			// set canvas action
 
 		}
+	}
+
+	private void setColor(String colorStr) {
+		if (colorStr != null && colorStr.length() > 0)
+			color.set(colorStr);
+		else
+			color.reset();
 	}
 
 	public Color hexValue2Color(String hex) {
