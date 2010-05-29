@@ -126,12 +126,12 @@ public class WIGGraphCanvasTrack extends TrackBase {
 	@Override
 	public void setUp(TrackFrame trackFrame, TrackGroup group) {
 		TrackConfig config = getConfig();
-		config.addConfigParameter("File Name", new StringType("fileName"), fileName);
-		config.addConfigParameter("maxValue", new FloatType("maxValue"), String.valueOf(maxValue));
-		config.addConfigParameter("minValue", new FloatType("minValue"), String.valueOf(minValue));
-		config.addConfigParameter("Auto Read", new BooleanType("isAutoRange"), String.valueOf(isAutoRange));
+		config.addConfigParameter("Path", new StringType("fileName"), fileName);
+		config.addConfigParameter("Y Max", new FloatType("maxValue"), String.valueOf(maxValue));
+		config.addConfigParameter("Y Min", new FloatType("minValue"), String.valueOf(minValue));
+		config.addConfigParameter("Auto Scale", new BooleanType("isAutoRange"), String.valueOf(isAutoRange));
 		config.addConfigParameter("Log Scale", new BooleanType("isLog"), String.valueOf(isLog));
-		config.addConfigParameter("Color", new StringType("color"), "");
+		config.addConfigParameter("Graph Color", new StringType("color"), "");
 
 		update(group.getTrackWindow());
 	}
