@@ -36,6 +36,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -48,6 +49,7 @@ import org.utgenome.format.fasta.CompactFASTA;
 import org.utgenome.format.keyword.KeywordDB;
 import org.utgenome.format.sam.SAM2SilkReader;
 import org.utgenome.format.wig.WIGDatabaseReader;
+import org.utgenome.graphics.GenomeWindow;
 import org.utgenome.gwt.utgb.client.BrowserService;
 import org.utgenome.gwt.utgb.client.UTGBClientErrorCode;
 import org.utgenome.gwt.utgb.client.UTGBClientException;
@@ -56,6 +58,7 @@ import org.utgenome.gwt.utgb.client.bean.track.TrackDescription;
 import org.utgenome.gwt.utgb.client.bio.AlignmentResult;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.ChrRange;
+import org.utgenome.gwt.utgb.client.bio.CompactWIGData;
 import org.utgenome.gwt.utgb.client.bio.Gene;
 import org.utgenome.gwt.utgb.client.bio.GenomeDB;
 import org.utgenome.gwt.utgb.client.bio.Interval;
@@ -543,6 +546,61 @@ public class BrowserServiceImpl extends RpcServlet implements BrowserService {
 		}
 
 		return wigDataList;
+	}
+
+	public static CompactWIGData convertResolution(WigGraphData w, ChrLoc location, int windowWidth) {
+		CompactWIGData cwig = new CompactWIGData();
+		cwig.setTrack(w.getTrack());
+		cwig.setMaxValue(w.getMaxValue());
+		cwig.setMinValue(w.getMinValue());
+		cwig.setBrowser(w.getBrowser());
+		cwig.setTrack_id(w.getTrack_id());
+		cwig.setStart(location.start < location.end ? location.start : location.end);
+		int span = 1;
+		if (w.getTrack().containsKey("span")) {
+			span = Integer.parseInt(w.getTrack().get("span"));
+			cwig.setSpan(span);
+		}
+
+		GenomeWindow window = new GenomeWindow(location.start, location.end);
+
+		float[] pixelWiseGraphData = new float[windowWidth];
+		Map<Integer, Float> data = w.getData();
+		for (Map.Entry<Integer, Float> each : data.entrySet()) {
+			int xOnGenome = each.getKey();
+			float val = each.getValue();
+
+			int x1OnCanvas = window.getXPosOnWindow(xOnGenome, windowWidth);
+			int x2OnCanvas = window.getXPosOnWindow(xOnGenome + span, windowWidth);
+
+			if (x1OnCanvas < 0)
+				x1OnCanvas = 0;
+			if (x2OnCanvas - x1OnCanvas <= 0)
+				x2OnCanvas = windowWidth - 1;
+			if (x2OnCanvas >= windowWidth)
+				x2OnCanvas = windowWidth + 1;
+
+			for (int i = x1OnCanvas; i < x2OnCanvas; ++i) {
+				float current = pixelWiseGraphData[i];
+				if (current < val)
+					pixelWiseGraphData[i] = val; // take the max
+			}
+
+		}
+
+		cwig.setData(pixelWiseGraphData);
+		return cwig;
+	}
+
+	public List<CompactWIGData> getCompactWigDataList(String path, int windowWidth, ChrLoc location) {
+		List<WigGraphData> wig = getWigDataList(path, windowWidth, location);
+		ArrayList<CompactWIGData> cWig = new ArrayList<CompactWIGData>();
+
+		for (WigGraphData w : wig) {
+			cWig.add(convertResolution(w, location, windowWidth));
+		}
+
+		return cWig;
 	}
 
 	public List<SAMRead> getSAMReadList(String readFileName, String refSeqFileName) {

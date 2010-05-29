@@ -61,7 +61,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 	protected String fileName = "db/sample.wig.sqlite";
 	private final boolean isDebug = false;
 	private boolean isTrackColor = false;
-	private String color = "rgba(13,106,209, 0.8f)";
+	private String color = "rgba(12,106,193,0.7)";
 	private float alpha = 1.0f;
 	private float maxValue = 20.0f;
 	private float minValue = 0.0f;
