@@ -101,26 +101,24 @@ public class GWTGraphCanvas extends Composite {
 			if (trackWindow.isReverseStrand()) {
 				x = trackWindow.getWindowWidth() - x - 1;
 			}
-			int x2 = x + 1;
 
 			float height;
 			if (y1 == getYPosition(0.0f)) {
 				continue;
 			}
-			else {
-				if (y1 < 0.0f)
-					y1 = 0.0f;
-				else if (y1 > windowHeight)
-					y1 = windowHeight;
 
-				height = getYPosition(0.0f) - y1;
-			}
+			if (y1 < 0.0f)
+				y1 = 0.0f;
+			else if (y1 > windowHeight)
+				y1 = windowHeight;
+
+			float y2 = getYPosition(0.0f);
 
 			canvas.saveContext();
 			canvas.beginPath();
-			canvas.translate(x + 0.5f, windowHeight);
-			canvas.moveTo(0, 0);
-			canvas.lineTo(0, -height);
+			canvas.translate(x + 0.5f, 0);
+			canvas.moveTo(0, y1);
+			canvas.lineTo(0, y2);
 			canvas.stroke();
 			canvas.restoreContext();
 		}
