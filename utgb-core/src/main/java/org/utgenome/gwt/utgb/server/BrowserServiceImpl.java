@@ -565,9 +565,6 @@ public class BrowserServiceImpl extends RpcServlet implements BrowserService {
 		GenomeWindow window = new GenomeWindow(location.start, location.end);
 
 		float[] pixelWiseGraphData = new float[windowWidth];
-		int[] dataCount = new int[windowWidth];
-		for (int i = 0; i < windowWidth; i++)
-			dataCount[i] = 0;
 
 		Map<Integer, Float> data = w.getData();
 		for (Map.Entry<Integer, Float> each : data.entrySet()) {
@@ -576,8 +573,12 @@ public class BrowserServiceImpl extends RpcServlet implements BrowserService {
 
 			int x1 = window.getXPosOnWindow(xOnGenome, windowWidth);
 			int x2 = window.getXPosOnWindow(xOnGenome + span, windowWidth);
+			if (x1 == x2)
+				x2 = x1 + 1;
+
 			if (x1 < 0)
 				x1 = 0;
+
 			for (int i = x1; i < x2 && i < windowWidth; ++i) {
 				float current = pixelWiseGraphData[i];
 				if (current < val) {
