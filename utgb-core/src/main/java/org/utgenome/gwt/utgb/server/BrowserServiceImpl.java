@@ -574,15 +574,11 @@ public class BrowserServiceImpl extends RpcServlet implements BrowserService {
 			int xOnGenome = each.getKey();
 			float val = each.getValue();
 
-			int x1OnCanvas = window.getXPosOnWindow(xOnGenome, windowWidth);
-			int x2OnCanvas = window.getXPosOnWindow(xOnGenome + span, windowWidth);
-
-			if (x1OnCanvas < 0)
-				x1OnCanvas = 0;
-			if (x2OnCanvas - x1OnCanvas <= 0)
-				x2OnCanvas = x1OnCanvas + 1;
-
-			for (int i = x1OnCanvas; i < x2OnCanvas && i < windowWidth; ++i) {
+			int x1 = window.getXPosOnWindow(xOnGenome, windowWidth);
+			int x2 = window.getXPosOnWindow(xOnGenome + span, windowWidth);
+			if (x1 < 0)
+				x1 = 0;
+			for (int i = x1; i < x2 && i < windowWidth; ++i) {
 				float current = pixelWiseGraphData[i];
 				if (current < val) {
 					pixelWiseGraphData[i] = val; // take the max
