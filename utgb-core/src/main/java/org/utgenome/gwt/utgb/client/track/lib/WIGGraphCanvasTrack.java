@@ -234,7 +234,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 
 		getFrame().setNowLoading();
 
-		getBrowserService().getCompactWigDataList(fileName, newWindow.getWindowWidth(), l, new AsyncCallback<List<CompactWIGData>>() {
+		getBrowserService().getCompactWigDataList(fileName, newWindow.getWindowWidth() - leftMargin, l, new AsyncCallback<List<CompactWIGData>>() {
 
 			public void onFailure(Throwable e) {
 				GWT.log("failed to retrieve wig data", e);
