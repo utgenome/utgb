@@ -123,7 +123,7 @@ public class SequenceRulerTrack extends TrackBase implements RangeSelectable {
 	}
 
 	public void setSequenceSize(int newSequenceSize) {
-		if (newSequenceSize != _sequenceSize) {
+		if (newSequenceSize != _sequenceSize && newSequenceSize > 0) {
 			_sequenceSize = newSequenceSize;
 			TrackWindow currentWindow = getTrackGroup().getTrackWindow();
 			int newEndOnGenome = (currentWindow.getEndOnGenome() > _sequenceSize) ? _sequenceSize : currentWindow.getEndOnGenome();
