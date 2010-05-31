@@ -51,15 +51,15 @@ public class GenomeWindow {
 		return (int) v2;
 	}
 
-	public long calcGenomePosition(int xOnWindow, int windowWidth) {
+	public int calcGenomePosition(int xOnWindow, int windowWidth) {
 		if (startIndexOnGenome <= endIndexOnGenome) {
 			double genomeLengthPerBit = (double) (endIndexOnGenome - startIndexOnGenome) / (double) windowWidth;
-			return (long) (startIndexOnGenome + (double) xOnWindow * genomeLengthPerBit);
+			return (int) (startIndexOnGenome + (double) xOnWindow * genomeLengthPerBit);
 		}
 		else {
 			// reverse strand
 			double genomeLengthPerBit = (double) (startIndexOnGenome - endIndexOnGenome) / (double) windowWidth;
-			return (long) (endIndexOnGenome + (double) (windowWidth - xOnWindow) * genomeLengthPerBit);
+			return (int) (endIndexOnGenome + (double) (windowWidth - xOnWindow) * genomeLengthPerBit);
 		}
 	}
 

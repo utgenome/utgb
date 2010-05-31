@@ -580,24 +580,29 @@ public class BrowserServiceImpl extends RpcServlet implements BrowserService {
 			if (x1OnCanvas < 0)
 				x1OnCanvas = 0;
 			if (x2OnCanvas - x1OnCanvas <= 0)
-				x2OnCanvas = windowWidth - 1;
-			if (x2OnCanvas >= windowWidth)
-				x2OnCanvas = windowWidth + 1;
+				x2OnCanvas = x1OnCanvas + 1;
 
-			for (int i = x1OnCanvas; i < x2OnCanvas; ++i) {
+			for (int i = x1OnCanvas; i < x2OnCanvas && i < windowWidth; ++i) {
 				float current = pixelWiseGraphData[i];
 				if (current < val) {
-					pixelWiseGraphData[i] += val; // take sum
-					dataCount[i]++;
+					pixelWiseGraphData[i] = val; // take the max
 				}
 			}
 		}
 
-		// take the average
-		for (int i = 0; i < windowWidth; i++) {
-			if (dataCount[i] > 0)
-				pixelWiseGraphData[i] /= dataCount[i];
-		}
+		//		// genome range corresponding to an 1 pixel.
+		//		int g1 = window.calcGenomePosition(0, windowWidth);
+		//		int g2 = window.calcGenomePosition(1, windowWidth);
+		//		int range = g2 - g1;
+		//		if (range < 0)
+		//			range = -range;
+		//		if (range == 0)
+		//			range = 1;
+		//
+		//		// take the average
+		//		for (int i = 0; i < windowWidth; i++) {
+		//			//pixelWiseGraphData[i] /= (float) range;
+		//		}
 		cwig.setData(pixelWiseGraphData);
 		return cwig;
 	}
