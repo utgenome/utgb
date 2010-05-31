@@ -144,7 +144,9 @@ public class ChromosomeMapTrack extends TrackBase {
 					x = trackImage.getHeight() - y;
 				}
 
-				chrLoc.chr = chrRange.ranges.get(index).chr;
+				if (index < chrRange.ranges.size()) {
+					chrLoc.chr = chrRange.ranges.get(index).chr;
+				}
 
 				chrLoc.start = (int) ((x - chrNameWidth) * chrRange.maxLength / (double) windowWidth) - (viewWidth / 2);
 				if (chrLoc.start <= 0) {

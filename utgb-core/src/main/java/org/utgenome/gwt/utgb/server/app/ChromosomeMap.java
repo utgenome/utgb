@@ -106,6 +106,8 @@ public class ChromosomeMap extends WebTrackBase {
 			}
 		}
 
+		Collections.sort(cytoBandList, new CytoBandComprator());
+
 		return cytoBandList;
 
 	}
@@ -144,6 +146,8 @@ public class ChromosomeMap extends WebTrackBase {
 			}
 		}
 
+		Collections.sort(cytoBandList, new CytoBandComprator());
+
 		return cytoBandList;
 	}
 
@@ -175,10 +179,10 @@ public class ChromosomeMap extends WebTrackBase {
 				}
 			}
 
-			// make chromosome rank
 			Comparator comparator = new Comparator4ChrName();
 			Collections.sort(chrNames, comparator);
 
+			// make chromosome rank
 			int rank = 0;
 			for (String each : chrNames) {
 				_logger.debug(rank);
@@ -287,11 +291,17 @@ public class ChromosomeMap extends WebTrackBase {
 		}
 	}
 
-	public static class Comparator4ChrName implements Comparator<Object> {
+	public static class CytoBandComprator implements Comparator<CytoBand> {
 
-		public int compare(Object a, Object b) {
-			String p = (String) a;
-			String q = (String) b;
+		public int compare(CytoBand o1, CytoBand o2) {
+			return Comparator4ChrName.compareChrName(o1.getChrom(), o2.getChrom());
+		}
+
+	}
+
+	public static class Comparator4ChrName implements Comparator<String> {
+
+		public static int compareChrName(String p, String q) {
 			int x = p.length();
 			int y = q.length();
 			int n = Math.min(x, y);
@@ -317,6 +327,10 @@ public class ChromosomeMap extends WebTrackBase {
 				}
 			}
 			return x - y;
+		}
+
+		public int compare(String a, String b) {
+			return compareChrName(a, b);
 		}
 	}
 
