@@ -27,7 +27,6 @@ package org.utgenome.shell;
 import java.io.File;
 import java.io.IOException;
 
-import org.utgenome.UTGBException;
 import org.utgenome.config.UTGBConfig;
 import org.xerial.lens.ObjectLens;
 import org.xerial.util.StringUtil;
@@ -67,7 +66,7 @@ public class Create extends UTGBShellCommand {
 	public void execute(String[] args) throws Exception {
 
 		if (projectName == null)
-			throw new UTGBException("No project name is given. See utgb create --help for the usage.");
+			throw new UTGBShellException("No project name is given. See utgb create --help for the usage.");
 
 		for (int i = 0; i < projectName.length(); i++) {
 			if (StringUtil.isWhiteSpace(projectName.substring(i, i + 1))) {
