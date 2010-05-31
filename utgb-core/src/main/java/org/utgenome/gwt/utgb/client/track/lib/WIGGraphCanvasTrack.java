@@ -61,7 +61,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 
 	private final String DEFAULT_COLOR = "rgba(12,106,193,0.7)";
 
-	protected String fileName = "db/sample.wig.sqlite";
+	protected String fileName;
 	private Optional<String> color = new Optional<String>();
 
 	private float alpha = 1.0f;
@@ -102,12 +102,6 @@ public class WIGGraphCanvasTrack extends TrackBase {
 
 	public Widget getWidget() {
 		return layoutTable;
-	}
-
-	public static int calcXPositionOnWindow(long indexOnGenome, long startIndexOnGenome, long endIndexOnGenome, int windowWidth) {
-		double v = (indexOnGenome - startIndexOnGenome) * (double) windowWidth;
-		double v2 = v / (endIndexOnGenome - startIndexOnGenome);
-		return (int) v2;
 	}
 
 	@Override
@@ -223,6 +217,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 
 	public void update(TrackWindow newWindow) {
 		// retrieve gene data from the API
+
 		int s = newWindow.getStartOnGenome();
 		int e = newWindow.getEndOnGenome();
 		TrackGroupProperty prop = getTrackGroup().getPropertyReader();
@@ -295,6 +290,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 	@Override
 	public void restoreProperties(Properties properties) {
 		super.restoreProperties(properties);
+
 		fileName = properties.get("fileName", fileName);
 		height = properties.getInt("trackHeight", height);
 		leftMargin = properties.getInt("leftMargin", leftMargin);

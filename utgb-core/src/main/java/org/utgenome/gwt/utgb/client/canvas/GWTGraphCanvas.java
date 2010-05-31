@@ -64,7 +64,7 @@ public class GWTGraphCanvas extends Composite {
 	}
 
 	private void init() {
-		canvas.setBackgroundColor(new Color(255, 255, 255, 0f));
+		//canvas.setBackgroundColor(new Color(255, 255, 255, 0f));
 
 		Style.padding(panel, 0);
 		Style.margin(panel, 0);

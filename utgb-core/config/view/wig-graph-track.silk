@@ -8,8 +8,6 @@
     -chr: chr19
     -start: 59307000
     -end: 59314000
-  -property
-    -name: human
 -track
   -name: UTGB Navigator
   -height: 41
