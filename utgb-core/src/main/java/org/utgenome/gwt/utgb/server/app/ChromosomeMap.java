@@ -99,10 +99,17 @@ public class ChromosomeMap extends WebTrackBase {
 
 		}
 		else if (packIndex.exists()) {
-			List<CompactFASTAIndex> index = CompactFASTAIndex.load(new BufferedReader(new FileReader(packIndex)));
-			for (CompactFASTAIndex each : index) {
-				CytoBand cytoBand = each.toCytoBand();
-				cytoBandList.add(cytoBand);
+
+			FileReader f = new FileReader(packIndex);
+			try {
+				List<CompactFASTAIndex> index = CompactFASTAIndex.load(new BufferedReader(f));
+				for (CompactFASTAIndex each : index) {
+					CytoBand cytoBand = each.toCytoBand();
+					cytoBandList.add(cytoBand);
+				}
+			}
+			finally {
+				f.close();
 			}
 		}
 
@@ -139,10 +146,16 @@ public class ChromosomeMap extends WebTrackBase {
 
 		}
 		else if (packIndex.exists()) {
-			List<CompactFASTAIndex> index = CompactFASTAIndex.load(new BufferedReader(new FileReader(packIndex)));
-			for (CompactFASTAIndex each : index) {
-				CytoBand cytoBand = each.toCytoBand();
-				cytoBandList.add(cytoBand);
+			FileReader f = new FileReader(packIndex);
+			try {
+				List<CompactFASTAIndex> index = CompactFASTAIndex.load(new BufferedReader(new FileReader(packIndex)));
+				for (CompactFASTAIndex each : index) {
+					CytoBand cytoBand = each.toCytoBand();
+					cytoBandList.add(cytoBand);
+				}
+			}
+			finally {
+				f.close();
 			}
 		}
 
