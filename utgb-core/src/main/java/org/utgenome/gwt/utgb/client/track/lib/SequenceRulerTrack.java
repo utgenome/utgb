@@ -32,7 +32,6 @@ import org.utgenome.gwt.utgb.client.db.datatype.IntegerType;
 import org.utgenome.gwt.utgb.client.track.RangeSelectable;
 import org.utgenome.gwt.utgb.client.track.Track;
 import org.utgenome.gwt.utgb.client.track.TrackBase;
-import org.utgenome.gwt.utgb.client.track.TrackConfig;
 import org.utgenome.gwt.utgb.client.track.TrackConfigChange;
 import org.utgenome.gwt.utgb.client.track.TrackFrame;
 import org.utgenome.gwt.utgb.client.track.TrackGroup;
@@ -70,7 +69,6 @@ public class SequenceRulerTrack extends TrackBase implements RangeSelectable {
 	private final Ruler _ruler;
 	private int _sequenceSize = 10000000;
 	private final Label range = new Label();
-	private final TrackConfig _config = new TrackConfig(this);
 	private int _windowLeftMargin = 0;
 
 	public static TrackFactory factory() {
@@ -114,7 +112,7 @@ public class SequenceRulerTrack extends TrackBase implements RangeSelectable {
 	public void onChangeTrackGroupProperty(TrackGroupPropertyChange change) {
 		final String[] relatedProperties = { UTGBProperty.SPECIES, UTGBProperty.REVISION, UTGBProperty.TARGET };
 		if (change.containsOneOf(relatedProperties)) {
-			//retrieveSequenceLength();
+			refresh();
 		}
 
 		if (change.contains(UTGBProperty.SEQUENCE_SIZE))
@@ -218,7 +216,8 @@ public class SequenceRulerTrack extends TrackBase implements RangeSelectable {
 		//retrieveSequenceLength();
 		TrackWindow w = group.getTrackWindow();
 		// set up the configuration panel
-		_config.addConfigParameter("Input Window Size (BP)", new IntegerType(UTGBProperty.SEQUENCE_SIZE), Integer.toString(_sequenceSize));
+
+		getConfig().addConfigParameter("Input Window Size (BP)", new IntegerType(UTGBProperty.SEQUENCE_SIZE), Integer.toString(_sequenceSize));
 		ValueDomain windowSizeDomain = new ValueDomain();
 		windowSizeDomain.addValueList(new Value("1K", "1000"));
 		windowSizeDomain.addValueList(new Value("10K", "10000"));
@@ -227,12 +226,7 @@ public class SequenceRulerTrack extends TrackBase implements RangeSelectable {
 		windowSizeDomain.addValueList(new Value("10M", "10000000"));
 		windowSizeDomain.addValueList(new Value("100M", "100000000"));
 		windowSizeDomain.addValueList(new Value("1G", "1000000000"));
-		_config.addConfigParameter("Window Size", new IntegerType("window_size", windowSizeDomain), Integer.toString(10000));
-	}
-
-	@Override
-	public TrackConfig getConfig() {
-		return _config;
+		getConfig().addConfigParameter("Window Size", new IntegerType("window_size", windowSizeDomain), Integer.toString(10000));
 	}
 
 	@Override
@@ -248,14 +242,9 @@ public class SequenceRulerTrack extends TrackBase implements RangeSelectable {
 
 	@Override
 	public void restoreProperties(Properties properties) {
+		super.restoreProperties(properties);
 		_windowLeftMargin = properties.getInt("leftMargin", _windowLeftMargin);
 		_sequenceSize = properties.getInt("ruler.length", _sequenceSize);
-	}
-
-	@Override
-	public void saveProperties(Properties saveData) {
-		saveData.add("leftMargin", _windowLeftMargin);
-		saveData.add("ruler.length", _sequenceSize);
 	}
 
 	private class SequenceLengthUpdator implements Command {

@@ -114,17 +114,22 @@ public class UTGBEntryPointBase implements EntryPoint {
 					switch (keyCode) {
 					case KeyCodes.KEY_RIGHT:
 						trackGroup.getPropertyWriter().scrollTrackWindow(scrollPercentage);
+						event.getNativeEvent().preventDefault();
 						break;
 					case KeyCodes.KEY_LEFT:
 						trackGroup.getPropertyWriter().scrollTrackWindow(-scrollPercentage);
+						event.getNativeEvent().preventDefault();
 						break;
 					case KeyCodes.KEY_UP:
 						trackGroup.getPropertyWriter().scaleUpTrackWindow();
+						event.getNativeEvent().preventDefault();
 						break;
 					case KeyCodes.KEY_DOWN:
 						trackGroup.getPropertyWriter().scaleDownTrackWindow();
+						event.getNativeEvent().preventDefault();
 						break;
 					}
+
 				}
 				break;
 			}

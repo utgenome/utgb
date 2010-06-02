@@ -36,8 +36,9 @@ public class XMLAttribute {
 			this.value = value;
 		}
 
+		@Override
 		public String toString() {
-			return name + "=\"" + value + "\"";
+			return name + "=\"" + XMLWriter.escape(value) + "\"";
 		}
 	}
 
@@ -71,6 +72,7 @@ public class XMLAttribute {
 		return this;
 	}
 
+	@Override
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
 		int i = 0;

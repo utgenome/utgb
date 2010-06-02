@@ -32,3 +32,11 @@ fixedStep chrom=chr19 start=59307401 step=300 span=200
  300
  200
  100
+track type=wiggle_0 name="fixedStep" description="fixedStep format" visibility=full autoScale=off viewLimits=0:1000 color=200,100,100 maxHeightPixels=100:50:20 graphType=points priority=30
+fixedStep chrom=chr19 start=59307506 step=300 span=200
+0
+-100
+-200
+-300
+-400
+-500

@@ -57,6 +57,7 @@ public class GWTGraphCanvas extends Composite {
 	private float maxValue = 20.0f;
 	private float minValue = 0.0f;
 	private boolean isLog = false;
+	private boolean drawZeroValue = false;
 
 	public GWTGraphCanvas() {
 
@@ -90,29 +91,27 @@ public class GWTGraphCanvas extends Composite {
 		canvas.setLineWidth(1.0f);
 		canvas.setStrokeStyle(color);
 
+		float y2 = getYPosition(0.0f);
+
 		// draw data graph
 		for (int i = 0; i < trackWindow.getPixelWidth(); ++i) {
 			float value = data.getData()[i];
-			if (value == 0.0f)
-				continue;
+			float y1;
+			if (value == 0.0f) {
+				if (!drawZeroValue)
+					continue;
+				else {
+					y1 = y2 + ((minValue < maxValue) ? -0.5f : 0.5f);
+				}
+			}
+			else {
+				y1 = getYPosition(value);
+			}
 
-			float y1 = getYPosition(value);
 			int x = i;
 			if (trackWindow.isReverseStrand()) {
 				x = trackWindow.getPixelWidth() - x - 1;
 			}
-
-			float height;
-			if (y1 == getYPosition(0.0f)) {
-				continue;
-			}
-
-			if (y1 < 0.0f)
-				y1 = 0.0f;
-			else if (y1 > windowHeight)
-				y1 = windowHeight;
-
-			float y2 = getYPosition(0.0f);
 
 			canvas.saveContext();
 			canvas.beginPath();
@@ -171,6 +170,11 @@ public class GWTGraphCanvas extends Composite {
 			canvas.restoreContext();
 		}
 
+	}
+
+	public void drawScaleLabel() {
+
+		Indent indent = new Indent(minValue, maxValue);
 		int fontHeight = 10;
 		for (int i = 0; i <= indent.nSteps; i++) {
 			float value = indent.getIndentValue(i);
@@ -178,7 +182,7 @@ public class GWTGraphCanvas extends Composite {
 
 			Style.fontSize(label, fontHeight);
 			Style.textAlign(label, "left");
-			Style.fontColor(label, "#006699");
+			Style.fontColor(label, "#003366");
 
 			int labelX = 1;
 			int labelY = (int) (getYPosition(value) - fontHeight);
@@ -377,6 +381,10 @@ public class GWTGraphCanvas extends Composite {
 
 	public void setIndentHeight(int indentHeight) {
 		this.indentHeight = indentHeight;
+	}
+
+	public void setShowZeroValue(boolean showZeroValue) {
+		this.drawZeroValue = showZeroValue;
 	}
 
 }
