@@ -102,7 +102,7 @@ public class GWTGraphCanvas extends Composite {
 				if (!drawZeroValue)
 					continue;
 				else {
-					y1 = y2 - 0.5f;
+					y1 = y2 + ((minValue < maxValue) ? -0.5f : 0.5f);
 				}
 			}
 			else {
@@ -171,6 +171,11 @@ public class GWTGraphCanvas extends Composite {
 			canvas.restoreContext();
 		}
 
+	}
+
+	public void drawScaleLabel() {
+
+		Indent indent = new Indent(minValue, maxValue);
 		int fontHeight = 10;
 		for (int i = 0; i <= indent.nSteps; i++) {
 			float value = indent.getIndentValue(i);
@@ -178,7 +183,7 @@ public class GWTGraphCanvas extends Composite {
 
 			Style.fontSize(label, fontHeight);
 			Style.textAlign(label, "left");
-			Style.fontColor(label, "#006699");
+			Style.fontColor(label, "#003366");
 
 			int labelX = 1;
 			int labelY = (int) (getYPosition(value) - fontHeight);

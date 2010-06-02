@@ -31,6 +31,7 @@ import org.utgenome.gwt.utgb.client.bio.CompactWIGData;
 import org.utgenome.gwt.utgb.client.canvas.GWTGraphCanvas;
 import org.utgenome.gwt.utgb.client.db.datatype.BooleanType;
 import org.utgenome.gwt.utgb.client.db.datatype.FloatType;
+import org.utgenome.gwt.utgb.client.db.datatype.IntegerType;
 import org.utgenome.gwt.utgb.client.db.datatype.StringType;
 import org.utgenome.gwt.utgb.client.track.Track;
 import org.utgenome.gwt.utgb.client.track.TrackBase;
@@ -51,9 +52,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.widgetideas.graphics.client.Color;
 
@@ -61,19 +60,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 
 	private final String DEFAULT_COLOR = "rgba(12,106,193,0.7)";
 
-	protected String fileName;
 	private Optional<String> color = new Optional<String>();
-
-	private float alpha = 1.0f;
-	private float maxValue = 20.0f;
-	private float minValue = 0.0f;
-	private boolean isAutoRange = false;
-	private boolean isLog = false;
-	private boolean showZeroValue = false;
-
-	private int height = 100;
-	private int leftMargin = 100;
-
 	private List<CompactWIGData> wigDataList;
 
 	public static TrackFactory factory() {
@@ -121,13 +108,16 @@ public class WIGGraphCanvasTrack extends TrackBase {
 	@Override
 	public void setUp(TrackFrame trackFrame, TrackGroup group) {
 		TrackConfig config = getConfig();
-		config.addConfigParameter("Path", new StringType("fileName"), fileName);
-		config.addConfigParameter("Y Max", new FloatType("maxValue"), String.valueOf(maxValue));
-		config.addConfigParameter("Y Min", new FloatType("minValue"), String.valueOf(minValue));
-		config.addConfigParameter("Auto Scale", new BooleanType("isAutoRange"), String.valueOf(isAutoRange));
-		config.addConfigParameter("Log Scale", new BooleanType("isLog"), String.valueOf(isLog));
-		config.addConfigParameter("Graph Color", new StringType("color"), "");
-		config.addConfigParameter("Show Zero Value", new BooleanType("showZero"), Boolean.toString(showZeroValue));
+		config.addConfigParameter("Path", new StringType(CONFIG_FILENAME));
+		config.addConfigParameter("Y Max", new FloatType(CONFIG_MAX_VALUE), "100");
+		config.addConfigParameter("Y Min", new FloatType(CONFIG_MIN_VALUE), "0");
+		config.addConfigParameter("Auto Scale", new BooleanType(CONFIG_AUTO_RANGE), "false");
+		config.addConfigParameter("Log Scale", new BooleanType(CONFIG_LOG_SCALE), "false");
+		config.addConfigParameter("Graph Color", new StringType(CONFIG_COLOR), "");
+		config.addConfigParameter("Show Zero Value", new BooleanType(CONFIG_SHOW_ZERO_VALUE), "false");
+		config.addConfigParameter("Draw Scale", new BooleanType(CONFIG_DRAW_SCALE), "true");
+		config.addConfigParameter("Show Scale Label", new BooleanType(CONFIG_SHOW_SCALE_LABEL), "true");
+		config.addConfigParameter("Pixel Height", new IntegerType(CONFIG_TRACK_HEIGHT), "100");
 
 		update(group.getTrackWindow());
 	}
@@ -141,23 +131,28 @@ public class WIGGraphCanvasTrack extends TrackBase {
 
 		public void execute() {
 			TrackWindow w = getTrackGroup().getTrackWindow();
+			TrackConfig config = getConfig();
 
-			float tempMinValue = minValue;
-			float tempMaxValue = maxValue;
+			float tempMinValue = config.getFloat(CONFIG_MIN_VALUE, 0f);
+			float tempMaxValue = config.getFloat(CONFIG_MAX_VALUE, 20.0f);
 
 			// get graph x-range
 			int s = w.getStartOnGenome();
 			int e = w.getEndOnGenome();
 			int width = w.getWindowWidth();
 
+			int leftMargin = config.getInt(CONFIG_LEFT_MARGIN, 0);
 			layoutTable.getCellFormatter().setWidth(0, 0, leftMargin + "px");
 
+			int trackHeight = config.getInt(CONFIG_TRACK_HEIGHT, 100);
+			boolean isLog = config.getBoolean(CONFIG_LOG_SCALE, false);
 			geneCanvas.clear();
 			geneCanvas.setTrackWindow(new TrackWindowImpl(width - leftMargin, s, e));
-			geneCanvas.setWindowHeight(height);
+			geneCanvas.setWindowHeight(trackHeight);
 			geneCanvas.setIsLog(isLog);
 
 			// get graph y-range
+			boolean isAutoRange = config.getBoolean(CONFIG_AUTO_RANGE, false);
 			if (isAutoRange) {
 				tempMinValue = 0.0f;
 				tempMaxValue = 0.0f;
@@ -170,10 +165,18 @@ public class WIGGraphCanvasTrack extends TrackBase {
 
 			geneCanvas.setMinValue(tempMinValue);
 			geneCanvas.setMaxValue(tempMaxValue);
-			geneCanvas.setShowZeroValue(showZeroValue);
+			boolean showZero = config.getBoolean(CONFIG_SHOW_ZERO_VALUE, false);
+			geneCanvas.setShowZeroValue(showZero);
+
+			// set color
+			setColor(config.getString(CONFIG_COLOR, ""));
 
 			// draw frame
-			geneCanvas.drawFrame();
+			boolean drawScale = config.getBoolean(CONFIG_DRAW_SCALE, true);
+			if (drawScale)
+				geneCanvas.drawFrame();
+			if (config.getBoolean(CONFIG_SHOW_SCALE_LABEL, true))
+				geneCanvas.drawScaleLabel();
 
 			// draw data graph
 			if (dataList != null) {
@@ -198,24 +201,24 @@ public class WIGGraphCanvasTrack extends TrackBase {
 			getFrame().loadingDone();
 		}
 
-		private int getLabelWidth(Label nameLabel, AbsolutePanel labelPanel) {
-			int nameLabelTop = labelPanel.getWidgetTop(nameLabel);
-			int nameLabelBottom = nameLabelTop + nameLabel.getOffsetHeight();
-			int limit = Integer.MAX_VALUE;
-
-			for (int i = 0; i < labelPanel.getWidgetCount(); i++) {
-				Widget w = labelPanel.getWidget(i);
-				if (!labelPanel.getWidget(i).equals(nameLabel) && labelPanel.getWidgetTop(w) < nameLabelBottom
-						&& labelPanel.getWidgetTop(w) + w.getOffsetHeight() > nameLabelTop) {
-					limit = Math.min(limit, labelPanel.getWidgetLeft(w));
-				}
-			}
-
-			if (limit > leftMargin)
-				limit = leftMargin;
-
-			return limit;
-		}
+		//		private int getLabelWidth(Label nameLabel, AbsolutePanel labelPanel) {
+		//			int nameLabelTop = labelPanel.getWidgetTop(nameLabel);
+		//			int nameLabelBottom = nameLabelTop + nameLabel.getOffsetHeight();
+		//			int limit = Integer.MAX_VALUE;
+		//
+		//			for (int i = 0; i < labelPanel.getWidgetCount(); i++) {
+		//				Widget w = labelPanel.getWidget(i);
+		//				if (!labelPanel.getWidget(i).equals(nameLabel) && labelPanel.getWidgetTop(w) < nameLabelBottom
+		//						&& labelPanel.getWidgetTop(w) + w.getOffsetHeight() > nameLabelTop) {
+		//					limit = Math.min(limit, labelPanel.getWidgetLeft(w));
+		//				}
+		//			}
+		//
+		//			if (limit > leftMargin)
+		//				limit = leftMargin;
+		//
+		//			return limit;
+		//		}
 	}
 
 	public void update(TrackWindow newWindow) {
@@ -231,6 +234,10 @@ public class WIGGraphCanvasTrack extends TrackBase {
 		l.chr = target;
 
 		getFrame().setNowLoading();
+
+		TrackConfig config = getConfig();
+		String fileName = config.getString(CONFIG_FILENAME, "");
+		int leftMargin = config.getInt(CONFIG_LEFT_MARGIN, 0);
 
 		getBrowserService().getCompactWigDataList(fileName, newWindow.getWindowWidth() - leftMargin, l, new AsyncCallback<List<CompactWIGData>>() {
 
@@ -251,40 +258,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 	public void onChangeTrackConfig(TrackConfigChange change) {
 		boolean isUpdate = false;
 
-		if (change.contains("fileName")) {
-			fileName = change.getValue("fileName");
-			isUpdate = true;
-		}
-
-		if (change.contains("maxValue")) {
-			maxValue = change.getFloatValue("maxValue");
-			GWT.log("max:" + maxValue, null);
-		}
-		if (change.contains("minValue")) {
-			minValue = change.getFloatValue("minValue");
-			GWT.log("min:" + minValue, null);
-		}
-		if (change.contains("isAutoRange")) {
-			isAutoRange = change.getBoolValue("isAutoRange");
-			GWT.log("auto range:" + isAutoRange, null);
-		}
-		if (change.contains("isLog")) {
-			isLog = change.getBoolValue("isLog");
-			GWT.log("log:" + isLog, null);
-		}
-		if (change.contains("color")) {
-			setColor(change.getValue("color"));
-			GWT.log("color:" + color, null);
-		}
-		if (change.contains("alpha")) {
-			alpha = change.getFloatValue("alpha");
-			GWT.log("alpha:" + alpha, null);
-		}
-		if (change.contains("showZero")) {
-			showZeroValue = change.getBoolValue("showZero");
-		}
-
-		if (isUpdate) {
+		if (change.contains(CONFIG_FILENAME)) {
 			update(getTrackWindow());
 		}
 		else {
@@ -293,28 +267,25 @@ public class WIGGraphCanvasTrack extends TrackBase {
 		}
 	}
 
+	private final static String CONFIG_FILENAME = "fileName";
+	private final static String CONFIG_TRACK_HEIGHT = "trackHeight";
+	private final static String CONFIG_LEFT_MARGIN = "leftMargin";
+	private final static String CONFIG_MAX_VALUE = "maxValue";
+	private final static String CONFIG_MIN_VALUE = "minValue";
+	private final static String CONFIG_AUTO_RANGE = "isAutoRange";
+	private final static String CONFIG_LOG_SCALE = "isLog";
+	private final static String CONFIG_SHOW_ZERO_VALUE = "showZero";
+	private final static String CONFIG_DRAW_SCALE = "drawScale";
+	private final static String CONFIG_SHOW_SCALE_LABEL = "showScaleLabel";
+	private final static String CONFIG_COLOR = "color";
+	private final static String CONFIG_ALPHA = "alpha";
+
 	@Override
 	public void restoreProperties(Properties properties) {
 		super.restoreProperties(properties);
 
-		fileName = properties.get("fileName", fileName);
-		height = properties.getInt("trackHeight", height);
-		leftMargin = properties.getInt("leftMargin", leftMargin);
-		maxValue = properties.getFloat("maxValue", maxValue);
-		minValue = properties.getFloat("minValue", minValue);
-		isAutoRange = properties.getBoolean("isAutoRange", isAutoRange);
-		isLog = properties.getBoolean("isLog", isLog);
-		showZeroValue = properties.getBoolean("showZero", showZeroValue);
-
-		alpha = properties.getFloat("alpha", alpha);
 		String c = properties.get("color");
 		setColor(c);
-
-		String p = properties.get("changeParamOnClick");
-		if (p != null) {
-			// set canvas action
-
-		}
 	}
 
 	private void setColor(String colorStr) {
@@ -328,7 +299,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 		int r_value = Integer.parseInt(hex.substring(1, 3), 16);
 		int g_value = Integer.parseInt(hex.substring(3, 5), 16);
 		int b_value = Integer.parseInt(hex.substring(5, 7), 16);
-		return new Color(r_value, g_value, b_value, alpha);
+		return new Color(r_value, g_value, b_value);
 	}
 
 }

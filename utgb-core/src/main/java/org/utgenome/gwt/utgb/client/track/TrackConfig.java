@@ -105,6 +105,7 @@ public class TrackConfig extends PopupPanel {
 		final DockPanel simplePanel = new DockPanel();
 		simplePanel.add(_configTable, DockPanel.CENTER);
 		final ScrollPanel scrollPanel = new ScrollPanel(simplePanel) {
+			@Override
 			protected void onAttach() {
 				super.onAttach();
 				final int height = getOffsetHeight();
@@ -147,6 +148,10 @@ public class TrackConfig extends PopupPanel {
 
 	public int getInt(String parameterName, int devaultValue) {
 		return properties.getInt(parameterName, devaultValue);
+	}
+
+	public float getFloat(String parameterName, float defaultValue) {
+		return properties.getFloat(parameterName, defaultValue);
 	}
 
 	public boolean getBoolean(String parameterName, boolean devaultValue) {
