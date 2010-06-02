@@ -141,19 +141,31 @@ public class BrowserServiceImpl extends RpcServlet implements BrowserService {
 		else {
 			File viewFile = new File("config/view", sanitizeViewName(viewName) + ".silk");
 			try {
-				File viewFilePath = new File(UTGBMaster.getProjectRootFolder(), viewFile.getPath());
-				_logger.info(String.format("loading view:" + viewFile));
-				if (!viewFilePath.exists())
-					throw new UTGBClientException(UTGBClientErrorCode.MISSING_FILES, String.format("%s is not found", viewFile));
 
-				TrackView v = Lens.loadSilk(TrackView.class, new FileReader(viewFilePath));
-				return v;
+				FileReader f = null;
+				try {
+					File viewFilePath = new File(UTGBMaster.getProjectRootFolder(), viewFile.getPath());
+					_logger.info(String.format("loading view:" + viewFile));
+					if (!viewFilePath.exists())
+						throw new UTGBClientException(UTGBClientErrorCode.MISSING_FILES, String.format("%s is not found", viewFile));
+
+					f = new FileReader(viewFilePath);
+					TrackView v = Lens.loadSilk(TrackView.class, f);
+					return v;
+				}
+				catch (UTGBException e) {
+					throw new UTGBClientException(UTGBClientErrorCode.NOT_IN_PROJECT_ROOT, String.format("not in the project root"));
+				}
+				catch (XerialException e) {
+					throw new UTGBClientException(UTGBClientErrorCode.PARSE_ERROR, String.format("parse error (%s): ", e));
+				}
+				finally {
+					if (f != null)
+						f.close();
+				}
 			}
-			catch (UTGBException e) {
-				throw new UTGBClientException(UTGBClientErrorCode.NOT_IN_PROJECT_ROOT, String.format("not in the project root"));
-			}
-			catch (Exception e) {
-				throw new UTGBClientException(UTGBClientErrorCode.PARSE_ERROR, String.format("parse error (%s): ", e));
+			catch (IOException e) {
+				throw new UTGBClientException(UTGBClientErrorCode.IO_ERROR, String.format("failed to close vilew file %s: %s", viewFile, e));
 			}
 		}
 	}
@@ -581,25 +593,13 @@ public class BrowserServiceImpl extends RpcServlet implements BrowserService {
 
 			for (int i = x1; i < x2 && i < windowWidth; ++i) {
 				float current = pixelWiseGraphData[i];
-				if (current < val) {
-					pixelWiseGraphData[i] = val; // take the max
+				float abs = Math.abs(val);
+				if (current < abs) {
+					pixelWiseGraphData[i] = val; // take the max (or min for negative value)
 				}
 			}
 		}
 
-		//		// genome range corresponding to an 1 pixel.
-		//		int g1 = window.calcGenomePosition(0, windowWidth);
-		//		int g2 = window.calcGenomePosition(1, windowWidth);
-		//		int range = g2 - g1;
-		//		if (range < 0)
-		//			range = -range;
-		//		if (range == 0)
-		//			range = 1;
-		//
-		//		// take the average
-		//		for (int i = 0; i < windowWidth; i++) {
-		//			//pixelWiseGraphData[i] /= (float) range;
-		//		}
 		cwig.setData(pixelWiseGraphData);
 		return cwig;
 	}
