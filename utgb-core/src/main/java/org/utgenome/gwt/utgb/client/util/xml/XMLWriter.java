@@ -30,38 +30,33 @@ public class XMLWriter {
 
 	private StringBuffer _out = new StringBuffer();
 	private ArrayList<String> _tagStack = new ArrayList<String>();
-	private int _currentLevel = 0; 
-	
-	public XMLWriter()
-	{
-		
+	private int _currentLevel = 0;
+
+	public XMLWriter() {
+
 	}
-	
-	public String toString()
-	{
+
+	@Override
+	public String toString() {
 		return _out.toString();
 	}
-	
-	private void padding(int level)
-	{
-		for(int i=0; i<level; i++)
+
+	private void padding(int level) {
+		for (int i = 0; i < level; i++)
 			_out.append("\t");
 	}
-	
-	public XMLWriter start(String tagName)
-	{
+
+	public XMLWriter start(String tagName) {
 		return start(tagName, null);
 	}
-	
-	public XMLWriter start(String tagName, String attribute, String attributeValue)
-	{
+
+	public XMLWriter start(String tagName, String attribute, String attributeValue) {
 		return start(tagName, new XMLAttribute(attribute, attributeValue));
 	}
-	
-	public XMLWriter start(String tagName, XMLAttribute attribute)
-	{
+
+	public XMLWriter start(String tagName, XMLAttribute attribute) {
 		padding(_currentLevel);
-		if(attribute == null)
+		if (attribute == null)
 			_out.append("<" + tagName + ">");
 		else
 			_out.append("<" + tagName + " " + attribute.toString() + ">");
@@ -70,65 +65,69 @@ public class XMLWriter {
 		return this;
 	}
 
-	private void pushTag(String tagName)
-	{
+	private void pushTag(String tagName) {
 		_tagStack.add(tagName);
 		_currentLevel++;
 	}
-	private void popTag()
-	{
+
+	private void popTag() {
 		_tagStack.remove(_tagStack.size() - 1);
 		_currentLevel--;
 	}
-	
-	public XMLWriter text(String text)
-	{
+
+	public XMLWriter text(String text) {
 		_out.append(text);
 		return this;
 	}
-	
-	public XMLWriter element(String tagName, XMLAttribute attribute, String elementContent)
-	{
+
+	public XMLWriter element(String tagName, XMLAttribute attribute, String elementContent) {
 		padding(_currentLevel);
 		pushTag(tagName);
-		_out.append("<" + tagName + " " + attribute.toString()+">");
-		_out.append(elementContent);
+		_out.append("<" + tagName + " " + attribute.toString() + ">");
+		_out.append(escape(elementContent));
 		_out.append("</" + tagName + ">\n");
 		popTag();
 		return this;
 	}
-	public XMLWriter element(String tagName, XMLAttribute attribute)
-	{
+
+	public XMLWriter element(String tagName, XMLAttribute attribute) {
 		padding(_currentLevel);
 		pushTag(tagName);
-		_out.append("<" + tagName + " " + attribute.toString()+"/>");
+		_out.append("<" + tagName + " " + attribute.toString() + "/>");
 		_out.append("\n");
 		popTag();
 		return this;
 	}
-	
-	public XMLWriter end()
-	{
-		if(_tagStack.size() == 0)
+
+	public static String escape(String text) {
+		if (text == null)
+			return text;
+
+		String value = text;
+		value = value.replaceAll("&", "&amp;");
+		value = value.replaceAll("<", "&lt;");
+		value = value.replaceAll(">", "&gt;");
+		return value;
+	}
+
+	public XMLWriter end() {
+		if (_tagStack.size() == 0)
 			throw new IllegalStateException("no more tag to close");
-	
+
 		padding(_currentLevel - 1);
-		String tagName = _tagStack.get(_tagStack.size()-1);
+		String tagName = _tagStack.get(_tagStack.size() - 1);
 		_out.append("</" + tagName + ">");
 		_out.append("\n");
 
 		popTag();
 		return this;
 	}
-	
-	public XMLWriter endDocument()
-	{
-		for(int i=0; i<_tagStack.size(); i++)
-		{
+
+	public XMLWriter endDocument() {
+		for (int i = 0; i < _tagStack.size(); i++) {
 			end();
 		}
 		return this;
 	}
-	
-}
 
+}
