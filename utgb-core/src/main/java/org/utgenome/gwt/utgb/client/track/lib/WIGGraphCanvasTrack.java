@@ -69,6 +69,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 	private float minValue = 0.0f;
 	private boolean isAutoRange = false;
 	private boolean isLog = false;
+	private boolean showZeroValue = false;
 
 	private int height = 100;
 	private int leftMargin = 100;
@@ -126,6 +127,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 		config.addConfigParameter("Auto Scale", new BooleanType("isAutoRange"), String.valueOf(isAutoRange));
 		config.addConfigParameter("Log Scale", new BooleanType("isLog"), String.valueOf(isLog));
 		config.addConfigParameter("Graph Color", new StringType("color"), "");
+		config.addConfigParameter("Show Zero Value", new BooleanType("showZero"), Boolean.toString(showZeroValue));
 
 		update(group.getTrackWindow());
 	}
@@ -168,6 +170,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 
 			geneCanvas.setMinValue(tempMinValue);
 			geneCanvas.setMaxValue(tempMaxValue);
+			geneCanvas.setShowZeroValue(showZeroValue);
 
 			// draw frame
 			geneCanvas.drawFrame();
@@ -277,6 +280,9 @@ public class WIGGraphCanvasTrack extends TrackBase {
 			alpha = change.getFloatValue("alpha");
 			GWT.log("alpha:" + alpha, null);
 		}
+		if (change.contains("showZero")) {
+			showZeroValue = change.getBoolValue("showZero");
+		}
 
 		if (isUpdate) {
 			update(getTrackWindow());
@@ -298,6 +304,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 		minValue = properties.getFloat("minValue", minValue);
 		isAutoRange = properties.getBoolean("isAutoRange", isAutoRange);
 		isLog = properties.getBoolean("isLog", isLog);
+		showZeroValue = properties.getBoolean("showZero", showZeroValue);
 
 		alpha = properties.getFloat("alpha", alpha);
 		String c = properties.get("color");

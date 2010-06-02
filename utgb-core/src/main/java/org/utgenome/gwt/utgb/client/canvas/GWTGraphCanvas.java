@@ -57,6 +57,7 @@ public class GWTGraphCanvas extends Composite {
 	private float maxValue = 20.0f;
 	private float minValue = 0.0f;
 	private boolean isLog = false;
+	private boolean drawZeroValue = false;
 
 	public GWTGraphCanvas() {
 
@@ -90,29 +91,28 @@ public class GWTGraphCanvas extends Composite {
 		canvas.setLineWidth(1.0f);
 		canvas.setStrokeStyle(color);
 
+		float y2 = getYPosition(0.0f);
+
 		// draw data graph
 		for (int i = 0; i < trackWindow.getWindowWidth(); ++i) {
-			float value = data.getData()[i];
-			if (value == 0.0f)
-				continue;
 
-			float y1 = getYPosition(value);
+			float value = data.getData()[i];
+			float y1;
+			if (value == 0.0f) {
+				if (!drawZeroValue)
+					continue;
+				else {
+					y1 = y2 - 0.5f;
+				}
+			}
+			else {
+				y1 = getYPosition(value);
+			}
+
 			int x = i;
 			if (trackWindow.isReverseStrand()) {
 				x = trackWindow.getWindowWidth() - x - 1;
 			}
-
-			float height;
-			if (y1 == getYPosition(0.0f)) {
-				continue;
-			}
-
-			if (y1 < 0.0f)
-				y1 = 0.0f;
-			else if (y1 > windowHeight)
-				y1 = windowHeight;
-
-			float y2 = getYPosition(0.0f);
 
 			canvas.saveContext();
 			canvas.beginPath();
@@ -377,6 +377,10 @@ public class GWTGraphCanvas extends Composite {
 
 	public void setIndentHeight(int indentHeight) {
 		this.indentHeight = indentHeight;
+	}
+
+	public void setShowZeroValue(boolean showZeroValue) {
+		this.drawZeroValue = showZeroValue;
 	}
 
 }
