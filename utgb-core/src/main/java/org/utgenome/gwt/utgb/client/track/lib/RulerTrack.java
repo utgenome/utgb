@@ -290,11 +290,9 @@ public class RulerTrack extends TrackBase implements RangeSelectable {
 
 	@Override
 	public void restoreProperties(Properties properties) {
+		super.restoreProperties(properties);
+
 		_windowLeftMargin = properties.getInt("leftMargin", _windowLeftMargin);
 	}
 
-	@Override
-	public void saveProperties(Properties saveData) {
-		saveData.add("leftMargin", _windowLeftMargin);
-	}
 }
