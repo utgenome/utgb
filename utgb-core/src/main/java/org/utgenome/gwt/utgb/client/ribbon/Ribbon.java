@@ -52,6 +52,7 @@ import java.util.List;
  *                     - - - - - -  -  -  -  -  -
  *                         / \
  *                         ---
+ *                     3.1 3.2 3.3
  * -deletion(pos:4, length:3)
  * -cigar: 3M3D7M
  * </pre>
