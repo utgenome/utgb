@@ -57,7 +57,7 @@ public interface TrackWindow {
 	/**
 	 * @return the window size
 	 */
-	public int getWindowWidth();
+	public int getPixelWidth();
 
 	/**
 	 * @return the sequence width
@@ -83,6 +83,8 @@ public interface TrackWindow {
 	public boolean isReverseStrand();
 
 	public TrackWindow newWindow(int newStartOnGenome, int newEndOnGenome);
+
+	public TrackWindow newPixelWidthWindow(int pixelSize);
 
 	public boolean hasOverlapWith(OnGenome g);
 }

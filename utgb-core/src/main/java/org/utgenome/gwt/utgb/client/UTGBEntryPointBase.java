@@ -80,6 +80,12 @@ public class UTGBEntryPointBase implements EntryPoint {
 		return basePanel;
 	}
 
+	/**
+	 * Defines keyboard shortcuts
+	 * 
+	 * @author leo
+	 * 
+	 */
 	public class KeyboardShortcut implements Event.NativePreviewHandler {
 		public void onPreviewNativeEvent(NativePreviewEvent event) {
 
@@ -93,9 +99,11 @@ public class UTGBEntryPointBase implements EntryPoint {
 				if (Element.is(eventTarget)) {
 					Element e = eventTarget.cast();
 					String tagName = e.getTagName();
+					// disable keyboard short cuts on the input form (text area, etc.)
 					if (tagName.equalsIgnoreCase("input"))
 						break;
 
+					// Also ignore keyboard input, ALT+(key)
 					if (event.getNativeEvent().getAltKey())
 						break;
 

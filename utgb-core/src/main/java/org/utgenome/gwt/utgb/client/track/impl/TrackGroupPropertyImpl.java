@@ -52,7 +52,7 @@ import org.utgenome.gwt.utgb.client.util.xml.XMLWriter;
  */
 public class TrackGroupPropertyImpl implements TrackGroupProperty, TrackGroupPropertyWriter {
 	private final TrackGroup _trackGroup;
-	private TrackWindowImpl _trackWindow = new TrackWindowImpl();
+	private TrackWindow _trackWindow = new TrackWindowImpl(700, 1, 100);
 	private HashMap<String, String> _properties = new HashMap<String, String>();
 	private ArrayList<TrackGroupPropertyChangeListener> _changeListener = new ArrayList<TrackGroupPropertyChangeListener>();
 	private boolean enableNotifiaction = true;
@@ -129,18 +129,20 @@ public class TrackGroupPropertyImpl implements TrackGroupProperty, TrackGroupPro
 			notifyPropChange = true;
 		}
 
-		_trackWindow.set(newWindow);
+		_trackWindow = newWindow;
 		notifyTheChange(notifyPropChange ? new TrackPropertyChangeImpl(this, properties.keySet()) : null, newWindow);
 	}
 
 	public void setTrackWindow(int startOnGenome, int endOnGenome) {
-		_trackWindow.setStartOnGenome(startOnGenome);
-		_trackWindow.setEndOnGenome(endOnGenome);
+		if (_trackWindow != null)
+			_trackWindow = _trackWindow.newWindow(startOnGenome, endOnGenome);
+		else
+			_trackWindow = new TrackWindowImpl(700, startOnGenome, endOnGenome);
 		notifyTheChange(null, _trackWindow);
 	}
 
 	public void setTrackWindowSize(int windowWidth) {
-		_trackWindow.setWindowWidth(windowWidth);
+		_trackWindow = _trackWindow.newPixelWidthWindow(windowWidth);
 		notifyTheChange(null, _trackWindow);
 	}
 
@@ -149,7 +151,9 @@ public class TrackGroupPropertyImpl implements TrackGroupProperty, TrackGroupPro
 	}
 
 	public void setTrackWindow(TrackWindow newWindow) {
-		_trackWindow.set(newWindow);
+		if (newWindow == null)
+			throw new NullPointerException("window is null");
+		_trackWindow = newWindow;
 		notifyTheChange(null, _trackWindow);
 	}
 

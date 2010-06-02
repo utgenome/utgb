@@ -146,7 +146,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 			// get graph x-range
 			int s = w.getStartOnGenome();
 			int e = w.getEndOnGenome();
-			int width = w.getWindowWidth();
+			int width = w.getPixelWidth();
 
 			layoutTable.getCellFormatter().setWidth(0, 0, leftMargin + "px");
 
@@ -229,7 +229,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 
 		getFrame().setNowLoading();
 
-		getBrowserService().getCompactWigDataList(fileName, newWindow.getWindowWidth() - leftMargin, l, new AsyncCallback<List<CompactWIGData>>() {
+		getBrowserService().getCompactWigDataList(fileName, newWindow.getPixelWidth() - leftMargin, l, new AsyncCallback<List<CompactWIGData>>() {
 
 			public void onFailure(Throwable e) {
 				GWT.log("failed to retrieve wig data", e);

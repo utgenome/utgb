@@ -65,7 +65,7 @@ public class BEDTrack extends GenomeTrack {
 		TrackWindow w = getTrackGroup().getTrackWindow();
 		p.add("start", w.getStartOnGenome());
 		p.add("end", w.getEndOnGenome());
-		p.add("width", w.getWindowWidth() - leftMargin);
+		p.add("width", w.getPixelWidth() - leftMargin);
 		String fileName = getConfig().getParameter(CONFIG_FILENAME);
 		if (fileName != null)
 			p.add("fileName", fileName);

@@ -43,6 +43,7 @@ import org.utgenome.gwt.utgb.client.canvas.IntervalLayout.LocusLayout;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.ui.FixedWidthLabel;
 import org.utgenome.gwt.utgb.client.ui.RoundCornerFrame;
+import org.utgenome.gwt.utgb.client.util.Optional;
 import org.utgenome.gwt.widget.client.Style;
 
 import com.google.gwt.user.client.DOM;
@@ -51,7 +52,6 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -75,8 +75,8 @@ public class GWTGenomeCanvas extends Composite {
 	private boolean reverse = false;
 
 	// widget
-	private FlexTable layoutTable = new FlexTable();
 	private GWTCanvas canvas = new GWTCanvas();
+	private AbsolutePanel basePanel = new AbsolutePanel();
 	private AbsolutePanel panel = new AbsolutePanel();
 	private static PopupInfo popupLabel = new PopupInfo();
 	private LocusClickHandler clickHandler = null;
@@ -175,10 +175,27 @@ public class GWTGenomeCanvas extends Composite {
 				}
 			}
 			else {
-				Style.cursor(canvas, Style.CURSOR_AUTO);
-				popupLabel.setLocus(null);
+				if (dragStartPoint.isDefined()) {
+					// scroll the canvas
+					int clientX = DOM.eventGetClientX(event) + Window.getScrollLeft();
+					int clientY = DOM.eventGetClientY(event) + Window.getScrollTop();
+
+					DragPoint p = dragStartPoint.get();
+					int xDiff = clientX - p.x;
+					//int yDiff = clientY - p.y;
+
+					basePanel.setWidgetPosition(panel, xDiff, 0);
+				}
+				else {
+					Style.cursor(canvas, Style.CURSOR_AUTO);
+					popupLabel.setLocus(null);
+				}
 			}
 
+			break;
+		}
+		case Event.ONMOUSEOUT: {
+			resetDrag();
 			break;
 		}
 		case Event.ONMOUSEDOWN: {
@@ -190,11 +207,38 @@ public class GWTGenomeCanvas extends Composite {
 				if (clickHandler != null)
 					clickHandler.onClick(clientX, clientY, g);
 			}
+
+			if (dragStartPoint.isUndefined()) {
+				dragStartPoint.set(new DragPoint(clientX, clientY));
+				Style.cursor(canvas, Style.CURSOR_RESIZE_E);
+			}
+
+			break;
+		}
+		case Event.ONMOUSEUP: {
+			resetDrag();
 			break;
 		}
 		}
 
 	}
+
+	private void resetDrag() {
+		dragStartPoint.reset();
+		Style.cursor(canvas, Style.CURSOR_AUTO);
+	}
+
+	private static class DragPoint {
+		public final int x;
+		public final int y;
+
+		public DragPoint(int x, int y) {
+			this.x = x;
+			this.y = y;
+		}
+	}
+
+	private Optional<DragPoint> dragStartPoint = new Optional<DragPoint>();
 
 	public void displayInfo(final int clientX, final int clientY, final OnGenome g) {
 		if (popupLabel == null)
@@ -247,21 +291,17 @@ public class GWTGenomeCanvas extends Composite {
 	}
 
 	private void initWidget() {
-		layoutTable.setBorderWidth(0);
-		layoutTable.setCellPadding(0);
-		layoutTable.setCellSpacing(0);
-
 		panel.add(canvas, 0, 0);
-		layoutTable.setWidget(0, 1, panel);
-		initWidget(layoutTable);
+		basePanel.add(panel, 0, 0);
+		initWidget(basePanel);
 
-		sinkEvents(Event.ONMOUSEMOVE | Event.ONMOUSEOVER | Event.ONMOUSEDOWN);
+		sinkEvents(Event.ONMOUSEMOVE | Event.ONMOUSEOVER | Event.ONMOUSEDOWN | Event.ONMOUSEUP | Event.ONMOUSEOUT);
 	}
 
 	public void setWindow(TrackWindow w) {
 		this.trackWindow = w;
-		canvas.setCoordSize(w.getWindowWidth(), 100);
-		canvas.setPixelWidth(w.getWindowWidth());
+		canvas.setCoordSize(w.getPixelWidth(), 100);
+		canvas.setPixelWidth(w.getPixelWidth());
 
 		reverse = w.isReverseStrand();
 		intervalLayout.setTrackWindow(w);
@@ -287,6 +327,7 @@ public class GWTGenomeCanvas extends Composite {
 			w.removeFromParent();
 		}
 		readLabels.clear();
+		basePanel.setWidgetPosition(panel, 0, 0);
 	}
 
 	@Override
@@ -295,6 +336,7 @@ public class GWTGenomeCanvas extends Composite {
 		canvas.setPixelWidth(width);
 		canvas.setPixelHeight(height);
 		panel.setPixelSize(width, height);
+		basePanel.setPixelSize(width, height);
 	}
 
 	public static int width(int x1, int x2) {
@@ -506,7 +548,7 @@ public class GWTGenomeCanvas extends Composite {
 			canvasHeight = MAX_CANVAS_HEIGHT;
 		}
 
-		setPixelSize(trackWindow.getWindowWidth(), canvasHeight);
+		setPixelSize(trackWindow.getPixelWidth(), canvasHeight);
 
 		// draw coverage
 		OnGenomeDataVisitor cPainter;
@@ -559,7 +601,7 @@ public class GWTGenomeCanvas extends Composite {
 		int h = geneHeight + geneMargin;
 		int height = (maxOffset + 1) * h;
 
-		setPixelSize(trackWindow.getWindowWidth(), height);
+		setPixelSize(trackWindow.getPixelWidth(), height);
 	}
 
 	public static Color getGeneColor(Interval l) {
@@ -649,7 +691,7 @@ public class GWTGenomeCanvas extends Composite {
 
 	private int drawPosition(int x) {
 		if (reverse)
-			return (trackWindow.getWindowWidth() - x);
+			return (trackWindow.getPixelWidth() - x);
 		else
 			return x;
 	}

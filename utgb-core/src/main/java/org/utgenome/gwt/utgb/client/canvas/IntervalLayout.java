@@ -201,7 +201,7 @@ public class IntervalLayout {
 	}
 
 	public int pixelPositionOnWindow(int indexOnGenome) {
-		double v = (indexOnGenome - w.getStartOnGenome()) * (double) w.getWindowWidth();
+		double v = (indexOnGenome - w.getStartOnGenome()) * (double) w.getPixelWidth();
 		double v2 = v / (w.getEndOnGenome() - w.getStartOnGenome() + 1);
 		return (int) v2;
 	}

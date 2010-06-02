@@ -127,12 +127,12 @@ public class SequenceRulerTrack extends TrackBase implements RangeSelectable {
 			_sequenceSize = newSequenceSize;
 			TrackWindow currentWindow = getTrackGroup().getTrackWindow();
 			int newEndOnGenome = (currentWindow.getEndOnGenome() > _sequenceSize) ? _sequenceSize : currentWindow.getEndOnGenome();
-			TrackWindow newWindow = new TrackWindowImpl(currentWindow.getWindowWidth(), currentWindow.getStartOnGenome(), newEndOnGenome);
-			_ruler.updateTickUnit(newWindow.getWindowWidth(), 0, _sequenceSize);
+			TrackWindow newWindow = new TrackWindowImpl(currentWindow.getPixelWidth(), currentWindow.getStartOnGenome(), newEndOnGenome);
+			_ruler.updateTickUnit(newWindow.getPixelWidth(), 0, _sequenceSize);
 
 			if (!newWindow.equals(currentWindow)) {
 				// reset the ruler
-				_ruler.updateTickUnit(currentWindow.getWindowWidth(), 1, _sequenceSize);
+				_ruler.updateTickUnit(currentWindow.getPixelWidth(), 1, _sequenceSize);
 				getTrackGroup().setTrackWindow(newWindow);
 			}
 			else
@@ -146,7 +146,7 @@ public class SequenceRulerTrack extends TrackBase implements RangeSelectable {
 
 	@Override
 	public void onChangeTrackWindow(TrackWindow newWindow) {
-		_rangeSelector.setWindowWidth(newWindow.getWindowWidth());
+		_rangeSelector.setWindowWidth(newWindow.getPixelWidth());
 		refresh();
 	}
 
@@ -154,7 +154,7 @@ public class SequenceRulerTrack extends TrackBase implements RangeSelectable {
 		long startOnGenome = newWindow.getStartOnGenome();
 		long endOnGenome = newWindow.getEndOnGenome();
 
-		int windowWidth = newWindow.getWindowWidth() - _windowLeftMargin;
+		int windowWidth = newWindow.getPixelWidth() - _windowLeftMargin;
 
 		double pixelPerCode = (double) windowWidth / (double) _sequenceSize;
 		int x1 = (int) (startOnGenome * pixelPerCode);
@@ -183,7 +183,7 @@ public class SequenceRulerTrack extends TrackBase implements RangeSelectable {
 			_layoutPanel.getCellFormatter().setWidth(0, 0, _windowLeftMargin + "px");
 		_layoutPanel.setWidget(0, 1, _basePanel);
 		TrackWindow w = getTrackGroup().getTrackWindow();
-		int windowWidth = w.getWindowWidth() - _windowLeftMargin;
+		int windowWidth = w.getPixelWidth() - _windowLeftMargin;
 		_ruler.updateTickUnit(windowWidth, 1, _sequenceSize);
 		_ruler.draw(_basePanel, windowWidth, 1, _sequenceSize, w.getStartOnGenome() > w.getEndOnGenome());
 		drawTrackSelectionRange(w);
@@ -195,7 +195,7 @@ public class SequenceRulerTrack extends TrackBase implements RangeSelectable {
 
 	public void onRangeSelect(int x1OnTrackWindow, int x2OnTrackWindow) {
 		TrackWindow window = getTrackGroup().getTrackWindow();
-		int width = window.getWindowWidth() - _windowLeftMargin;
+		int width = window.getPixelWidth() - _windowLeftMargin;
 		double genomeLengthPerPixel = (double) _sequenceSize / (double) width;
 
 		if (!window.isReverseStrand()) {

@@ -139,8 +139,8 @@ public class RibbonRuler extends Composite {
 
 	void redraw() {
 		canvas.clear();
-		canvas.setCoordSize(window.getWindowWidth(), RIBBON_HEIGHT);
-		canvas.setPixelSize(window.getWindowWidth(), RIBBON_HEIGHT);
+		canvas.setCoordSize(window.getPixelWidth(), RIBBON_HEIGHT);
+		canvas.setPixelSize(window.getPixelWidth(), RIBBON_HEIGHT);
 
 		long genomeCursor = window.getStartOnGenome();
 		List<RibbonBlock> ribbonBlocks = new ArrayList<RibbonBlock>();
@@ -244,7 +244,7 @@ public class RibbonRuler extends Composite {
 	}
 
 	public void setWindow(TrackWindow w) {
-		this.window = new TrackWindowImpl(w.getWindowWidth() - 100, w.getStartOnGenome(), w.getEndOnGenome());
+		this.window = new TrackWindowImpl(w.getPixelWidth() - 100, w.getStartOnGenome(), w.getEndOnGenome());
 
 		redraw();
 	}

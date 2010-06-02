@@ -328,7 +328,7 @@ public class Sequence extends WebTrackBase {
 			this.endOffset = end + 1;
 
 			long seqWidth = end - start;
-			if (seqWidth <= 100)
+			if (seqWidth <= width / 5)
 				drawBase = true;
 
 			int repeatColorAlpha = 50;
@@ -400,6 +400,7 @@ public class Sequence extends WebTrackBase {
 		public void output(String subSequence) {
 			long rangeEnd = startOffset + subSequence.length();
 			for (long pos = startOffset + startOffset % loopSequenceWidth; pos < rangeEnd; pos += loopSequenceWidth) {
+
 				char ch = subSequence.charAt((int) (pos - startOffset));
 				if (!isReverseStrand()) {
 					canvas.drawRect(pos, pos + loopSequenceWidth, 0, DEFAULT_HEIGHT, getColor(ch));

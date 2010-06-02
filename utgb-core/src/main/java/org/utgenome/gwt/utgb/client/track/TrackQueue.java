@@ -111,7 +111,7 @@ public class TrackQueue extends Composite implements TrackUpdateListener, TrackL
 	}
 
 	public void onInsertTrack(Track track, int beforeIndex) {
-		TrackFrame frame = new TrackFrame(track, _trackGroup.getTrackWindow().getWindowWidth(), track.getDefaultWindowHeight());
+		TrackFrame frame = new TrackFrame(track, _trackGroup.getTrackWindow().getPixelWidth(), track.getDefaultWindowHeight());
 		if (beforeIndex < 0) {
 			// insert to the tail of the queue
 			_trackQueue.add(frame, frame.getFrameBar());

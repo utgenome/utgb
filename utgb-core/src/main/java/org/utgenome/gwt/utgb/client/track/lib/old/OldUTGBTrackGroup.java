@@ -33,7 +33,6 @@ import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChange;
 import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyWriter;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.track.impl.TrackGroupPropertyImpl;
-import org.utgenome.gwt.utgb.client.track.impl.TrackWindowImpl;
 import org.utgenome.gwt.utgb.client.track.lib.TrackTreeTrack;
 import org.utgenome.gwt.utgb.client.track.lib.ValueSelectorTrack;
 import org.utgenome.gwt.utgb.client.util.GETMethodURL;
@@ -90,11 +89,7 @@ public class OldUTGBTrackGroup extends TrackGroup {
 			}
 
 			public void setTrackWindow(TrackWindow newWindow) {
-				final TrackWindowImpl _window = new TrackWindowImpl();
-				_window.set(newWindow);
-				_window.setStartOnGenome(correctIndex(newWindow.getStartOnGenome()));
-				_window.setEndOnGenome(correctIndex(newWindow.getEndOnGenome()));
-
+				final TrackWindow _window = newWindow.newWindow(correctIndex(newWindow.getStartOnGenome()), correctIndex(newWindow.getEndOnGenome()));
 				super.setTrackWindow(_window);
 			}
 

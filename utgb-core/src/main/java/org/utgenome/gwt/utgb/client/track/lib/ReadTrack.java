@@ -241,7 +241,7 @@ public class ReadTrack extends TrackBase {
 		if (url.contains("%rlength"))
 			url = url.replaceAll("%rlength", Integer.toString(w.getWidth()));
 		if (url.contains("%pixelwidth"))
-			url = url.replaceAll("%pixelwidth", Integer.toString(w.getWindowWidth()));
+			url = url.replaceAll("%pixelwidth", Integer.toString(w.getPixelWidth()));
 		String chr = getTrackGroupProperty(UTGBProperty.TARGET);
 		if (chr != null && url.contains("%chr"))
 			url = url.replaceAll("%chr", chr);
@@ -310,7 +310,7 @@ public class ReadTrack extends TrackBase {
 
 		int s = w.getStartOnGenome();
 		int e = w.getEndOnGenome();
-		int width = w.getWindowWidth() - leftMargin;
+		int width = w.getPixelWidth() - leftMargin;
 
 		if (leftMargin > 0)
 			layoutTable.getCellFormatter().setWidth(0, 0, leftMargin + "px");
@@ -395,7 +395,7 @@ public class ReadTrack extends TrackBase {
 
 		String layout = getConfig().getString(CONFIG_LAYOUT, "pileup");
 
-		ReadQueryConfig queryConfig = new ReadQueryConfig(newWindow.getWindowWidth(), BrowserInfo.isCanvasSupported(), Layout.valueOf(Layout.class, layout
+		ReadQueryConfig queryConfig = new ReadQueryConfig(newWindow.getPixelWidth(), BrowserInfo.isCanvasSupported(), Layout.valueOf(Layout.class, layout
 				.toUpperCase()));
 
 		getBrowserService().getOnGenomeData(getGenomeDB(), new ChrLoc(chr, s, e), queryConfig, new AsyncCallback<OnGenomeDataSet>() {

@@ -135,6 +135,7 @@ public abstract class TrackBase implements Track {
 
 	public void onChange(TrackGroupPropertyChange change, TrackWindow newWindow) {
 
+		// invoke onChangeTrackGroupProperty for compatibility
 		if (change != null)
 			this.onChangeTrackGroupProperty(change);
 

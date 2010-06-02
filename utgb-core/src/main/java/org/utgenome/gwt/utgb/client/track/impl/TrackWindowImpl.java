@@ -36,15 +36,11 @@ import org.utgenome.gwt.utgb.client.util.xml.XMLWriter;
  * 
  */
 public class TrackWindowImpl implements TrackWindow {
-	private int windowWidth = 700;
-	private int startIndexOnGenome = 0;
-	private int endIndexOnGenome = 10000;
-
-	public TrackWindowImpl() {
-	}
+	private final int windowWidth;
+	private final int startIndexOnGenome;
+	private final int endIndexOnGenome;
 
 	public TrackWindowImpl(int windowWidth, int startIndexOnGenome, int endIndexOnGenome) {
-		super();
 		this.windowWidth = windowWidth;
 		this.startIndexOnGenome = startIndexOnGenome;
 		this.endIndexOnGenome = endIndexOnGenome;
@@ -62,16 +58,8 @@ public class TrackWindowImpl implements TrackWindow {
 		return (double) windowWidth / (double) (endIndexOnGenome - startIndexOnGenome);
 	}
 
-	public void setStartOnGenome(int startOnGenome) {
-		this.startIndexOnGenome = (startOnGenome > 0) ? startOnGenome : 1;
-	}
-
-	public void setEndOnGenome(int endOnGenome) {
-		this.endIndexOnGenome = (endOnGenome > 0) ? endOnGenome : (this.startIndexOnGenome > 0 ? this.startIndexOnGenome : 1);
-	}
-
 	// @see org.utgenome.gwt.utgb.client.track.TrackWindow#getWindowWidth()
-	public int getWindowWidth() {
+	public int getPixelWidth() {
 		return windowWidth;
 	}
 
@@ -92,16 +80,6 @@ public class TrackWindowImpl implements TrackWindow {
 			return startIndexOnGenome - endIndexOnGenome;
 	}
 
-	public void setWindowWidth(int windowWidth) {
-		this.windowWidth = windowWidth;
-	}
-
-	public void set(TrackWindow newWindow) {
-		this.windowWidth = newWindow.getWindowWidth();
-		setStartOnGenome(newWindow.getStartOnGenome());
-		setEndOnGenome(newWindow.getEndOnGenome());
-	}
-
 	public int calcGenomePosition(int xOnWindow) {
 		if (getStartOnGenome() <= getEndOnGenome()) {
 			double genomeLengthPerBit = (double) (endIndexOnGenome - startIndexOnGenome) / (double) windowWidth;
@@ -115,11 +93,11 @@ public class TrackWindowImpl implements TrackWindow {
 	}
 
 	public void toXML(XMLWriter xmlWriter) {
-		xmlWriter.element("trackWindow", new XMLAttribute().add("start", getStartOnGenome()).add("end", getEndOnGenome()).add("width", getWindowWidth()));
+		xmlWriter.element("trackWindow", new XMLAttribute().add("start", getStartOnGenome()).add("end", getEndOnGenome()).add("width", getPixelWidth()));
 	}
 
 	public boolean equals(TrackWindow window) {
-		return sameRangeWith(window) && (this.windowWidth == window.getWindowWidth());
+		return sameRangeWith(window) && (this.windowWidth == window.getPixelWidth());
 	}
 
 	public boolean sameRangeWith(TrackWindow window) {
@@ -132,6 +110,10 @@ public class TrackWindowImpl implements TrackWindow {
 
 	public TrackWindow newWindow(int newStartOnGenome, int newEndOnGenome) {
 		return new TrackWindowImpl(this.windowWidth, newStartOnGenome, newEndOnGenome);
+	}
+
+	public TrackWindow newPixelWidthWindow(int pixelSize) {
+		return new TrackWindowImpl(pixelSize, this.startIndexOnGenome, this.endIndexOnGenome);
 	}
 
 	public boolean hasOverlapWith(OnGenome g) {

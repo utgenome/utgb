@@ -91,7 +91,7 @@ public class GWTGraphCanvas extends Composite {
 		canvas.setStrokeStyle(color);
 
 		// draw data graph
-		for (int i = 0; i < trackWindow.getWindowWidth(); ++i) {
+		for (int i = 0; i < trackWindow.getPixelWidth(); ++i) {
 			float value = data.getData()[i];
 			if (value == 0.0f)
 				continue;
@@ -99,7 +99,7 @@ public class GWTGraphCanvas extends Composite {
 			float y1 = getYPosition(value);
 			int x = i;
 			if (trackWindow.isReverseStrand()) {
-				x = trackWindow.getWindowWidth() - x - 1;
+				x = trackWindow.getPixelWidth() - x - 1;
 			}
 
 			float height;
@@ -134,7 +134,7 @@ public class GWTGraphCanvas extends Composite {
 		canvas.setStrokeStyle(new Color(0, 0, 0, 0.5f));
 		canvas.setLineWidth(1.0f);
 		canvas.beginPath();
-		canvas.rect(0, 0, trackWindow.getWindowWidth(), windowHeight);
+		canvas.rect(0, 0, trackWindow.getPixelWidth(), windowHeight);
 		canvas.stroke();
 		canvas.restoreContext();
 
@@ -153,7 +153,7 @@ public class GWTGraphCanvas extends Composite {
 				canvas.beginPath();
 				canvas.translate(0, getYPosition(value) + 0.5d);
 				canvas.moveTo(0d, 0d);
-				canvas.lineTo(trackWindow.getWindowWidth(), 0);
+				canvas.lineTo(trackWindow.getPixelWidth(), 0);
 				canvas.stroke();
 				canvas.restoreContext();
 			}
@@ -163,7 +163,7 @@ public class GWTGraphCanvas extends Composite {
 				canvas.beginPath();
 				canvas.translate(0, getYPosition(0f));
 				canvas.moveTo(0, 0);
-				canvas.lineTo(trackWindow.getWindowWidth(), 0);
+				canvas.lineTo(trackWindow.getPixelWidth(), 0);
 				canvas.stroke();
 				canvas.restoreContext();
 			}
@@ -332,7 +332,7 @@ public class GWTGraphCanvas extends Composite {
 
 	public void setWindowHeight(int windowHeight) {
 		this.windowHeight = windowHeight;
-		setPixelSize(trackWindow.getWindowWidth(), windowHeight);
+		setPixelSize(trackWindow.getPixelWidth(), windowHeight);
 	}
 
 	@Override

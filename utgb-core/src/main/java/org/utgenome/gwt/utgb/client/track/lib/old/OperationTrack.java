@@ -286,7 +286,7 @@ public class OperationTrack extends TrackBase {
 		else if ((url.indexOf('?') != (url.length() - 1)) && (url.indexOf('&') != (url.length() - 1)))
 			url += '&';
 
-		final int windowWidth = getTrackGroup().getPropertyReader().getTrackWindow().getWindowWidth();
+		final int windowWidth = getTrackGroup().getPropertyReader().getTrackWindow().getPixelWidth();
 
 		return url
 				+ join(new String[] { "species", "revision", "target", "start", "end", "width" }, new String[] { species, build, target, startIndex, endIndex,
@@ -302,7 +302,7 @@ public class OperationTrack extends TrackBase {
 		else if ((url.indexOf('?') != (url.length() - 1)) && (url.indexOf('&') != (url.length() - 1)))
 			url += '&';
 
-		final int windowWidth = getTrackGroup().getPropertyReader().getTrackWindow().getWindowWidth();
+		final int windowWidth = getTrackGroup().getPropertyReader().getTrackWindow().getPixelWidth();
 
 		return url
 				+ join(new String[] { "species", "revision", "target", "start", "end", "width" }, new String[] { species, build, target, startIndex, endIndex,

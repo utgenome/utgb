@@ -225,7 +225,7 @@ public class ChromosomeMapTrack extends TrackBase {
 		TrackWindow w = getTrackGroup().getTrackWindow();
 		p.add("start", w.getStartOnGenome());
 		p.add("end", w.getEndOnGenome());
-		p.add("width", w.getWindowWidth() - getLeftMargin());
+		p.add("width", w.getPixelWidth() - getLeftMargin());
 		p.add("displayType", getDisplayType());
 
 		for (String key : new String[] { "dbGroup", "dbName", "bss.query" }) {

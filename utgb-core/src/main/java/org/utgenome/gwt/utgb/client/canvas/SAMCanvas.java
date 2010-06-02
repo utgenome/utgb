@@ -112,13 +112,13 @@ public class SAMCanvas extends Composite {
 
 	void redraw() {
 		canvas.clear();
-		canvas.setCoordSize(window.getWindowWidth(), windowHeight);
-		canvas.setPixelSize(window.getWindowWidth(), windowHeight);
-		panel.setPixelSize(window.getWindowWidth(), windowHeight);
+		canvas.setCoordSize(window.getPixelWidth(), windowHeight);
+		canvas.setPixelSize(window.getPixelWidth(), windowHeight);
+		panel.setPixelSize(window.getPixelWidth(), windowHeight);
 	}
 
 	public void setWindow(TrackWindow w, int leftMargin) {
-		this.window = new TrackWindowImpl(w.getWindowWidth(), w.getStartOnGenome(), w.getEndOnGenome());
+		this.window = new TrackWindowImpl(w.getPixelWidth(), w.getStartOnGenome(), w.getEndOnGenome());
 
 		redraw();
 	}

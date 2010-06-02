@@ -319,14 +319,14 @@ public class OldUTGBPropertyTrack extends TrackBase {
 	public void onChangeTrackWindow(TrackWindow newWindow) {
 		_startTextBox.setText(Long.toString(newWindow.getStartOnGenome()));
 		_endTextBox.setText(Long.toString(newWindow.getEndOnGenome()));
-		_widthTextBox.setText(Integer.toString(newWindow.getWindowWidth()));
+		_widthTextBox.setText(Integer.toString(newWindow.getPixelWidth()));
 	}
 
 	public void setUp(TrackFrame trackFrame, TrackGroup group) {
 		trackFrame.pack();
 		final TrackWindow trackWindow = group.getTrackWindow();
 
-		_widthTextBox.setText(Integer.toString(trackWindow.getWindowWidth()));
+		_widthTextBox.setText(Integer.toString(trackWindow.getPixelWidth()));
 		_startTextBox.setText(Long.toString(trackWindow.getStartOnGenome()));
 		_endTextBox.setText(Long.toString(trackWindow.getEndOnGenome()));
 

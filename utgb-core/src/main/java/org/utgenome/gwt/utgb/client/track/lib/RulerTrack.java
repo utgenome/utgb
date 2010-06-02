@@ -101,7 +101,7 @@ class Ruler {
 		int range = (e > s) ? e - s : s - e;
 		if (range <= 0)
 			range = 1;
-		tickRangeOnGenome = suitableTickRangeOnGenome(range);
+		tickRangeOnGenome = calcTickWidthForRange(range);
 		long div = tickRangeOnGenome;
 		int unitCount = 0;
 		tickUnit = 1;
@@ -150,7 +150,7 @@ class Ruler {
 		return (genomePos / tickUnit) + _unitSuffix[tickUnitIndex];
 	}
 
-	private int suitableTickRangeOnGenome(int range) {
+	private int calcTickWidthForRange(int range) {
 		if (range <= 1)
 			return 1;
 		int[] availableTickUnit = { 1, 2, 5, 10, 20, 25 };
@@ -237,7 +237,7 @@ public class RulerTrack extends TrackBase implements RangeSelectable {
 			_layoutPanel.getCellFormatter().setWidth(0, 0, _windowLeftMargin + "px");
 		_layoutPanel.setWidget(0, 1, _basePanel);
 		TrackWindow w = getTrackGroup().getTrackWindow();
-		int windowWidth = w.getWindowWidth() - _windowLeftMargin;
+		int windowWidth = w.getPixelWidth() - _windowLeftMargin;
 		int s = w.getStartOnGenome();
 		int e = w.getEndOnGenome();
 
@@ -258,7 +258,7 @@ public class RulerTrack extends TrackBase implements RangeSelectable {
 
 	@Override
 	public void onChangeTrackWindow(TrackWindow newWindow) {
-		_rangeSelector.setWindowWidth(newWindow.getWindowWidth());
+		_rangeSelector.setWindowWidth(newWindow.getPixelWidth());
 		refresh();
 	}
 
@@ -268,7 +268,7 @@ public class RulerTrack extends TrackBase implements RangeSelectable {
 
 	public void onRangeSelect(int x1OnTrackWindow, int x2OnTrackWindow) {
 		TrackWindow w = getTrackGroup().getTrackWindow();
-		double factor = w.getWindowWidth() / (double) (w.getWindowWidth() - _windowLeftMargin);
+		double factor = w.getPixelWidth() / (double) (w.getPixelWidth() - _windowLeftMargin);
 
 		if (x1OnTrackWindow > x2OnTrackWindow) {
 			int tmp = x1OnTrackWindow;

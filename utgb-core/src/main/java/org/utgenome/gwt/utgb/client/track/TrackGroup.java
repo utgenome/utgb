@@ -512,7 +512,7 @@ public class TrackGroup implements TrackEntry, Comparable<TrackGroup>, HasFactor
 		for (Iterator<TrackUpdateListener> it = _trackEventListenerList.iterator(); it.hasNext();) {
 			TrackUpdateListener listener = it.next();
 			listener.onResizeTrack();
-			listener.onResizeTrackWindow(_trackGroupProperty.getTrackWindow().getWindowWidth());
+			listener.onResizeTrackWindow(_trackGroupProperty.getTrackWindow().getPixelWidth());
 		}
 	}
 

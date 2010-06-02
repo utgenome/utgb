@@ -498,7 +498,7 @@ public class TrackFrame extends SimplePanel {
 			int newHeight = _trackWidgetFrame.getOffsetHeight();
 			setFrameHeight(newHeight);
 		}
-		resizeTrackAreaWidth(_track.getTrackGroup().getTrackWindow().getWindowWidth());
+		resizeTrackAreaWidth(_track.getTrackGroup().getTrackWindow().getPixelWidth());
 	}
 
 	public void onUpdateTrackWidget() {

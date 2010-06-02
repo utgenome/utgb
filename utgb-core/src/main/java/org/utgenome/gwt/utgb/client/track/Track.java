@@ -300,4 +300,7 @@ public interface Track extends TrackEntry, TrackGroupPropertyChangeListener {
 	 */
 	public void onChangeTrackWindow(TrackWindow newWindow);
 
+	// @see org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChangeListener#onChange(org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChange, org.utgenome.gwt.utgb.client.track.TrackWindow)
+	public void onChange(TrackGroupPropertyChange change, TrackWindow newWindow);
+
 }

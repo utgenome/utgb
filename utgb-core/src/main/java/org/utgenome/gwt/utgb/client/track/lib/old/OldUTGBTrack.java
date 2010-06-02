@@ -549,7 +549,7 @@ public class OldUTGBTrack extends TrackBase {
 	}
 
 	final int getMainPanelWidth() {
-		final int windowWidth = getTrackGroup().getPropertyReader().getTrackWindow().getWindowWidth();
+		final int windowWidth = getTrackGroup().getPropertyReader().getTrackWindow().getPixelWidth();
 		return windowWidth - INDEX_WINDOW_WIDTH;
 	}
 

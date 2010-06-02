@@ -142,7 +142,7 @@ public class SAMTrack extends TrackBase {
 			// get graph x-range
 			int s = w.getStartOnGenome();
 			int e = w.getEndOnGenome();
-			int width = w.getWindowWidth() - leftMargin;
+			int width = w.getPixelWidth() - leftMargin;
 
 			labelPanel.clear();
 			for (SAMRead temp : readDataList) {

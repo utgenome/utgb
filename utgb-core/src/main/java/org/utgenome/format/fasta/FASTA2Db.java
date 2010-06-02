@@ -104,7 +104,7 @@ public class FASTA2Db {
 			int count = 1;
 			String description = null;
 
-			final int sequenceSplitUnit = 10000;
+			final int sequenceSplitUnit = 100000; // 100 kbp
 
 			// for each FASTA entry 
 			while ((description = pullParser.nextDescriptionLine()) != null) {

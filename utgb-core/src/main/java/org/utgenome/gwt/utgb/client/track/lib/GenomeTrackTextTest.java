@@ -147,7 +147,7 @@ public class GenomeTrackTextTest extends TrackBase {
 		TrackWindow w = getTrackGroup().getTrackWindow();
 		p.add("start", w.getStartOnGenome());
 		p.add("end", w.getEndOnGenome());
-		p.add("width", w.getWindowWidth() - leftMargin);
+		p.add("width", w.getPixelWidth() - leftMargin);
 
 		return c.getTrackURL(trackBaseURL, p);
 	}
