@@ -127,6 +127,9 @@ public class WIGGraphCanvasTrack extends TrackBase {
 
 	@Override
 	public void setUp(TrackFrame trackFrame, TrackGroup group) {
+
+		geneCanvas.setTrackGroup(group);
+
 		TrackConfig config = getConfig();
 		config.addConfigParameter("Path", new StringType(CONFIG_FILENAME));
 		config.addConfigParameter("Y Max", new FloatType(CONFIG_MAX_VALUE), "100");
@@ -155,13 +158,13 @@ public class WIGGraphCanvasTrack extends TrackBase {
 		int e = w.getEndOnGenome();
 		int width = w.getPixelWidth();
 
-		int leftMargin = config.getInt(CONFIG_LEFT_MARGIN, 0);
-		layoutTable.getCellFormatter().setWidth(0, 0, leftMargin + "px");
+		//		int leftMargin = config.getInt(CONFIG_LEFT_MARGIN, 0);
+		//		layoutTable.getCellFormatter().setWidth(0, 0, leftMargin + "px");
 
 		int trackHeight = config.getInt(CONFIG_TRACK_HEIGHT, 100);
 		boolean isLog = config.getBoolean(CONFIG_LOG_SCALE, false);
 		geneCanvas.clear();
-		geneCanvas.setTrackWindow(new TrackWindowImpl(width - leftMargin, s, e));
+		geneCanvas.setTrackWindow(new TrackWindowImpl(width, s, e));
 		geneCanvas.setWindowHeight(trackHeight);
 		geneCanvas.setIsLog(isLog);
 
@@ -230,12 +233,12 @@ public class WIGGraphCanvasTrack extends TrackBase {
 		getFrame().setNowLoading();
 		TrackConfig config = getConfig();
 		String fileName = config.getString(CONFIG_FILENAME, "");
-		int leftMargin = config.getInt(CONFIG_LEFT_MARGIN, 0);
+		//int leftMargin = config.getInt(CONFIG_LEFT_MARGIN, 0);
 
-		final TrackWindow nw = newWindow.newPixelWidthWindow(newWindow.getPixelWidth() - leftMargin);
-		refresh();
+		//final TrackWindow nw = newWindow.newPixelWidthWindow(newWindow.getPixelWidth() - leftMargin);
+		//refresh();
 
-		getBrowserService().getCompactWigDataList(fileName, nw.getPixelWidth(), l, new AsyncCallback<List<CompactWIGData>>() {
+		getBrowserService().getCompactWigDataList(fileName, newWindow.getPixelWidth(), l, new AsyncCallback<List<CompactWIGData>>() {
 			TrackConfig config = getConfig();
 
 			public void onFailure(Throwable e) {

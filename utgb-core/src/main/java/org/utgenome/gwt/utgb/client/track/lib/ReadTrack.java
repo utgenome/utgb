@@ -303,17 +303,11 @@ public class ReadTrack extends TrackBase {
 	@Override
 	public void draw() {
 
-		int leftMargin = getConfig().getInt(CONFIG_LEFT_MARGIN, 0);
-		if (leftMargin > 0)
-			layoutTable.getCellFormatter().setWidth(0, 0, leftMargin + "px");
-
-		final boolean showLabels = getConfig().getBoolean(CONFIG_SHOW_LABELS, true);
+		geneCanvas.setShowLabels(getConfig().getBoolean(CONFIG_SHOW_LABELS, true));
 		geneCanvas.clear();
-		//geneCanvas.setWindow(new TrackWindowImpl(width, s, e));
-		geneCanvas.setShowLabels(showLabels);
+		geneCanvas.setWindow(getTrackWindow());
 
 		String layout = getConfig().getString(CONFIG_LAYOUT, "pileup");
-
 		if ("pileup".equals(layout)) {
 			if (dataSet.read != null && !dataSet.read.isEmpty()) {
 				geneCanvas.draw(dataSet.read);
@@ -387,24 +381,12 @@ public class ReadTrack extends TrackBase {
 		// retrieve gene data from the API
 		String chr = getTrackGroupProperty(UTGBProperty.TARGET);
 
-		int leftMargin = getConfig().getInt(CONFIG_LEFT_MARGIN, 0);
-		int pixelSize = newWindow.getPixelWidth() - leftMargin;
-		final TrackWindow nw = newWindow.newPixelWidthWindow(pixelSize);
-
-		getFrame().setNowLoading();
-		geneCanvas.setWindow(nw);
-		//		DeferredCommand.addCommand(new Command() {
-		//			public void execute() {
-		//			
-		//			}
-		//		});
-
 		String layout = getConfig().getString(CONFIG_LAYOUT, "pileup");
-
 		ReadQueryConfig queryConfig = new ReadQueryConfig(newWindow.getPixelWidth(), BrowserInfo.isCanvasSupported(), Layout.valueOf(Layout.class, layout
 				.toUpperCase()));
 
-		getBrowserService().getOnGenomeData(getGenomeDB(), new ChrLoc(chr, nw.getStartOnGenome(), nw.getEndOnGenome()), queryConfig,
+		getFrame().setNowLoading();
+		getBrowserService().getOnGenomeData(getGenomeDB(), new ChrLoc(chr, newWindow.getStartOnGenome(), newWindow.getEndOnGenome()), queryConfig,
 				new AsyncCallback<OnGenomeDataSet>() {
 
 					public void onFailure(Throwable e) {

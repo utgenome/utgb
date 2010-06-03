@@ -28,9 +28,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.utgenome.gwt.utgb.client.bio.CompactWIGData;
+import org.utgenome.gwt.utgb.client.canvas.GWTGenomeCanvas.DragPoint;
+import org.utgenome.gwt.utgb.client.track.TrackGroup;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
+import org.utgenome.gwt.utgb.client.util.Optional;
 import org.utgenome.gwt.widget.client.Style;
 
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
@@ -49,6 +55,7 @@ public class GWTGraphCanvas extends Composite {
 
 	private int windowHeight = 100;
 	private GWTCanvas canvas = new GWTCanvas();
+	private GWTCanvas frameCanvas = new GWTCanvas();
 	private AbsolutePanel panel = new AbsolutePanel();
 	private TrackWindow trackWindow;
 
@@ -59,9 +66,15 @@ public class GWTGraphCanvas extends Composite {
 	private boolean isLog = false;
 	private boolean drawZeroValue = false;
 
+	private TrackGroup trackGroup;
+
 	public GWTGraphCanvas() {
 
 		init();
+	}
+
+	public void setTrackGroup(TrackGroup trackGroup) {
+		this.trackGroup = trackGroup;
 	}
 
 	private void init() {
@@ -70,14 +83,96 @@ public class GWTGraphCanvas extends Composite {
 		Style.padding(panel, 0);
 		Style.margin(panel, 0);
 
+		panel.add(frameCanvas, 0, 0);
 		panel.add(canvas, 0, 0);
 		initWidget(panel);
 
-		//sinkEvents(Event.ONMOUSEMOVE | Event.ONMOUSEOVER | Event.ONMOUSEDOWN);
+		sinkEvents(Event.ONMOUSEMOVE | Event.ONMOUSEOVER | Event.ONMOUSEOUT | Event.ONMOUSEDOWN | Event.ONMOUSEUP);
+	}
+
+	private Optional<DragPoint> dragStartPoint = new Optional<DragPoint>();
+
+	@Override
+	public void onBrowserEvent(Event event) {
+		super.onBrowserEvent(event);
+
+		int type = DOM.eventGetType(event);
+		switch (type) {
+		case Event.ONMOUSEOVER:
+
+			break;
+		case Event.ONMOUSEMOVE: {
+			// show readLabels 
+
+			if (dragStartPoint.isDefined()) {
+				// scroll the canvas
+				int clientX = DOM.eventGetClientX(event) + Window.getScrollLeft();
+				//int clientY = DOM.eventGetClientY(event) + Window.getScrollTop();
+
+				DragPoint p = dragStartPoint.get();
+				int xDiff = clientX - p.x;
+				//int yDiff = clientY - p.y;
+				panel.setWidgetPosition(canvas, xDiff, 0);
+			}
+			else {
+				Style.cursor(canvas, Style.CURSOR_AUTO);
+			}
+
+			break;
+		}
+		case Event.ONMOUSEOUT: {
+			resetDrag(event);
+			break;
+		}
+		case Event.ONMOUSEDOWN: {
+			// invoke a click event 
+			int clientX = DOM.eventGetClientX(event) + Window.getScrollLeft();
+			int clientY = DOM.eventGetClientY(event) + Window.getScrollTop();
+
+			if (dragStartPoint.isUndefined()) {
+				dragStartPoint.set(new DragPoint(clientX, clientY));
+				Style.cursor(canvas, Style.CURSOR_RESIZE_E);
+				event.preventDefault();
+			}
+
+			break;
+		}
+		case Event.ONMOUSEUP: {
+
+			resetDrag(event);
+			break;
+		}
+		}
+	}
+
+	private void resetDrag(Event event) {
+
+		int clientX = DOM.eventGetClientX(event) + Window.getScrollLeft();
+		int clientY = DOM.eventGetClientY(event) + Window.getScrollTop();
+
+		if (dragStartPoint.isDefined() && trackWindow != null) {
+			DragPoint p = dragStartPoint.get();
+			int startDiff = trackWindow.calcGenomePosition(clientX) - trackWindow.calcGenomePosition(p.x);
+			if (startDiff != 0) {
+				int newStart = trackWindow.getStartOnGenome() - startDiff;
+				if (newStart < 1)
+					newStart = 1;
+				int newEnd = newStart + trackWindow.getWidth();
+				TrackWindow newWindow = trackWindow.newWindow(newStart, newEnd);
+				if (trackGroup != null)
+					trackGroup.setTrackWindow(newWindow);
+			}
+		}
+
+		dragStartPoint.reset();
+		event.preventDefault();
+
+		Style.cursor(canvas, Style.CURSOR_AUTO);
 	}
 
 	public void clear() {
 		canvas.clear();
+		frameCanvas.clear();
 		for (Label each : graphLabels) {
 			each.removeFromParent();
 		}
@@ -129,45 +224,45 @@ public class GWTGraphCanvas extends Composite {
 	public void drawFrame() {
 
 		// draw frame
-		canvas.saveContext();
-		canvas.setStrokeStyle(new Color(0, 0, 0, 0.5f));
-		canvas.setLineWidth(1.0f);
-		canvas.beginPath();
-		canvas.rect(0, 0, trackWindow.getPixelWidth(), windowHeight);
-		canvas.stroke();
-		canvas.restoreContext();
+		frameCanvas.saveContext();
+		frameCanvas.setStrokeStyle(new Color(0, 0, 0, 0.5f));
+		frameCanvas.setLineWidth(1.0f);
+		frameCanvas.beginPath();
+		frameCanvas.rect(0, 0, trackWindow.getPixelWidth(), windowHeight);
+		frameCanvas.stroke();
+		frameCanvas.restoreContext();
 
 		// draw indent line & label
 		Indent indent = new Indent(minValue, maxValue);
 
 		{
-			canvas.saveContext();
-			canvas.setStrokeStyle(Color.BLACK);
-			canvas.setGlobalAlpha(0.2f);
-			canvas.setLineWidth(0.5f);
+			frameCanvas.saveContext();
+			frameCanvas.setStrokeStyle(Color.BLACK);
+			frameCanvas.setGlobalAlpha(0.2f);
+			frameCanvas.setLineWidth(0.5f);
 			for (int i = 0; i <= indent.nSteps; i++) {
 				float value = indent.getIndentValue(i);
 				// draw indent line
-				canvas.saveContext();
-				canvas.beginPath();
-				canvas.translate(0, getYPosition(value) + 0.5d);
-				canvas.moveTo(0d, 0d);
-				canvas.lineTo(trackWindow.getPixelWidth(), 0);
-				canvas.stroke();
-				canvas.restoreContext();
+				frameCanvas.saveContext();
+				frameCanvas.beginPath();
+				frameCanvas.translate(0, getYPosition(value) + 0.5d);
+				frameCanvas.moveTo(0d, 0d);
+				frameCanvas.lineTo(trackWindow.getPixelWidth(), 0);
+				frameCanvas.stroke();
+				frameCanvas.restoreContext();
 			}
 			{
 				// draw zero line
-				canvas.saveContext();
-				canvas.beginPath();
-				canvas.translate(0, getYPosition(0f));
-				canvas.moveTo(0, 0);
-				canvas.lineTo(trackWindow.getPixelWidth(), 0);
-				canvas.stroke();
-				canvas.restoreContext();
+				frameCanvas.saveContext();
+				frameCanvas.beginPath();
+				frameCanvas.translate(0, getYPosition(0f));
+				frameCanvas.moveTo(0, 0);
+				frameCanvas.lineTo(trackWindow.getPixelWidth(), 0);
+				frameCanvas.stroke();
+				frameCanvas.restoreContext();
 			}
 
-			canvas.restoreContext();
+			frameCanvas.restoreContext();
 		}
 
 	}
@@ -344,6 +439,11 @@ public class GWTGraphCanvas extends Composite {
 		canvas.setCoordSize(width, height);
 		canvas.setPixelWidth(width);
 		canvas.setPixelHeight(height);
+
+		frameCanvas.setCoordSize(width, height);
+		frameCanvas.setPixelWidth(width);
+		frameCanvas.setPixelHeight(height);
+
 		panel.setPixelSize(width, height);
 	}
 

@@ -257,7 +257,7 @@ public class GWTGenomeCanvas extends Composite {
 		Style.cursor(canvas, Style.CURSOR_AUTO);
 	}
 
-	private static class DragPoint {
+	public static class DragPoint {
 		public final int x;
 		public final int y;
 
@@ -334,7 +334,7 @@ public class GWTGenomeCanvas extends Composite {
 
 		reverse = w.isReverseStrand();
 		intervalLayout.setTrackWindow(w);
-		update();
+		//update();
 	}
 
 	public void setTrackGroup(TrackGroup trackGroup) {
