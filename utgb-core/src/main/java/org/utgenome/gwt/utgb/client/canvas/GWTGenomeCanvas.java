@@ -327,12 +327,9 @@ public class GWTGenomeCanvas extends Composite {
 
 	public void setWindow(TrackWindow w) {
 		this.trackWindow = w;
-		canvas.setCoordSize(w.getPixelWidth(), 100);
-		canvas.setPixelWidth(w.getPixelWidth());
 
 		reverse = w.isReverseStrand();
 		intervalLayout.setTrackWindow(w);
-		//update();
 	}
 
 	public void setTrackGroup(TrackGroup trackGroup) {
