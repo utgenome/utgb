@@ -86,8 +86,6 @@ public class GWTGenomeCanvas extends Composite {
 	private IntervalLayout intervalLayout = new IntervalLayout();
 	private TrackWindow trackWindow;
 
-	private List<OnGenome> readList;
-
 	public static enum CoverageStyle {
 		DEFAULT, SMOOTH
 	};
@@ -604,15 +602,6 @@ public class GWTGenomeCanvas extends Composite {
 		}
 	}
 
-	public <T extends OnGenome> void update() {
-		//clearExceptLayout();
-		//List<OnGenome> activeReads = intervalLayout.activeReads();
-
-		clear();
-		layoutRead(readList);
-		drawLayout();
-	}
-
 	public void draw(List<OnGenome> locusList) {
 		layoutRead(locusList);
 		drawLayout();
@@ -630,7 +619,6 @@ public class GWTGenomeCanvas extends Composite {
 	}
 
 	private void layoutRead(List<OnGenome> readList) {
-		this.readList = readList;
 
 		int maxOffset = intervalLayout.createLayout(readList, geneHeight);
 		if (maxOffset > 30)
