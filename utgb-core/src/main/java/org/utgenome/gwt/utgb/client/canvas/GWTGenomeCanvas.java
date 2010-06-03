@@ -341,11 +341,6 @@ public class GWTGenomeCanvas extends Composite {
 	}
 
 	public void clear() {
-		clearExceptLayout();
-		intervalLayout.clear();
-	}
-
-	private void clearExceptLayout() {
 		canvas.clear();
 
 		if (popupLabel != null)
@@ -356,6 +351,8 @@ public class GWTGenomeCanvas extends Composite {
 		}
 		readLabels.clear();
 		basePanel.setWidgetPosition(panel, 0, 0);
+
+		intervalLayout.clear();
 	}
 
 	@Override
