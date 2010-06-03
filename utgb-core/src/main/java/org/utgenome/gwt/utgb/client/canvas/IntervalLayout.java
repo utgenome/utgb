@@ -99,14 +99,14 @@ public class IntervalLayout {
 
 	<T extends OnGenome> int createLayout(List<T> locusList, int geneHeight) {
 
-		locusLayout.clear();
-
 		int maxYOffset = 0;
 		boolean showLabelsFlag = keepSpaceForLabels && (locusList.size() < 500);
 		boolean toContinue = false;
 
 		do {
 			toContinue = false;
+			maxYOffset = 0;
+			locusLayout.clear();
 
 			for (OnGenome l : locusList) {
 
