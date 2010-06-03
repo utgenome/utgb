@@ -24,7 +24,6 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.bio;
 
-import java.io.Serializable;
 
 /**
  * Exon
@@ -32,61 +31,19 @@ import java.io.Serializable;
  * @author leo
  * 
  */
-public class Exon implements Serializable, Comparable<Exon> {
+public class Exon extends Interval {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	/**
-	 * 
-	 */
-	int start = -1;
-	int end = -1;
 
 	public Exon() {
-
+		super();
 	}
 
 	public Exon(int start, int end) {
-		this.start = start;
-		this.end = end;
-	}
-
-	public void adjustToOneOrigin() {
-		if (start != -1)
-			start += 1;
-		if (end != -1)
-			end += 1;
-	}
-
-	public int getStart() {
-		return start;
-	}
-
-	public void setStart(int start) {
-		this.start = start;
-	}
-
-	public int getEnd() {
-		return end;
-	}
-
-	public void setEnd(int end) {
-		this.end = end;
-	}
-
-	public int compareTo(Exon other) {
-		long diff = start - other.getStart();
-		if (diff != 0)
-			return (int) diff;
-		else
-			return (int) (end - other.getEnd());
-	}
-
-	@Override
-	public String toString() {
-		return "(" + start + ", " + end + ")";
+		super(start, end);
 	}
 
 }

@@ -56,4 +56,8 @@ public class OnGenomeDataVisitorBase implements OnGenomeDataVisitor {
 
 	}
 
+	public void visitGraph(GraphData graph) {
+
+	}
+
 }

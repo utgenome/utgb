@@ -24,11 +24,10 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.bio;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class CompactWIGData implements Serializable {
+public class CompactWIGData implements GraphData {
 	/**
 	 * 
 	 */
@@ -110,6 +109,7 @@ public class CompactWIGData implements Serializable {
 		this.data = data;
 	}
 
+	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 
@@ -137,6 +137,24 @@ public class CompactWIGData implements Serializable {
 			sb.delete(sb.lastIndexOf(","), sb.length()).append(")");
 
 		return sb.toString();
+	}
+
+	public void accept(OnGenomeDataVisitor visitor) {
+		visitor.visitGraph(this);
+	}
+
+	public int getEnd() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public String getName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public int length() {
+		return 0;
 	}
 
 }

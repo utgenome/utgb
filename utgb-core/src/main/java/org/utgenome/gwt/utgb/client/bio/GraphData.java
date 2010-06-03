@@ -16,46 +16,20 @@
 //--------------------------------------
 // utgb-core Project
 //
-// OnGenome.java
-// Since: May 16, 2010
+// GraphData.java
+// Since: Jun 3, 2010
 //
 // $URL$ 
 // $Author$
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.bio;
 
-import java.io.Serializable;
-
 /**
- * A common interface for data mapped onto a genome sequence (e.g., Read, Gene, SAMRead, WigGraphData, etc.)
+ * A common interface for graph data
  * 
  * @author leo
  * 
  */
-public interface OnGenome extends Serializable {
+public interface GraphData extends OnGenome {
 
-	/**
-	 * return 1-based start position of the data
-	 * 
-	 * @return
-	 */
-	public int getStart();
-
-	/**
-	 * return 1-based end position of the data. The interval represents [start, end).
-	 * 
-	 * @return
-	 */
-	public int getEnd();
-
-	/**
-	 * return the length of the data
-	 * 
-	 * @return
-	 */
-	public int length();
-
-	public String getName();
-
-	public void accept(OnGenomeDataVisitor visitor);
 }

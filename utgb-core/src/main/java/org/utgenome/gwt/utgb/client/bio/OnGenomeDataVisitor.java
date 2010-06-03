@@ -43,4 +43,6 @@ public interface OnGenomeDataVisitor {
 	public void visitSequence(ReferenceSequence referenceSequence);
 
 	public void visitReadCoverage(ReadCoverage readCoverage);
+
+	public void visitGraph(GraphData graph);
 }

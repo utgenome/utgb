@@ -24,7 +24,6 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.bio;
 
-import java.io.Serializable;
 
 /**
  * Coding Sequence (CDS)
@@ -32,51 +31,22 @@ import java.io.Serializable;
  * @author leo
  * 
  */
-public class CDS implements Serializable {
+public class CDS extends Interval {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+
 	/**
 	 * 
 	 */
-	int start = -1;
-	int end = -1;
 
 	public CDS() {
+		super();
 	}
 
 	public CDS(int start, int end) {
-		this.start = start;
-		this.end = end;
-	}
-
-	public void adjustToOneOrigin() {
-		if (start != -1)
-			start += 1;
-		if (end != -1)
-			end += 1;
-	}
-
-	public int getStart() {
-		return start;
-	}
-
-	public void setStart(int start) {
-		this.start = start;
-	}
-
-	public int getEnd() {
-		return end;
-	}
-
-	public void setEnd(int end) {
-		this.end = end;
-	}
-
-	@Override
-	public String toString() {
-		return "(" + start + ", " + end + ")";
+		super(start, end);
 	}
 
 }

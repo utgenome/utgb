@@ -93,4 +93,8 @@ public class SAMRead extends Interval {
 		visitor.visitSAMRead(this);
 	}
 
+	public boolean isPairedRead() {
+		return (flag & SAMReadFlag.FLAG_PAIRED_READ) == 1;
+	}
+
 }

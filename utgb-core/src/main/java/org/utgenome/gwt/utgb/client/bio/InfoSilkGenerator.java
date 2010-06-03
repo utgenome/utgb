@@ -77,10 +77,17 @@ public class InfoSilkGenerator implements OnGenomeDataVisitor {
 
 	public void visitSAMRead(SAMRead r) {
 		visitInterval(r);
+		addLine("-flag: " + Integer.toBinaryString(r.flag));
+		addLine("-strand: " + (r.isSense() ? "+" : "-"));
 		addLine("-cigar: " + r.cigar);
-		addLine("-insert size: " + r.iSize);
+		if (r.iSize > 0)
+			addLine("-insert size: " + r.iSize);
 		addLine("-mapq: " + r.mapq);
-		addLine("-mate start: " + r.mStart);
+		if (r.isPairedRead()) {
+			addLine("-mate ref: " + r.mrnm);
+			addLine("-mate start: " + r.mStart);
+		}
+
 		addLine("-tag");
 		for (String key : r.tag.keySet()) {
 			addLine("  -" + key + ": " + r.tag.get(key));
@@ -96,6 +103,10 @@ public class InfoSilkGenerator implements OnGenomeDataVisitor {
 		addLine("-name: " + readCoverage.getName());
 		addLine("-start: " + readCoverage.getStart());
 		addLine("-length: " + readCoverage.length());
+	}
+
+	public void visitGraph(GraphData graph) {
+		addLine("graph data");
 	}
 
 }
