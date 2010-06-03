@@ -173,6 +173,9 @@ public class GWTGraphCanvas extends Composite {
 	public void clear() {
 		canvas.clear();
 		frameCanvas.clear();
+
+		panel.setWidgetPosition(canvas, 0, 0);
+
 		for (Label each : graphLabels) {
 			each.removeFromParent();
 		}
