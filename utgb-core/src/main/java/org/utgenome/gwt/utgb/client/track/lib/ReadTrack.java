@@ -49,8 +49,6 @@ import org.utgenome.gwt.utgb.client.util.BrowserInfo;
 import org.utgenome.gwt.utgb.client.util.Properties;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -309,31 +307,26 @@ public class ReadTrack extends TrackBase {
 		if (leftMargin > 0)
 			layoutTable.getCellFormatter().setWidth(0, 0, leftMargin + "px");
 
-		DeferredCommand.addCommand(new Command() {
+		final boolean showLabels = getConfig().getBoolean(CONFIG_SHOW_LABELS, true);
+		geneCanvas.clear();
+		//geneCanvas.setWindow(new TrackWindowImpl(width, s, e));
+		geneCanvas.setShowLabels(showLabels);
 
-			public void execute() {
-				final boolean showLabels = getConfig().getBoolean(CONFIG_SHOW_LABELS, true);
-				geneCanvas.clear();
-				//geneCanvas.setWindow(new TrackWindowImpl(width, s, e));
-				geneCanvas.setShowLabels(showLabels);
+		String layout = getConfig().getString(CONFIG_LAYOUT, "pileup");
 
-				String layout = getConfig().getString(CONFIG_LAYOUT, "pileup");
-
-				if ("pileup".equals(layout)) {
-					if (dataSet.read != null && !dataSet.read.isEmpty()) {
-						geneCanvas.draw(dataSet.read);
-					}
-					else
-						drawCoverage();
-				}
-				else {
-					drawCoverage();
-				}
-
-				getFrame().loadingDone();
-
+		if ("pileup".equals(layout)) {
+			if (dataSet.read != null && !dataSet.read.isEmpty()) {
+				geneCanvas.draw(dataSet.read);
 			}
-		});
+			else
+				drawCoverage();
+		}
+		else {
+			drawCoverage();
+		}
+
+		getFrame().loadingDone();
+
 	}
 
 	private void drawCoverage() {
@@ -399,11 +392,12 @@ public class ReadTrack extends TrackBase {
 		final TrackWindow nw = newWindow.newPixelWidthWindow(pixelSize);
 
 		getFrame().setNowLoading();
-		DeferredCommand.addCommand(new Command() {
-			public void execute() {
-				geneCanvas.setWindow(nw);
-			}
-		});
+		geneCanvas.setWindow(nw);
+		//		DeferredCommand.addCommand(new Command() {
+		//			public void execute() {
+		//			
+		//			}
+		//		});
 
 		String layout = getConfig().getString(CONFIG_LAYOUT, "pileup");
 

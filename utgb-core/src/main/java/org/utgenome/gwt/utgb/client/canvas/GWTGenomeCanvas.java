@@ -30,6 +30,7 @@ import java.util.List;
 import org.utgenome.gwt.utgb.client.bio.CDS;
 import org.utgenome.gwt.utgb.client.bio.Exon;
 import org.utgenome.gwt.utgb.client.bio.Gene;
+import org.utgenome.gwt.utgb.client.bio.GraphData;
 import org.utgenome.gwt.utgb.client.bio.InfoSilkGenerator;
 import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
@@ -166,6 +167,8 @@ public class GWTGenomeCanvas extends Composite {
 		int type = DOM.eventGetType(event);
 		switch (type) {
 		case Event.ONMOUSEOVER:
+
+			break;
 		case Event.ONMOUSEMOVE: {
 			// show readLabels 
 			OnGenome g = overlappedInterval(event, 2);
@@ -199,7 +202,7 @@ public class GWTGenomeCanvas extends Composite {
 			break;
 		}
 		case Event.ONMOUSEOUT: {
-			resetDrag();
+			resetDrag(event);
 			break;
 		}
 		case Event.ONMOUSEDOWN: {
@@ -210,34 +213,47 @@ public class GWTGenomeCanvas extends Composite {
 			if (g != null) {
 				if (clickHandler != null)
 					clickHandler.onClick(clientX, clientY, g);
+				event.preventDefault();
 			}
-
-			if (dragStartPoint.isUndefined()) {
+			else if (dragStartPoint.isUndefined()) {
 				dragStartPoint.set(new DragPoint(clientX, clientY));
 				Style.cursor(canvas, Style.CURSOR_RESIZE_E);
+				event.preventDefault();
 			}
 
 			break;
 		}
 		case Event.ONMOUSEUP: {
 
-			int clientX = DOM.eventGetClientX(event) + Window.getScrollLeft();
-			int clientY = DOM.eventGetClientY(event) + Window.getScrollTop();
-
-			DragPoint p = dragStartPoint.get();
-			int startDiff = trackWindow.calcGenomePosition(clientX) - trackWindow.calcGenomePosition(p.x);
-			TrackWindow newWindow = trackWindow.newWindow(trackWindow.getStartOnGenome() - startDiff, trackWindow.getEndOnGenome() - startDiff);
-			if (trackGroup != null)
-				trackGroup.setTrackWindow(newWindow);
-			resetDrag();
+			resetDrag(event);
 			break;
 		}
 		}
 
 	}
 
-	private void resetDrag() {
+	private void resetDrag(Event event) {
+
+		int clientX = DOM.eventGetClientX(event) + Window.getScrollLeft();
+		int clientY = DOM.eventGetClientY(event) + Window.getScrollTop();
+
+		if (dragStartPoint.isDefined() && trackWindow != null) {
+			DragPoint p = dragStartPoint.get();
+			int startDiff = trackWindow.calcGenomePosition(clientX) - trackWindow.calcGenomePosition(p.x);
+			if (startDiff != 0) {
+				int newStart = trackWindow.getStartOnGenome() - startDiff;
+				if (newStart < 1)
+					newStart = 1;
+				int newEnd = newStart + trackWindow.getWidth();
+				TrackWindow newWindow = trackWindow.newWindow(newStart, newEnd);
+				if (trackGroup != null)
+					trackGroup.setTrackWindow(newWindow);
+			}
+		}
+
 		dragStartPoint.reset();
+		event.preventDefault();
+
 		Style.cursor(canvas, Style.CURSOR_AUTO);
 	}
 
@@ -453,6 +469,11 @@ public class GWTGenomeCanvas extends Composite {
 
 		}
 
+		public void visitGraph(GraphData graph) {
+			// TODO Auto-generated method stub
+
+		}
+
 	};
 
 	private class FindMaximumHeight extends OnGenomeDataVisitorBase {
@@ -609,8 +630,6 @@ public class GWTGenomeCanvas extends Composite {
 	}
 
 	private void layoutRead(List<OnGenome> readList) {
-		if (readList == null)
-			return;
 		this.readList = readList;
 
 		int maxOffset = intervalLayout.createLayout(readList, geneHeight);
