@@ -40,6 +40,7 @@ import org.utgenome.gwt.utgb.client.bio.ReadCoverage;
 import org.utgenome.gwt.utgb.client.bio.ReferenceSequence;
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.canvas.IntervalLayout.LocusLayout;
+import org.utgenome.gwt.utgb.client.track.TrackGroup;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.ui.FixedWidthLabel;
 import org.utgenome.gwt.utgb.client.ui.RoundCornerFrame;
@@ -84,6 +85,8 @@ public class GWTGenomeCanvas extends Composite {
 	private IntervalLayout intervalLayout = new IntervalLayout();
 	private TrackWindow trackWindow;
 
+	private List<OnGenome> readList;
+
 	public static enum CoverageStyle {
 		DEFAULT, SMOOTH
 	};
@@ -91,6 +94,8 @@ public class GWTGenomeCanvas extends Composite {
 	private CoverageStyle coverageStyle = CoverageStyle.DEFAULT;
 
 	private List<Widget> readLabels = new ArrayList<Widget>();
+
+	private TrackGroup trackGroup;
 
 	public GWTGenomeCanvas() {
 		initWidget();
@@ -183,7 +188,6 @@ public class GWTGenomeCanvas extends Composite {
 					DragPoint p = dragStartPoint.get();
 					int xDiff = clientX - p.x;
 					//int yDiff = clientY - p.y;
-
 					basePanel.setWidgetPosition(panel, xDiff, 0);
 				}
 				else {
@@ -216,6 +220,15 @@ public class GWTGenomeCanvas extends Composite {
 			break;
 		}
 		case Event.ONMOUSEUP: {
+
+			int clientX = DOM.eventGetClientX(event) + Window.getScrollLeft();
+			int clientY = DOM.eventGetClientY(event) + Window.getScrollTop();
+
+			DragPoint p = dragStartPoint.get();
+			int startDiff = trackWindow.calcGenomePosition(clientX) - trackWindow.calcGenomePosition(p.x);
+			TrackWindow newWindow = trackWindow.newWindow(trackWindow.getStartOnGenome() - startDiff, trackWindow.getEndOnGenome() - startDiff);
+			if (trackGroup != null)
+				trackGroup.setTrackWindow(newWindow);
 			resetDrag();
 			break;
 		}
@@ -306,6 +319,10 @@ public class GWTGenomeCanvas extends Composite {
 		reverse = w.isReverseStrand();
 		intervalLayout.setTrackWindow(w);
 		update();
+	}
+
+	public void setTrackGroup(TrackGroup trackGroup) {
+		this.trackGroup = trackGroup;
 	}
 
 	public int pixelPositionOnWindow(int indexOnGenome) {
@@ -567,15 +584,15 @@ public class GWTGenomeCanvas extends Composite {
 	}
 
 	public <T extends OnGenome> void update() {
-		clearExceptLayout();
-		List<OnGenome> activeReads = intervalLayout.activeReads();
-		intervalLayout.clear();
-		layoutRead(activeReads);
+		//clearExceptLayout();
+		//List<OnGenome> activeReads = intervalLayout.activeReads();
+
+		clear();
+		layoutRead(readList);
 		drawLayout();
 	}
 
-	public <T extends OnGenome> void draw(List<T> locusList) {
-
+	public void draw(List<OnGenome> locusList) {
 		layoutRead(locusList);
 		drawLayout();
 	}
@@ -591,7 +608,11 @@ public class GWTGenomeCanvas extends Composite {
 		});
 	}
 
-	private <T extends OnGenome> void layoutRead(List<T> readList) {
+	private void layoutRead(List<OnGenome> readList) {
+		if (readList == null)
+			return;
+		this.readList = readList;
+
 		int maxOffset = intervalLayout.createLayout(readList, geneHeight);
 		if (maxOffset > 30)
 			geneHeight = 2;

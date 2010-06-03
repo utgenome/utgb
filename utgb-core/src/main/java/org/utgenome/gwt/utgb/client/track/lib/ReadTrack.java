@@ -45,11 +45,12 @@ import org.utgenome.gwt.utgb.client.track.TrackGroup;
 import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChange;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.track.UTGBProperty;
-import org.utgenome.gwt.utgb.client.track.impl.TrackWindowImpl;
 import org.utgenome.gwt.utgb.client.util.BrowserInfo;
 import org.utgenome.gwt.utgb.client.util.Properties;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -303,35 +304,36 @@ public class ReadTrack extends TrackBase {
 
 	@Override
 	public void draw() {
-		TrackWindow w = getTrackGroup().getTrackWindow();
 
 		int leftMargin = getConfig().getInt(CONFIG_LEFT_MARGIN, 0);
-		boolean showLabels = getConfig().getBoolean(CONFIG_SHOW_LABELS, true);
-
-		int s = w.getStartOnGenome();
-		int e = w.getEndOnGenome();
-		int width = w.getPixelWidth() - leftMargin;
-
 		if (leftMargin > 0)
 			layoutTable.getCellFormatter().setWidth(0, 0, leftMargin + "px");
 
-		geneCanvas.clear();
-		geneCanvas.setWindow(new TrackWindowImpl(width, s, e));
-		geneCanvas.setShowLabels(showLabels);
+		DeferredCommand.addCommand(new Command() {
 
-		String layout = getConfig().getString(CONFIG_LAYOUT, "pileup");
+			public void execute() {
+				final boolean showLabels = getConfig().getBoolean(CONFIG_SHOW_LABELS, true);
+				geneCanvas.clear();
+				//geneCanvas.setWindow(new TrackWindowImpl(width, s, e));
+				geneCanvas.setShowLabels(showLabels);
 
-		if ("pileup".equals(layout)) {
-			if (dataSet.read != null && !dataSet.read.isEmpty())
-				geneCanvas.draw(dataSet.read);
-			else
-				drawCoverage();
-		}
-		else {
-			drawCoverage();
-		}
+				String layout = getConfig().getString(CONFIG_LAYOUT, "pileup");
 
-		getFrame().loadingDone();
+				if ("pileup".equals(layout)) {
+					if (dataSet.read != null && !dataSet.read.isEmpty()) {
+						geneCanvas.draw(dataSet.read);
+					}
+					else
+						drawCoverage();
+				}
+				else {
+					drawCoverage();
+				}
+
+				getFrame().loadingDone();
+
+			}
+		});
 	}
 
 	private void drawCoverage() {
@@ -362,6 +364,9 @@ public class ReadTrack extends TrackBase {
 
 	@Override
 	public void setUp(TrackFrame trackFrame, TrackGroup group) {
+
+		geneCanvas.setTrackGroup(group);
+
 		update(group.getTrackWindow());
 		TrackConfig config = getConfig();
 		config.addHiddenConfiguration(CONFIG_LEFT_MARGIN, "0");
@@ -387,31 +392,38 @@ public class ReadTrack extends TrackBase {
 
 	protected void update(TrackWindow newWindow) {
 		// retrieve gene data from the API
-		int s = newWindow.getStartOnGenome();
-		int e = newWindow.getEndOnGenome();
 		String chr = getTrackGroupProperty(UTGBProperty.TARGET);
 
+		int leftMargin = getConfig().getInt(CONFIG_LEFT_MARGIN, 0);
+		int pixelSize = newWindow.getPixelWidth() - leftMargin;
+		final TrackWindow nw = newWindow.newPixelWidthWindow(pixelSize);
+
 		getFrame().setNowLoading();
+		DeferredCommand.addCommand(new Command() {
+			public void execute() {
+				geneCanvas.setWindow(nw);
+			}
+		});
 
 		String layout = getConfig().getString(CONFIG_LAYOUT, "pileup");
 
 		ReadQueryConfig queryConfig = new ReadQueryConfig(newWindow.getPixelWidth(), BrowserInfo.isCanvasSupported(), Layout.valueOf(Layout.class, layout
 				.toUpperCase()));
 
-		getBrowserService().getOnGenomeData(getGenomeDB(), new ChrLoc(chr, s, e), queryConfig, new AsyncCallback<OnGenomeDataSet>() {
+		getBrowserService().getOnGenomeData(getGenomeDB(), new ChrLoc(chr, nw.getStartOnGenome(), nw.getEndOnGenome()), queryConfig,
+				new AsyncCallback<OnGenomeDataSet>() {
 
-			public void onFailure(Throwable e) {
-				GWT.log("failed to retrieve gene data", e);
-				getFrame().loadingDone();
-			}
+					public void onFailure(Throwable e) {
+						GWT.log("failed to retrieve gene data", e);
+						getFrame().loadingDone();
+					}
 
-			public void onSuccess(OnGenomeDataSet readSet) {
-				dataSet = readSet;
+					public void onSuccess(OnGenomeDataSet readSet) {
+						dataSet = readSet;
+						refresh();
+					}
 
-				refresh();
-			}
-
-		});
+				});
 
 	}
 
