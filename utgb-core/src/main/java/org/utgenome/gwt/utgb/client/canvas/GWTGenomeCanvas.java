@@ -326,8 +326,15 @@ public class GWTGenomeCanvas extends Composite {
 	}
 
 	public void setWindow(TrackWindow w) {
-		this.trackWindow = w;
+		if (trackWindow != null) {
+			if (trackWindow.hasSameScale(w)) {
+				// slide the canvas
+				int newX = trackWindow.calcXPositionOnWindow(w.getStartOnGenome());
+				basePanel.setWidgetPosition(panel, -newX, 0);
+			}
+		}
 
+		this.trackWindow = w;
 		reverse = w.isReverseStrand();
 		intervalLayout.setTrackWindow(w);
 	}

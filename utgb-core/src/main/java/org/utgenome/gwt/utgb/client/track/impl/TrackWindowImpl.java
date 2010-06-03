@@ -126,4 +126,8 @@ public class TrackWindowImpl implements TrackWindow {
 		return s1 <= e2 && s2 <= e1;
 	}
 
+	public boolean hasSameScale(TrackWindow other) {
+		return this.getPixelWidth() == other.getPixelWidth() && this.getWidth() == other.getWidth();
+	}
+
 }

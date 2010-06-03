@@ -87,4 +87,6 @@ public interface TrackWindow {
 	public TrackWindow newPixelWidthWindow(int pixelSize);
 
 	public boolean hasOverlapWith(OnGenome g);
+
+	public boolean hasSameScale(TrackWindow other);
 }

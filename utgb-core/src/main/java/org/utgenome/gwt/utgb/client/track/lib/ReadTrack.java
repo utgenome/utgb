@@ -305,7 +305,6 @@ public class ReadTrack extends TrackBase {
 
 		geneCanvas.setShowLabels(getConfig().getBoolean(CONFIG_SHOW_LABELS, true));
 		geneCanvas.clear();
-		geneCanvas.setWindow(getTrackWindow());
 
 		String layout = getConfig().getString(CONFIG_LAYOUT, "pileup");
 		if ("pileup".equals(layout)) {
@@ -386,6 +385,7 @@ public class ReadTrack extends TrackBase {
 				.toUpperCase()));
 
 		getFrame().setNowLoading();
+		geneCanvas.setWindow(getTrackWindow());
 		getBrowserService().getOnGenomeData(getGenomeDB(), new ChrLoc(chr, newWindow.getStartOnGenome(), newWindow.getEndOnGenome()), queryConfig,
 				new AsyncCallback<OnGenomeDataSet>() {
 

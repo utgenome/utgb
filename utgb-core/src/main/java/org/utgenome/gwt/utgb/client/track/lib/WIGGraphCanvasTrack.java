@@ -43,7 +43,6 @@ import org.utgenome.gwt.utgb.client.track.TrackGroupProperty;
 import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChange;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.track.UTGBProperty;
-import org.utgenome.gwt.utgb.client.track.impl.TrackWindowImpl;
 import org.utgenome.gwt.utgb.client.util.Optional;
 import org.utgenome.gwt.utgb.client.util.Properties;
 import org.utgenome.gwt.widget.client.Style;
@@ -164,7 +163,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 		int trackHeight = config.getInt(CONFIG_TRACK_HEIGHT, 100);
 		boolean isLog = config.getBoolean(CONFIG_LOG_SCALE, false);
 		geneCanvas.clear();
-		geneCanvas.setTrackWindow(new TrackWindowImpl(width, s, e));
+
 		geneCanvas.setWindowHeight(trackHeight);
 		geneCanvas.setIsLog(isLog);
 
@@ -237,6 +236,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 
 		//final TrackWindow nw = newWindow.newPixelWidthWindow(newWindow.getPixelWidth() - leftMargin);
 		//refresh();
+		geneCanvas.setTrackWindow(newWindow);
 
 		getBrowserService().getCompactWigDataList(fileName, newWindow.getPixelWidth(), l, new AsyncCallback<List<CompactWIGData>>() {
 			TrackConfig config = getConfig();

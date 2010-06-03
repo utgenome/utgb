@@ -429,6 +429,14 @@ public class GWTGraphCanvas extends Composite {
 	}
 
 	public void setTrackWindow(TrackWindow w) {
+		if (trackWindow != null) {
+			if (trackWindow.hasSameScale(w)) {
+				// slide the canvas
+				int newX = trackWindow.calcXPositionOnWindow(w.getStartOnGenome());
+				panel.setWidgetPosition(canvas, -newX, 0);
+			}
+		}
+
 		trackWindow = w;
 	}
 
