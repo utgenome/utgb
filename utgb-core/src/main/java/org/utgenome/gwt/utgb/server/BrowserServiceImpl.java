@@ -605,6 +605,7 @@ public class BrowserServiceImpl extends RpcServlet implements BrowserService {
 	}
 
 	public List<CompactWIGData> getCompactWigDataList(String path, int windowWidth, ChrLoc location) {
+
 		List<WigGraphData> wig = getWigDataList(path, windowWidth, location);
 		ArrayList<CompactWIGData> cWig = new ArrayList<CompactWIGData>();
 

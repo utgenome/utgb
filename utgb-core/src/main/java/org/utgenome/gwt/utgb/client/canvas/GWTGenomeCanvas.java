@@ -19,8 +19,6 @@
 // GWTGenomeCanvas.java
 // Since: Jul 8, 2008
 //
-// $URL$ 
-// $Author$
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.canvas;
 
@@ -68,8 +66,6 @@ import com.google.gwt.widgetideas.graphics.client.GWTCanvas;
  * 
  */
 public class GWTGenomeCanvas extends Composite {
-
-	//private int windowWidth = 800;
 
 	private final int DEFAULT_GENE_HEIGHT = 9;
 	private int geneHeight = DEFAULT_GENE_HEIGHT;
@@ -216,7 +212,6 @@ public class GWTGenomeCanvas extends Composite {
 			else if (dragStartPoint.isUndefined()) {
 				dragStartPoint.set(new DragPoint(clientX, clientY));
 				Style.cursor(canvas, Style.CURSOR_RESIZE_E);
-				event.preventDefault();
 			}
 
 			break;

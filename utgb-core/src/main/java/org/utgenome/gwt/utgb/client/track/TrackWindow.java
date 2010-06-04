@@ -89,4 +89,6 @@ public interface TrackWindow {
 	public boolean hasOverlapWith(OnGenome g);
 
 	public boolean hasSameScale(TrackWindow other);
+
+	public TrackWindow mask(TrackWindow mask);
 }

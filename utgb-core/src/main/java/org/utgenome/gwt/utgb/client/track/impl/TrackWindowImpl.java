@@ -127,7 +127,26 @@ public class TrackWindowImpl implements TrackWindow {
 	}
 
 	public boolean hasSameScale(TrackWindow other) {
+		if (other == null)
+			return false;
 		return this.getPixelWidth() == other.getPixelWidth() && this.getWidth() == other.getWidth();
+	}
+
+	public TrackWindow mask(TrackWindow mask) {
+
+		int s, e, pixelWidth;
+		if (this.getStartOnGenome() < mask.getStartOnGenome()) {
+			s = this.getStartOnGenome();
+			e = mask.getStartOnGenome();
+			pixelWidth = calcXPositionOnWindow(e);
+		}
+		else {
+			s = mask.getEndOnGenome();
+			e = this.getEndOnGenome();
+			pixelWidth = this.getPixelWidth() - calcXPositionOnWindow(s);
+		}
+
+		return new TrackWindowImpl(pixelWidth, s, e);
 	}
 
 }

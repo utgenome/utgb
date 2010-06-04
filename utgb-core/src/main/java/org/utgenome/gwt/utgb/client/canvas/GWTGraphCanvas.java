@@ -440,6 +440,10 @@ public class GWTGraphCanvas extends Composite {
 		trackWindow = w;
 	}
 
+	public TrackWindow getTrackWindow() {
+		return trackWindow;
+	}
+
 	public void setWindowHeight(int windowHeight) {
 		this.windowHeight = windowHeight;
 		setPixelSize(trackWindow.getPixelWidth(), windowHeight);
