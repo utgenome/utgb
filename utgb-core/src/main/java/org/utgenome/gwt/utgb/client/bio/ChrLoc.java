@@ -39,4 +39,11 @@ public class ChrLoc implements IsSerializable {
 		this.start = start;
 		this.end = end;
 	}
+
+	public ChrLoc getLocForPositiveStrand() {
+		if (start < end)
+			return new ChrLoc(chr, start, end);
+		else
+			return new ChrLoc(chr, end, start);
+	}
 }

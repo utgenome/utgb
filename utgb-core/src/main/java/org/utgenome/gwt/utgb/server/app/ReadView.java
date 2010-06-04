@@ -101,6 +101,8 @@ public class ReadView extends WebTrackBase {
 		OnGenomeDataSet result = new OnGenomeDataSet();
 		StopWatch sw = new StopWatch();
 		DBType dbType = db.resolveDBType();
+		loc = loc.getLocForPositiveStrand();
+
 		try {
 			if (dbType == null)
 				throw new UTGBException(UTGBErrorCode.UnknownDBType, "auto detection of DBType failed : " + db);

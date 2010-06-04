@@ -47,10 +47,13 @@ public class TrackWindowImpl implements TrackWindow {
 	}
 
 	// @see org.utgenome.gwt.utgb.client.track.TrackWindow#calcXPositionOnWindow(int)
-	public int calcXPositionOnWindow(int indexOnGenome) {
+	public int getPixelXOf(int indexOnGenome) {
 		double v = (indexOnGenome - startIndexOnGenome) * (double) windowWidth;
 		double v2 = v / (endIndexOnGenome - startIndexOnGenome + 1);
-		return (int) v2;
+		if (!isReverseStrand())
+			return (int) v2;
+		else
+			return (int) (windowWidth - v2);
 	}
 
 	// @see org.utgenome.gwt.utgb.client.track.TrackWindow#getGenomeLengthScalePerWindowBit()
@@ -83,12 +86,12 @@ public class TrackWindowImpl implements TrackWindow {
 	public int calcGenomePosition(int xOnWindow) {
 		if (getStartOnGenome() <= getEndOnGenome()) {
 			double genomeLengthPerBit = (double) (endIndexOnGenome - startIndexOnGenome) / (double) windowWidth;
-			return (int) (startIndexOnGenome + (double) xOnWindow * genomeLengthPerBit);
+			return (int) (startIndexOnGenome + xOnWindow * genomeLengthPerBit);
 		}
 		else {
 			// reverse strand
 			double genomeLengthPerBit = (double) (startIndexOnGenome - endIndexOnGenome) / (double) windowWidth;
-			return (int) (endIndexOnGenome + (double) (windowWidth - xOnWindow) * genomeLengthPerBit);
+			return (int) (endIndexOnGenome + (windowWidth - xOnWindow) * genomeLengthPerBit);
 		}
 	}
 
@@ -138,12 +141,12 @@ public class TrackWindowImpl implements TrackWindow {
 		if (this.getStartOnGenome() < mask.getStartOnGenome()) {
 			s = this.getStartOnGenome();
 			e = mask.getStartOnGenome();
-			pixelWidth = calcXPositionOnWindow(e);
+			pixelWidth = getPixelXOf(e);
 		}
 		else {
 			s = mask.getEndOnGenome();
 			e = this.getEndOnGenome();
-			pixelWidth = this.getPixelWidth() - calcXPositionOnWindow(s);
+			pixelWidth = this.getPixelWidth() - getPixelXOf(s);
 		}
 
 		return new TrackWindowImpl(pixelWidth, s, e);

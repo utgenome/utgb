@@ -227,7 +227,7 @@ public class RibbonRuler extends Composite {
 			if (s <= 0)
 				s = 1;
 
-			float x = window.calcXPositionOnWindow(s);
+			float x = window.getPixelXOf(s);
 
 			canvas.beginPath();
 			canvas.moveTo(x + 0.5f, 0);

@@ -40,7 +40,7 @@ public interface TrackWindow {
 	 * @param indexOnGenome
 	 * @return relative X position in a window (0 origin).
 	 */
-	public int calcXPositionOnWindow(int indexOnGenome);
+	public int getPixelXOf(int indexOnGenome);
 
 	/**
 	 * @param xOnWindow
