@@ -132,6 +132,12 @@ public class WIGDatabaseReader {
 		minValue = Float.MAX_VALUE;
 		maxValue = Float.MIN_VALUE;
 
+		if (start > end) {
+			int tmp = start;
+			start = end;
+			end = tmp;
+		}
+
 		int rough = (int) Math.floor((end - start) / windowWidth);
 		if (rough < 1)
 			rough = 1;
