@@ -24,7 +24,6 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.bio;
 
-
 /**
  * Coding Sequence (CDS)
  * 
@@ -47,6 +46,11 @@ public class CDS extends Interval {
 
 	public CDS(int start, int end) {
 		super(start, end);
+	}
+
+	@Override
+	public String toString() {
+		return "(" + start + ", " + end + ")";
 	}
 
 }

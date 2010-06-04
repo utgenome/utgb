@@ -24,7 +24,6 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.bio;
 
-
 /**
  * Exon
  * 
@@ -44,6 +43,11 @@ public class Exon extends Interval {
 
 	public Exon(int start, int end) {
 		super(start, end);
+	}
+
+	@Override
+	public String toString() {
+		return "(" + start + ", " + end + ")";
 	}
 
 }
