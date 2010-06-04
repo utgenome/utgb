@@ -152,7 +152,7 @@ public class GWTGraphCanvas extends Composite {
 
 		if (dragStartPoint.isDefined() && trackWindow != null) {
 			DragPoint p = dragStartPoint.get();
-			int startDiff = trackWindow.calcGenomePosition(clientX) - trackWindow.calcGenomePosition(p.x);
+			int startDiff = trackWindow.convertToGenomePosition(clientX) - trackWindow.convertToGenomePosition(p.x);
 			if (startDiff != 0) {
 				int newStart = trackWindow.getStartOnGenome() - startDiff;
 				if (newStart < 1)
@@ -432,7 +432,7 @@ public class GWTGraphCanvas extends Composite {
 		if (trackWindow != null) {
 			if (trackWindow.hasSameScale(w)) {
 				// slide the canvas
-				int newX = trackWindow.getPixelXOf(w.getStartOnGenome());
+				int newX = trackWindow.convertToPixelX(w.getStartOnGenome());
 				panel.setWidgetPosition(canvas, -newX, 0);
 			}
 		}

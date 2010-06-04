@@ -276,8 +276,8 @@ public class RulerTrack extends TrackBase implements RangeSelectable {
 			x2OnTrackWindow = tmp;
 		}
 
-		int startOnGenome = w.calcGenomePosition((int) (x1OnTrackWindow * factor));
-		int endOnGenome = w.calcGenomePosition((int) (x2OnTrackWindow * factor));
+		int startOnGenome = w.convertToGenomePosition((int) (x1OnTrackWindow * factor));
+		int endOnGenome = w.convertToGenomePosition((int) (x2OnTrackWindow * factor));
 
 		getTrackGroup().getPropertyWriter().setTrackWindow(startOnGenome, endOnGenome);
 	}

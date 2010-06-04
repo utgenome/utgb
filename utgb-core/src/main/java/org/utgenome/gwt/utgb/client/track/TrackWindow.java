@@ -40,14 +40,14 @@ public interface TrackWindow {
 	 * @param indexOnGenome
 	 * @return relative X position in a window (0 origin).
 	 */
-	public int getPixelXOf(int indexOnGenome);
+	public int convertToPixelX(int indexOnGenome);
 
 	/**
 	 * @param xOnWindow
 	 *            calculate the genome index of a given x position in the current window
 	 * @return genome position
 	 */
-	public int calcGenomePosition(int xOnWindow);
+	public int convertToGenomePosition(int xOnWindow);
 
 	/**
 	 * @return pixel length / (genome end - genome start);
