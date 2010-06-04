@@ -59,10 +59,13 @@ import org.xerial.util.opt.OptionParserException;
 public class TomcatServer {
 	private static Logger _logger = Logger.getLogger(TomcatServer.class);
 
-	private TomcatServerConfiguration configuration = new TomcatServerConfiguration();
+	private TomcatServerConfiguration configuration;
 	private Embedded embeddedTomcat = null;
 	private Engine tomcatEngine = null;
 	private StandardHost tomcatHost = null;
+
+	static {
+	}
 
 	public static class Opt {
 		@Option(symbol = "h", longName = "help", description = "display help message")
@@ -155,9 +158,10 @@ public class TomcatServer {
 	 * 
 	 * @param port
 	 *            port used by the tomcat
+	 * @throws XerialException
 	 */
-	public TomcatServer(int port) {
-		configuration.setPort(port);
+	public TomcatServer(int port) throws XerialException {
+		this(TomcatServerConfiguration.newInstance(port));
 	}
 
 	/**
@@ -165,9 +169,33 @@ public class TomcatServer {
 	 * 
 	 * @param configuration
 	 *            configuration parameters
+	 * @throws XerialException
 	 */
-	public TomcatServer(TomcatServerConfiguration configuration) {
+	public TomcatServer(TomcatServerConfiguration configuration) throws XerialException {
 		setConfiguration(configuration);
+
+		_logger.debug("port: " + configuration.getPort());
+		_logger.debug("catalina base: " + configuration.getCatalinaBase());
+
+		try {
+			prepareScaffold(configuration.getCatalinaBase());
+		}
+		catch (IOException e) {
+			throw new XerialException(XerialErrorCode.IO_EXCEPTION, e);
+		}
+
+		// configure a logger
+		String logConfigPath = new File(configuration.getCatalinaBase(), "conf/logging.properties").getPath();
+		System.setProperty("catalina.base", configuration.getCatalinaBase());
+		System.setProperty("java.util.logging.manager", "org.apache.juli.ClassLoaderLogManager");
+		System.setProperty("java.util.logging.config.file", logConfigPath);
+
+		for (String p : new String[] { "catalina.base", "java.util.logging.manager", "java.util.logging.config.file" })
+			_logger.info(String.format("%s = %s", p, System.getProperty(p)));
+
+		if (_logger.isDebugEnabled())
+			_logger.debug("juli log config file: " + logConfigPath);
+
 	}
 
 	public void setConfiguration(TomcatServerConfiguration configuration) {
@@ -193,29 +221,6 @@ public class TomcatServer {
 	 *             when failed to launch tomcat
 	 */
 	public void start() throws XerialException {
-		_logger.debug("port: " + configuration.getPort());
-		_logger.debug("catalina base: " + configuration.getCatalinaBase());
-
-		try {
-			prepareScaffold(configuration.getCatalinaBase());
-		}
-		catch (IOException e) {
-			throw new XerialException(XerialErrorCode.IO_EXCEPTION, e);
-		}
-
-		String logConfigPath = new File(configuration.getCatalinaBase(), "conf/logging.properties").getPath();
-		// Setup the logging. catalina.base is referred in the
-		// logging.properties file
-		// System.setProperty("catalina.base", configuration.getCatalinaBase());
-		System.setProperty("catalina.base", "target/tomcat");
-		// System.setProperty("java.util.logging.manager", "org.apache.juli.ClassLoaderLogManager");
-		// System.setProperty("java.util.logging.config.file", "target/tomcat/conf/logging.properties");
-
-		for (String p : new String[] { "catalina.base", "java.util.logging.manager", "java.util.logging.config.file" })
-			_logger.info(String.format("%s = %s", p, System.getProperty(p)));
-
-		if (_logger.isDebugEnabled())
-			_logger.debug("juli log config file: " + logConfigPath);
 
 		// Create an embedded server
 		embeddedTomcat = new Embedded();

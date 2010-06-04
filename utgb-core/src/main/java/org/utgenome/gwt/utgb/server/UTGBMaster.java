@@ -239,7 +239,7 @@ public class UTGBMaster implements ServletContextListener {
 
 		// search SQLite database files
 		for (Database dbInfo : config.database) {
-			_logger.info("-database(" + dbInfo + ")");
+			_logger.trace("-database(" + dbInfo + ")");
 		}
 	}
 

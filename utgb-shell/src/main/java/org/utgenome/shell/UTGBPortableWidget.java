@@ -49,6 +49,7 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 
+import org.xerial.core.XerialException;
 import org.xerial.util.FileResource;
 import org.xerial.util.log.Logger;
 
@@ -78,6 +79,7 @@ public class UTGBPortableWidget extends JFrame implements ServerListener {
 			super(title);
 		}
 
+		@Override
 		public Insets getBorderInsets(Component c) {
 			return getBorderInsets(c, new Insets(0, 0, 0, 0));
 		}
@@ -247,8 +249,14 @@ public class UTGBPortableWidget extends JFrame implements ServerListener {
 			portNumberField.setEditable(false);
 			contextPathField.setEditable(false);
 
-			if (launcher != null)
-				launcher.startTomcatServer(config);
+			try {
+				if (launcher != null)
+					launcher.startTomcatServer(config);
+			}
+			catch (XerialException e) {
+				setStatus(MessageType.ERROR, "failed to start server: " + e.getMessage());
+				onPushStop();
+			}
 		}
 
 		public void onPushStop() {
@@ -432,7 +440,7 @@ public class UTGBPortableWidget extends JFrame implements ServerListener {
  */
 interface TomcatServerLauncher {
 
-	void startTomcatServer(UTGBPortableConfig config);
+	void startTomcatServer(UTGBPortableConfig config) throws XerialException;
 
 	void stopTomcatServer(UTGBPortableConfig config);
 

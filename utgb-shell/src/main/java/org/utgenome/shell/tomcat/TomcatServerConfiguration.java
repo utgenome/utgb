@@ -43,6 +43,12 @@ public class TomcatServerConfiguration {
 		this.catalinaBase = new File(getSystemProperty("catalina.base", workDir), "target/tomcat").getPath();
 	}
 
+	public static TomcatServerConfiguration newInstance(int port) {
+		TomcatServerConfiguration config = new TomcatServerConfiguration();
+		config.setPort(port);
+		return config;
+	}
+
 	private static String getSystemProperty(String key, String defaultValue) {
 		String value = System.getProperty("user.dir");
 		return value != null ? value : defaultValue;

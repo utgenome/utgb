@@ -75,6 +75,7 @@ public class Server extends UTGBShellCommand {
 			_logger.debug(option);
 
 		UTGBPortable server = new UTGBPortable(option);
+
 		server.addServerListener(new ServerListener() {
 			public void beforeStart() {
 				try {
@@ -165,6 +166,7 @@ public class Server extends UTGBShellCommand {
 		return "server";
 	}
 
+	@Override
 	public String getOneLinerDescription() {
 		return "start up the portable web server";
 	}

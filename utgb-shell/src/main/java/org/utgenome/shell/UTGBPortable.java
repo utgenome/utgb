@@ -63,7 +63,11 @@ public class UTGBPortable implements TomcatServerLauncher {
 			server.start();
 		}
 		catch (OptionParserException e) {
-			System.err.println(e.getMessage());
+			_logger.error(e);
+		}
+		catch (Exception e) {
+			_logger.error(e);
+			e.printStackTrace(System.err);
 		}
 	}
 
@@ -98,8 +102,10 @@ public class UTGBPortable implements TomcatServerLauncher {
 
 	/**
 	 * Starts the web server
+	 * 
+	 * @throws XerialException
 	 */
-	public void start() {
+	public void start() throws XerialException {
 
 		if (config.useGUI)
 			runInGUIMode();
@@ -116,9 +122,10 @@ public class UTGBPortable implements TomcatServerLauncher {
 		}
 	}
 
-	public void start(int terminationTime, TimeUnit timeUnit) {
+	public void start(int terminationTime, TimeUnit timeUnit) throws XerialException {
 		// add a shutdown hook when JVM terminates or GUI window is closed
 		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
 			public void run() {
 				stopTomcatServer(config);
 			}
@@ -162,7 +169,7 @@ public class UTGBPortable implements TomcatServerLauncher {
 
 	}
 
-	protected void runInCUIMode() {
+	protected void runInCUIMode() throws XerialException {
 
 		startTomcatServer(config);
 
@@ -215,18 +222,17 @@ public class UTGBPortable implements TomcatServerLauncher {
 
 	/**
 	 * starts the Tomcat server
+	 * 
+	 * @throws XerialException
 	 */
-	public void startTomcatServer(UTGBPortableConfig utgbPortableConfig) {
+	public void startTomcatServer(UTGBPortableConfig utgbPortableConfig) throws XerialException {
 		switch (serverStatus) {
 		case STOPPED:
 			// create a new instance of the TomcatServer
 			TomcatServerConfiguration tomcatConfig = new TomcatServerConfiguration();
 			// tomcatConfig.setCatalinaBase(utgbPortableConfig.workingDir);
 			tomcatConfig.setPort(utgbPortableConfig.portNumber);
-			if (tomcatServer == null)
-				tomcatServer = new TomcatServer(tomcatConfig);
-			else
-				tomcatServer.setConfiguration(tomcatConfig);
+			tomcatServer = new TomcatServer(tomcatConfig);
 
 			_logger.debug(SwingUtilities.isEventDispatchThread() ? "event dispatch thread" : "normal thread");
 			_logger.info("starting a Tomcat server: \n" + utgbPortableConfig.toString());

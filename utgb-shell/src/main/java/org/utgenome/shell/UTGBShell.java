@@ -53,6 +53,10 @@ import org.xerial.util.opt.OptionParserException;
  * 
  */
 public class UTGBShell {
+
+	static {
+	}
+
 	private static Logger _logger = Logger.getLogger(UTGBShell.class);
 
 	private static TreeMap<String, UTGBShellCommand> subCommandTable = new TreeMap<String, UTGBShellCommand>();
