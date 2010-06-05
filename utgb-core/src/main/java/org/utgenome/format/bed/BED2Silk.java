@@ -52,12 +52,6 @@ import org.xerial.util.log.Logger;
  */
 public class BED2Silk {
 
-	// private File bedFile;
-
-	// private BEDHeaderDescription browser;
-	// private BEDHeaderDescription track;
-	// private ArrayList<String[]> genes;
-
 	private static Logger _logger = Logger.getLogger(BED2Silk.class);
 
 	private final BufferedReader reader;
@@ -108,12 +102,13 @@ public class BED2Silk {
 	 * @throws IOException
 	 */
 	public BED2Silk(Reader bedFile) throws IOException {
-
-		// track = new BEDHeaderDescription();
-		// genes = new ArrayList<String[]>();
-
 		this.reader = new BufferedReader(bedFile);
 
+	}
+
+	public void close() throws IOException {
+		if (reader != null)
+			reader.close();
 	}
 
 	/**
@@ -299,7 +294,4 @@ public class BED2Silk {
 		}
 	}
 
-	private static String shiftOneBase(Long baseNumber) {
-		return String.valueOf(baseNumber.longValue() + 1);
-	}
 }

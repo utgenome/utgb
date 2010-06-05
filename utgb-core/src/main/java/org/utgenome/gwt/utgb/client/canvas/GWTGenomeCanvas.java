@@ -237,7 +237,7 @@ public class GWTGenomeCanvas extends Composite {
 				int newStart = trackWindow.getStartOnGenome() - startDiff;
 				if (newStart < 1)
 					newStart = 1;
-				int newEnd = newStart + trackWindow.getWidth();
+				int newEnd = newStart + trackWindow.getSequenceLength();
 				TrackWindow newWindow = trackWindow.newWindow(newStart, newEnd);
 				if (trackGroup != null)
 					trackGroup.setTrackWindow(newWindow);

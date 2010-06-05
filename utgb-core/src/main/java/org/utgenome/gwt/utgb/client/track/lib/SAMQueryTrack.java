@@ -111,18 +111,18 @@ public class SAMQueryTrack extends TrackBase {
 	public void setUp(TrackFrame trackFrame, TrackGroup group) {
 
 		TrackConfig config = getConfig();
-		config.addConfigParameter("BAM File Name", new StringType("bamFileName"), bamFileName);
+		config.addConfig("BAM File Name", new StringType("bamFileName"), bamFileName);
 		//		config.addConfigParameter("Index File Name", new StringType("indexFileName"), indexFileName);
 		indexFileName = bamFileName + ".bai";
-		config.addConfigParameter("Reference Sequence File Name", new StringType("refSeqFileName"), refSeqFileName);
+		config.addConfig("Reference Sequence File Name", new StringType("refSeqFileName"), refSeqFileName);
 		ValueDomain colorModeDomain = new ValueDomain();
 		colorModeDomain.addValueList(new Value("nucleotide"));
 		colorModeDomain.addValueList(new Value("mapping quality"));
 		colorModeDomain.addValueList(new Value("base quality"));
-		config.addConfigParameter("Color Mode", new StringType("colorMode", colorModeDomain), colorMode);
-		config.addConfigParameter("Target Name", new StringType("target"), target);
-		config.addConfigParameter("Start", new StringType("start"), String.valueOf(start));
-		config.addConfigParameter("End", new StringType("end"), String.valueOf(end));
+		config.addConfig("Color Mode", new StringType("colorMode", colorModeDomain), colorMode);
+		config.addConfig("Target Name", new StringType("target"), target);
+		config.addConfig("Start", new StringType("start"), String.valueOf(start));
+		config.addConfig("End", new StringType("end"), String.valueOf(end));
 		samCanvas.setWindow(group.getTrackWindow(), leftMargin);
 
 		update(group.getTrackWindow());

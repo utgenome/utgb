@@ -128,16 +128,16 @@ public class WIGGraphCanvasTrack extends TrackBase {
 		graphCanvas.setTrackGroup(group);
 
 		TrackConfig config = getConfig();
-		config.addConfigParameter("Path", new StringType(CONFIG_FILENAME));
-		config.addConfigParameter("Y Max", new FloatType(CONFIG_MAX_VALUE), "100");
-		config.addConfigParameter("Y Min", new FloatType(CONFIG_MIN_VALUE), "0");
-		config.addConfigParameter("Auto Scale", new BooleanType(CONFIG_AUTO_RANGE), "false");
-		config.addConfigParameter("Log Scale", new BooleanType(CONFIG_LOG_SCALE), "false");
-		config.addConfigParameter("Graph Color", new StringType(CONFIG_COLOR), "");
-		config.addConfigParameter("Show Zero Value", new BooleanType(CONFIG_SHOW_ZERO_VALUE), "false");
-		config.addConfigParameter("Draw Scale", new BooleanType(CONFIG_DRAW_SCALE), "true");
-		config.addConfigParameter("Show Scale Label", new BooleanType(CONFIG_SHOW_SCALE_LABEL), "true");
-		config.addConfigParameter("Pixel Height", new IntegerType(CONFIG_TRACK_HEIGHT), "100");
+		config.addConfig("Path", new StringType(CONFIG_FILENAME));
+		config.addConfig("Y Max", new FloatType(CONFIG_MAX_VALUE), "100");
+		config.addConfig("Y Min", new FloatType(CONFIG_MIN_VALUE), "0");
+		config.addConfig("Auto Scale", new BooleanType(CONFIG_AUTO_RANGE), "false");
+		config.addConfig("Log Scale", new BooleanType(CONFIG_LOG_SCALE), "false");
+		config.addConfig("Graph Color", new StringType(CONFIG_COLOR), "");
+		config.addConfig("Show Zero Value", new BooleanType(CONFIG_SHOW_ZERO_VALUE), "false");
+		config.addConfig("Draw Scale", new BooleanType(CONFIG_DRAW_SCALE), "true");
+		config.addConfig("Show Scale Label", new BooleanType(CONFIG_SHOW_SCALE_LABEL), "true");
+		config.addConfig("Pixel Height", new IntegerType(CONFIG_TRACK_HEIGHT), "100");
 
 		update(group.getTrackWindow());
 	}

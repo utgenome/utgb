@@ -125,7 +125,7 @@ public class ChromosomeMapTrack extends TrackBase {
 
 			private ChrLoc getGenomeRange(int x, int y) {
 				ChrLoc chrLoc = new ChrLoc();
-				int viewWidth = getTrackGroup().getTrackWindow().getWidth();
+				int viewWidth = getTrackGroup().getTrackWindow().getSequenceLength();
 
 				int windowWidth;
 				int index;
@@ -263,8 +263,8 @@ public class ChromosomeMapTrack extends TrackBase {
 		TrackConfig config = getConfig();
 		//config.addConfigParameter("Track Base URL", new StringType(CONFIG_TRACK_BASE_URL));
 		ValueDomain displayTypeDomain = ValueDomain.createNewValueDomain(new String[] { "normal", "compact", "rotate" });
-		config.addConfigParameter("Display Type", new StringType(CONFIG_DISPLAY_TYPE, displayTypeDomain), "normal");
-		config.addHiddenConfiguration(CONFIG_LEFT_MARGIN, "0");
+		config.addConfig("Display Type", new StringType(CONFIG_DISPLAY_TYPE, displayTypeDomain), "normal");
+		config.addHiddenConfig(CONFIG_LEFT_MARGIN, "0");
 	}
 
 	@Override

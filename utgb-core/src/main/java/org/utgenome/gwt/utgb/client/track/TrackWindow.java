@@ -28,7 +28,8 @@ import org.utgenome.gwt.utgb.client.bio.OnGenome;
 import org.utgenome.gwt.utgb.client.util.xml.XMLWriter;
 
 /**
- * {@link TrackWindow} manages a track-window size and a region on the genome displayed in the window.
+ * {@link TrackWindow} manages a track-window size and a region on the genome displayed in the window. An instance of
+ * TrackWindow is immutable, so you can safely copy a reference of TrackWindow to preserve a current track window state.
  * 
  * @author leo
  * 
@@ -62,7 +63,7 @@ public interface TrackWindow {
 	/**
 	 * @return the sequence width
 	 */
-	public int getWidth();
+	public int getSequenceLength();
 
 	/**
 	 * @return start position on the genome currently displayed in the window

@@ -27,15 +27,38 @@ package org.utgenome.gwt.utgb.client.db.datatype;
 
 import com.google.gwt.json.client.JSONValue;
 
+/**
+ * A common interface for data types of configuration parameters, database contents etc.
+ * 
+ * @author leo
+ * 
+ */
+public interface DataType {
 
-public interface DataType  {
-
+	/**
+	 * parameter name of this type
+	 * 
+	 * @return
+	 */
 	public String getName();
+
+	/**
+	 * Get a user interface for retrieving the data of this data type
+	 * 
+	 * @return
+	 */
 	public InputForm getInputForm();
+
+	/**
+	 * 
+	 * @param json
+	 * @return
+	 */
 	public String toString(JSONValue json);
+
 	public String getTypeName();
-	
+
 	public boolean isPrimaryKey();
+
 	public boolean isNotNull();
 }
-

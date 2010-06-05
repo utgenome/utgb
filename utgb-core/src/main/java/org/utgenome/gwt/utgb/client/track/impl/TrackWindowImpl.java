@@ -76,7 +76,7 @@ public class TrackWindowImpl implements TrackWindow {
 		return endIndexOnGenome;
 	}
 
-	public int getWidth() {
+	public int getSequenceLength() {
 		if (startIndexOnGenome <= endIndexOnGenome)
 			return endIndexOnGenome - startIndexOnGenome;
 		else
@@ -132,7 +132,7 @@ public class TrackWindowImpl implements TrackWindow {
 	public boolean hasSameScale(TrackWindow other) {
 		if (other == null)
 			return false;
-		return this.getPixelWidth() == other.getPixelWidth() && this.getWidth() == other.getWidth();
+		return this.getPixelWidth() == other.getPixelWidth() && this.getSequenceLength() == other.getSequenceLength();
 	}
 
 	public TrackWindow mask(TrackWindow mask) {

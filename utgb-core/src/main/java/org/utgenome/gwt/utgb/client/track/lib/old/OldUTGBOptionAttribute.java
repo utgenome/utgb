@@ -67,11 +67,11 @@ public abstract class OldUTGBOptionAttribute {
 
 		public void setConfig(TrackConfig trackConfig) {
 			if (dispType != null)
-				trackConfig.addConfigParameter(dispType, "");
+				trackConfig.addConfig(dispType, "");
 			if (colorType != null)
-				trackConfig.addConfigParameter(colorType, "");
+				trackConfig.addConfig(colorType, "");
 			if (selectType != null)
-				trackConfig.addConfigParameter(selectType, "");
+				trackConfig.addConfig(selectType, "");
 		}
 
 		public void setParameters(Map<String, String> parameterMap) {
@@ -106,11 +106,11 @@ public abstract class OldUTGBOptionAttribute {
 
 		public void setConfig(TrackConfig trackConfig) {
 			if (gradationType != null)
-				trackConfig.addConfigParameter(gradationType, "");
+				trackConfig.addConfig(gradationType, "");
 			if (uboundType != null)
-				trackConfig.addConfigParameter(uboundType, "");
+				trackConfig.addConfig(uboundType, "");
 			if (lboundType != null)
-				trackConfig.addConfigParameter(lboundType, "");
+				trackConfig.addConfig(lboundType, "");
 		}
 
 		public void setParameters(Map<String, String> parameterMap) {

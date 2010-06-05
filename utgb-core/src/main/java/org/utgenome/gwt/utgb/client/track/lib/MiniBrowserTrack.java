@@ -161,7 +161,7 @@ public class MiniBrowserTrack extends TrackBase {
 
 		// set up the configuration panel
 
-		config.addConfigParameter("URL", new StringType("URL"), trackBaseURL);
+		config.addConfig("URL", new StringType("URL"), trackBaseURL);
 	}
 
 	@Override

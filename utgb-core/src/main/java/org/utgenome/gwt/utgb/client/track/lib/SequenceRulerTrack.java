@@ -217,7 +217,7 @@ public class SequenceRulerTrack extends TrackBase implements RangeSelectable {
 		TrackWindow w = group.getTrackWindow();
 		// set up the configuration panel
 
-		getConfig().addConfigParameter("Input Window Size (BP)", new IntegerType(UTGBProperty.SEQUENCE_SIZE), Integer.toString(_sequenceSize));
+		getConfig().addConfig("Input Window Size (BP)", new IntegerType(UTGBProperty.SEQUENCE_SIZE), Integer.toString(_sequenceSize));
 		ValueDomain windowSizeDomain = new ValueDomain();
 		windowSizeDomain.addValueList(new Value("1K", "1000"));
 		windowSizeDomain.addValueList(new Value("10K", "10000"));
@@ -226,7 +226,7 @@ public class SequenceRulerTrack extends TrackBase implements RangeSelectable {
 		windowSizeDomain.addValueList(new Value("10M", "10000000"));
 		windowSizeDomain.addValueList(new Value("100M", "100000000"));
 		windowSizeDomain.addValueList(new Value("1G", "1000000000"));
-		getConfig().addConfigParameter("Window Size", new IntegerType("window_size", windowSizeDomain), Integer.toString(10000));
+		getConfig().addConfig("Window Size", new IntegerType("window_size", windowSizeDomain), Integer.toString(10000));
 	}
 
 	@Override

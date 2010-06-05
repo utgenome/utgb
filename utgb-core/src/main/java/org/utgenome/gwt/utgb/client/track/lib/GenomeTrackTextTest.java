@@ -180,7 +180,7 @@ public class GenomeTrackTextTest extends TrackBase {
 		}
 
 		// set up the configuration panel
-		config.addConfigParameter("Track Base URL", new StringType("baseURL"), trackBaseURL);
+		config.addConfig("Track Base URL", new StringType("baseURL"), trackBaseURL);
 
 	}
 

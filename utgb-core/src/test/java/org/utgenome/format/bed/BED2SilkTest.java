@@ -24,52 +24,17 @@
 //--------------------------------------
 package org.utgenome.format.bed;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.StringReader;
-
 import org.junit.Test;
-import org.utgenome.UTGBException;
+import org.xerial.util.FileResource;
+import org.xerial.util.log.Logger;
 
-public class BED2SilkTest
-{
+public class BED2SilkTest {
+	private static Logger _logger = Logger.getLogger(BED2SilkTest.class);
 
-    /**
-     * @param args
-     * @throws IOException
-     */
-    public static void main(String[] args) throws IOException
-    {
-        // TODO Auto-generated method stub
-        BED2Silk bed2silk;
-        try
-        {
-            bed2silk = new BED2Silk(new File("db/sample.bed"));
-            //			PipedWriter out = new PipedWriter();
-            //			PipedReader in = new PipedReader(out);
-            String in = new String();
-            in = bed2silk.toSilk();
-
-            //			BufferedReader reader = new BufferedReader(in);
-            StringReader reader = new StringReader(in);
-
-            //			for(String s;(s=reader.readLine())!=null;){
-            System.out.println(in);
-            //			}
-
-            //			in.close();
-        }
-        catch (UTGBException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-    }
-
-    @Test
-    public void test()
-    {
-
-    }
+	@Test
+	public void test() throws Exception {
+		BED2Silk b2s = new BED2Silk(FileResource.open(BED2SilkTest.class, "small.bed"));
+		String s = b2s.toSilk();
+		_logger.info(s);
+	}
 }

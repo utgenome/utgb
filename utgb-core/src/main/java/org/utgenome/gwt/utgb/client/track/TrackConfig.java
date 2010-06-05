@@ -26,8 +26,12 @@ package org.utgenome.gwt.utgb.client.track;
 
 import java.util.HashMap;
 
+import org.utgenome.gwt.utgb.client.db.datatype.BooleanType;
 import org.utgenome.gwt.utgb.client.db.datatype.DataType;
+import org.utgenome.gwt.utgb.client.db.datatype.DoubleType;
 import org.utgenome.gwt.utgb.client.db.datatype.InputForm;
+import org.utgenome.gwt.utgb.client.db.datatype.IntegerType;
+import org.utgenome.gwt.utgb.client.db.datatype.StringType;
 import org.utgenome.gwt.utgb.client.track.impl.TrackConfigChangeImpl;
 import org.utgenome.gwt.utgb.client.ui.DraggableTable;
 import org.utgenome.gwt.utgb.client.ui.Icon;
@@ -121,21 +125,37 @@ public class TrackConfig extends PopupPanel {
 		setWidth("500px");
 	}
 
-	public void addHiddenConfiguration(String paramName, String defaultValue) {
+	public void addConfigString(String label, String paramName, String defaultValue) {
+		_configTable.addConfiguration(new StringType(paramName), label, defaultValue);
+	}
+
+	public void addConfigInt(String label, String paramName, int defaultValue) {
+		_configTable.addConfiguration(new IntegerType(paramName), label, Integer.toString(defaultValue));
+	}
+
+	public void addConfigBoolean(String label, String paramName, boolean defaultValue) {
+		_configTable.addConfiguration(new BooleanType(paramName), label, Boolean.toString(defaultValue));
+	}
+
+	public void addConfigDouble(String label, String paramName, double defaultValue) {
+		_configTable.addConfiguration(new DoubleType(paramName), label, Double.toString(defaultValue));
+	}
+
+	public void addHiddenConfig(String paramName, String defaultValue) {
 		properties.put(paramName, properties.get(paramName, defaultValue));
 	}
 
-	public void addConfigParameter(DataType dataType, String defaultValue) {
+	public void addConfig(DataType dataType, String defaultValue) {
 		_configTable.addConfiguration(dataType, defaultValue);
 	}
 
-	public void addConfigParameter(String label, DataType dataType, String defaultValue) {
+	public void addConfig(String label, DataType dataType, String defaultValue) {
 		_configTable.addConfiguration(dataType, label, defaultValue);
 	}
 
-	public void addConfigParameter(String label, DataType dataType) {
+	public void addConfig(String label, DataType dataType) {
 		String defaultValue = properties.get(dataType.getName());
-		addConfigParameter(label, dataType, defaultValue);
+		addConfig(label, dataType, defaultValue);
 	}
 
 	public String getParameter(String parameterName) {

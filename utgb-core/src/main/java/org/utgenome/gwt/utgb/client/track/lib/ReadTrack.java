@@ -238,7 +238,7 @@ public class ReadTrack extends TrackBase {
 		if (url.contains("%rend"))
 			url = url.replaceAll("%rend", Integer.toString(w.getEndOnGenome()));
 		if (url.contains("%rlength"))
-			url = url.replaceAll("%rlength", Integer.toString(w.getWidth()));
+			url = url.replaceAll("%rlength", Integer.toString(w.getSequenceLength()));
 		if (url.contains("%pixelwidth"))
 			url = url.replaceAll("%pixelwidth", Integer.toString(w.getPixelWidth()));
 		String chr = getTrackGroupProperty(UTGBProperty.TARGET);
@@ -355,23 +355,23 @@ public class ReadTrack extends TrackBase {
 
 		update(group.getTrackWindow());
 		TrackConfig config = getConfig();
-		config.addHiddenConfiguration(CONFIG_LEFT_MARGIN, "0");
-		config.addConfigParameter("DB Path", new StringType(CONFIG_PATH));
+		config.addHiddenConfig(CONFIG_LEFT_MARGIN, "0");
+		config.addConfig("DB Path", new StringType(CONFIG_PATH));
 
-		config.addHiddenConfiguration(CONFIG_DB_TYPE, "AUTO");
+		config.addHiddenConfig(CONFIG_DB_TYPE, "AUTO");
 		//ValueDomain dbTypes = ValueDomain.createNewValueDomain(DBType.getDBTypeList());
 		//config.addConfigParameter("DB Type", new StringType(CONFIG_DB_TYPE, dbTypes), "AUTO");
 
 		ValueDomain layoutTypes = ValueDomain.createNewValueDomain(new String[] { "pileup", "coverage" });
-		config.addConfigParameter("Layout", new StringType(CONFIG_LAYOUT, layoutTypes), "pileup");
-		config.addConfigParameter("Show Labels", new BooleanType(CONFIG_SHOW_LABELS), "true");
-		config.addConfigParameter("Coverage Display Style", new StringType(CONFIG_COVERAGE_STYLE, ValueDomain.createNewValueDomain(new String[] { "default",
+		config.addConfig("Layout", new StringType(CONFIG_LAYOUT, layoutTypes), "pileup");
+		config.addConfig("Show Labels", new BooleanType(CONFIG_SHOW_LABELS), "true");
+		config.addConfig("Coverage Display Style", new StringType(CONFIG_COVERAGE_STYLE, ValueDomain.createNewValueDomain(new String[] { "default",
 				"smooth" })), "default");
 		ValueDomain actionTypes = ValueDomain.createNewValueDomain(new String[] { "none", "link", "info", "set" });
-		config.addConfigParameter("On Click Action", new StringType(CONFIG_ONCLICK_ACTION, actionTypes), "link");
-		config.addConfigParameter("On Click URL", new StringType(CONFIG_ONCLICK_URL), "http://www.google.com/search?q=%q");
-		config.addConfigParameter("On Click - Set Key", new StringType(CONFIG_ONCLICK_P_KEY), "read");
-		config.addConfigParameter("On Click - Set Value", new StringType(CONFIG_ONCLICK_P_VALUE), "%q");
+		config.addConfig("On Click Action", new StringType(CONFIG_ONCLICK_ACTION, actionTypes), "link");
+		config.addConfig("On Click URL", new StringType(CONFIG_ONCLICK_URL), "http://www.google.com/search?q=%q");
+		config.addConfig("On Click - Set Key", new StringType(CONFIG_ONCLICK_P_KEY), "read");
+		config.addConfig("On Click - Set Value", new StringType(CONFIG_ONCLICK_P_VALUE), "%q");
 
 		updateClickAction();
 	}

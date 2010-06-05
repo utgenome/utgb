@@ -116,13 +116,13 @@ public class SAMTrack extends TrackBase {
 	@Override
 	public void setUp(TrackFrame trackFrame, TrackGroup group) {
 		TrackConfig config = getConfig();
-		config.addConfigParameter("Read File Name", new StringType("readFileName"), readFileName);
-		config.addConfigParameter("Reference Sequence File Name", new StringType("refSeqFileName"), refSeqFileName);
+		config.addConfig("Read File Name", new StringType("readFileName"), readFileName);
+		config.addConfig("Reference Sequence File Name", new StringType("refSeqFileName"), refSeqFileName);
 		ValueDomain colorModeDomain = new ValueDomain();
 		colorModeDomain.addValueList(new Value("nucleotide"));
 		colorModeDomain.addValueList(new Value("mapping quality"));
 		colorModeDomain.addValueList(new Value("base quality"));
-		config.addConfigParameter("Color Mode", new StringType("colorMode", colorModeDomain), colorMode);
+		config.addConfig("Color Mode", new StringType("colorMode", colorModeDomain), colorMode);
 		samCanvas.setWindow(group.getTrackWindow(), leftMargin);
 
 		update(group.getTrackWindow());

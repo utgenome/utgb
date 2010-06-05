@@ -177,8 +177,8 @@ public class GenomeTrack extends TrackBase {
 
 		// set up the configuration panel
 		TrackConfig config = getConfig();
-		config.addConfigParameter("Track Base URL", new StringType("baseURL"), trackBaseURL);
-		config.addConfigParameter("Track URL", new StringType("trackURL"), trackURL);
+		config.addConfig("Track Base URL", new StringType("baseURL"), trackBaseURL);
+		config.addConfig("Track URL", new StringType("trackURL"), trackURL);
 	}
 
 	@Override

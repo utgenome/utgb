@@ -405,7 +405,7 @@ public class OldUTGBTrack extends TrackBase {
 								optionAttribute.setConfig(getConfig());
 							}
 						}
-						getConfig().addConfigParameter(new StringType("URL"), "");
+						getConfig().addConfig(new StringType("URL"), "");
 					}
 					final NodeList layerNodes = dom.getElementsByTagName("layer");
 					for (int i = 0; i < layerNodes.getLength(); i++) {

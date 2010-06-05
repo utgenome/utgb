@@ -59,7 +59,7 @@ public class DASTrack extends ReadTrack {
 	public void setUp(TrackFrame trackFrame, TrackGroup group) {
 		super.setUp(trackFrame, group);
 
-		getConfig().addConfigParameter("DAS Data Type", new StringType(CONFIG_DAS_TYPE));
+		getConfig().addConfig("DAS Data Type", new StringType(CONFIG_DAS_TYPE));
 	}
 
 	@Override
