@@ -24,7 +24,13 @@
 //--------------------------------------
 package org.utgenome.format.bed;
 
+import static org.junit.Assert.assertEquals;
+
+import java.io.StringReader;
+
 import org.junit.Test;
+import org.xerial.lens.Lens;
+import org.xerial.lens.ObjectHandler;
 import org.xerial.util.FileResource;
 import org.xerial.util.log.Logger;
 
@@ -36,5 +42,26 @@ public class BED2SilkTest {
 		BED2Silk b2s = new BED2Silk(FileResource.open(BED2SilkTest.class, "small.bed"));
 		String s = b2s.toSilk();
 		_logger.info(s);
+		Lens.findFromSilk(new StringReader(s), "gene", BEDGene.class, new ObjectHandler<BEDGene>() {
+			public void handle(BEDGene g) throws Exception {
+				if (g.getName().equals("Pos1")) {
+					assertEquals("chr7", g.coordinate);
+					assertEquals(127471197, g.getStart());
+					assertEquals(127472364, g.getEnd());
+					assertEquals('+', g.getStrand());
+					assertEquals("#ff0000", g.getColor());
+				}
+				else if (g.getName().equals("Pos2")) {
+					//127472363	127473530	Pos2	200	+	127472363	127473530	255,0,0
+					assertEquals("chr7", g.coordinate);
+					assertEquals(127472364, g.getStart());
+					assertEquals(127473531, g.getEnd());
+					assertEquals('+', g.getStrand());
+					assertEquals("#ff0000", g.getColor());
+				}
+			}
+
+		});
+
 	}
 }
