@@ -4,4 +4,4 @@ browser hide all
 
 track name="Item,RGB,Demo2" description="Item RGB demonstration2" visibility=2 itemRgb="On" useScore=1	color=0,128,0 url="http://genome.ucsc.edu/goldenPath/help/clones.html#$$"
 chr7 127471196 127472363 Pos1 300 + 127471196 127472363 255,0,0 
-chr7	127472363	127473530	Pos2	200	+	127472363	127473530	255,0,0
+chr7	127472363	127473530	Pos2	200	+	127472363	127473530	255,255,0

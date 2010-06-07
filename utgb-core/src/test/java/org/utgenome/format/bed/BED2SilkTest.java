@@ -57,7 +57,7 @@ public class BED2SilkTest {
 					assertEquals(127472364, g.getStart());
 					assertEquals(127473531, g.getEnd());
 					assertEquals('+', g.getStrand());
-					assertEquals("#ff0000", g.getColor());
+					assertEquals("#ffff00", g.getColor());
 				}
 			}
 
