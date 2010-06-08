@@ -144,4 +144,13 @@ public class Interval implements OnGenome, Comparable<Interval>, Serializable {
 			return diff < 0 ? -1 : 1;
 	}
 
+	public String toJSONArray() {
+		return "[" + start + "," + end + "]";
+	}
+
+	@Override
+	public String toString() {
+		return "(" + start + ", " + end + ")";
+	}
+
 }

@@ -48,9 +48,4 @@ public class CDS extends Interval {
 		super(start, end);
 	}
 
-	@Override
-	public String toString() {
-		return "(" + start + ", " + end + ")";
-	}
-
 }

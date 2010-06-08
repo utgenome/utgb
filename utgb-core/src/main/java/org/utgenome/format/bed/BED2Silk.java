@@ -40,7 +40,9 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.Tree;
 import org.utgenome.UTGBException;
+import org.utgenome.gwt.utgb.client.util.StringUtil;
 import org.xerial.core.XerialException;
+import org.xerial.silk.SilkWriter;
 import org.xerial.util.bean.impl.BeanUtilImpl;
 import org.xerial.util.log.Logger;
 
@@ -53,7 +55,6 @@ import org.xerial.util.log.Logger;
 public class BED2Silk {
 
 	private static Logger _logger = Logger.getLogger(BED2Silk.class);
-
 	private final BufferedReader reader;
 
 	public static class BEDHeaderDescription {
@@ -118,11 +119,12 @@ public class BED2Silk {
 	 * @throws UTGBShellException
 	 */
 
-	public void toSilk(PrintWriter out) throws IOException, UTGBException {
+	public void toSilk(PrintWriter pout) throws IOException, UTGBException {
+
+		SilkWriter out = new SilkWriter(pout);
 
 		// print header line
-		out.println("%silk(version:1.0)");
-		out.flush();
+		out.preamble();
 
 		int geneCount = 0;
 
@@ -137,26 +139,25 @@ public class BED2Silk {
 				else if (line.startsWith("track")) {
 					// print track line
 					BEDHeaderDescription track = readTrackLine(line);
-					StringBuffer sb = new StringBuffer("\n-track(");
+					SilkWriter trackNode = out.node("track");
 					for (BEDHeaderAttribute a : track.attributes) {
-						sb.append(a.name + ":");
-						if ((a.value.contains(",") || a.value.contains(" ")) && !a.value.startsWith("\"") && !a.value.endsWith("\"")) {
-							sb.append("\"" + a.value + "\", ");
-						}
-						else {
-							sb.append(a.value + ", ");
-						}
+						trackNode.leaf(a.name, StringUtil.unquote(a.value));
 					}
-					sb.delete(sb.lastIndexOf(","), sb.length()).append(")");
-					out.println(sb.toString());
-					out.flush();
 				}
 				else {
 					String[] gene = readBEDLine(line);
 					if (geneCount == 0) {
 						// print gene header line
-						out.println(" -gene(coordinate, start, end, name, strand, cds(start, end), exon(start, end)*, color, _[json])|");
-						out.flush();
+						SilkWriter geneNode = out.tabDataSchema("gene");
+						geneNode.attribute("coordinate");
+						geneNode.attribute("start");
+						geneNode.attribute("end");
+						geneNode.attribute("name");
+						geneNode.attribute("strand");
+						geneNode.attribute("cds(start, end)");
+						geneNode.attribute("exon(strat, end)*");
+						geneNode.attribute("color");
+						geneNode.attribute("_[json]");
 					}
 
 					geneCount++;
@@ -219,8 +220,7 @@ public class BED2Silk {
 						if (gene.length >= 5) {
 							sb.append("{\"score\":" + gene[4] + "}");
 						}
-						out.println(sb.toString());
-						out.flush();
+						out.dataLine(sb.toString());
 					}
 
 				}
@@ -244,6 +244,8 @@ public class BED2Silk {
 				continue;
 			}
 		}
+
+		out.endDocument();
 
 	}
 
