@@ -26,6 +26,7 @@ import net.sf.samtools.util.CloseableIterator;
 
 import org.utgenome.UTGBErrorCode;
 import org.utgenome.UTGBException;
+import org.utgenome.format.bed.BEDDatabase;
 import org.utgenome.graphics.GenomeWindow;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.DASLocation;
@@ -119,7 +120,7 @@ public class ReadView extends WebTrackBase {
 			}
 				break;
 			case BED: {
-				result.read = BEDViewer.query(db.path, loc);
+				result.read = BEDDatabase.overlapQuery(new File(getProjectRootPath(), db.path), loc);
 				break;
 			}
 			case DAS: {

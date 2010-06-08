@@ -48,7 +48,14 @@ import org.xerial.util.bean.impl.BeanUtilImpl;
 import org.xerial.util.log.Logger;
 
 /**
- * Converting BED into Silk format
+ * Converting BED into Silk format.
+ * 
+ * 
+ * <p>
+ * Note that BED is a 0-based gene data format, while UTGB uses 1-based [start, end) interval representation. To fill
+ * the gap between BED and UTGB, BED2Silk translates BED's 0-based entries into 1-based ones.
+ * </p>
+ * 
  * 
  * @author yoshimura
  * 
@@ -254,7 +261,7 @@ public class BED2Silk {
 				}
 			}
 			catch (RecognitionException e) {
-				throw new UTGBException(String.format("line %d: %s", lineNum, e));
+				_logger.error(String.format("line %d has invalid format: %s", lineNum, e));
 			}
 			catch (XerialException e) {
 				throw new UTGBException(String.format("line %d: %s", lineNum, e));

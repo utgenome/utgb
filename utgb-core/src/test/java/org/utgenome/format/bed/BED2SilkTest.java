@@ -130,9 +130,11 @@ public class BED2SilkTest {
 
 	@Test
 	public void testForErroneousBED() throws Exception {
+
+		// proceeds parsing even if the data contain some errors
 		BED2Silk b2s = new BED2Silk(FileResource.open(BED2SilkTest.class, "test_for_error.bed"));
 		String s = b2s.toSilk();
-		_logger.info(s);
+		_logger.debug(s);
 
 		Lens.findFromSilk(new StringReader(s), "track", BEDTrack.class, new ObjectHandler<BEDTrack>() {
 

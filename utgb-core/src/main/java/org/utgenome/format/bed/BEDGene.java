@@ -33,6 +33,12 @@ import org.utgenome.gwt.utgb.client.bio.CDS;
 import org.utgenome.gwt.utgb.client.bio.Exon;
 import org.utgenome.gwt.utgb.client.bio.Gene;
 
+/**
+ * Representing each gene line of BED format
+ * 
+ * @author leo
+ * 
+ */
 public class BEDGene extends Gene {
 
 	private static final long serialVersionUID = 1L;

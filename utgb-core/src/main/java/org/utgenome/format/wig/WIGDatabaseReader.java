@@ -173,7 +173,7 @@ public class WIGDatabaseReader {
 				chromStarts = new int[nDatas];
 
 				for (i = 0; i < nDatas; i++) {
-					chromStarts[i] = startPoint + (stepSize * (int) i);
+					chromStarts[i] = startPoint + (stepSize * i);
 				}
 			}
 			else {
@@ -208,9 +208,9 @@ public class WIGDatabaseReader {
 			}
 			st2.stop();
 		}
-		_logger.info("min: " + minValue + ", max: " + maxValue);
-		_logger.info("Time(all)    : " + st1.getElapsedTime());
-		_logger.info("Time(archive): " + st2.getElapsedTime());
+		_logger.debug("min: " + minValue + ", max: " + maxValue);
+		_logger.debug("Time(all)    : " + st1.getElapsedTime());
+		_logger.debug("Time(archive): " + st2.getElapsedTime());
 		return data;
 	}
 
@@ -266,7 +266,7 @@ public class WIGDatabaseReader {
 				int stepSize = Integer.parseInt(track.get("step"));
 
 				for (i = 0; i < nDatas; i++) {
-					chromStarts[i] = startPoint + (stepSize * (int) i);
+					chromStarts[i] = startPoint + (stepSize * i);
 				}
 			}
 			else {
