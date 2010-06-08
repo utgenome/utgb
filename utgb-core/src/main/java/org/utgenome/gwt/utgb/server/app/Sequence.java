@@ -7,28 +7,25 @@
 package org.utgenome.gwt.utgb.server.app;
 
 import java.awt.Color;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.zip.GZIPInputStream;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.utgenome.UTGBException;
+import org.utgenome.format.fasta.FASTA2Db;
+import org.utgenome.format.fasta.FASTA2Db.NSeq;
 import org.utgenome.graphics.GenomeCanvas;
 import org.utgenome.graphics.GenomeWindow;
+import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.server.WebTrackBase;
 import org.utgenome.gwt.utgb.server.util.graphic.GraphicUtil;
-import org.xerial.db.DBException;
 import org.xerial.db.sql.BeanResultHandler;
-import org.xerial.db.sql.DatabaseAccess;
-import org.xerial.db.sql.sqlite.SQLiteAccess;
 import org.xerial.json.JSONWriter;
 import org.xerial.util.log.Logger;
 import org.xerial.util.xml.XMLAttribute;
@@ -56,73 +53,17 @@ public class Sequence extends WebTrackBase {
 	public String dbGroup = "org/utgenome/leo/genome";
 	public String species = "human";
 	public String revision = "hg19";
-	public long start = 0;
-	public long end = 10000;
+	public int start = 0;
+	public int end = 10000;
 	public String name = "chr1";
 	public int width = DEFAULT_WIDTH;
+	public String path = null;
 
 	public String colorA = DEFAULT_COLOR_A;
 	public String colorC = DEFAULT_COLOR_C;
 	public String colorG = DEFAULT_COLOR_G;
 	public String colorT = DEFAULT_COLOR_T;
 	public String colorN = DEFAULT_COLOR_N;
-
-	public static class NSeq {
-		public long start;
-		public long end;
-		private byte[] sequence;
-
-		public NSeq() {
-		}
-
-		public NSeq(long start, long end, byte[] sequence) {
-			this.start = start;
-			this.end = end;
-			this.sequence = sequence;
-		}
-
-		public String toString() {
-			StringBuilder buf = new StringBuilder();
-			buf.append("(");
-			buf.append(start);
-			buf.append(",");
-			buf.append(end);
-			buf.append(")");
-			return buf.toString();
-		}
-
-		public long getStart() {
-			return start;
-		}
-
-		public long getEnd() {
-			return end;
-		}
-
-		public String getSubSequence(int start, int end) {
-			return new String(sequence, start, end - start);
-		}
-
-		public int getLength() {
-			return sequence.length;
-		}
-
-		public byte[] getSequence() {
-			return sequence;
-		}
-
-		public void setSequence(byte[] sequence) throws IOException {
-			GZIPInputStream decompressor = new GZIPInputStream(new ByteArrayInputStream(sequence));
-			ByteArrayOutputStream b = new ByteArrayOutputStream();
-			byte[] buf = new byte[1024];
-			int readBytes = 0;
-			while ((readBytes = decompressor.read(buf)) != -1) {
-				b.write(buf, 0, readBytes);
-			}
-			this.sequence = b.toByteArray();
-		}
-
-	}
 
 	public Sequence() {
 	}
@@ -224,6 +165,7 @@ public class Sequence extends WebTrackBase {
 			this.writer = writer;
 		}
 
+		@Override
 		public void output(String subSequence) {
 			writer.print(subSequence);
 		}
@@ -244,14 +186,17 @@ public class Sequence extends WebTrackBase {
 			xml = new XMLGenerator(writer);
 		}
 
+		@Override
 		public void init() {
 			xml.startTag("sequence", new XMLAttribute().add("start", getStart()).add("end", getEnd()));
 		}
 
+		@Override
 		public void output(String subSequence) {
 			xml.text(subSequence);
 		}
 
+		@Override
 		public void finish() {
 
 			xml.endDocument();
@@ -288,6 +233,7 @@ public class Sequence extends WebTrackBase {
 
 		}
 
+		@Override
 		public void output(String subSequence) {
 			try {
 				jsonWriter.append(subSequence);
@@ -297,6 +243,7 @@ public class Sequence extends WebTrackBase {
 			}
 		}
 
+		@Override
 		public void finish() {
 			try {
 				jsonWriter.endJSON();
@@ -374,6 +321,7 @@ public class Sequence extends WebTrackBase {
 			}
 		}
 
+		@Override
 		public void finish() {
 			try {
 				canvas.outputImage(response, "png");
@@ -397,6 +345,7 @@ public class Sequence extends WebTrackBase {
 
 		}
 
+		@Override
 		public void output(String subSequence) {
 			long rangeEnd = startOffset + subSequence.length();
 			for (long pos = startOffset + startOffset % loopSequenceWidth; pos < rangeEnd; pos += loopSequenceWidth) {
@@ -415,55 +364,45 @@ public class Sequence extends WebTrackBase {
 
 	}
 
-	private static final int SEQUENCE_FRAGMENT_LENGTH = 10000;
-
+	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		try {
 
-			String dbFolder = getTrackConfigProperty("utgb.db.folder", getProjectRootPath() + "/db");
-			File dbFile = new File(dbFolder, String.format("%s/%s/%s.sqlite", dbGroup, species, revision));
-
-			if (!dbFile.exists())
-				return;
-
-			DatabaseAccess db = new SQLiteAccess(dbFile.getAbsolutePath());
-
-			boolean isReverseStrand = false;
-			if (end < start) {
-				long tmp = end;
-				end = start;
-				start = tmp;
-				isReverseStrand = true;
-			}
-
-			long searchStart = (start / SEQUENCE_FRAGMENT_LENGTH) * SEQUENCE_FRAGMENT_LENGTH + 1;
-
-			long range = (end - start) + 1;
-
-			String sql = createSQLFromFile("sequence.sql", name, searchStart, end, start);
-			String actionString = getActionSuffix(request);
-
-			if (actionString.equals("json"))
-				db.query(sql, NSeq.class, new JSONOutput(response.getWriter(), start, end, isReverseStrand));
-			else if (actionString.equals("xml"))
-				db.query(sql, NSeq.class, new XMLOutput(response.getWriter(), start, end, isReverseStrand));
-			else if (actionString.equals("png")) {
-				if (range > width)
-					db.query(sql, NSeq.class, new RoughGraphicalOutput(response, start, end, width, isReverseStrand));
-				else
-					db.query(sql, NSeq.class, new GraphicalOutput(response, start, end, width, isReverseStrand));
+			File dbFile = null;
+			if (path == null) {
+				String dbFolder = getTrackConfigProperty("utgb.db.folder", getProjectRootPath() + "/db");
+				dbFile = new File(dbFolder, String.format("%s/%s/%s.sqlite", dbGroup, species, revision));
 			}
 			else
-				db.query(sql, NSeq.class, new TextOutput(response.getWriter(), start, end, isReverseStrand));
-		}
-		catch (DBException e) {
-			_logger.error(e);
+				dbFile = new File(getProjectRootPath(), path);
+
+			ChrLoc queryTarget = new ChrLoc(name, start, end);
+			int range = queryTarget.length();
+			boolean isReverseStrand = queryTarget.isAntiSense();
+
+			String actionString = getActionSuffix(request);
+			BeanResultHandler<NSeq> handler = null;
+			if (actionString.equals("json"))
+				handler = new JSONOutput(response.getWriter(), start, end, isReverseStrand);
+			else if (actionString.equals("xml"))
+				handler = new XMLOutput(response.getWriter(), start, end, isReverseStrand);
+			else if (actionString.equals("png")) {
+				if (range > width)
+					handler = new RoughGraphicalOutput(response, start, end, width, isReverseStrand);
+				else
+					handler = new GraphicalOutput(response, start, end, width, isReverseStrand);
+			}
+			else
+				handler = new TextOutput(response.getWriter(), start, end, isReverseStrand);
+
+			FASTA2Db.querySequence(dbFile, new ChrLoc(name, start, end), handler);
+
 		}
 		catch (UTGBException e) {
 			_logger.error(e);
+			e.printStackTrace();
 		}
-
 	}
 
 }

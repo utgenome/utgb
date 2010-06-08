@@ -46,4 +46,30 @@ public class ChrLoc implements IsSerializable {
 		else
 			return new ChrLoc(chr, end, start);
 	}
+
+	public int length() {
+		return viewEnd() - viewStart();
+	}
+
+	public int viewStart() {
+		if (isSense())
+			return start;
+		else
+			return end;
+	}
+
+	public int viewEnd() {
+		if (isSense())
+			return end;
+		else
+			return start;
+	}
+
+	public boolean isSense() {
+		return start <= end;
+	}
+
+	public boolean isAntiSense() {
+		return !isSense();
+	}
 }

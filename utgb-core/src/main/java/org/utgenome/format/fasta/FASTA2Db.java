@@ -10,6 +10,7 @@
 package org.utgenome.format.fasta;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileReader;
@@ -18,9 +19,15 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import org.utgenome.UTGBErrorCode;
+import org.utgenome.UTGBException;
+import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.xerial.db.DBException;
+import org.xerial.db.sql.BeanResultHandler;
+import org.xerial.db.sql.DatabaseAccess;
 import org.xerial.db.sql.PreparedStatementHandler;
 import org.xerial.db.sql.SQLExpression;
 import org.xerial.db.sql.SQLUtil;
@@ -82,6 +89,8 @@ public class FASTA2Db {
 
 	}
 
+	private static final int SEQUENCE_FRAGMENT_LENGTH = 10000;
+
 	public void createDB(Reader fasta, SQLiteAccess db) throws Exception {
 		FASTAPullParser pullParser = new FASTAPullParser(fasta);
 
@@ -104,8 +113,6 @@ public class FASTA2Db {
 			int count = 1;
 			String description = null;
 
-			final int sequenceSplitUnit = 10000; // 10 kbp
-
 			// for each FASTA entry 
 			while ((description = pullParser.nextDescriptionLine()) != null) {
 				long start = 1;
@@ -123,8 +130,8 @@ public class FASTA2Db {
 				String seq = null;
 				while ((seq = pullParser.nextSequenceLine()) != null) {
 					int storedLen = buffer.writtenSize();
-					if (storedLen + seq.length() >= sequenceSplitUnit) {
-						int remainingSize = sequenceSplitUnit - storedLen;
+					if (storedLen + seq.length() >= SEQUENCE_FRAGMENT_LENGTH) {
+						int remainingSize = SEQUENCE_FRAGMENT_LENGTH - storedLen;
 						buffer.write(seq.substring(0, remainingSize).getBytes());
 
 						end = start + buffer.writtenSize() - 1;
@@ -212,6 +219,12 @@ public class FASTA2Db {
 		}
 	}
 
+	/**
+	 * For setting a byte array to the given prepared statement
+	 * 
+	 * @author leo
+	 * 
+	 */
 	static class SequenceSetter implements PreparedStatementHandler {
 		private final byte[] sequence;
 
@@ -222,6 +235,96 @@ public class FASTA2Db {
 		public void setup(PreparedStatement preparedStatement) throws SQLException {
 			preparedStatement.setBytes(1, sequence);
 
+		}
+
+	}
+
+	public static void querySequence(File dbFile, ChrLoc location, BeanResultHandler<NSeq> handler) throws UTGBException {
+
+		if (!dbFile.exists())
+			throw new UTGBException(UTGBErrorCode.MISSING_FILES, "DB file doesn't exist: " + dbFile);
+
+		try {
+			DatabaseAccess db = new SQLiteAccess(dbFile.getAbsolutePath());
+
+			boolean isReverseStrand = location.isAntiSense();
+			int start = location.viewStart();
+			int end = location.viewEnd();
+			int searchStart = (start / SEQUENCE_FRAGMENT_LENGTH) * SEQUENCE_FRAGMENT_LENGTH + 1;
+			int range = (end - start) + 1;
+
+			String sql = SQLExpression.fillTemplate("select start, end, sequence from " + "(select * from description where description= '$1') as description "
+					+ "join sequence on sequence.description_id = description.id " + "where start between $2 and $3 " + "and end > $4 order by start",
+					location.chr, searchStart, end, start);
+
+			db.query(sql, NSeq.class, handler);
+		}
+		catch (Exception e) {
+			throw UTGBException.convert(e);
+		}
+
+	}
+
+	/**
+	 * Subsequence holder for retrieving compressed genome sequence
+	 * 
+	 * @author leo
+	 * 
+	 */
+	public static class NSeq {
+		public long start;
+		public long end;
+		private byte[] sequence;
+
+		public NSeq() {
+		}
+
+		public NSeq(long start, long end, byte[] sequence) {
+			this.start = start;
+			this.end = end;
+			this.sequence = sequence;
+		}
+
+		@Override
+		public String toString() {
+			StringBuilder buf = new StringBuilder();
+			buf.append("(");
+			buf.append(start);
+			buf.append(",");
+			buf.append(end);
+			buf.append(")");
+			return buf.toString();
+		}
+
+		public long getStart() {
+			return start;
+		}
+
+		public long getEnd() {
+			return end;
+		}
+
+		public String getSubSequence(int start, int end) {
+			return new String(sequence, start, end - start);
+		}
+
+		public int getLength() {
+			return sequence.length;
+		}
+
+		public byte[] getSequence() {
+			return sequence;
+		}
+
+		public void setSequence(byte[] sequence) throws IOException {
+			GZIPInputStream decompressor = new GZIPInputStream(new ByteArrayInputStream(sequence));
+			ByteArrayOutputStream b = new ByteArrayOutputStream();
+			byte[] buf = new byte[1024];
+			int readBytes = 0;
+			while ((readBytes = decompressor.read(buf)) != -1) {
+				b.write(buf, 0, readBytes);
+			}
+			this.sequence = b.toByteArray();
 		}
 
 	}

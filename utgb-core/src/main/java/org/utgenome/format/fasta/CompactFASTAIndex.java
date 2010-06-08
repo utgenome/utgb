@@ -37,6 +37,12 @@ import org.xerial.core.XerialException;
 import org.xerial.lens.Lens;
 import org.xerial.lens.ObjectHandler;
 
+/**
+ * A sequence index to packed FASTA files
+ * 
+ * @author leo
+ * 
+ */
 public class CompactFASTAIndex {
 
 	/**
@@ -48,7 +54,13 @@ public class CompactFASTAIndex {
 	 */
 	public String description;
 
+	/**
+	 * Offset from the beginning of the packed file
+	 */
 	public long offset;
+	/**
+	 * sequence length
+	 */
 	public int length;
 
 	private static class IndexHolder implements ObjectHandler<CompactFASTAIndex> {
@@ -73,6 +85,11 @@ public class CompactFASTAIndex {
 		return holder.index;
 	}
 
+	/**
+	 * Convert to cyto band
+	 * 
+	 * @return
+	 */
 	public CytoBand toCytoBand() {
 		return new CytoBand(name, 1, length, "", null);
 	}
