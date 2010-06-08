@@ -27,72 +27,87 @@ package org.utgenome.format.fasta;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.utgenome.format.InvalidFormatException;
+import org.xerial.util.FileResource;
 
-public class FASTAPullParserTest
-{
+public class FASTAPullParserTest {
 
-    @Before
-    public void setUp() throws Exception
-    {}
+	@Before
+	public void setUp() throws Exception {
+	}
 
-    @After
-    public void tearDown() throws Exception
-    {}
+	@After
+	public void tearDown() throws Exception {
+	}
 
-    @Test
-    public void pullParsing() throws IOException, InvalidFormatException
-    {
-        FASTAPullParser parser = new FASTAPullParser(new StringReader(">1|mySeq\nACGCTT\nACCC\n>2\nCCGGA"));
-        FASTASequence s1 = parser.nextSequence();
-        FASTASequence s2 = parser.nextSequence();
+	@Test
+	public void pullParsing() throws IOException, InvalidFormatException {
+		FASTAPullParser parser = new FASTAPullParser(new StringReader(">1|mySeq\nACGCTT\nACCC\n>2\nCCGGA"));
+		FASTASequence s1 = parser.nextSequence();
+		FASTASequence s2 = parser.nextSequence();
 
-        assertNotNull(s1);
-        assertNotNull(s2);
-        assertEquals("ACGCTTACCC", s1.getSequence());
-        assertEquals("CCGGA", s2.getSequence());
+		assertNotNull(s1);
+		assertNotNull(s2);
+		assertEquals("ACGCTTACCC", s1.getSequence());
+		assertEquals("CCGGA", s2.getSequence());
 
-        assertEquals(2, s1.getDescriptionSize());
-        assertEquals("1", s1.getDescription(0));
-        assertEquals("mySeq", s1.getDescription(1));
-        assertEquals(1, s2.getDescriptionSize());
-        assertEquals("2", s2.getDescription(0));
+		assertEquals(2, s1.getDescriptionSize());
+		assertEquals("1", s1.getDescription(0));
+		assertEquals("mySeq", s1.getDescription(1));
+		assertEquals(1, s2.getDescriptionSize());
+		assertEquals("2", s2.getDescription(0));
 
-        FASTASequence s3 = parser.nextSequence();
-        assertNull(s3);
-    }
+		FASTASequence s3 = parser.nextSequence();
+		assertNull(s3);
+	}
 
-    @Test
-    public void pullParsing2() throws IOException, InvalidFormatException
-    {
-        FASTAPullParser parser = new FASTAPullParser(new StringReader(">1|mySeq\nACGCTT\nACCC\n>2\nCCGGA"));
+	@Test
+	public void pullParsing2() throws IOException, InvalidFormatException {
+		FASTAPullParser parser = new FASTAPullParser(new StringReader(">1|mySeq\nACGCTT\nACCC\n>2\nCCGGA"));
 
-        assertEquals("1|mySeq", parser.nextDescriptionLine());
-        assertEquals("ACGCTT", parser.nextSequenceLine());
-        assertEquals("ACCC", parser.nextSequenceLine());
-        assertNull(parser.nextSequenceLine());
+		assertEquals("1|mySeq", parser.nextDescriptionLine());
+		assertEquals("ACGCTT", parser.nextSequenceLine());
+		assertEquals("ACCC", parser.nextSequenceLine());
+		assertNull(parser.nextSequenceLine());
 
-        assertEquals("2", parser.nextDescriptionLine());
-        assertEquals("CCGGA", parser.nextSequenceLine());
-        assertNull(parser.nextSequenceLine());
+		assertEquals("2", parser.nextDescriptionLine());
+		assertEquals("CCGGA", parser.nextSequenceLine());
+		assertNull(parser.nextSequenceLine());
 
-    }
+	}
 
-    /*
-     * @Test public void largeFileLoadTest() throws IOException {
-     * FASTAPullParser parser = new FASTAPullParser(new FileReader(
-     * "J:/utgb/dev-work/Basecolor/input/human/hg18/allhuman.hg18.fa"));
-     * 
-     * while (parser.nextDescriptionLine() != null) { while
-     * (parser.nextSequenceLine() != null) {} }
-     *  }
-     */
+	@Test
+	public void readTarFile() throws Exception {
+		FASTAPullParser parser = FASTAPullParser.newTARGZFileReader(FileResource.openByteStream(FASTAPullParserTest.class, "sample-archive.fa.tar.gz"));
+		ArrayList<String> chrList = new ArrayList<String>();
+		for (FASTASequence seq; (seq = parser.nextSequence()) != null;) {
+			String name = seq.getSequenceName();
+			chrList.add(name);
+		}
+
+		for (String e : new String[] { "chr1", "chr2", "chr3" }) {
+			assertTrue(chrList.contains(e));
+		}
+
+	}
+
+	/*
+	 * @Test public void largeFileLoadTest() throws IOException {
+	 * FASTAPullParser parser = new FASTAPullParser(new FileReader(
+	 * "J:/utgb/dev-work/Basecolor/input/human/hg18/allhuman.hg18.fa"));
+	 * 
+	 * while (parser.nextDescriptionLine() != null) { while
+	 * (parser.nextSequenceLine() != null) {} }
+	 *  }
+	 */
 
 }

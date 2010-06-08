@@ -28,63 +28,64 @@ import java.util.ArrayList;
 
 /**
  * A FASTASequence represente a single entry in a FASTA file
+ * 
  * @author leo
- *
+ * 
  */
-public class FASTASequence 
-{
+public class FASTASequence {
 	private String sequence = "";
 	private ArrayList<String> description = new ArrayList<String>();
+	private String descriptionLine;
+
 	/**
 	 * @param _sequence
 	 * @param _description
 	 */
 	public FASTASequence(String rawDescription, String sequence) {
-		for(String d : rawDescription.trim().split("\\|"))
+		this.descriptionLine = rawDescription;
+		for (String d : rawDescription.trim().split("\\|"))
 			description.add(d);
-		
+
 		this.sequence = sequence;
 	}
 
-	public FASTASequence()
-	{}
-	
+	public FASTASequence() {
+	}
+
 	public ArrayList<String> getDescription() {
 		return description;
 	}
-	
-	public int getDescriptionSize()
-	{
+
+	public String getDescriptionLine() {
+		return descriptionLine;
+	}
+
+	public int getDescriptionSize() {
 		return description.size();
 	}
-	 
-	
-	public String getDescription(int index)
-	{
+
+	public String getDescription(int index) {
 		return description.get(index);
 	}
 
 	public String getSequence() {
 		return sequence;
 	}
-	
-	
+
 	public void setSequence(String sequence) {
 		this.sequence = sequence;
 	}
 
-	public void addDescription(String desc)
-	{
+	public void addDescription(String desc) {
 		description.add(desc);
 	}
 
-
-	public String toString()
-	{
+	@Override
+	public String toString() {
 		return description.toString() + ":" + sequence;
 	}
+
+	public String getSequenceName() {
+		return CompactFASTA.pickSequenceName(descriptionLine);
+	}
 }
-
-
-
-

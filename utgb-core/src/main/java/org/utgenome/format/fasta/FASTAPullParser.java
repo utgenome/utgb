@@ -76,18 +76,49 @@ public class FASTAPullParser {
 	private final FASTAReader fastaReader;
 	private int lineCount = 0;
 
-	public int BUFFER_SIZE = 4 * 1024 * 1024;
+	private static int DEFAULT_BUFFER_SIZE = 4 * 1024 * 1024;
 
+	/**
+	 * Create a pull parser from a given text reader
+	 * 
+	 * @param reader
+	 */
 	public FASTAPullParser(Reader reader) {
 		fastaReader = new DefaultFASTAReader(new BufferedReader(reader));
+	}
+
+	public static FASTAPullParser newTARFileReader(InputStream tarFileInput) throws IOException {
+		return new FASTAPullParser(new TarFASTAReader(new BufferedInputStream(tarFileInput, DEFAULT_BUFFER_SIZE), DEFAULT_BUFFER_SIZE));
+	}
+
+	public static FASTAPullParser newTARGZFileReader(InputStream targzInput) throws IOException {
+		return new FASTAPullParser(new TarFASTAReader(new GZIPInputStream(new BufferedInputStream(targzInput)), DEFAULT_BUFFER_SIZE));
+	}
+
+	public static FASTAPullParser newGZIPFileReader(InputStream gzInput) throws IOException {
+		return new FASTAPullParser(new DefaultFASTAReader(new GZIPInputStream(new BufferedInputStream(gzInput)), DEFAULT_BUFFER_SIZE));
+	}
+
+	private FASTAPullParser(FASTAReader reader) {
+		this.fastaReader = reader;
+	}
+
+	/**
+	 * Create a pull parse for the given FASTA file. The file can be text (.fa, .fasta, etc.), tar.gz or gz format.
+	 * 
+	 * @param fastaFile
+	 * @throws IOException
+	 */
+	public FASTAPullParser(File fastaFile) throws IOException {
+		this(fastaFile.getName(), new FileInputStream(fastaFile), DEFAULT_BUFFER_SIZE);
 	}
 
 	public FASTAPullParser(File fastaFile, int bufferSize) throws IOException {
 		this(fastaFile.getName(), new FileInputStream(fastaFile), bufferSize);
 	}
 
-	public FASTAPullParser(String fastaFile, InputStream in, int bufferSize) throws IOException {
-		BUFFER_SIZE = bufferSize;
+	protected FASTAPullParser(String fastaFile, InputStream in, int bufferSize) throws IOException {
+		final int BUFFER_SIZE = bufferSize;
 
 		FileType fileType = FileType.getFileType(fastaFile);
 		switch (fileType) {
