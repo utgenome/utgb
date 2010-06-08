@@ -29,6 +29,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.StringReader;
 
 import org.junit.Test;
+import org.utgenome.gwt.utgb.client.bio.CDS;
 import org.xerial.lens.Lens;
 import org.xerial.lens.ObjectHandler;
 import org.xerial.util.FileResource;
@@ -41,7 +42,25 @@ public class BED2SilkTest {
 	public void test() throws Exception {
 		BED2Silk b2s = new BED2Silk(FileResource.open(BED2SilkTest.class, "small.bed"));
 		String s = b2s.toSilk();
-		_logger.info(s);
+		_logger.debug(s);
+
+		Lens.findFromSilk(new StringReader(s), "track", BEDTrack.class, new ObjectHandler<BEDTrack>() {
+
+			public void handle(BEDTrack input) throws Exception {
+				//track name="Item,RGB,Demo2" description="Item RGB demonstration2" visibility=2 itemRgb="On" useScore=1	color=0,128,0 url="http://genome.ucsc.edu/goldenPath/help/clones.html#$$"
+				assertEquals("Item,RGB,Demo2", input.name);
+				assertEquals("Item RGB demonstration2", input.description);
+				assertEquals(2, input.visibility);
+				assertEquals("On", input.itemRgb);
+				assertEquals("http://genome.ucsc.edu/goldenPath/help/clones.html#$$", input.url);
+				assertEquals(1, input.useScore);
+				assertEquals("0,128,0", input.color);
+			}
+
+		});
+
+		geneCount = 0;
+
 		Lens.findFromSilk(new StringReader(s), "gene", BEDGene.class, new ObjectHandler<BEDGene>() {
 			public void handle(BEDGene g) throws Exception {
 				if (g.getName().equals("Pos1")) {
@@ -50,6 +69,13 @@ public class BED2SilkTest {
 					assertEquals(127472364, g.getEnd());
 					assertEquals('+', g.getStrand());
 					assertEquals("#ff0000", g.getColor());
+					assertEquals(300, g.score);
+					assertEquals(1, g.getCDS().size());
+					CDS cds = g.getCDS().get(0);
+					// 127471196 127472363 (BED is 0-origin)
+					assertEquals(127471197, cds.getStart());
+					assertEquals(127472364, cds.getEnd());
+					geneCount++;
 				}
 				else if (g.getName().equals("Pos2")) {
 					//127472363	127473530	Pos2	200	+	127472363	127473530	255,0,0
@@ -58,10 +84,100 @@ public class BED2SilkTest {
 					assertEquals(127473531, g.getEnd());
 					assertEquals('+', g.getStrand());
 					assertEquals("#ffff00", g.getColor());
+					// 2	200	+	127472363	127473530	
+					assertEquals(200, g.score);
+					assertEquals(1, g.getCDS().size());
+					CDS cds = g.getCDS().get(0);
+					// 2	200	+	127472363	127473530	
+					assertEquals(127472364, cds.getStart());
+					assertEquals(127473531, cds.getEnd());
+
+					geneCount++;
 				}
 			}
 
 		});
 
+		assertEquals(2, geneCount);
 	}
+
+	private int geneCount = 0;
+
+	@Test
+	public void intervalList() throws Exception {
+		BED2Silk b2s = new BED2Silk(FileResource.open(BED2SilkTest.class, "intervallist.bed"));
+		String s = b2s.toSilk();
+		_logger.debug(s);
+
+		Lens.findFromSilk(new StringReader(s), "track", BEDTrack.class, new ObjectHandler<BEDTrack>() {
+
+			public void handle(BEDTrack input) throws Exception {
+				assertEquals("HCT116_H4(K5/8/12/16)_Ac", input.name);
+			}
+
+		});
+
+		geneCount = 0;
+		Lens.findFromSilk(new StringReader(s), "gene", BEDGene.class, new ObjectHandler<BEDGene>() {
+			public void handle(BEDGene input) throws Exception {
+				geneCount++;
+			}
+		});
+
+		assertEquals(416, geneCount);
+
+	}
+
+	@Test
+	public void testForErroneousBED() throws Exception {
+		BED2Silk b2s = new BED2Silk(FileResource.open(BED2SilkTest.class, "test_for_error.bed"));
+		String s = b2s.toSilk();
+		_logger.info(s);
+
+		Lens.findFromSilk(new StringReader(s), "track", BEDTrack.class, new ObjectHandler<BEDTrack>() {
+
+			public void handle(BEDTrack input) throws Exception {
+				//track name="Item,RGB,Demo2" description="Item RGB demonstration2" visibility=2 itemRgb="On" useScore=1	color=0,128,0 url="http://genome.ucsc.edu/goldenPath/help/clones.html#$$"
+				assertEquals("Item,RGB,Demo2", input.name);
+				assertEquals("Item RGB demonstration2", input.description);
+				assertEquals(2, input.visibility);
+				assertEquals("On", input.itemRgb);
+				assertEquals("http://genome.ucsc.edu/goldenPath/help/clones.html#$$", input.url);
+				assertEquals(1, input.useScore);
+				assertEquals("0,128,0", input.color);
+			}
+
+		});
+
+		geneCount = 0;
+
+		Lens.findFromSilk(new StringReader(s), "gene", BEDGene.class, new ObjectHandler<BEDGene>() {
+			public void handle(BEDGene g) throws Exception {
+				if (g.getName().equals("AF071353.1")) {
+					assertEquals("chrIV", g.coordinate);
+					assertEquals(17339775, g.getStart());
+					assertEquals(17339830, g.getEnd());
+					assertEquals('-', g.getStrand());
+					assertEquals(null, g.getColor());
+					assertEquals(2, g.score);
+					assertEquals(0, g.getCDS().size());
+					geneCount++;
+				}
+				else if (g.getName().equals("AF071356.1")) {
+					assertEquals("chrV", g.coordinate);
+					assertEquals(15922528, g.getStart());
+					assertEquals(15922545, g.getEnd());
+					assertEquals('+', g.getStrand());
+					assertEquals(null, g.getColor());
+					assertEquals(1, g.score);
+					assertEquals(0, g.getCDS().size());
+					geneCount++;
+				}
+			}
+
+		});
+
+		assertEquals(2, geneCount);
+	}
+
 }

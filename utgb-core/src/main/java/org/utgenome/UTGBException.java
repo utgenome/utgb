@@ -66,6 +66,10 @@ public class UTGBException extends Exception {
 		this.errorCode = errorCode;
 	}
 
+	public UTGBErrorCode getErrorCode() {
+		return this.errorCode;
+	}
+
 	@Override
 	public String getMessage() {
 		return "[" + errorCode.name() + "] " + super.getMessage();

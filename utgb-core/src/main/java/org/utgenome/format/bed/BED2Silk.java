@@ -39,6 +39,7 @@ import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.Tree;
+import org.utgenome.UTGBErrorCode;
 import org.utgenome.UTGBException;
 import org.utgenome.gwt.utgb.client.util.StringUtil;
 import org.xerial.core.XerialException;
@@ -113,12 +114,100 @@ public class BED2Silk {
 	}
 
 	/**
+	 * Convert a BED's gene line into a Silk's tab-delimited format
+	 * 
+	 * @param line
+	 * @param lineNum
+	 * @return
+	 * @throws DataFormatException
+	 * @throws UTGBException
+	 */
+	private String createGeneTSV(String line, int lineNum) throws UTGBException {
+
+		try {
+			String[] gene = readBEDLine(line);
+			StringBuilder sb = new StringBuilder();
+			if (gene.length < 3) {
+				throw new UTGBException(UTGBErrorCode.INVALID_BED_LINE, String.format("line %d doesn't have 3 columns: %s", lineNum, line));
+			}
+
+			int start = Integer.parseInt(gene[1]) + 1;
+			int end = Integer.parseInt(gene[2]) + 1;
+
+			// print "coordinate.name, start, end"
+			sb.append(String.format("%s\t%d\t%d\t", gene[0], start, end));
+			// print "name"
+			if (gene.length >= 4) {
+				sb.append(gene[3]);
+			}
+			// print "strand"
+			sb.append("\t");
+			if (gene.length >= 6) {
+				if (gene[5].equals("+") || gene[5].equals("-")) {
+					sb.append(gene[5]);
+				}
+				else {
+					_logger.warn(String.format("Illegal strand value '%s'. Using '+' instead. ", gene[5]));
+					sb.append("+");
+				}
+			}
+			// print "cds"
+			sb.append("\t");
+			if (gene.length >= 8) {
+				int cdsStart = Integer.parseInt(gene[6]) + 1;
+				int cdsEnd = Integer.parseInt(gene[7]) + 1;
+				sb.append(String.format("[%d, %d]", cdsStart, cdsEnd));
+			}
+			// print "exon"
+			sb.append("\t");
+			if (gene.length >= 12) {
+				String[] blockSizes = gene[10].split(",");
+				String[] blockStarts = gene[11].split(",");
+
+				sb.append("[");
+				Integer nExons = Integer.parseInt(gene[9]);
+				for (int i = 0; i < nExons; i++) {
+					int startExon = start + Integer.parseInt(blockStarts[i]);
+					int endExon = startExon + Integer.parseInt(blockSizes[i]);
+					sb.append("[" + startExon + ", " + endExon + "]");
+					if (i < nExons - 1) {
+						sb.append(", ");
+					}
+				}
+				sb.append("]");
+			}
+
+			// print "color"
+			sb.append("\t");
+			if (gene.length >= 9) {
+				sb.append(changeRGB2Hex(gene[8]));
+			}
+			// print "score"
+			sb.append("\t");
+			if (gene.length >= 5) {
+				sb.append("{\"score\":" + gene[4] + "}");
+			}
+
+			return sb.toString();
+		}
+		catch (NumberFormatException e) {
+			throw new UTGBException(UTGBErrorCode.INVALID_BED_LINE, String.format("line %d: %s", lineNum, e));
+		}
+		catch (DataFormatException e) {
+			throw new UTGBException(UTGBErrorCode.INVALID_BED_LINE, String.format("line %d: %s", lineNum, e));
+		}
+		catch (IllegalArgumentException e) {
+			throw new UTGBException(UTGBErrorCode.INVALID_BED_LINE, String.format("line %d: %s", lineNum, e));
+		}
+
+	}
+
+	/**
 	 * 
 	 * @param out
 	 * @throws IOException
 	 * @throws UTGBShellException
 	 */
-
 	public void toSilk(PrintWriter pout) throws IOException, UTGBException {
 
 		SilkWriter out = new SilkWriter(pout);
@@ -145,7 +234,8 @@ public class BED2Silk {
 					}
 				}
 				else {
-					String[] gene = readBEDLine(line);
+					String dataLine = createGeneTSV(line, lineNum);
+					// output data line
 					if (geneCount == 0) {
 						// print gene header line
 						SilkWriter geneNode = out.tabDataSchema("gene");
@@ -159,70 +249,8 @@ public class BED2Silk {
 						geneNode.attribute("color");
 						geneNode.attribute("_[json]");
 					}
-
+					out.dataLine(dataLine);
 					geneCount++;
-
-					StringBuilder sb = new StringBuilder();
-					if (gene.length >= 3) {
-						int start = Integer.parseInt(gene[1]) + 1;
-						int end = Integer.parseInt(gene[2]) + 1;
-
-						// print "coordinate.name, start, end"
-						sb.append(String.format("%s\t%d\t%d\t", gene[0], start, end));
-						// print "name"
-						if (gene.length >= 4) {
-							sb.append(gene[3]);
-						}
-						// print "strand"
-						sb.append("\t");
-						if (gene.length >= 6) {
-							if (gene[5].equals("+") || gene[5].equals("-")) {
-								sb.append(gene[5]);
-							}
-							else {
-								_logger.warn(String.format("Illegal strand value '%s'. Using '+' instead. ", gene[5]));
-								sb.append("+");
-							}
-						}
-						// print "cds"
-						sb.append("\t");
-						if (gene.length >= 8) {
-							int cdsStart = Integer.parseInt(gene[6]) + 1;
-							int cdsEnd = Integer.parseInt(gene[7]) + 1;
-							sb.append(String.format("[%d, %d]", cdsStart, cdsEnd));
-						}
-						// print "exon"
-						sb.append("\t");
-						if (gene.length >= 12) {
-							String[] blockSizes = gene[10].split(",");
-							String[] blockStarts = gene[11].split(",");
-
-							sb.append("[");
-							Integer nExons = Integer.parseInt(gene[9]);
-							for (int i = 0; i < nExons; i++) {
-								int startExon = start + Integer.parseInt(blockStarts[i]);
-								int endExon = startExon + Integer.parseInt(blockSizes[i]);
-								sb.append("[" + startExon + ", " + endExon + "]");
-								if (i < nExons - 1) {
-									sb.append(", ");
-								}
-							}
-							sb.append("]");
-						}
-
-						// print "color"
-						sb.append("\t");
-						if (gene.length >= 9) {
-							sb.append(changeRGB2Hex(gene[8]));
-						}
-						// print "score"
-						sb.append("\t");
-						if (gene.length >= 5) {
-							sb.append("{\"score\":" + gene[4] + "}");
-						}
-						out.dataLine(sb.toString());
-					}
-
 				}
 			}
 			catch (RecognitionException e) {
@@ -231,17 +259,14 @@ public class BED2Silk {
 			catch (XerialException e) {
 				throw new UTGBException(String.format("line %d: %s", lineNum, e));
 			}
-			catch (NumberFormatException e) {
-				_logger.error(e + " -> line:" + lineNum);
-				continue;
-			}
-			catch (DataFormatException e) {
-				_logger.error(e + " -> line:" + lineNum);
-				continue;
-			}
-			catch (IllegalArgumentException e) {
-				_logger.error(e + " -> line:" + lineNum);
-				continue;
+			catch (UTGBException e) {
+				switch (e.getErrorCode()) {
+				case INVALID_BED_LINE:
+					_logger.warn(e);
+					continue;
+				default:
+					throw e;
+				}
 			}
 		}
 
