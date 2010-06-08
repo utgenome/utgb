@@ -37,14 +37,14 @@ import com.google.gwt.user.client.ui.Composite;
  *          (view window) 
  *     |----------------------|
  * |--------||--------||--------||--------|
- *    (w1)      (w2)      (w3)     (w4)
+ *    (w1)      (w2)      (w3)     (w4:prefetch)
  *                                
- * After scrolling to right                               
+ * After scrolling to right:                               
  * 
- *                     (view window) 
- *              |------------------------|
+ *                   (view window) 
+ *             |------------------------|
  * |--------||--------||--------||--------||--------|
- *    (w1)      (w2)      (w3)     (w4)       (w5)
+ *    (w1)      (w2)      (w3)     (w4)       (w5:prefetch)
  * </pre>
  * 
  * @author leo

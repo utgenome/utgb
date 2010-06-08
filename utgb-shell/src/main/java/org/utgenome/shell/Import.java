@@ -144,7 +144,7 @@ public class Import extends UTGBShellCommand {
 			WIGDatabaseGenerator.toSQLiteDB(in, outputFileName);
 			break;
 		case SAM: {
-			_logger.info("creating BAM and BAI files from SAM.");
+			_logger.info("creating a BAM file from the input SAM.");
 			SAMFileReader reader = new SAMFileReader(new ReaderInputStream(in));
 			String bamOut = outputFileName;
 			if (!bamOut.endsWith(".bam"))

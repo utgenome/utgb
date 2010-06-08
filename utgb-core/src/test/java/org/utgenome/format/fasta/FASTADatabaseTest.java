@@ -16,7 +16,7 @@
 //--------------------------------------
 // utgb-core Project
 //
-// FASTA2DbTest.java
+// FASTADatabaseTest.java
 // Since: Jul 27, 2009
 //
 // $URL$ 
@@ -24,13 +24,18 @@
 //--------------------------------------
 package org.utgenome.format.fasta;
 
+import junit.framework.Assert;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.utgenome.format.fasta.FASTADatabase.NSeq;
+import org.utgenome.gwt.utgb.client.bio.ChrLoc;
+import org.xerial.db.sql.BeanResultHandler;
 import org.xerial.db.sql.sqlite.SQLiteAccess;
 import org.xerial.util.FileResource;
 
-public class FASTA2DbTest {
+public class FASTADatabaseTest {
 
 	@Before
 	public void setUp() throws Exception {
@@ -44,7 +49,28 @@ public class FASTA2DbTest {
 	public void testCreateDB() throws Exception {
 		FASTADatabase p = new FASTADatabase();
 		SQLiteAccess db = new SQLiteAccess();
-		p.createDB(FileResource.open(FASTA2DbTest.class, "sample.fasta"), db);
-	}
+		p.createDB(FileResource.open(FASTADatabaseTest.class, "sample.fasta"), db);
+		FASTADatabase.querySequence(db, new ChrLoc("sample", 1, 13), new BeanResultHandler<NSeq>() {
+			public void finish() {
 
+			}
+
+			public void handle(NSeq seq) throws Exception {
+				String s = seq.getSubSequence(0, 14);
+				// ACTGDTG CGGTAA				
+				Assert.assertEquals("ACTGDTGCCGGTAA", s);
+			}
+
+			public void handleException(Exception e) throws Exception {
+				// TODO Auto-generated method stub
+
+			}
+
+			public void init() {
+			}
+		});
+
+		db.dispose();
+
+	}
 }

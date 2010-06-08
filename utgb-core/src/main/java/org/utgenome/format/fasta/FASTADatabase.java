@@ -27,7 +27,6 @@ import org.utgenome.UTGBException;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.xerial.db.DBException;
 import org.xerial.db.sql.BeanResultHandler;
-import org.xerial.db.sql.DatabaseAccess;
 import org.xerial.db.sql.PreparedStatementHandler;
 import org.xerial.db.sql.SQLExpression;
 import org.xerial.db.sql.SQLUtil;
@@ -92,8 +91,10 @@ public class FASTADatabase {
 	private static final int SEQUENCE_FRAGMENT_LENGTH = 100000;
 
 	public void createDB(Reader fasta, SQLiteAccess db) throws Exception {
-		FASTAPullParser pullParser = new FASTAPullParser(fasta);
+		createDB(new FASTAPullParser(fasta), db);
+	}
 
+	public void createDB(FASTAPullParser pullParser, SQLiteAccess db) throws Exception {
 		try {
 			db.setAutoCommit(true);
 			db.update("pragma synchronous=off");
@@ -104,6 +105,7 @@ public class FASTADatabase {
 			db.update("drop table if exists sequence");
 			db.update("drop table if exists sequence_length");
 			db.update("create table description (id integer primary key not null, description string, fullDesc string)");
+			db.update("create index description_index on description(description)");
 			db
 					.update("create table sequence (description_id integer not null, start integer, end integer, sequence string, primary key (description_id, start))");
 			db.update("create table sequence_length (description_id integer primary_key not null, length integer)");
@@ -162,7 +164,7 @@ public class FASTADatabase {
 		}
 		finally {
 			db.update("commit");
-			db.dispose();
+
 		}
 
 		_logger.info("done.");
@@ -202,7 +204,9 @@ public class FASTADatabase {
 		_logger.info("output sqlite db file: " + dbName);
 
 		FASTADatabase p = new FASTADatabase();
-		p.createDB(input, new SQLiteAccess(dbName));
+		SQLiteAccess db = new SQLiteAccess(dbName);
+		p.createDB(input, db);
+		db.dispose();
 	}
 
 	private static int insertCount = 0;
@@ -240,13 +244,21 @@ public class FASTADatabase {
 	}
 
 	public static void querySequence(File dbFile, ChrLoc location, BeanResultHandler<NSeq> handler) throws UTGBException {
-
 		if (!dbFile.exists())
 			throw new UTGBException(UTGBErrorCode.MISSING_FILES, "DB file doesn't exist: " + dbFile);
 
 		try {
-			DatabaseAccess db = new SQLiteAccess(dbFile.getAbsolutePath());
+			SQLiteAccess db = new SQLiteAccess(dbFile.getAbsolutePath());
+			querySequence(db, location, handler);
+		}
+		catch (Exception e) {
+			throw UTGBException.convert(e);
+		}
+	}
 
+	public static void querySequence(SQLiteAccess db, ChrLoc location, BeanResultHandler<NSeq> handler) throws UTGBException {
+
+		try {
 			int start = location.viewStart();
 			int end = location.viewEnd();
 			int searchStart = (start / SEQUENCE_FRAGMENT_LENGTH) * SEQUENCE_FRAGMENT_LENGTH + 1;
@@ -302,8 +314,15 @@ public class FASTADatabase {
 			return end;
 		}
 
-		public String getSubSequence(int start, int end) {
-			return new String(sequence, start, end - start);
+		/**
+		 * extract sub sequence (0-origin)
+		 * 
+		 * @param bufStart
+		 * @param bufEnd
+		 * @return
+		 */
+		public String getSubSequence(int bufStart, int bufEnd) {
+			return new String(sequence, bufStart, bufEnd - bufStart);
 		}
 
 		public int getLength() {
