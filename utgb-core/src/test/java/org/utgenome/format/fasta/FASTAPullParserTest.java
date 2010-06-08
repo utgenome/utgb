@@ -28,6 +28,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -92,6 +93,19 @@ public class FASTAPullParserTest {
 		for (FASTASequence seq; (seq = parser.nextSequence()) != null;) {
 			String name = seq.getSequenceName();
 			chrList.add(name);
+			if (name.equals("chr1")) {
+				assertEquals("NNNNNNACGGATTCTTGCTATATANTTACTTACCCGTAGTCTAGAGATCTTTCCAATATCGTCT", seq.getSequence());
+			}
+			else if (name.equals("chr2")) {
+				assertEquals("ACCGGTATCTCTAAAAAAAAAAAGGG", seq.getSequence());
+			}
+			else if (name.equals("chr3")) {
+				assertEquals("CGGTCTGTCGTCGTCAACGTCGGCCTTTCGCGCGCGGGGCCTAAATTAATTATAATTAAAAATCCTCT", seq.getSequence());
+			}
+			else {
+				fail("unknown sequence: " + name);
+			}
+
 		}
 
 		for (String e : new String[] { "chr1", "chr2", "chr3" }) {
@@ -99,15 +113,5 @@ public class FASTAPullParserTest {
 		}
 
 	}
-
-	/*
-	 * @Test public void largeFileLoadTest() throws IOException {
-	 * FASTAPullParser parser = new FASTAPullParser(new FileReader(
-	 * "J:/utgb/dev-work/Basecolor/input/human/hg18/allhuman.hg18.fa"));
-	 * 
-	 * while (parser.nextDescriptionLine() != null) { while
-	 * (parser.nextSequenceLine() != null) {} }
-	 *  }
-	 */
 
 }
