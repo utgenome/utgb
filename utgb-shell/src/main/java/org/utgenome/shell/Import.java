@@ -38,7 +38,7 @@ import net.sf.samtools.SAMRecord;
 
 import org.apache.tools.ant.util.ReaderInputStream;
 import org.utgenome.format.bed.BEDDatabase;
-import org.utgenome.format.fasta.FASTA2Db;
+import org.utgenome.format.fasta.FASTADatabase;
 import org.utgenome.format.silk.read.ReadDBBuilder;
 import org.utgenome.format.wig.WIGDatabaseGenerator;
 import org.xerial.util.log.Logger;
@@ -136,9 +136,9 @@ public class Import extends UTGBShellCommand {
 		}
 		case FASTA:
 			if (input != null)
-				FASTA2Db.main(new String[] { inputFilePath, "-o", outputFileName });
+				FASTADatabase.main(new String[] { inputFilePath, "-o", outputFileName });
 			else
-				FASTA2Db.main(new String[] { "-o", outputFileName });
+				FASTADatabase.main(new String[] { "-o", outputFileName });
 			break;
 		case WIG:
 			WIGDatabaseGenerator.toSQLiteDB(in, outputFileName);

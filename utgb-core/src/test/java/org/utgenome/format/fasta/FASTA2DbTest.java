@@ -42,10 +42,9 @@ public class FASTA2DbTest {
 
 	@Test
 	public void testCreateDB() throws Exception {
-		FASTA2Db p = new FASTA2Db();
+		FASTADatabase p = new FASTADatabase();
 		SQLiteAccess db = new SQLiteAccess();
 		p.createDB(FileResource.open(FASTA2DbTest.class, "sample.fasta"), db);
-
 	}
 
 }

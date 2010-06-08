@@ -18,8 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.utgenome.UTGBException;
-import org.utgenome.format.fasta.FASTA2Db;
-import org.utgenome.format.fasta.FASTA2Db.NSeq;
+import org.utgenome.format.fasta.FASTADatabase;
+import org.utgenome.format.fasta.FASTADatabase.NSeq;
 import org.utgenome.graphics.GenomeCanvas;
 import org.utgenome.graphics.GenomeWindow;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
@@ -83,8 +83,8 @@ public class Sequence extends WebTrackBase {
 
 		private static Logger _logger = Logger.getLogger(SequenceRetrieverBase.class);
 
-		private final long start;
-		private final long end;
+		private final int start;
+		private final int end;
 		private final boolean isReverseStrand;
 
 		private static HashMap<Character, Character> reverseStrandTable = new HashMap<Character, Character>();
@@ -100,7 +100,7 @@ public class Sequence extends WebTrackBase {
 			reverseStrandTable.put('C', 'G');
 		}
 
-		public SequenceRetrieverBase(long start, long end, boolean isReverseStrand) {
+		public SequenceRetrieverBase(int start, int end, boolean isReverseStrand) {
 
 			assert (start <= end);
 			this.start = start;
@@ -115,11 +115,11 @@ public class Sequence extends WebTrackBase {
 			output(seq.getSubSequence(rangeStart, rangeEnd));
 		}
 
-		public long getStart() {
+		public int getStart() {
 			return start;
 		}
 
-		public long getEnd() {
+		public int getEnd() {
 			return end;
 		}
 
@@ -160,7 +160,7 @@ public class Sequence extends WebTrackBase {
 	public static class TextOutput extends SequenceRetrieverBase {
 		private final PrintWriter writer;
 
-		public TextOutput(PrintWriter writer, long start, long end, boolean isReverseStrand) {
+		public TextOutput(PrintWriter writer, int start, int end, boolean isReverseStrand) {
 			super(start, end, isReverseStrand);
 			this.writer = writer;
 		}
@@ -181,7 +181,7 @@ public class Sequence extends WebTrackBase {
 	public static class XMLOutput extends SequenceRetrieverBase {
 		private final XMLGenerator xml;
 
-		public XMLOutput(PrintWriter writer, long start, long end, boolean isReverseStrand) {
+		public XMLOutput(PrintWriter writer, int start, int end, boolean isReverseStrand) {
 			super(start, end, isReverseStrand);
 			xml = new XMLGenerator(writer);
 		}
@@ -214,7 +214,7 @@ public class Sequence extends WebTrackBase {
 	public static class JSONOutput extends SequenceRetrieverBase {
 		private final JSONWriter jsonWriter;
 
-		public JSONOutput(PrintWriter writer, long start, long end, boolean isReverseStrand) {
+		public JSONOutput(PrintWriter writer, int start, int end, boolean isReverseStrand) {
 			super(start, end, isReverseStrand);
 			jsonWriter = new JSONWriter(writer);
 		}
@@ -261,20 +261,20 @@ public class Sequence extends WebTrackBase {
 		private Color UNKNOWN_BASE_COLOR = GraphicUtil.parseColor(colorN);
 
 		protected final GenomeCanvas canvas;
-		protected long startOffset;
-		protected long endOffset;
+		protected int startOffset;
+		protected int endOffset;
 		private HashMap<Character, Color> colorTable = new HashMap<Character, Color>();
 		private final HttpServletResponse response;
 		private boolean drawBase = false;
 
-		public GraphicalOutput(HttpServletResponse response, long start, long end, int width, boolean isReverseStrand) {
+		public GraphicalOutput(HttpServletResponse response, int start, int end, int width, boolean isReverseStrand) {
 			super(start, end, isReverseStrand);
 			this.response = response;
 			canvas = new GenomeCanvas(width, DEFAULT_HEIGHT, new GenomeWindow(start, end));
 			this.startOffset = start;
 			this.endOffset = end + 1;
 
-			long seqWidth = end - start;
+			int seqWidth = end - start;
 			if (seqWidth <= width / 5)
 				drawBase = true;
 
@@ -337,18 +337,18 @@ public class Sequence extends WebTrackBase {
 
 		private int loopSequenceWidth;
 
-		public RoughGraphicalOutput(HttpServletResponse response, long start, long end, int width, boolean isReverseStrand) {
+		public RoughGraphicalOutput(HttpServletResponse response, int start, int end, int width, boolean isReverseStrand) {
 			super(response, start, end, width, isReverseStrand);
 
-			long range = end - start;
+			int range = end - start;
 			loopSequenceWidth = (int) (range / width + 0.5);
 
 		}
 
 		@Override
 		public void output(String subSequence) {
-			long rangeEnd = startOffset + subSequence.length();
-			for (long pos = startOffset + startOffset % loopSequenceWidth; pos < rangeEnd; pos += loopSequenceWidth) {
+			int rangeEnd = startOffset + subSequence.length();
+			for (int pos = startOffset + startOffset % loopSequenceWidth; pos < rangeEnd; pos += loopSequenceWidth) {
 
 				char ch = subSequence.charAt((int) (pos - startOffset));
 				if (!isReverseStrand()) {
@@ -396,7 +396,7 @@ public class Sequence extends WebTrackBase {
 			else
 				handler = new TextOutput(response.getWriter(), start, end, isReverseStrand);
 
-			FASTA2Db.querySequence(dbFile, new ChrLoc(name, start, end), handler);
+			FASTADatabase.querySequence(dbFile, new ChrLoc(name, start, end), handler);
 
 		}
 		catch (UTGBException e) {

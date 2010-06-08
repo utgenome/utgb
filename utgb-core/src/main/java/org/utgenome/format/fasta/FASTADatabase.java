@@ -44,8 +44,8 @@ import org.xerial.util.opt.OptionParser;
  * @author leo
  * 
  */
-public class FASTA2Db {
-	private static Logger _logger = Logger.getLogger(FASTA2Db.class);
+public class FASTADatabase {
+	private static Logger _logger = Logger.getLogger(FASTADatabase.class);
 
 	public static class Config {
 		@Option(symbol = "h", longName = "help", description = "display help message")
@@ -201,7 +201,7 @@ public class FASTA2Db {
 		String dbName = conf.outputDBName != null ? conf.outputDBName : fastaName + ".db";
 		_logger.info("output sqlite db file: " + dbName);
 
-		FASTA2Db p = new FASTA2Db();
+		FASTADatabase p = new FASTADatabase();
 		p.createDB(input, new SQLiteAccess(dbName));
 	}
 
@@ -247,11 +247,9 @@ public class FASTA2Db {
 		try {
 			DatabaseAccess db = new SQLiteAccess(dbFile.getAbsolutePath());
 
-			boolean isReverseStrand = location.isAntiSense();
 			int start = location.viewStart();
 			int end = location.viewEnd();
 			int searchStart = (start / SEQUENCE_FRAGMENT_LENGTH) * SEQUENCE_FRAGMENT_LENGTH + 1;
-			int range = (end - start) + 1;
 
 			String sql = SQLExpression.fillTemplate("select start, end, sequence from " + "(select * from description where description= '$1') as description "
 					+ "join sequence on sequence.description_id = description.id " + "where start between $2 and $3 " + "and end > $4 order by start",
@@ -266,20 +264,20 @@ public class FASTA2Db {
 	}
 
 	/**
-	 * Subsequence holder for retrieving compressed genome sequence
+	 * A holder for retrieving compressed genome sequence
 	 * 
 	 * @author leo
 	 * 
 	 */
 	public static class NSeq {
-		public long start;
-		public long end;
+		public int start;
+		public int end;
 		private byte[] sequence;
 
 		public NSeq() {
 		}
 
-		public NSeq(long start, long end, byte[] sequence) {
+		public NSeq(int start, int end, byte[] sequence) {
 			this.start = start;
 			this.end = end;
 			this.sequence = sequence;
@@ -296,11 +294,11 @@ public class FASTA2Db {
 			return buf.toString();
 		}
 
-		public long getStart() {
+		public int getStart() {
 			return start;
 		}
 
-		public long getEnd() {
+		public int getEnd() {
 			return end;
 		}
 
@@ -319,7 +317,7 @@ public class FASTA2Db {
 		public void setSequence(byte[] sequence) throws IOException {
 			GZIPInputStream decompressor = new GZIPInputStream(new ByteArrayInputStream(sequence));
 			ByteArrayOutputStream b = new ByteArrayOutputStream();
-			byte[] buf = new byte[1024];
+			byte[] buf = new byte[8192];
 			int readBytes = 0;
 			while ((readBytes = decompressor.read(buf)) != -1) {
 				b.write(buf, 0, readBytes);
