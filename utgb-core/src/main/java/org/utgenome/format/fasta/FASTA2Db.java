@@ -89,7 +89,7 @@ public class FASTA2Db {
 
 	}
 
-	private static final int SEQUENCE_FRAGMENT_LENGTH = 10000;
+	private static final int SEQUENCE_FRAGMENT_LENGTH = 100000;
 
 	public void createDB(Reader fasta, SQLiteAccess db) throws Exception {
 		FASTAPullParser pullParser = new FASTAPullParser(fasta);
