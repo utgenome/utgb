@@ -37,7 +37,7 @@ import net.sf.samtools.SAMFileWriterFactory;
 import net.sf.samtools.SAMRecord;
 
 import org.apache.tools.ant.util.ReaderInputStream;
-import org.utgenome.format.bed.BEDDatabaseGenerator;
+import org.utgenome.format.bed.BEDDatabase;
 import org.utgenome.format.fasta.FASTA2Db;
 import org.utgenome.format.silk.read.ReadDBBuilder;
 import org.utgenome.format.wig.WIGDatabaseGenerator;
@@ -131,7 +131,7 @@ public class Import extends UTGBShellCommand {
 			break;
 		}
 		case BED: {
-			BEDDatabaseGenerator.toSQLiteDB(in, outputFileName);
+			BEDDatabase.toSQLiteDB(in, outputFileName);
 			break;
 		}
 		case FASTA:

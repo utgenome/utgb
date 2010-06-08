@@ -1,5 +1,0 @@
-ohrIV	er position chr1:1-100000
-browser hide all
-track name="Item,RGB,Demo2" description="Item RGB demonstration2" visibility=2 itemRgb="On" useScore=1	color=0,128,0 url="http://genome.ucsc.edu/goldenPath/help/clones.html#$$"
-chrIV	17339774	17339829	AF071353.1	2	-
-chrV	15922527	15922544	AF071356.1	1	+
