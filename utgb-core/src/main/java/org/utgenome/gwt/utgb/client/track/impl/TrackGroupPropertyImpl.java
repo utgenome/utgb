@@ -37,6 +37,7 @@ import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChange;
 import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChangeListener;
 import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyWriter;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
+import org.utgenome.gwt.utgb.client.util.xml.XMLAttribute;
 import org.utgenome.gwt.utgb.client.util.xml.XMLUtil;
 import org.utgenome.gwt.utgb.client.util.xml.XMLWriter;
 
@@ -178,8 +179,13 @@ public class TrackGroupPropertyImpl implements TrackGroupProperty, TrackGroupPro
 	public void toXML(XMLWriter xmlWriter) {
 		xmlWriter.start("groupProperties");
 		XMLUtil.toXML(_properties, xmlWriter);
-		_trackWindow.toXML(xmlWriter);
+		toXML(_trackWindow, xmlWriter);
 		xmlWriter.end(); // group-properties
+	}
+
+	public static XMLWriter toXML(TrackWindow w, XMLWriter writer) {
+		writer.element("trackWindow", new XMLAttribute().add("start", w.getStartOnGenome()).add("end", w.getEndOnGenome()).add("width", w.getPixelWidth()));
+		return writer;
 	}
 
 	public void scrollTrackWindow(double scrollPercentage) {

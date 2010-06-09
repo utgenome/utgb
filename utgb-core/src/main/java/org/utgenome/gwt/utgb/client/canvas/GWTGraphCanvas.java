@@ -29,6 +29,7 @@ import java.util.List;
 
 import org.utgenome.gwt.utgb.client.bio.CompactWIGData;
 import org.utgenome.gwt.utgb.client.canvas.GWTGenomeCanvas.DragPoint;
+import org.utgenome.gwt.utgb.client.track.TrackConfig;
 import org.utgenome.gwt.utgb.client.track.TrackGroup;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.util.Optional;
@@ -61,6 +62,10 @@ public class GWTGraphCanvas extends Composite {
 
 	private int indentHeight = 0;
 
+	/**
+	 * @author leo
+	 * 
+	 */
 	public static class GraphStyle {
 		public int windowHeight = 100;
 		public float maxValue = 20.0f;
@@ -70,6 +75,56 @@ public class GWTGraphCanvas extends Composite {
 		public boolean drawZeroValue = false;
 		public boolean drawScale = true;
 		public boolean showScaleLabel = true;
+		public Optional<String> color = new Optional<String>();
+
+		private final static String CONFIG_TRACK_HEIGHT = "trackHeight";
+		private final static String CONFIG_MAX_VALUE = "maxValue";
+		private final static String CONFIG_MIN_VALUE = "minValue";
+		private final static String CONFIG_AUTO_SCALE = "isAutoRange";
+		private final static String CONFIG_LOG_SCALE = "isLog";
+		private final static String CONFIG_SHOW_ZERO_VALUE = "showZero";
+		private final static String CONFIG_DRAW_SCALE = "drawScale";
+		private final static String CONFIG_SHOW_SCALE_LABEL = "showScaleLabel";
+		private final static String CONFIG_COLOR = "color";
+
+		/**
+		 * Load the parameter values from the configuration panel
+		 * 
+		 * @param config
+		 */
+		public void load(TrackConfig config) {
+			maxValue = config.getFloat(CONFIG_MAX_VALUE, maxValue);
+			minValue = config.getFloat(CONFIG_MIN_VALUE, minValue);
+			autoScale = config.getBoolean(CONFIG_AUTO_SCALE, autoScale);
+			logScale = config.getBoolean(CONFIG_LOG_SCALE, logScale);
+			drawZeroValue = config.getBoolean(CONFIG_SHOW_ZERO_VALUE, drawZeroValue);
+			drawScale = config.getBoolean(CONFIG_DRAW_SCALE, drawScale);
+			showScaleLabel = config.getBoolean(CONFIG_SHOW_SCALE_LABEL, showScaleLabel);
+			windowHeight = config.getInt(CONFIG_TRACK_HEIGHT, windowHeight);
+			String colorStr = config.getString(CONFIG_COLOR, "");
+			if (colorStr != null && colorStr.length() > 0)
+				color.set(colorStr);
+			else
+				color.reset();
+		}
+
+		/**
+		 * Set up the configuration panel
+		 * 
+		 * @param config
+		 */
+		public void setup(TrackConfig config) {
+			config.addConfigDouble("Y Max", CONFIG_MAX_VALUE, maxValue);
+			config.addConfigDouble("Y Min", CONFIG_MIN_VALUE, minValue);
+			config.addConfigBoolean("Auto Scale", CONFIG_AUTO_SCALE, autoScale);
+			config.addConfigBoolean("Log Scale", CONFIG_LOG_SCALE, logScale);
+			config.addConfigBoolean("Show Zero Value", CONFIG_SHOW_ZERO_VALUE, drawZeroValue);
+			config.addConfigBoolean("Draw Scale", CONFIG_DRAW_SCALE, drawScale);
+			config.addConfigBoolean("Show Scale Label", CONFIG_SHOW_SCALE_LABEL, showScaleLabel);
+			config.addConfigInteger("Pixel Height", CONFIG_TRACK_HEIGHT, windowHeight);
+			config.addConfigString("Graph Color", CONFIG_COLOR, "");
+		}
+
 	}
 
 	private GraphStyle style = new GraphStyle();
@@ -190,14 +245,14 @@ public class GWTGraphCanvas extends Composite {
 
 	private final String DEFAULT_COLOR = "rgba(12,106,193,0.7)";
 
-	public void drawWigGraph(List<CompactWIGData> data, Optional<String> defaultColor) {
+	public void drawWigGraph(List<CompactWIGData> data) {
 		if (style.drawScale)
 			drawFrame(data);
 
 		for (CompactWIGData each : data) {
 			Color graphColor = new Color(DEFAULT_COLOR);
-			if (defaultColor.isDefined()) {
-				graphColor = new Color(defaultColor.get());
+			if (style.color.isDefined()) {
+				graphColor = new Color(style.color.get());
 			}
 			else if (each.getTrack().containsKey("color")) {
 				String colorStr = each.getTrack().get("color");
@@ -210,7 +265,7 @@ public class GWTGraphCanvas extends Composite {
 		}
 	}
 
-	public void drawWigGraph(CompactWIGData data, Color color) {
+	protected void drawWigGraph(CompactWIGData data, Color color) {
 
 		canvas.saveContext();
 

@@ -25,7 +25,6 @@
 package org.utgenome.gwt.utgb.client.track;
 
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
-import org.utgenome.gwt.utgb.client.util.xml.XMLWriter;
 
 /**
  * {@link TrackWindow} manages a track-window size and a region on the genome displayed in the window. An instance of
@@ -74,8 +73,6 @@ public interface TrackWindow {
 	 * @return end position on the genome currently displayed in the window
 	 */
 	public int getEndOnGenome();
-
-	public void toXML(XMLWriter xmlWriter);
 
 	public boolean equals(TrackWindow window);
 
