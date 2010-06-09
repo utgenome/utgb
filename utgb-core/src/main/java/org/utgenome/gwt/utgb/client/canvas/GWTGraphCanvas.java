@@ -263,6 +263,10 @@ public class GWTGraphCanvas extends Composite {
 
 			drawWigGraph(each, graphColor);
 		}
+
+		if (style.showScaleLabel)
+			drawScaleLabel();
+
 	}
 
 	protected void drawWigGraph(CompactWIGData data, Color color) {
@@ -369,25 +373,29 @@ public class GWTGraphCanvas extends Composite {
 
 		Indent indent = new Indent(style.minValue, style.maxValue);
 		int fontHeight = 10;
+
+		boolean isVerticalFlip = style.minValue > style.maxValue;
+
 		for (int i = 0; i <= indent.nSteps; i++) {
 			float value = indent.getIndentValue(i);
-			Label label = new Label(indent.getIndentString(i));
-
+			String labelString = indent.getIndentString(i);
+			Label label = new Label(labelString);
+			label.setTitle(labelString);
 			Style.fontSize(label, fontHeight);
 			Style.textAlign(label, "left");
 			Style.fontColor(label, "#003366");
 
 			int labelX = 1;
-			int labelY = (int) (getYPosition(value) - fontHeight);
+			int labelY = (int) (getYPosition(value) - (fontHeight / 2.0f) - 1);
 
-			if (labelY > style.windowHeight)
-				continue;
+			//			if (labelY > style.windowHeight) {
+			//				continue;
+			//			}
 
 			graphLabels.add(label);
 			panel.add(label, labelX, labelY);
 
 		}
-
 	}
 
 	public class Indent {

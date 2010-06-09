@@ -118,6 +118,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 
 	@Override
 	public void draw() {
+		graphCanvas.clear();
 		style.load(getConfig());
 		graphCanvas.setStyle(style);
 
