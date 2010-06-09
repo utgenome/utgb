@@ -24,6 +24,7 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.track.lib;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
@@ -55,8 +56,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class WIGGraphCanvasTrack extends TrackBase {
 
-	private List<CompactWIGData> wigDataList;
-
 	public static TrackFactory factory() {
 		return new TrackFactory() {
 			@Override
@@ -76,10 +75,55 @@ public class WIGGraphCanvasTrack extends TrackBase {
 		Style.padding(layoutTable, 0);
 
 		layoutTable.setWidget(0, 1, graphCanvas);
+
+		// prepare prefetched canvas
+		for (int i = 0; i < numPrefetch; ++i)
+			wigData.add(WIGDataHolder.emptyHolder());
+
 	}
 
 	private final FlexTable layoutTable = new FlexTable();
 	private final GWTGraphCanvas graphCanvas = new GWTGraphCanvas();
+	private final int numPrefetch = 3;
+
+	/**
+	 * Graph data holder
+	 * 
+	 * @author leo
+	 * 
+	 */
+	private static class WIGDataHolder {
+		private List<CompactWIGData> wigData;
+		private TrackWindow window;
+
+		public WIGDataHolder(List<CompactWIGData> wigData, TrackWindow window) {
+			this.wigData = wigData;
+			this.window = window;
+		}
+
+		public boolean isReady() {
+			return wigData != null && window != null;
+		}
+
+		public void clear() {
+			wigData = null;
+			window = null;
+		}
+
+		public List<CompactWIGData> getWigData() {
+			return wigData;
+		}
+
+		public TrackWindow getTrackWindow() {
+			return window;
+		}
+
+		public static WIGDataHolder emptyHolder() {
+			return new WIGDataHolder(null, null);
+		}
+	}
+
+	private ArrayList<WIGDataHolder> wigData = new ArrayList<WIGDataHolder>(numPrefetch);
 
 	public Widget getWidget() {
 		return layoutTable;
@@ -123,44 +167,41 @@ public class WIGGraphCanvasTrack extends TrackBase {
 		graphCanvas.setStyle(style);
 
 		// draw data graph
-		if (wigDataList != null) {
-			graphCanvas.drawWigGraph(wigDataList);
-		}
+		//graphCanvas.drawWigGraph(wigDataList);
 		getFrame().loadingDone();
-
 	}
 
 	public void update(TrackWindow newWindow) {
 		// retrieve gene data from the API
+		graphCanvas.setTrackWindow(newWindow);
 
-		//TrackWindow prevWindow = graphCanvas.getTrackWindow();
-		TrackWindow queryWindow = newWindow;
-		//		if (newWindow.hasSameScale(prevWindow)) {
-		//			queryWindow = newWindow.mask(prevWindow);
-		//		}
+		loadGraph(newWindow);
 
+		// prefetch 
+		//TrackWindow right = newWindow.newWindow(e, e + newWindow.getSequenceLength());
+		//TrackWindow left = newWindow.newWindow(s - newWindow.getSequenceLength(), s);
+
+	}
+
+	public void loadGraph(TrackWindow queryWindow) {
+
+		getFrame().setNowLoading();
+		String fileName = getConfig().getString(CONFIG_FILENAME, "");
 		int s = queryWindow.getStartOnGenome();
 		int e = queryWindow.getEndOnGenome();
 		ChrLoc l = new ChrLoc(getTrackGroupProperty(UTGBProperty.TARGET), s, e);
-
-		getFrame().setNowLoading();
-		TrackConfig config = getConfig();
-		String fileName = config.getString(CONFIG_FILENAME, "");
-
-		graphCanvas.setTrackWindow(newWindow);
-
-		getBrowserService().getCompactWigDataList(fileName, newWindow.getPixelWidth(), l, new AsyncCallback<List<CompactWIGData>>() {
-
+		getBrowserService().getCompactWigDataList(fileName, queryWindow.getPixelWidth(), l, new AsyncCallback<List<CompactWIGData>>() {
 			public void onFailure(Throwable e) {
 				GWT.log("failed to retrieve wig data", e);
 				getFrame().loadingDone();
 			}
 
 			public void onSuccess(List<CompactWIGData> dataList) {
-				wigDataList = dataList;
+				//wigDataList = dataList;
 				refresh();
 			}
 		});
+
 	}
 
 	@Override

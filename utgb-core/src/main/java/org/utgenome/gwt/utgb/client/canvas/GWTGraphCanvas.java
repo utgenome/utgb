@@ -245,6 +245,9 @@ public class GWTGraphCanvas extends Composite {
 	private final String DEFAULT_COLOR = "rgba(12,106,193,0.7)";
 
 	public void drawWigGraph(List<CompactWIGData> data) {
+		if (data == null)
+			return;
+
 		if (style.drawScale)
 			drawFrame(data);
 
