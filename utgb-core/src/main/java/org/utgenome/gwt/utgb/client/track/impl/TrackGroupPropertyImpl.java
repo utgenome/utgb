@@ -53,7 +53,7 @@ import org.utgenome.gwt.utgb.client.util.xml.XMLWriter;
  */
 public class TrackGroupPropertyImpl implements TrackGroupProperty, TrackGroupPropertyWriter {
 	private final TrackGroup _trackGroup;
-	private TrackWindow _trackWindow = new TrackWindowImpl(700, 1, 100);
+	private TrackWindow _trackWindow = new TrackWindow(700, 1, 100);
 	private HashMap<String, String> _properties = new HashMap<String, String>();
 	private ArrayList<TrackGroupPropertyChangeListener> _changeListener = new ArrayList<TrackGroupPropertyChangeListener>();
 	private boolean enableNotifiaction = true;
@@ -138,7 +138,7 @@ public class TrackGroupPropertyImpl implements TrackGroupProperty, TrackGroupPro
 		if (_trackWindow != null)
 			_trackWindow = _trackWindow.newWindow(startOnGenome, endOnGenome);
 		else
-			_trackWindow = new TrackWindowImpl(700, startOnGenome, endOnGenome);
+			_trackWindow = new TrackWindow(700, startOnGenome, endOnGenome);
 		notifyTheChange(null, _trackWindow);
 	}
 

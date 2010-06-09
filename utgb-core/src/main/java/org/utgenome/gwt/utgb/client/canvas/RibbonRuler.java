@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.TreeSet;
 
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
-import org.utgenome.gwt.utgb.client.track.impl.TrackWindowImpl;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.ImageElement;
@@ -91,7 +90,7 @@ public class RibbonRuler extends Composite {
 		}
 
 		public int compareTo(RibbonCrease o) {
-			return (int) (this.pos - o.pos);
+			return (this.pos - o.pos);
 		}
 	}
 
@@ -210,7 +209,7 @@ public class RibbonRuler extends Composite {
 	}
 
 	void drawTick() {
-		int displayedGenomeWidth = (int) (window.getEndOnGenome() - window.getStartOnGenome());
+		int displayedGenomeWidth = (window.getEndOnGenome() - window.getStartOnGenome());
 		if (displayedGenomeWidth < 0)
 			displayedGenomeWidth = -displayedGenomeWidth;
 
@@ -237,14 +236,14 @@ public class RibbonRuler extends Composite {
 			String tick = Long.toString(s);
 			for (int i = 0; i < tick.length(); ++i) {
 				char c = tick.charAt(i);
-				canvas.drawImage(fontPanel, ((int) c) * fontWidth, 0, fontWidth, fontHeight, (int) x + i * fontWidth + 3, 2, fontWidth, fontHeight);
+				canvas.drawImage(fontPanel, (c) * fontWidth, 0, fontWidth, fontHeight, (int) x + i * fontWidth + 3, 2, fontWidth, fontHeight);
 			}
 
 		}
 	}
 
 	public void setWindow(TrackWindow w) {
-		this.window = new TrackWindowImpl(w.getPixelWidth() - 100, w.getStartOnGenome(), w.getEndOnGenome());
+		this.window = new TrackWindow(w.getPixelWidth() - 100, w.getStartOnGenome(), w.getEndOnGenome());
 
 		redraw();
 	}

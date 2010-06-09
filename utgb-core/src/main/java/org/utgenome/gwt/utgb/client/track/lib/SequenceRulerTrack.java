@@ -40,7 +40,6 @@ import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChange;
 import org.utgenome.gwt.utgb.client.track.TrackRangeSelector;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.track.UTGBProperty;
-import org.utgenome.gwt.utgb.client.track.impl.TrackWindowImpl;
 import org.utgenome.gwt.utgb.client.ui.AbsoluteFocusPanel;
 import org.utgenome.gwt.utgb.client.util.Properties;
 import org.utgenome.gwt.utgb.client.util.StringUtil;
@@ -125,7 +124,7 @@ public class SequenceRulerTrack extends TrackBase implements RangeSelectable {
 			_sequenceSize = newSequenceSize;
 			TrackWindow currentWindow = getTrackGroup().getTrackWindow();
 			int newEndOnGenome = (currentWindow.getEndOnGenome() > _sequenceSize) ? _sequenceSize : currentWindow.getEndOnGenome();
-			TrackWindow newWindow = new TrackWindowImpl(currentWindow.getPixelWidth(), currentWindow.getStartOnGenome(), newEndOnGenome);
+			TrackWindow newWindow = currentWindow.newWindow(currentWindow.getStartOnGenome(), newEndOnGenome);
 			_ruler.updateTickUnit(newWindow.getPixelWidth(), 0, _sequenceSize);
 
 			if (!newWindow.equals(currentWindow)) {

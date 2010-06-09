@@ -28,7 +28,6 @@ import java.util.List;
 
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
-import org.utgenome.gwt.utgb.client.track.impl.TrackWindowImpl;
 import org.utgenome.gwt.utgb.client.ui.FormLabel;
 
 import com.google.gwt.core.client.GWT;
@@ -118,7 +117,7 @@ public class SAMCanvas extends Composite {
 	}
 
 	public void setWindow(TrackWindow w, int leftMargin) {
-		this.window = new TrackWindowImpl(w.getPixelWidth(), w.getStartOnGenome(), w.getEndOnGenome());
+		this.window = new TrackWindow(w.getPixelWidth(), w.getStartOnGenome(), w.getEndOnGenome());
 
 		redraw();
 	}
@@ -270,19 +269,19 @@ public class SAMCanvas extends Composite {
 						if ((read.getStart() + refi - 1) % (int) (Math.ceil(indent.length() / 5.0) * 5) == 0) {
 							canvas.fillRect((position + 0.5) * fontWidth + 2, _HEIGHT * (count * _OFFSET + 1) - 3, 1, 5);
 							for (int j = 0; j < indent.length(); j++)
-								canvas.drawImage(fontPanel[0], ((int) indent.charAt(j)) * fontWidth, 0, fontWidth, fontHeight, (position + j) * fontWidth + 2,
+								canvas.drawImage(fontPanel[0], (indent.charAt(j)) * fontWidth, 0, fontWidth, fontHeight, (position + j) * fontWidth + 2,
 										_HEIGHT * (count * _OFFSET), fontWidth, fontHeight);
 						}
 					}
 
 					// draw reference sequence
-					canvas.drawImage(fontPanel[getColorInt(refc)], ((int) refc) * fontWidth, 0, fontWidth, fontHeight, position * fontWidth + 3, _HEIGHT
+					canvas.drawImage(fontPanel[getColorInt(refc)], (refc) * fontWidth, 0, fontWidth, fontHeight, position * fontWidth + 3, _HEIGHT
 							* (count * _OFFSET + 1) + 3, fontWidth, fontHeight);
 					// draw reference sequence
-					canvas.drawImage(fontPanel[0], ((int) diffc) * fontWidth, 0, fontWidth, fontHeight, position * fontWidth + 3, _HEIGHT
-							* (count * _OFFSET + 2), fontWidth, fontHeight);
+					canvas.drawImage(fontPanel[0], (diffc) * fontWidth, 0, fontWidth, fontHeight, position * fontWidth + 3, _HEIGHT * (count * _OFFSET + 2),
+							fontWidth, fontHeight);
 					// draw read sequence
-					canvas.drawImage(fontPanel[getColorInt(readc)], ((int) readc) * fontWidth, 0, fontWidth, fontHeight, position * fontWidth + 3, _HEIGHT
+					canvas.drawImage(fontPanel[getColorInt(readc)], (readc) * fontWidth, 0, fontWidth, fontHeight, position * fontWidth + 3, _HEIGHT
 							* (count * _OFFSET + 3) - 3, fontWidth, fontHeight);
 				}
 
@@ -292,7 +291,7 @@ public class SAMCanvas extends Composite {
 
 		// draw tag
 		for (int cursor = 0; cursor < read.toString().length(); cursor++) {
-			canvas.drawImage(fontPanel[0], ((int) read.toString().charAt(cursor)) * fontWidth, 0, fontWidth, fontHeight, cursor * fontWidth + 3, _HEIGHT
+			canvas.drawImage(fontPanel[0], (read.toString().charAt(cursor)) * fontWidth, 0, fontWidth, fontHeight, cursor * fontWidth + 3, _HEIGHT
 					* (count * _OFFSET + 4) - 6, fontWidth, fontHeight);
 		}
 	}

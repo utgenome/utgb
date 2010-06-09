@@ -35,7 +35,6 @@ import org.utgenome.gwt.utgb.client.UTGBClientException;
 import org.utgenome.gwt.utgb.client.UTGBEntryPointBase;
 import org.utgenome.gwt.utgb.client.track.Track.TrackFactory;
 import org.utgenome.gwt.utgb.client.track.impl.TrackGroupPropertyImpl;
-import org.utgenome.gwt.utgb.client.track.impl.TrackWindowImpl;
 import org.utgenome.gwt.utgb.client.track.lib.NavigatorTrack;
 import org.utgenome.gwt.utgb.client.util.Properties;
 import org.utgenome.gwt.utgb.client.util.xml.XMLAttribute;
@@ -723,7 +722,7 @@ public class TrackGroup implements TrackEntry, Comparable<TrackGroup>, HasFactor
 		Coordinate c = g.coordinate;
 		if (c.pixelWidth < 0)
 			c.pixelWidth = UTGBEntryPointBase.computeTrackWidth();
-		group.setTrackWindow(new TrackWindowImpl(c.pixelWidth, c.start, c.end));
+		group.setTrackWindow(new TrackWindow(c.pixelWidth, c.start, c.end));
 
 		// instantiate tracks defined in the track group 
 		for (TrackView.Track t : view.track) {

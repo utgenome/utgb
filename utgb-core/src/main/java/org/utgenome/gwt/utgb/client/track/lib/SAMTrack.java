@@ -38,7 +38,6 @@ import org.utgenome.gwt.utgb.client.track.TrackConfigChange;
 import org.utgenome.gwt.utgb.client.track.TrackFrame;
 import org.utgenome.gwt.utgb.client.track.TrackGroup;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
-import org.utgenome.gwt.utgb.client.track.impl.TrackWindowImpl;
 import org.utgenome.gwt.utgb.client.ui.FormLabel;
 import org.utgenome.gwt.utgb.client.util.Properties;
 
@@ -80,6 +79,7 @@ public class SAMTrack extends TrackBase {
 
 	public static TrackFactory factory() {
 		return new TrackFactory() {
+			@Override
 			public Track newInstance() {
 				return new SAMTrack();
 			}
@@ -162,7 +162,7 @@ public class SAMTrack extends TrackBase {
 			labelPanel.setPixelSize(labelWidth, height);
 
 			samCanvas.clear();
-			samCanvas.setWindow(new TrackWindowImpl(width, s, e), leftMargin);
+			samCanvas.setWindow(new TrackWindow(width, s, e), leftMargin);
 			samCanvas.setC2T(isC2T);
 			samCanvas.setColorMode(colorMode);
 
@@ -211,10 +211,12 @@ public class SAMTrack extends TrackBase {
 		});
 	}
 
+	@Override
 	public void onChangeTrackWindow(TrackWindow newWindow) {
 		//		samCanvas.setWindow(newWindow, leftMargin);
 	}
 
+	@Override
 	public void onChangeTrackConfig(TrackConfigChange change) {
 		boolean isUpdate = false;
 
@@ -256,6 +258,7 @@ public class SAMTrack extends TrackBase {
 	//		saveData.add("leftMargin", leftMargin);
 	//	}
 
+	@Override
 	public void restoreProperties(Properties properties) {
 		super.restoreProperties(properties);
 

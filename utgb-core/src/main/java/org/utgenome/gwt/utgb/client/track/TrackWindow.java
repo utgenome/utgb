@@ -24,6 +24,8 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.track;
 
+import java.io.Serializable;
+
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
 
 /**
@@ -33,60 +35,143 @@ import org.utgenome.gwt.utgb.client.bio.OnGenome;
  * @author leo
  * 
  */
-public interface TrackWindow {
+public class TrackWindow implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	private final int pixelWidth;
+	private final int startIndexOnGenome;
+	private final int endIndexOnGenome;
+
+	public TrackWindow() {
+		this.pixelWidth = -1;
+		this.startIndexOnGenome = -1;
+		this.endIndexOnGenome = -1;
+	}
+
+	public TrackWindow(int pixelWidth, int startIndexOnGenome, int endIndexOnGenome) {
+		this.pixelWidth = pixelWidth;
+		this.startIndexOnGenome = startIndexOnGenome;
+		this.endIndexOnGenome = endIndexOnGenome;
+	}
+
 	/**
 	 * calculate the X position (pixel address) in a track window of a given index on genome.
 	 * 
 	 * @param indexOnGenome
 	 * @return relative X position in a window (0 origin).
 	 */
-	public int convertToPixelX(int indexOnGenome);
+	public int convertToPixelX(int indexOnGenome) {
+		double v = (indexOnGenome - startIndexOnGenome) * (double) pixelWidth;
+		double v2 = v / (endIndexOnGenome - startIndexOnGenome + 1);
+		if (!isReverseStrand())
+			return (int) v2;
+		else
+			return (int) (pixelWidth - v2);
+	}
 
 	/**
 	 * @param xOnWindow
 	 *            calculate the genome index of a given x position in the current window
 	 * @return genome position
 	 */
-	public int convertToGenomePosition(int xOnWindow);
+	public int convertToGenomePosition(int xOnWindow) {
+		if (getStartOnGenome() <= getEndOnGenome()) {
+			double genomeLengthPerBit = (double) (endIndexOnGenome - startIndexOnGenome) / (double) pixelWidth;
+			return (int) (startIndexOnGenome + xOnWindow * genomeLengthPerBit);
+		}
+		else {
+			// reverse strand
+			double genomeLengthPerBit = (double) (startIndexOnGenome - endIndexOnGenome) / (double) pixelWidth;
+			return (int) (endIndexOnGenome + (pixelWidth - xOnWindow) * genomeLengthPerBit);
+		}
+	}
 
 	/**
 	 * @return pixel length / (genome end - genome start);
 	 */
-	public double getPixelLengthPerBase();
+	public double getPixelLengthPerBase() {
+		return (double) pixelWidth / (double) (endIndexOnGenome - startIndexOnGenome);
+	}
 
 	/**
 	 * @return the window size
 	 */
-	public int getPixelWidth();
+	public int getPixelWidth() {
+		return pixelWidth;
+	}
 
 	/**
 	 * @return the sequence width
 	 */
-	public int getSequenceLength();
+	public int getSequenceLength() {
+		if (startIndexOnGenome <= endIndexOnGenome)
+			return endIndexOnGenome - startIndexOnGenome;
+		else
+			return startIndexOnGenome - endIndexOnGenome;
+	}
 
 	/**
 	 * @return start position on the genome currently displayed in the window
 	 */
-	public int getStartOnGenome();
+	public int getStartOnGenome() {
+		return startIndexOnGenome;
+	}
 
 	/**
 	 * @return end position on the genome currently displayed in the window
 	 */
-	public int getEndOnGenome();
+	public int getEndOnGenome() {
+		return endIndexOnGenome;
+	}
 
-	public boolean equals(TrackWindow window);
+	public boolean equals(TrackWindow window) {
+		return sameRangeWith(window) && (this.pixelWidth == window.getPixelWidth());
+	}
 
-	public boolean sameRangeWith(TrackWindow window);
+	public boolean sameRangeWith(TrackWindow window) {
+		return this.startIndexOnGenome == window.getStartOnGenome() && this.endIndexOnGenome == window.getEndOnGenome();
+	}
 
-	public boolean isReverseStrand();
+	public boolean isReverseStrand() {
+		return getStartOnGenome() > getEndOnGenome();
+	}
 
-	public TrackWindow newWindow(int newStartOnGenome, int newEndOnGenome);
+	public TrackWindow newWindow(int newStartOnGenome, int newEndOnGenome) {
+		return new TrackWindow(this.pixelWidth, newStartOnGenome, newEndOnGenome);
+	}
 
-	public TrackWindow newPixelWidthWindow(int pixelSize);
+	public TrackWindow newPixelWidthWindow(int pixelSize) {
+		return new TrackWindow(pixelSize, this.startIndexOnGenome, this.endIndexOnGenome);
+	}
 
-	public boolean hasOverlapWith(OnGenome g);
+	public boolean hasOverlapWith(OnGenome g) {
+		int s1 = getStartOnGenome();
+		int e1 = getEndOnGenome();
+		int s2 = g.getStart();
+		int e2 = g.getEnd();
 
-	public boolean hasSameScale(TrackWindow other);
+		return s1 <= e2 && s2 <= e1;
+	}
 
-	public TrackWindow mask(TrackWindow mask);
+	public boolean hasSameScale(TrackWindow other) {
+		if (other == null)
+			return false;
+		return this.getPixelWidth() == other.getPixelWidth() && this.getSequenceLength() == other.getSequenceLength();
+	}
+
+	public TrackWindow mask(TrackWindow mask) {
+		int s, e, pixelWidth;
+		if (this.getStartOnGenome() < mask.getStartOnGenome()) {
+			s = this.getStartOnGenome();
+			e = mask.getStartOnGenome();
+			pixelWidth = convertToPixelX(e);
+		}
+		else {
+			s = mask.getEndOnGenome();
+			e = this.getEndOnGenome();
+			pixelWidth = this.getPixelWidth() - convertToPixelX(s);
+		}
+		return new TrackWindow(pixelWidth, s, e);
+	}
 }
