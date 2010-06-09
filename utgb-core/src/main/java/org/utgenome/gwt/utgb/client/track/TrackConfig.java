@@ -129,7 +129,7 @@ public class TrackConfig extends PopupPanel {
 		_configTable.addConfiguration(new StringType(paramName), label, defaultValue);
 	}
 
-	public void addConfigInt(String label, String paramName, int defaultValue) {
+	public void addConfigInteger(String label, String paramName, int defaultValue) {
 		_configTable.addConfiguration(new IntegerType(paramName), label, Integer.toString(defaultValue));
 	}
 

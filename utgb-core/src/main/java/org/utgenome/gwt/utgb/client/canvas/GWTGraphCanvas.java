@@ -34,6 +34,7 @@ import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.util.Optional;
 import org.utgenome.gwt.widget.client.Style;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
@@ -44,7 +45,7 @@ import com.google.gwt.widgetideas.graphics.client.Color;
 import com.google.gwt.widgetideas.graphics.client.GWTCanvas;
 
 /**
- * Canvas for drawing bar graph, heat map etc.
+ * GWT Canvas for drawing bar graph, heat map, etc.
  * 
  * @author yoshimura
  * @author leo
@@ -53,7 +54,6 @@ import com.google.gwt.widgetideas.graphics.client.GWTCanvas;
 public class GWTGraphCanvas extends Composite {
 	// widget
 
-	private int windowHeight = 100;
 	private GWTCanvas canvas = new GWTCanvas();
 	private GWTCanvas frameCanvas = new GWTCanvas();
 	private AbsolutePanel panel = new AbsolutePanel();
@@ -61,11 +61,18 @@ public class GWTGraphCanvas extends Composite {
 
 	private int indentHeight = 0;
 
-	private float maxValue = 20.0f;
-	private float minValue = 0.0f;
-	private boolean isLog = false;
-	private boolean drawZeroValue = false;
+	public static class GraphStyle {
+		public int windowHeight = 100;
+		public float maxValue = 20.0f;
+		public float minValue = 0.0f;
+		public boolean autoScale = false;
+		public boolean logScale = false;
+		public boolean drawZeroValue = false;
+		public boolean drawScale = true;
+		public boolean showScaleLabel = true;
+	}
 
+	private GraphStyle style = new GraphStyle();
 	private TrackGroup trackGroup;
 
 	public GWTGraphCanvas() {
@@ -78,7 +85,6 @@ public class GWTGraphCanvas extends Composite {
 	}
 
 	private void init() {
-		//canvas.setBackgroundColor(new Color(255, 255, 255, 0f));
 
 		Style.padding(panel, 0);
 		Style.margin(panel, 0);
@@ -148,7 +154,7 @@ public class GWTGraphCanvas extends Composite {
 	private void resetDrag(Event event) {
 
 		int clientX = DOM.eventGetClientX(event) + Window.getScrollLeft();
-		int clientY = DOM.eventGetClientY(event) + Window.getScrollTop();
+		//int clientY = DOM.eventGetClientY(event) + Window.getScrollTop();
 
 		if (dragStartPoint.isDefined() && trackWindow != null) {
 			DragPoint p = dragStartPoint.get();
@@ -182,6 +188,28 @@ public class GWTGraphCanvas extends Composite {
 		graphLabels.clear();
 	}
 
+	private final String DEFAULT_COLOR = "rgba(12,106,193,0.7)";
+
+	public void drawWigGraph(List<CompactWIGData> data, Optional<String> defaultColor) {
+		if (style.drawScale)
+			drawFrame(data);
+
+		for (CompactWIGData each : data) {
+			Color graphColor = new Color(DEFAULT_COLOR);
+			if (defaultColor.isDefined()) {
+				graphColor = new Color(defaultColor.get());
+			}
+			else if (each.getTrack().containsKey("color")) {
+				String colorStr = each.getTrack().get("color");
+				String c[] = colorStr.split(",");
+				if (c.length == 3)
+					graphColor = new Color(Integer.valueOf(c[0]), Integer.valueOf(c[1]), Integer.valueOf(c[2]));
+			}
+
+			drawWigGraph(each, graphColor);
+		}
+	}
+
 	public void drawWigGraph(CompactWIGData data, Color color) {
 
 		canvas.saveContext();
@@ -196,10 +224,10 @@ public class GWTGraphCanvas extends Composite {
 			float value = data.getData()[i];
 			float y1;
 			if (value == 0.0f) {
-				if (!drawZeroValue)
+				if (!style.drawZeroValue)
 					continue;
 				else {
-					y1 = y2 + ((minValue < maxValue) ? -0.5f : 0.5f);
+					y1 = y2 + ((style.minValue < style.maxValue) ? -0.5f : 0.5f);
 				}
 			}
 			else {
@@ -224,19 +252,31 @@ public class GWTGraphCanvas extends Composite {
 
 	private List<Label> graphLabels = new ArrayList<Label>();
 
-	public void drawFrame() {
+	public void drawFrame(List<CompactWIGData> wigDataList) {
+
+		if (style.autoScale) {
+			float tempMinValue = 0.0f;
+			float tempMaxValue = 0.0f;
+			for (CompactWIGData data : wigDataList) {
+				tempMinValue = Math.min(tempMinValue, data.getMinValue());
+				tempMaxValue = Math.max(tempMaxValue, data.getMaxValue());
+			}
+			GWT.log("range:" + tempMinValue + "-" + tempMaxValue, null);
+			style.minValue = tempMinValue;
+			style.maxValue = tempMaxValue;
+		}
 
 		// draw frame
 		frameCanvas.saveContext();
 		frameCanvas.setStrokeStyle(new Color(0, 0, 0, 0.5f));
 		frameCanvas.setLineWidth(1.0f);
 		frameCanvas.beginPath();
-		frameCanvas.rect(0, 0, trackWindow.getPixelWidth(), windowHeight);
+		frameCanvas.rect(0, 0, trackWindow.getPixelWidth(), style.windowHeight);
 		frameCanvas.stroke();
 		frameCanvas.restoreContext();
 
 		// draw indent line & label
-		Indent indent = new Indent(minValue, maxValue);
+		Indent indent = new Indent(style.minValue, style.maxValue);
 
 		{
 			frameCanvas.saveContext();
@@ -272,7 +312,7 @@ public class GWTGraphCanvas extends Composite {
 
 	public void drawScaleLabel() {
 
-		Indent indent = new Indent(minValue, maxValue);
+		Indent indent = new Indent(style.minValue, style.maxValue);
 		int fontHeight = 10;
 		for (int i = 0; i <= indent.nSteps; i++) {
 			float value = indent.getIndentValue(i);
@@ -285,21 +325,11 @@ public class GWTGraphCanvas extends Composite {
 			int labelX = 1;
 			int labelY = (int) (getYPosition(value) - fontHeight);
 
-			if (labelY > windowHeight)
+			if (labelY > style.windowHeight)
 				continue;
 
 			graphLabels.add(label);
 			panel.add(label, labelX, labelY);
-
-			//			if (label[i].getOffsetWidth() < leftMargin)
-			//				labelPosition = leftMargin - label[i].getOffsetWidth();
-
-			//panel.setWidgetPosition(label[i], labelX, 
-
-			//			if (getYPosition(value) < 0.0f || getYPosition(value) > windowHeight) {
-			//				panel.remove(label[i]);
-			//				continue;
-			//			}
 
 		}
 
@@ -321,14 +351,14 @@ public class GWTGraphCanvas extends Composite {
 			min = minValue < maxValue ? minValue : maxValue;
 			max = minValue > maxValue ? minValue : maxValue;
 
-			if (isLog) {
+			if (style.logScale) {
 				min = getLogValue(min);
 				max = getLogValue(max);
 			}
 
-			double tempIndentValue = (max - min) / windowHeight * indentHeight;
+			double tempIndentValue = (max - min) / style.windowHeight * indentHeight;
 
-			if (isLog && tempIndentValue < 1.0)
+			if (style.logScale && tempIndentValue < 1.0)
 				tempIndentValue = 1.0;
 
 			fraction = (long) Math.floor(Math.log10(tempIndentValue));
@@ -352,7 +382,7 @@ public class GWTGraphCanvas extends Composite {
 		public float getIndentValue(int step) {
 			double indentValue = min + (step * exponent * Math.pow(10, fraction));
 
-			if (!isLog)
+			if (!style.logScale)
 				return (float) indentValue;
 			else if (indentValue == 0.0f)
 				return 0.0f;
@@ -380,23 +410,23 @@ public class GWTGraphCanvas extends Composite {
 	}
 
 	public float getYPosition(float value) {
-		if (maxValue == minValue)
+		if (style.maxValue == style.minValue)
 			return 0.0f;
 
-		float tempMin = maxValue < minValue ? maxValue : minValue;
-		float tempMax = maxValue > minValue ? maxValue : minValue;
+		float tempMin = style.maxValue < style.minValue ? style.maxValue : style.minValue;
+		float tempMax = style.maxValue > style.minValue ? style.maxValue : style.minValue;
 
-		if (isLog) {
+		if (style.logScale) {
 			value = getLogValue(value);
 			tempMax = getLogValue(tempMax);
 			tempMin = getLogValue(tempMin);
 		}
-		float valueHeight = (value - tempMin) / (tempMax - tempMin) * windowHeight;
+		float valueHeight = (value - tempMin) / (tempMax - tempMin) * style.windowHeight;
 
-		if (maxValue < minValue)
+		if (style.maxValue < style.minValue)
 			return valueHeight;
 		else
-			return windowHeight - valueHeight;
+			return style.windowHeight - valueHeight;
 	}
 
 	private float logBase = 2.0f;
@@ -444,9 +474,13 @@ public class GWTGraphCanvas extends Composite {
 		return trackWindow;
 	}
 
-	public void setWindowHeight(int windowHeight) {
-		this.windowHeight = windowHeight;
-		setPixelSize(trackWindow.getPixelWidth(), windowHeight);
+	public void setStyle(GraphStyle style) {
+		this.style = style;
+		setPixelSize(trackWindow.getPixelWidth(), style.windowHeight);
+	}
+
+	public GraphStyle getStyle() {
+		return style;
 	}
 
 	@Override
@@ -460,46 +494,6 @@ public class GWTGraphCanvas extends Composite {
 		frameCanvas.setPixelHeight(height);
 
 		panel.setPixelSize(width, height);
-	}
-
-	public int getWindowHeight() {
-		return windowHeight;
-	}
-
-	public float getMaxValue() {
-		return maxValue;
-	}
-
-	public void setMaxValue(float maxValue) {
-		this.maxValue = maxValue;
-	}
-
-	public float getMinValue() {
-		return minValue;
-	}
-
-	public void setMinValue(float minValue) {
-		this.minValue = minValue;
-	}
-
-	public boolean getIsLog() {
-		return isLog;
-	}
-
-	public void setIsLog(boolean isLog) {
-		this.isLog = isLog;
-	}
-
-	public int getIndentHeight() {
-		return indentHeight;
-	}
-
-	public void setIndentHeight(int indentHeight) {
-		this.indentHeight = indentHeight;
-	}
-
-	public void setShowZeroValue(boolean showZeroValue) {
-		this.drawZeroValue = showZeroValue;
 	}
 
 }

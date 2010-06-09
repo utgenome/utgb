@@ -57,13 +57,29 @@ public class FASTADatabaseTest {
 
 			public void handle(NSeq seq) throws Exception {
 				String s = seq.getSubSequence(0, 14);
-				// ACTGDTG CGGTAA				
+				// [ACTGDTG CGGTAA]				
 				Assert.assertEquals("ACTGDTGCCGGTAA", s);
 			}
 
 			public void handleException(Exception e) throws Exception {
-				// TODO Auto-generated method stub
+			}
 
+			public void init() {
+			}
+		});
+
+		FASTADatabase.querySequence(db, new ChrLoc("sample", 3, 13), new BeanResultHandler<NSeq>() {
+			public void finish() {
+
+			}
+
+			public void handle(NSeq seq) throws Exception {
+				String s = seq.getSubSequence(3, 14);
+				// ACT[GDTG CGGTAA]				
+				Assert.assertEquals("GDTGCCGGTAA", s);
+			}
+
+			public void handleException(Exception e) throws Exception {
 			}
 
 			public void init() {
