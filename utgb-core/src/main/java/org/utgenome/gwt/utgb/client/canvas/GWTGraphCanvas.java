@@ -226,7 +226,6 @@ public class GWTGraphCanvas extends Composite {
 		}
 
 		dragStartPoint.reset();
-		event.preventDefault();
 
 		Style.cursor(canvas, Style.CURSOR_AUTO);
 	}
