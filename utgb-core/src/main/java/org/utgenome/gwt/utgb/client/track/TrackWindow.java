@@ -139,10 +139,6 @@ public class TrackWindow implements Serializable, Comparable<TrackWindow> {
 		return endIndexOnGenome;
 	}
 
-	public boolean equals(TrackWindow window) {
-		return sameRangeWith(window) && (this.pixelWidth == window.getPixelWidth());
-	}
-
 	public boolean sameRangeWith(TrackWindow window) {
 		return this.startIndexOnGenome == window.getStartOnGenome() && this.endIndexOnGenome == window.getEndOnGenome();
 	}
@@ -157,6 +153,10 @@ public class TrackWindow implements Serializable, Comparable<TrackWindow> {
 
 	public TrackWindow newWindow(int newStartOnGenome, int newEndOnGenome) {
 		return new TrackWindow(this.pixelWidth, newStartOnGenome, newEndOnGenome);
+	}
+
+	public TrackWindow scroll(int startDiff) {
+		return new TrackWindow(this.pixelWidth, this.startIndexOnGenome + startDiff, this.endIndexOnGenome + startDiff);
 	}
 
 	public TrackWindow newPixelWidthWindow(int pixelSize) {
@@ -206,4 +206,28 @@ public class TrackWindow implements Serializable, Comparable<TrackWindow> {
 		return this.getViewStartOnGenome() - o.getViewStartOnGenome();
 	}
 
+	// @see java.lang.Object#equals(java.lang.Object)
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof TrackWindow) {
+			TrackWindow window = (TrackWindow) o;
+			return sameRangeWith(window) && (this.pixelWidth == window.getPixelWidth());
+		}
+		else
+			return false;
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 3;
+		hash += 137 * startIndexOnGenome;
+		hash += 137 * endIndexOnGenome;
+		hash += 137 * pixelWidth;
+		return hash / 1987;
+	}
+
+	@Override
+	public String toString() {
+		return "[" + getStartOnGenome() + ", " + getEndOnGenome() + ") pixel width: " + pixelWidth;
+	}
 }

@@ -40,7 +40,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author leo
  * 
  */
-public class TrackWindow extends TrackPanelBase {
+public class TrackWindowPanel extends TrackPanelBase {
 
 	private FrameBorder border;
 	private ScrollPanel scrollPanel = new ScrollPanel();
@@ -50,7 +50,7 @@ public class TrackWindow extends TrackPanelBase {
 	private String title;
 	private Label titleLabel = new Label();
 
-	public TrackWindow() {
+	public TrackWindowPanel() {
 		drawWidget();
 
 		initWidget(layoutPanel);

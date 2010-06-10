@@ -105,7 +105,7 @@ public class UTGBWidgetTest implements EntryPoint {
 			}
 		});
 
-		TrackWindow wp = new TrackWindow();
+		TrackWindowPanel wp = new TrackWindowPanel();
 		wp.setTrackTitle("window track");
 		wp.setSize(300, 100);
 		wp.addTrackButtonListener(new TrackButtonListenerAdapter() {
@@ -121,7 +121,7 @@ public class UTGBWidgetTest implements EntryPoint {
 		Style.fullWidth(hp2);
 		hp2.add(new HorizontalTrackFrame());
 		hp2.add(new HorizontalTrackFrame());
-		hp2.add(new TrackWindow());
+		hp2.add(new TrackWindowPanel());
 		wp.setTrackContent(hp2);
 
 		vp2.add(wp);
@@ -158,7 +158,7 @@ public class UTGBWidgetTest implements EntryPoint {
 		l.add(tabFrame);
 
 		HorizontalTrackFrame ht1 = new HorizontalTrackFrame();
-		ht1.setTrackContent(new TrackWindow());
+		ht1.setTrackContent(new TrackWindowPanel());
 		l.add(ht1);
 
 		final GWTCanvas canvas = new GWTCanvas(200, 200);

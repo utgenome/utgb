@@ -53,27 +53,35 @@ import org.utgenome.gwt.utgb.client.track.TrackWindow;
  * @author leo
  * 
  */
-public class CanvasChain {
+public class TrackWindowChain {
 
 	private ArrayList<TrackWindow> windowList = new ArrayList<TrackWindow>();
 
-	public CanvasChain() {
+	public TrackWindowChain() {
 
 	}
 
 	private TrackWindow viewWindow;
 	private TrackWindow globalWindow;
 
-	private final int PREFETCH_FACTOR = 1; // (left) f*V + (current) V + (right) f*V = 3V (when f=1)
+	private int PREFETCH_FACTOR = 1; // (left) f*V + (current) V + (right) f*V = 3V (when f=1)
 
 	public static class WindowUpdateInfo {
-		public final List<TrackWindow> windowsToCreate;
-		public final List<TrackWindow> windowsToDiscard;
+		public final List<TrackWindow> windowToCreate;
+		public final List<TrackWindow> windowToDiscard;
 
-		private WindowUpdateInfo(List<TrackWindow> windowsToCreate, List<TrackWindow> windowsToDiscard) {
-			this.windowsToCreate = windowsToCreate;
-			this.windowsToDiscard = windowsToDiscard;
+		private WindowUpdateInfo(List<TrackWindow> windowToCreate, List<TrackWindow> windowToDiscard) {
+			this.windowToCreate = windowToCreate;
+			this.windowToDiscard = windowToDiscard;
 		}
+	}
+
+	public void clear() {
+		windowList.clear();
+	}
+
+	public void setPrefetchFactor(int factor) {
+		this.PREFETCH_FACTOR = factor;
 	}
 
 	public WindowUpdateInfo setViewWindow(TrackWindow view) {
@@ -110,7 +118,7 @@ public class CanvasChain {
 
 		// sort the windows by the view start order
 		Collections.sort(windowToPreserve);
-		int gridStartOnGenome = newWindowList.isEmpty() ? view.getViewStartOnGenome() : windowToPreserve.get(0).getViewStartOnGenome();
+		int gridStartOnGenome = windowToPreserve.isEmpty() ? view.getViewStartOnGenome() : windowToPreserve.get(0).getViewStartOnGenome();
 		while (gridStartOnGenome > globalWindow.getViewStartOnGenome()) {
 			gridStartOnGenome -= viewSize;
 		}
@@ -123,7 +131,7 @@ public class CanvasChain {
 				grid = view.newWindow(gridStartOnGenome + viewSize, gridStartOnGenome);
 			}
 
-			if (!windowList.contains(grid)) {
+			if (!windowToPreserve.contains(grid)) {
 				newWindowList.add(grid);
 			}
 
