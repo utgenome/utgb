@@ -20,5 +20,5 @@
  -address: file://d:/work/genome/hg19/hg19.sqlite
 
 -cyteband.dbfolder : db
--utgb.db.folder: "d:/work/utgb/db"
+#-utgb.db.folder: "d:/work/utgb/db"
 

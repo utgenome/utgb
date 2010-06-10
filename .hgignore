@@ -4,6 +4,7 @@ target
 .idea
 war/utgb
 utgb-core/src/main/webapp/theme
+utgb-core/db/genome
 
 syntax: glob
 *~

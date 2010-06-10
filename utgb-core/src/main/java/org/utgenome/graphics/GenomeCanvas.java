@@ -118,7 +118,7 @@ public class GenomeCanvas {
 			yOffset = 0;
 	}
 
-	public void drawRect(long startIndexOnGenome, long endIndexOnGenome, int yOffset, int height, Color color) {
+	public void drawGeneRect(long startIndexOnGenome, long endIndexOnGenome, int yOffset, int height, Color color) {
 		int start = window.getXPosOnWindow(startIndexOnGenome, canvasWidth);
 		int end = window.getXPosOnWindow(endIndexOnGenome, canvasWidth);
 
@@ -261,7 +261,7 @@ public class GenomeCanvas {
 			end = temp;
 		}
 
-		drawStart = (int) (start - fontWidth) - 1;
+		drawStart = (start - fontWidth) - 1;
 
 		g.drawString(text, drawStart, yOffset);
 	}
@@ -276,15 +276,14 @@ public class GenomeCanvas {
 		canvasHeight = height;
 
 		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-		g = (Graphics2D) image.createGraphics();
+		g = image.createGraphics();
 
 	}
 
 	public void drawLine(long x1, long y1, long x2, long y2, Color lineColor) {
 		g.setColor(lineColor);
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g.drawLine((int) (window.getXPosOnWindow((long) x1, canvasWidth) + 0.5f), (int) y1, (int) (window.getXPosOnWindow((long) x2, canvasWidth) - 0.5f),
-				(int) y2);
+		g.drawLine((int) (window.getXPosOnWindow(x1, canvasWidth) + 0.5f), (int) y1, (int) (window.getXPosOnWindow(x2, canvasWidth) - 0.5f), (int) y2);
 	}
 
 	public void setPixelHeight(int height) {
@@ -292,7 +291,7 @@ public class GenomeCanvas {
 		canvasHeight = height;
 
 		image = new BufferedImage(canvasWidth, height, BufferedImage.TYPE_INT_ARGB);
-		g = (Graphics2D) image.createGraphics();
+		g = image.createGraphics();
 
 	}
 

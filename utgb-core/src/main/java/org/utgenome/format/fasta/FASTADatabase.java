@@ -282,8 +282,8 @@ public class FASTADatabase {
 	 * 
 	 */
 	public static class NSeq {
-		public int start;
-		public int end;
+		private int start;
+		private int end;
 		private byte[] sequence;
 
 		public NSeq() {
@@ -304,6 +304,14 @@ public class FASTADatabase {
 			buf.append(end);
 			buf.append(")");
 			return buf.toString();
+		}
+
+		public void setStart(int start) {
+			this.start = start;
+		}
+
+		public void setEnd(int end) {
+			this.end = end;
 		}
 
 		public int getStart() {

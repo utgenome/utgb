@@ -305,7 +305,7 @@ public class GeneCanvas {
 	}
 
 	public void drawGeneRect(long x1, long x2, int y, Color c) {
-		canvas.drawRect(x1, x2, y, geneHeight, c);
+		canvas.drawGeneRect(x1, x2, y, geneHeight, c);
 	}
 
 	public void toPNG(OutputStream out) throws IOException {

@@ -110,8 +110,8 @@ public class Sequence extends WebTrackBase {
 		}
 
 		public void handle(NSeq seq) throws SQLException {
-			int rangeStart = (int) ((seq.getStart() < start) ? start - seq.getStart() : 0);
-			int rangeEnd = (int) ((end > seq.getEnd()) ? seq.getLength() : end - seq.getStart() + 1);
+			int rangeStart = ((seq.getStart() < start) ? start - seq.getStart() : 0);
+			int rangeEnd = ((end > seq.getEnd()) ? seq.getLength() : end - seq.getStart() + 1);
 			output(seq.getSubSequence(rangeStart, rangeEnd));
 		}
 
@@ -275,7 +275,7 @@ public class Sequence extends WebTrackBase {
 			this.endOffset = end + 1;
 
 			int seqWidth = end - start;
-			if (seqWidth <= width / 5)
+			if (seqWidth <= width / 7)
 				drawBase = true;
 
 			int repeatColorAlpha = 50;
@@ -303,7 +303,7 @@ public class Sequence extends WebTrackBase {
 			for (int i = 0; i < subSequence.length(); i++) {
 				char ch = subSequence.charAt(i);
 				if (!isReverseStrand()) {
-					canvas.drawRect(startOffset, startOffset + 1, 0, DEFAULT_HEIGHT, getColor(ch));
+					canvas.drawGeneRect(startOffset, startOffset + 1, 0, DEFAULT_HEIGHT, getColor(ch));
 					if (drawBase)
 						canvas.drawBase(subSequence.substring(i, i + 1), startOffset, startOffset + 1, DEFAULT_HEIGHT - 2, FONT_SIZE, textColor);
 
@@ -311,7 +311,7 @@ public class Sequence extends WebTrackBase {
 				}
 				else {
 					char reverse = getComplement(ch);
-					canvas.drawRect(endOffset - 1, endOffset, 0, DEFAULT_HEIGHT, getColor(reverse));
+					canvas.drawGeneRect(endOffset - 1, endOffset, 0, DEFAULT_HEIGHT, getColor(reverse));
 					if (drawBase)
 						canvas.drawBase(Character.toString(reverse), endOffset - 1, endOffset, DEFAULT_HEIGHT - 2, FONT_SIZE, textColor);
 
@@ -350,12 +350,12 @@ public class Sequence extends WebTrackBase {
 			int rangeEnd = startOffset + subSequence.length();
 			for (int pos = startOffset + startOffset % loopSequenceWidth; pos < rangeEnd; pos += loopSequenceWidth) {
 
-				char ch = subSequence.charAt((int) (pos - startOffset));
+				char ch = subSequence.charAt((pos - startOffset));
 				if (!isReverseStrand()) {
-					canvas.drawRect(pos, pos + loopSequenceWidth, 0, DEFAULT_HEIGHT, getColor(ch));
+					canvas.drawGeneRect(pos, pos + loopSequenceWidth, 0, DEFAULT_HEIGHT, getColor(ch));
 				}
 				else {
-					canvas.drawRect(getEnd() - (pos + loopSequenceWidth), getEnd() - pos, 0, DEFAULT_HEIGHT, getColor(getComplement(ch)));
+					canvas.drawGeneRect(getEnd() - (pos + loopSequenceWidth), getEnd() - pos, 0, DEFAULT_HEIGHT, getColor(getComplement(ch)));
 				}
 			}
 
