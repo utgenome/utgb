@@ -88,6 +88,10 @@ public class GWTGraphCanvas extends Composite {
 			canvas.setPixelHeight(height);
 		}
 
+		public void setPixelWidth(int width) {
+			canvas.setPixelWidth(width);
+		}
+
 		public void setPixelHeight(int height) {
 			setPixelSize(window.getPixelWidth(), height);
 		}
@@ -604,9 +608,17 @@ public class GWTGraphCanvas extends Composite {
 		if (trackWindow != null) {
 			if (trackWindow.hasSameScaleWith(w)) {
 				// slide the canvas
-				int newX = trackWindow.convertToPixelX(w.getStartOnGenome());
 				for (GraphCanvas each : canvasMap.values()) {
 					int x = w.convertToPixelX(each.window.getStartOnGenome());
+					panel.setWidgetPosition(each.canvas, x, 0);
+				}
+			}
+			else {
+				// scroll & zoom in/out
+				for (GraphCanvas each : canvasMap.values()) {
+					int x = w.convertToPixelX(each.window.getStartOnGenome());
+					int pixelWidth = (int) (w.getPixelLengthPerBase() * each.window.getSequenceLength());
+					each.canvas.setPixelWidth(pixelWidth);
 					panel.setWidgetPosition(each.canvas, x, 0);
 				}
 			}

@@ -24,6 +24,7 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.track.lib;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -161,11 +162,6 @@ public class WIGGraphCanvasTrack extends TrackBase {
 
 		WindowUpdateInfo updateInfo = chain.setViewWindow(newWindow);
 
-		// clear the windows out of the global view
-		for (TrackWindow each : updateInfo.windowToDiscard) {
-			graphCanvas.clear(each);
-		}
-
 		List<TrackWindow> windowToCreate = updateInfo.windowToCreate;
 		// sort the windows in the nearest neighbor order from the view window 
 		Collections.sort(windowToCreate, new Comparator<TrackWindow>() {
@@ -178,7 +174,19 @@ public class WIGGraphCanvasTrack extends TrackBase {
 
 		// load graph 
 		for (TrackWindow each : windowToCreate) {
-			loadGraph(each);
+			ArrayList<TrackWindow> overwrittenWindow = new ArrayList<TrackWindow>();
+			for (TrackWindow toDiscard : updateInfo.windowToDiscard) {
+				each.overlapWith(toDiscard);
+				overwrittenWindow.add(toDiscard);
+			}
+
+			loadGraph(each, overwrittenWindow);
+			updateInfo.windowToDiscard.removeAll(overwrittenWindow);
+		}
+
+		// clear the remaining windows out of the global view
+		for (TrackWindow each : updateInfo.windowToDiscard) {
+			graphCanvas.clear(each);
 		}
 
 		if (windowToCreate.isEmpty()) {
@@ -186,7 +194,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 		}
 	}
 
-	public void loadGraph(final TrackWindow queryWindow) {
+	public void loadGraph(final TrackWindow queryWindow, final List<TrackWindow> toDiscard) {
 
 		getFrame().setNowLoading();
 		String fileName = getConfig().getString(CONFIG_FILENAME, "");
@@ -196,13 +204,20 @@ public class WIGGraphCanvasTrack extends TrackBase {
 		getBrowserService().getCompactWigDataList(fileName, queryWindow.getPixelWidth(), l, new AsyncCallback<List<CompactWIGData>>() {
 			public void onFailure(Throwable e) {
 				GWT.log("failed to retrieve wig data", e);
+				discard();
 				getFrame().loadingDone();
 			}
 
 			public void onSuccess(List<CompactWIGData> dataList) {
+				discard();
 				graphCanvas.drawWigGraph(dataList, queryWindow);
 				getFrame().loadingDone();
 				refresh();
+			}
+
+			private void discard() {
+				for (TrackWindow each : toDiscard)
+					graphCanvas.clear(each);
 			}
 		});
 

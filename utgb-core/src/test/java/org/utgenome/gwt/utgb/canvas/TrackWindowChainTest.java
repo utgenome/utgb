@@ -22,6 +22,12 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.canvas;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.Collections;
+
 import org.junit.Test;
 import org.utgenome.gwt.utgb.client.canvas.TrackWindowChain;
 import org.utgenome.gwt.utgb.client.canvas.TrackWindowChain.WindowUpdateInfo;
@@ -29,34 +35,63 @@ import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.xerial.lens.Lens;
 import org.xerial.util.log.Logger;
 
-public class CanvasChainTest {
+public class TrackWindowChainTest {
 
-	private static Logger _logger = Logger.getLogger(CanvasChainTest.class);
+	private static Logger _logger = Logger.getLogger(TrackWindowChainTest.class);
+
+	public void verifyChain(TrackWindow view, TrackWindowChain chain) {
+
+		ArrayList<TrackWindow> w = new ArrayList<TrackWindow>(chain.getTrackWindowList());
+		Collections.sort(w);
+
+		// contiguousness test
+		if (w.isEmpty())
+			return;
+		int s = w.get(0).getViewStartOnGenome();
+		int e = w.get(0).getViewEndOnGenome();
+		for (int i = 1; i < w.size(); ++i) {
+			TrackWindow next = w.get(i);
+			assertEquals(e, next.getViewStartOnGenome());
+			e = next.getViewEndOnGenome();
+		}
+
+		// containment test
+		TrackWindow globalView = view.newWindow(s, e);
+		assertTrue(globalView.contains(view));
+
+	}
 
 	@Test
 	public void chain() throws Exception {
 		TrackWindowChain chain = new TrackWindowChain();
 		TrackWindow view = new TrackWindow(800, 1, 1001);
 		WindowUpdateInfo update = chain.setViewWindow(view);
-		_logger.info(String.format("view: %s\n%s", view.toString(), Lens.toSilk(update)));
+		_logger.debug(String.format("view: %s\n%s", view.toString(), Lens.toSilk(update)));
+		verifyChain(view, chain);
 
 		update = chain.setViewWindow(view = view.scroll(500));
-		_logger.info(String.format("view: %s\n%s", view.toString(), Lens.toSilk(update)));
+		_logger.debug(String.format("view: %s\n%s", view.toString(), Lens.toSilk(update)));
+		verifyChain(view, chain);
 
 		update = chain.setViewWindow(view = view.scroll(500));
-		_logger.info(String.format("view: %s\n%s", view.toString(), Lens.toSilk(update)));
+		_logger.debug(String.format("view: %s\n%s", view.toString(), Lens.toSilk(update)));
+		verifyChain(view, chain);
 
 		update = chain.setViewWindow(view = view.scroll(500));
-		_logger.info(String.format("view: %s\n%s", view.toString(), Lens.toSilk(update)));
+		_logger.debug(String.format("view: %s\n%s", view.toString(), Lens.toSilk(update)));
+		verifyChain(view, chain);
 
 		update = chain.setViewWindow(view = view.scroll(-500));
-		_logger.info(String.format("view: %s\n%s", view.toString(), Lens.toSilk(update)));
+		_logger.debug(String.format("view: %s\n%s", view.toString(), Lens.toSilk(update)));
+		verifyChain(view, chain);
 
 		update = chain.setViewWindow(view = view.scroll(1000));
-		_logger.info(String.format("view: %s\n%s", view.toString(), Lens.toSilk(update)));
+		_logger.debug(String.format("view: %s\n%s", view.toString(), Lens.toSilk(update)));
+		verifyChain(view, chain);
 
 		update = chain.setViewWindow(view = view.scroll(3000));
-		_logger.info(String.format("view: %s\n%s", view.toString(), Lens.toSilk(update)));
+		_logger.debug(String.format("view: %s\n%s", view.toString(), Lens.toSilk(update)));
+		verifyChain(view, chain);
 
 	}
 
