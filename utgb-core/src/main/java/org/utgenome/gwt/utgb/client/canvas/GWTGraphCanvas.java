@@ -614,13 +614,13 @@ public class GWTGraphCanvas extends Composite {
 				}
 			}
 			else {
-				// scroll & zoom in/out
-				for (GraphCanvas each : canvasMap.values()) {
-					int x = w.convertToPixelX(each.window.getStartOnGenome());
-					int pixelWidth = (int) (w.getPixelLengthPerBase() * each.window.getSequenceLength());
-					each.canvas.setPixelWidth(pixelWidth);
-					panel.setWidgetPosition(each.canvas, x, 0);
-				}
+				//				// scroll & zoom in/out
+				//				for (GraphCanvas each : canvasMap.values()) {
+				//					int x = w.convertToPixelX(each.window.getStartOnGenome());
+				//					int pixelWidth = (int) (w.getPixelLengthPerBase() * each.window.getSequenceLength());
+				//					each.canvas.setPixelWidth(pixelWidth);
+				//					//panel.setWidgetPosition(each.canvas, x, 0);
+				//				}
 			}
 		}
 
