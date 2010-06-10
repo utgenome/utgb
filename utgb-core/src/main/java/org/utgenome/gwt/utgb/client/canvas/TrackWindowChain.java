@@ -84,6 +84,10 @@ public class TrackWindowChain {
 		this.PREFETCH_FACTOR = factor;
 	}
 
+	public List<TrackWindow> getTrackWindowList() {
+		return windowList;
+	}
+
 	public WindowUpdateInfo setViewWindow(TrackWindow view) {
 
 		final int factor = PREFETCH_FACTOR * 2 + 1;

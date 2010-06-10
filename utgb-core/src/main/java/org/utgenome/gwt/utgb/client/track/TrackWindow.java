@@ -163,6 +163,14 @@ public class TrackWindow implements Serializable, Comparable<TrackWindow> {
 		return new TrackWindow(pixelSize, this.startIndexOnGenome, this.endIndexOnGenome);
 	}
 
+	public boolean contains(TrackWindow other) {
+		int s1 = getViewStartOnGenome();
+		int e1 = getViewEndOnGenome();
+		int s2 = other.getViewStartOnGenome();
+		int e2 = other.getViewEndOnGenome();
+		return s1 <= s2 && e2 <= e1;
+	}
+
 	public boolean overlapWith(OnGenome g) {
 		int s1 = getStartOnGenome();
 		int e1 = getEndOnGenome();
