@@ -266,6 +266,9 @@ public class GWTGraphCanvas extends Composite {
 	}
 
 	public void clear() {
+		for (GraphCanvas each : canvasMap.values()) {
+			each.canvas.removeFromParent();
+		}
 		canvasMap.clear();
 		clearScale();
 	}
