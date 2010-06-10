@@ -225,6 +225,10 @@ public class TrackWindow implements Serializable, Comparable<TrackWindow> {
 			return false;
 	}
 
+	public int center() {
+		return (int) ((startIndexOnGenome + endIndexOnGenome) / 2.0 + 0.5);
+	}
+
 	@Override
 	public int hashCode() {
 		int hash = 3;

@@ -25,6 +25,7 @@
 package org.utgenome.gwt.utgb.client.canvas;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.utgenome.gwt.utgb.client.bio.CompactWIGData;
@@ -55,12 +56,42 @@ import com.google.gwt.widgetideas.graphics.client.GWTCanvas;
 public class GWTGraphCanvas extends Composite {
 	// widget
 
-	private GWTCanvas canvas = new GWTCanvas();
 	private GWTCanvas frameCanvas = new GWTCanvas();
 	private AbsolutePanel panel = new AbsolutePanel();
 	private TrackWindow trackWindow;
+	private final HashMap<TrackWindow, GraphCanvas> canvasMap = new HashMap<TrackWindow, GraphCanvas>();
 
 	private int indentHeight = 0;
+
+	private static class GraphCanvas {
+		public final TrackWindow window;
+		public final List<CompactWIGData> graphData;
+		public final GWTCanvas canvas = new GWTCanvas();
+
+		public GraphCanvas(TrackWindow window, List<CompactWIGData> graphData, int height) {
+			this.window = window;
+			this.graphData = graphData;
+			canvas.setCoordSize(window.getPixelWidth(), height);
+			setPixelSize(window.getPixelWidth(), height);
+		}
+
+		public void clearCanvas() {
+			canvas.clear();
+		}
+
+		public void setCoordinateHeight(int height) {
+			canvas.setCoordSize(window.getPixelWidth(), height);
+		}
+
+		private void setPixelSize(int width, int height) {
+			canvas.setPixelWidth(width);
+			canvas.setPixelHeight(height);
+		}
+
+		public void setPixelHeight(int height) {
+			setPixelSize(window.getPixelWidth(), height);
+		}
+	}
 
 	/**
 	 * @author leo
@@ -145,7 +176,7 @@ public class GWTGraphCanvas extends Composite {
 		Style.margin(panel, 0);
 
 		panel.add(frameCanvas, 0, 0);
-		panel.add(canvas, 0, 0);
+		//panel.add(canvas, 0, 0);
 		initWidget(panel);
 
 		sinkEvents(Event.ONMOUSEMOVE | Event.ONMOUSEOVER | Event.ONMOUSEOUT | Event.ONMOUSEDOWN | Event.ONMOUSEUP);
@@ -173,10 +204,10 @@ public class GWTGraphCanvas extends Composite {
 				DragPoint p = dragStartPoint.get();
 				int xDiff = clientX - p.x;
 				//int yDiff = clientY - p.y;
-				panel.setWidgetPosition(canvas, xDiff, 0);
+				//panel.setWidgetPosition(canvas, xDiff, 0);
 			}
 			else {
-				Style.cursor(canvas, Style.CURSOR_AUTO);
+				//Style.cursor(canvas, Style.CURSOR_AUTO);
 			}
 
 			break;
@@ -192,7 +223,7 @@ public class GWTGraphCanvas extends Composite {
 
 			if (dragStartPoint.isUndefined()) {
 				dragStartPoint.set(new DragPoint(clientX, clientY));
-				Style.cursor(canvas, Style.CURSOR_RESIZE_E);
+				//Style.cursor(canvas, Style.CURSOR_RESIZE_E);
 				event.preventDefault();
 			}
 
@@ -211,30 +242,32 @@ public class GWTGraphCanvas extends Composite {
 		int clientX = DOM.eventGetClientX(event) + Window.getScrollLeft();
 		//int clientY = DOM.eventGetClientY(event) + Window.getScrollTop();
 
-		if (dragStartPoint.isDefined() && trackWindow != null) {
-			DragPoint p = dragStartPoint.get();
-			int startDiff = trackWindow.convertToGenomePosition(clientX) - trackWindow.convertToGenomePosition(p.x);
-			if (startDiff != 0) {
-				int newStart = trackWindow.getStartOnGenome() - startDiff;
-				if (newStart < 1)
-					newStart = 1;
-				int newEnd = newStart + trackWindow.getSequenceLength();
-				TrackWindow newWindow = trackWindow.newWindow(newStart, newEnd);
-				if (trackGroup != null)
-					trackGroup.setTrackWindow(newWindow);
-			}
-		}
+		//		if (dragStartPoint.isDefined() && trackWindow != null) {
+		//			DragPoint p = dragStartPoint.get();
+		//			int startDiff = trackWindow.convertToGenomePosition(clientX) - trackWindow.convertToGenomePosition(p.x);
+		//			if (startDiff != 0) {
+		//				int newStart = trackWindow.getStartOnGenome() - startDiff;
+		//				if (newStart < 1)
+		//					newStart = 1;
+		//				int newEnd = newStart + trackWindow.getSequenceLength();
+		//				TrackWindow newWindow = trackWindow.newWindow(newStart, newEnd);
+		//				if (trackGroup != null)
+		//					trackGroup.setTrackWindow(newWindow);
+		//			}
+		//		}
 
 		dragStartPoint.reset();
 
-		Style.cursor(canvas, Style.CURSOR_AUTO);
+		//Style.cursor(canvas, Style.CURSOR_AUTO);
 	}
 
 	public void clear() {
-		canvas.clear();
-		frameCanvas.clear();
+		canvasMap.clear();
+		clearScale();
+	}
 
-		panel.setWidgetPosition(canvas, 0, 0);
+	public void clearScale() {
+		frameCanvas.clear();
 
 		for (Label each : graphLabels) {
 			each.removeFromParent();
@@ -242,80 +275,121 @@ public class GWTGraphCanvas extends Composite {
 		graphLabels.clear();
 	}
 
+	public void clear(TrackWindow each) {
+		GraphCanvas graphCanvas = canvasMap.get(each);
+		if (graphCanvas != null) {
+			graphCanvas.canvas.clear();
+			graphCanvas.canvas.removeFromParent();
+
+			canvasMap.remove(each);
+		}
+	}
+
+	/**
+	 * Get a canvas for a given TrackWindow
+	 * 
+	 * @param w
+	 * @return
+	 */
+	public GraphCanvas getCanvas(TrackWindow w, List<CompactWIGData> data) {
+		GraphCanvas graphCanvas = canvasMap.get(w);
+		if (graphCanvas == null) {
+			// create a new graph canvas
+			graphCanvas = new GraphCanvas(w, data, style.windowHeight);
+			canvasMap.put(w, graphCanvas);
+			int x = trackWindow.convertToPixelX(w.getStartOnGenome());
+			panel.add(graphCanvas.canvas, 0, 0);
+			panel.setWidgetPosition(graphCanvas.canvas, x, 0);
+		}
+
+		return graphCanvas;
+	}
+
 	private final String DEFAULT_COLOR = "rgba(12,106,193,0.7)";
 
-	public void drawWigGraph(List<CompactWIGData> data) {
+	public void redrawWigGraph() {
+		for (GraphCanvas each : canvasMap.values()) {
+			each.clearCanvas();
+			each.setCoordinateHeight(style.windowHeight);
+			drawWigGraph(each);
+		}
+	}
+
+	public void drawWigGraph(List<CompactWIGData> data, TrackWindow w) {
 		if (data == null)
 			return;
 
-		if (style.drawScale)
-			drawFrame(data);
+		GraphCanvas canvas = getCanvas(w, data);
+		drawWigGraph(canvas);
+	}
 
-		for (CompactWIGData each : data) {
+	protected void drawWigGraph(GraphCanvas graphCanvas) {
+
+		for (CompactWIGData data : graphCanvas.graphData) {
+
+			// get graph color
 			Color graphColor = new Color(DEFAULT_COLOR);
 			if (style.color.isDefined()) {
 				graphColor = new Color(style.color.get());
 			}
-			else if (each.getTrack().containsKey("color")) {
-				String colorStr = each.getTrack().get("color");
+			else if (data.getTrack().containsKey("color")) {
+				String colorStr = data.getTrack().get("color");
 				String c[] = colorStr.split(",");
 				if (c.length == 3)
 					graphColor = new Color(Integer.valueOf(c[0]), Integer.valueOf(c[1]), Integer.valueOf(c[2]));
 			}
 
-			drawWigGraph(each, graphColor);
-		}
-
-		if (style.showScaleLabel)
-			drawScaleLabel();
-
-	}
-
-	protected void drawWigGraph(CompactWIGData data, Color color) {
-
-		canvas.saveContext();
-
-		canvas.setLineWidth(1.0f);
-		canvas.setStrokeStyle(color);
-
-		float y2 = getYPosition(0.0f);
-
-		// draw data graph
-		for (int i = 0; i < trackWindow.getPixelWidth(); ++i) {
-			float value = data.getData()[i];
-			float y1;
-			if (value == 0.0f) {
-				if (!style.drawZeroValue)
-					continue;
-				else {
-					y1 = y2 + ((style.minValue < style.maxValue) ? -0.5f : 0.5f);
-				}
-			}
-			else {
-				y1 = getYPosition(value);
-			}
-
-			int x = i;
-			if (trackWindow.isReverseStrand()) {
-				x = trackWindow.getPixelWidth() - x - 1;
-			}
+			// draw graph
+			GWTCanvas canvas = graphCanvas.canvas;
 
 			canvas.saveContext();
-			canvas.beginPath();
-			canvas.translate(x + 0.5f, 0);
-			canvas.moveTo(0, y1);
-			canvas.lineTo(0, y2);
-			canvas.stroke();
+			canvas.setLineWidth(1.0f);
+			canvas.setStrokeStyle(graphColor);
+
+			float y2 = getYPosition(0.0f);
+
+			// draw data graph
+			final boolean isReverse = graphCanvas.window.isReverseStrand();
+			final int pixelWidth = graphCanvas.window.getPixelWidth();
+			for (int i = 0; i < pixelWidth; ++i) {
+				float value = data.getData()[i];
+				float y1;
+				if (value == 0.0f) {
+					if (!style.drawZeroValue)
+						continue;
+					else {
+						y1 = y2 + ((style.minValue < style.maxValue) ? -0.5f : 0.5f);
+					}
+				}
+				else {
+					y1 = getYPosition(value);
+				}
+
+				int x = i;
+				if (isReverse) {
+					x = pixelWidth - x - 1;
+				}
+
+				canvas.saveContext();
+				canvas.beginPath();
+				canvas.translate(x + 0.5f, 0);
+				canvas.moveTo(0, y1);
+				canvas.lineTo(0, y2);
+				canvas.stroke();
+				canvas.restoreContext();
+			}
 			canvas.restoreContext();
 		}
-		canvas.restoreContext();
 	}
 
 	private List<Label> graphLabels = new ArrayList<Label>();
 
 	public void drawFrame(List<CompactWIGData> wigDataList) {
 
-		if (style.autoScale) {
+		if (!style.drawScale)
+			return;
+
+		if (style.autoScale && wigDataList != null) {
 			float tempMinValue = 0.0f;
 			float tempMaxValue = 0.0f;
 			for (CompactWIGData data : wigDataList) {
@@ -372,6 +446,9 @@ public class GWTGraphCanvas extends Composite {
 	}
 
 	public void drawScaleLabel() {
+
+		if (!style.showScaleLabel)
+			return;
 
 		Indent indent = new Indent(style.minValue, style.maxValue);
 		int fontHeight = 10;
@@ -528,7 +605,10 @@ public class GWTGraphCanvas extends Composite {
 			if (trackWindow.hasSameScaleWith(w)) {
 				// slide the canvas
 				int newX = trackWindow.convertToPixelX(w.getStartOnGenome());
-				panel.setWidgetPosition(canvas, -newX, 0);
+				for (GraphCanvas each : canvasMap.values()) {
+					int x = w.convertToPixelX(each.window.getStartOnGenome());
+					panel.setWidgetPosition(each.canvas, x, 0);
+				}
 			}
 		}
 
@@ -550,9 +630,10 @@ public class GWTGraphCanvas extends Composite {
 
 	@Override
 	public void setPixelSize(int width, int height) {
-		canvas.setCoordSize(width, height);
-		canvas.setPixelWidth(width);
-		canvas.setPixelHeight(height);
+
+		for (GraphCanvas each : canvasMap.values()) {
+			each.setPixelHeight(height);
+		}
 
 		frameCanvas.setCoordSize(width, height);
 		frameCanvas.setPixelWidth(width);

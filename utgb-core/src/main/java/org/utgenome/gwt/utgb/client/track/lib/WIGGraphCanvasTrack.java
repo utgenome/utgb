@@ -24,13 +24,16 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.track.lib;
 
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.CompactWIGData;
 import org.utgenome.gwt.utgb.client.canvas.GWTGraphCanvas;
+import org.utgenome.gwt.utgb.client.canvas.TrackWindowChain;
 import org.utgenome.gwt.utgb.client.canvas.GWTGraphCanvas.GraphStyle;
+import org.utgenome.gwt.utgb.client.canvas.TrackWindowChain.WindowUpdateInfo;
 import org.utgenome.gwt.utgb.client.track.Track;
 import org.utgenome.gwt.utgb.client.track.TrackBase;
 import org.utgenome.gwt.utgb.client.track.TrackConfig;
@@ -76,15 +79,12 @@ public class WIGGraphCanvasTrack extends TrackBase {
 
 		layoutTable.setWidget(0, 1, graphCanvas);
 
-		// prepare prefetched canvas
-		for (int i = 0; i < numPrefetch; ++i)
-			wigData.add(WIGDataHolder.emptyHolder());
-
 	}
 
 	private final FlexTable layoutTable = new FlexTable();
 	private final GWTGraphCanvas graphCanvas = new GWTGraphCanvas();
-	private final int numPrefetch = 3;
+
+	private TrackWindowChain chain = new TrackWindowChain();
 
 	/**
 	 * Graph data holder
@@ -123,23 +123,8 @@ public class WIGGraphCanvasTrack extends TrackBase {
 		}
 	}
 
-	private ArrayList<WIGDataHolder> wigData = new ArrayList<WIGDataHolder>(numPrefetch);
-
 	public Widget getWidget() {
 		return layoutTable;
-	}
-
-	@Override
-	public void onChangeTrackWindow(TrackWindow newWindow) {
-		update(newWindow);
-	}
-
-	@Override
-	public void onChangeTrackGroupProperty(TrackGroupPropertyChange change) {
-
-		if (change.containsOneOf(new String[] { UTGBProperty.TARGET })) {
-			update(change.getTrackWindow());
-		}
 	}
 
 	private GraphStyle style = new GraphStyle();
@@ -156,34 +141,52 @@ public class WIGGraphCanvasTrack extends TrackBase {
 		TrackConfig config = getConfig();
 		config.addConfigString("Path", CONFIG_FILENAME, "");
 		style.setup(config);
-
-		update(group.getTrackWindow());
 	}
 
 	@Override
 	public void draw() {
-		graphCanvas.clear();
+
+		final TrackWindow newWindow = getTrackWindow();
+
+		// set the grpah style
+		graphCanvas.setTrackWindow(newWindow);
 		style.load(getConfig());
 		graphCanvas.setStyle(style);
 
-		// draw data graph
-		//graphCanvas.drawWigGraph(wigDataList);
-		getFrame().loadingDone();
-	}
+		graphCanvas.clearScale();
+		graphCanvas.drawFrame(null);
+		graphCanvas.drawScaleLabel();
 
-	public void update(TrackWindow newWindow) {
 		// retrieve gene data from the API
-		graphCanvas.setTrackWindow(newWindow);
 
-		loadGraph(newWindow);
+		WindowUpdateInfo updateInfo = chain.setViewWindow(newWindow);
 
-		// prefetch 
-		//TrackWindow right = newWindow.newWindow(e, e + newWindow.getSequenceLength());
-		//TrackWindow left = newWindow.newWindow(s - newWindow.getSequenceLength(), s);
+		// clear the windows out of the global view
+		for (TrackWindow each : updateInfo.windowToDiscard) {
+			graphCanvas.clear(each);
+		}
 
+		List<TrackWindow> windowToCreate = updateInfo.windowToCreate;
+		// sort the windows in the nearest neighbor order from the view window 
+		Collections.sort(windowToCreate, new Comparator<TrackWindow>() {
+			public int compare(TrackWindow o1, TrackWindow o2) {
+				int d1 = Math.abs(o1.center() - newWindow.center());
+				int d2 = Math.abs(o2.center() - newWindow.center());
+				return d1 - d2;
+			}
+		});
+
+		// load graph 
+		for (TrackWindow each : windowToCreate) {
+			loadGraph(each);
+		}
+
+		if (windowToCreate.isEmpty()) {
+			graphCanvas.redrawWigGraph();
+		}
 	}
 
-	public void loadGraph(TrackWindow queryWindow) {
+	public void loadGraph(final TrackWindow queryWindow) {
 
 		getFrame().setNowLoading();
 		String fileName = getConfig().getString(CONFIG_FILENAME, "");
@@ -197,21 +200,41 @@ public class WIGGraphCanvasTrack extends TrackBase {
 			}
 
 			public void onSuccess(List<CompactWIGData> dataList) {
-				//wigDataList = dataList;
+				graphCanvas.drawWigGraph(dataList, queryWindow);
+				getFrame().loadingDone();
 				refresh();
 			}
 		});
 
 	}
 
+	public void clearCanvas() {
+		graphCanvas.clear();
+		chain.clear();
+	}
+
 	@Override
 	public void onChangeTrackConfig(TrackConfigChange change) {
 
 		if (change.contains(CONFIG_FILENAME)) {
-			update(getTrackWindow());
+			clearCanvas();
+			refresh();
 		}
 		else {
-			getFrame().setNowLoading();
+			refresh();
+		}
+	}
+
+	@Override
+	public void onChangeTrackWindow(TrackWindow newWindow) {
+		refresh();
+	}
+
+	@Override
+	public void onChangeTrackGroupProperty(TrackGroupPropertyChange change) {
+
+		if (change.containsOneOf(new String[] { UTGBProperty.TARGET })) {
+			clearCanvas();
 			refresh();
 		}
 	}
