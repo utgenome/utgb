@@ -87,43 +87,6 @@ public class WIGGraphCanvasTrack extends TrackBase {
 
 	private TrackWindowChain chain = new TrackWindowChain();
 
-	/**
-	 * Graph data holder
-	 * 
-	 * @author leo
-	 * 
-	 */
-	private static class WIGDataHolder {
-		private List<CompactWIGData> wigData;
-		private TrackWindow window;
-
-		public WIGDataHolder(List<CompactWIGData> wigData, TrackWindow window) {
-			this.wigData = wigData;
-			this.window = window;
-		}
-
-		public boolean isReady() {
-			return wigData != null && window != null;
-		}
-
-		public void clear() {
-			wigData = null;
-			window = null;
-		}
-
-		public List<CompactWIGData> getWigData() {
-			return wigData;
-		}
-
-		public TrackWindow getTrackWindow() {
-			return window;
-		}
-
-		public static WIGDataHolder emptyHolder() {
-			return new WIGDataHolder(null, null);
-		}
-	}
-
 	public Widget getWidget() {
 		return layoutTable;
 	}
@@ -144,8 +107,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 		style.setup(config);
 	}
 
-	@Override
-	public void draw() {
+	private void prepare() {
 
 		final TrackWindow newWindow = getTrackWindow();
 
@@ -158,10 +120,15 @@ public class WIGGraphCanvasTrack extends TrackBase {
 		graphCanvas.drawFrame(null);
 		graphCanvas.drawScaleLabel();
 
-		// retrieve gene data from the API
+	}
+
+	@Override
+	public void draw() {
+
+		prepare();
+		final TrackWindow newWindow = getTrackWindow();
 
 		WindowUpdateInfo updateInfo = chain.setViewWindow(newWindow);
-
 		List<TrackWindow> windowToCreate = updateInfo.windowToCreate;
 		// sort the windows in the nearest neighbor order from the view window 
 		Collections.sort(windowToCreate, new Comparator<TrackWindow>() {
@@ -189,9 +156,6 @@ public class WIGGraphCanvasTrack extends TrackBase {
 			graphCanvas.clear(each);
 		}
 
-		if (windowToCreate.isEmpty()) {
-			graphCanvas.redrawWigGraph();
-		}
 	}
 
 	public void loadGraph(final TrackWindow queryWindow, final List<TrackWindow> toDiscard) {
@@ -236,6 +200,8 @@ public class WIGGraphCanvasTrack extends TrackBase {
 			refresh();
 		}
 		else {
+			prepare();
+			graphCanvas.redrawWigGraph();
 			refresh();
 		}
 	}
