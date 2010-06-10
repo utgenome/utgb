@@ -90,7 +90,7 @@ public class IntervalLayout {
 		locusLayout.depthFirstSearch(new PrioritySearchTree.Visitor<LocusLayout>() {
 			public void visit(LocusLayout l) {
 				OnGenome g = l.locus;
-				if (w.hasOverlapWith(g))
+				if (w.overlapWith(g))
 					activeData.add(g);
 			}
 		});

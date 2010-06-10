@@ -23,51 +23,117 @@
 package org.utgenome.gwt.utgb.client.canvas;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 
-import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.Composite;
-
 /**
- * A chain of canvases for supporting GoogleMap-style graphic drawing.
+ * A chain of {@link TrackWindow}s for supporting GoogleMap-style graphic drawing.
  * 
  * <pre>
- *          (view window) 
- *     |----------------------|
+ *              (V: view window) 
+ *               |----------|
  * |--------||--------||--------||--------|
  *    (w1)      (w2)      (w3)     (w4:prefetch)
+ *     |--------------------------------|
+ *         (G: global view, 3V size) 
+ *                                
  *                                
  * After scrolling to right:                               
  * 
- *                   (view window) 
- *             |------------------------|
+ *                       (V: view window) 
+ *                         |-----------|
  * |--------||--------||--------||--------||--------|
- *    (w1)      (w2)      (w3)     (w4)       (w5:prefetch)
+ *  (w1:discard) (w2)     (w3)      (w4)       (w5:prefetch) 
+ *             |----------------------------------|
+ *                  (G: global view, 3V size)
  * </pre>
  * 
  * @author leo
  * 
  */
-public class CanvasChain extends Composite {
+public class CanvasChain {
 
-	private AbsolutePanel layoutPanel = new AbsolutePanel();
-	private TrackWindow viewWindow;
-
-	private List<TrackWindow> childWindow = new ArrayList<TrackWindow>();
+	private ArrayList<TrackWindow> windowList = new ArrayList<TrackWindow>();
 
 	public CanvasChain() {
 
-		initWidget(layoutPanel);
 	}
 
-	public void setViewWindow(TrackWindow view) {
+	private TrackWindow viewWindow;
+	private TrackWindow globalWindow;
+
+	private final int PREFETCH_FACTOR = 1; // (left) f*V + (current) V + (right) f*V = 3V (when f=1)
+
+	public static class WindowUpdateInfo {
+		public final List<TrackWindow> windowsToCreate;
+		public final List<TrackWindow> windowsToDiscard;
+
+		private WindowUpdateInfo(List<TrackWindow> windowsToCreate, List<TrackWindow> windowsToDiscard) {
+			this.windowsToCreate = windowsToCreate;
+			this.windowsToDiscard = windowsToDiscard;
+		}
+	}
+
+	public WindowUpdateInfo setViewWindow(TrackWindow view) {
+
+		final int factor = PREFETCH_FACTOR * 2 + 1;
+		final int viewSize = view.getSequenceLength();
+		final int viewExtensionDirection = view.isReverseStrand() ? -1 : 1;
+		int gvStart = view.getStartOnGenome() - viewSize * PREFETCH_FACTOR * viewExtensionDirection;
+		int gvEnd = view.getEndOnGenome() + viewSize * PREFETCH_FACTOR * viewExtensionDirection;
+		this.globalWindow = new TrackWindow(view.getPixelWidth() * factor, gvStart, gvEnd);
+
+		ArrayList<TrackWindow> windowToPreserve = new ArrayList<TrackWindow>();
+		ArrayList<TrackWindow> windowToDiscard = new ArrayList<TrackWindow>();
+
+		if (viewWindow != null && viewWindow.hasSameScaleWith(view)) {
+			// scroll
+			// update the window list
+			for (TrackWindow each : windowList) {
+				if (each.overlapWith(globalWindow)) {
+					windowToPreserve.add(each);
+				}
+				else {
+					windowToDiscard.add(each);
+				}
+			}
+		}
+		else {
+			windowToDiscard.addAll(windowList);
+		}
 		this.viewWindow = view;
-	}
 
-	public void setViewPixelSize(int width, int height) {
-		layoutPanel.setPixelSize(width, height);
+		// compute the missing window list
+		ArrayList<TrackWindow> newWindowList = new ArrayList<TrackWindow>();
+
+		// sort the windows by the view start order
+		Collections.sort(windowToPreserve);
+		int gridStartOnGenome = newWindowList.isEmpty() ? view.getViewStartOnGenome() : windowToPreserve.get(0).getViewStartOnGenome();
+		while (gridStartOnGenome > globalWindow.getViewStartOnGenome()) {
+			gridStartOnGenome -= viewSize;
+		}
+		while (gridStartOnGenome < globalWindow.getViewEndOnGenome()) {
+			TrackWindow grid;
+			if (view.isPositiveStrand()) {
+				grid = view.newWindow(gridStartOnGenome, gridStartOnGenome + viewSize);
+			}
+			else {
+				grid = view.newWindow(gridStartOnGenome + viewSize, gridStartOnGenome);
+			}
+
+			if (!windowList.contains(grid)) {
+				newWindowList.add(grid);
+			}
+
+			gridStartOnGenome += viewSize;
+		}
+
+		windowList = windowToPreserve;
+		windowList.addAll(newWindowList);
+
+		return new WindowUpdateInfo(newWindowList, windowToDiscard);
 	}
 
 }

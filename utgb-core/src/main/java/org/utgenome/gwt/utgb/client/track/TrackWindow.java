@@ -35,7 +35,7 @@ import org.utgenome.gwt.utgb.client.bio.OnGenome;
  * @author leo
  * 
  */
-public class TrackWindow implements Serializable {
+public class TrackWindow implements Serializable, Comparable<TrackWindow> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -76,7 +76,7 @@ public class TrackWindow implements Serializable {
 	 * @return genome position
 	 */
 	public int convertToGenomePosition(int xOnWindow) {
-		if (getStartOnGenome() <= getEndOnGenome()) {
+		if (!isReverseStrand()) {
 			double genomeLengthPerBit = (double) (endIndexOnGenome - startIndexOnGenome) / (double) pixelWidth;
 			return (int) (startIndexOnGenome + xOnWindow * genomeLengthPerBit);
 		}
@@ -111,6 +111,20 @@ public class TrackWindow implements Serializable {
 			return startIndexOnGenome - endIndexOnGenome;
 	}
 
+	public int getViewStartOnGenome() {
+		if (isReverseStrand())
+			return endIndexOnGenome;
+		else
+			return startIndexOnGenome;
+	}
+
+	public int getViewEndOnGenome() {
+		if (isReverseStrand())
+			return startIndexOnGenome;
+		else
+			return endIndexOnGenome;
+	}
+
 	/**
 	 * @return start position on the genome currently displayed in the window
 	 */
@@ -137,6 +151,10 @@ public class TrackWindow implements Serializable {
 		return getStartOnGenome() > getEndOnGenome();
 	}
 
+	public boolean isPositiveStrand() {
+		return !isReverseStrand();
+	}
+
 	public TrackWindow newWindow(int newStartOnGenome, int newEndOnGenome) {
 		return new TrackWindow(this.pixelWidth, newStartOnGenome, newEndOnGenome);
 	}
@@ -145,7 +163,7 @@ public class TrackWindow implements Serializable {
 		return new TrackWindow(pixelSize, this.startIndexOnGenome, this.endIndexOnGenome);
 	}
 
-	public boolean hasOverlapWith(OnGenome g) {
+	public boolean overlapWith(OnGenome g) {
 		int s1 = getStartOnGenome();
 		int e1 = getEndOnGenome();
 		int s2 = g.getStart();
@@ -154,7 +172,16 @@ public class TrackWindow implements Serializable {
 		return s1 <= e2 && s2 <= e1;
 	}
 
-	public boolean hasSameScale(TrackWindow other) {
+	public boolean overlapWith(TrackWindow other) {
+		int s1 = getStartOnGenome();
+		int e1 = getEndOnGenome();
+		int s2 = other.getStartOnGenome();
+		int e2 = other.getEndOnGenome();
+
+		return s1 <= e2 && s2 <= e1;
+	}
+
+	public boolean hasSameScaleWith(TrackWindow other) {
 		if (other == null)
 			return false;
 		return this.getPixelWidth() == other.getPixelWidth() && this.getSequenceLength() == other.getSequenceLength();
@@ -174,4 +201,9 @@ public class TrackWindow implements Serializable {
 		}
 		return new TrackWindow(pixelWidth, s, e);
 	}
+
+	public int compareTo(TrackWindow o) {
+		return this.getViewStartOnGenome() - o.getViewStartOnGenome();
+	}
+
 }
