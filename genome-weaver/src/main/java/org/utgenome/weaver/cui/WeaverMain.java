@@ -38,7 +38,7 @@ import org.xerial.util.opt.Usage;
  * @author leo
  * 
  */
-@Usage(command = "> weaver [option] ", description = "SilkWeaver")
+@Usage(command = "> weaver [option] ", description = "Genome Weaver: A Next-Generation DBMS for Genome Sciences")
 public class WeaverMain extends WeaverModuleBase {
     private static Logger _logger = Logger.getLogger(WeaverMain.class);
 
@@ -68,7 +68,7 @@ public class WeaverMain extends WeaverModuleBase {
     }
 
     public WeaverMain() {
-        super(Package.getPackage("org.xerial.weaver.core.cui"));
+        super(Package.getPackage("org.utgenome.weaver.cui"));
     }
 
     public String getCommandName() {
@@ -76,26 +76,16 @@ public class WeaverMain extends WeaverModuleBase {
     }
 
     public String getOneLineDescription() {
-        return "silk weaver";
+        return "genome weaver";
     }
 
     public String getProgramInfo() {
         VersionInfo vi = getVersionInfo();
-        return String.format("Silk Weaver: version %s (%s)", vi.version, vi.revision);
+        return String.format("Genome Weaver: version %s", vi.version);
     }
 
     public static class VersionInfo {
         public String version = "(unknown)";
-        private String revision = "Revision: unknown";
-
-        public void setRevision(String rev) {
-            if (rev != null && rev.length() > 1)
-                revision = rev.substring(1, rev.length() - 1).trim();
-        }
-
-        public String getRevision() {
-            return revision;
-        }
 
         public void addDependency_Version(String d, String v) {
 
@@ -112,7 +102,7 @@ public class WeaverMain extends WeaverModuleBase {
 
     public static VersionInfo getVersionInfo() {
         URL pomFile = Thread.currentThread().getContextClassLoader().getResource(
-                "META-INF/maven/org.xerial.weaver/silk-weaver/pom.xml");
+                "META-INF/maven/org.utgenome.weaver/genome-weaver/pom.xml");
 
         VersionInfo vi = new VersionInfo();
         if (pomFile != null) {

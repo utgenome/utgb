@@ -16,25 +16,25 @@
 //--------------------------------------
 // genome-weaver Project
 //
-// BStoreFile.java
-// Since: 2010/05/19
+// BStoreConfigTest.java
+// Since: Apr 19, 2010
 //
 // $URL$ 
 // $Author$
 //--------------------------------------
-package org.utgenome.bstore;
+package org.utgenome.weaver.bstore;
 
-/**
- * File interface for B-Store
- * 
- * @author leo
- * 
- */
-public class BStoreFile {
+import org.junit.Test;
+import org.xerial.lens.Lens;
+import org.xerial.util.log.Logger;
 
-    public UniqueID globalID;
-    public String localName;
-    public long size;
-    public String sha1;
+public class BStoreConfigTest {
+    private static Logger _logger = Logger.getLogger(BStoreConfigTest.class);
 
+    @Test
+    public void config() throws Exception {
+
+        BStoreConfig config = new BStoreConfig();
+        _logger.info(Lens.toSilk(config));
+    }
 }

@@ -16,26 +16,35 @@
 //--------------------------------------
 // genome-weaver Project
 //
-// BStore.java
+// UniqueIDTest.java
 // Since: Apr 19, 2010
 //
 // $URL$ 
 // $Author$
 //--------------------------------------
-package org.utgenome.bstore;
+package org.utgenome.weaver.bstore;
 
-import java.io.InputStream;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-/**
- * Biological Data Repository (B-Store)
- * 
- * @author leo
- * 
- */
-public class BStore {
-    public InputStream get(UniqueID id) {
+import org.junit.Test;
+import org.xerial.lens.Lens;
+import org.xerial.util.log.Logger;
 
-        return null;
+public class UniqueIDTest {
+    private static Logger _logger = Logger.getLogger(UniqueIDTest.class);
+
+    @Test
+    public void str() throws Exception {
+        Repository r = new Repository("my repo", "Taro L. Saito <leo@xerial.org>");
+        UniqueID u = UniqueID.createID(Lens.toSilk(r));
+
+        assertEquals(UniqueID.ID_PREFIX_LENGTH, u.getPrefix().length() / 2);
+        assertEquals(UniqueID.ID_LENGTH, u.getFullID().length() / 2);
+        assertTrue(u.getFullID().startsWith(u.getPrefix()));
+
+        UniqueID u2 = UniqueID.createID(Lens.toSilk(r));
+        assertEquals(u.getPrefix(), u2.getPrefix());
+        assertEquals(u.getFullID(), u2.getFullID());
     }
-
 }

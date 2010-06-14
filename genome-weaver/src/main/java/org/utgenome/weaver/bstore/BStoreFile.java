@@ -16,25 +16,25 @@
 //--------------------------------------
 // genome-weaver Project
 //
-// BStoreEntrySet.java
-// Since: Apr 19, 2010
+// BStoreFile.java
+// Since: 2010/05/19
 //
 // $URL$ 
 // $Author$
 //--------------------------------------
-package org.utgenome.bstore;
-
-import java.util.ArrayList;
-import java.util.List;
+package org.utgenome.weaver.bstore;
 
 /**
- * Set of B-Store entries
+ * File interface for B-Store
  * 
  * @author leo
  * 
  */
-public class BStoreEntrySet
-{
-    public final List<BStoreEntry> entry = new ArrayList<BStoreEntry>();
+public class BStoreFile {
+
+    public UniqueID globalID;
+    public String localName;
+    public long size;
+    public String sha1;
 
 }

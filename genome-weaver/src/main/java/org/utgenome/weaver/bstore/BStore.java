@@ -16,53 +16,26 @@
 //--------------------------------------
 // genome-weaver Project
 //
-// BStoreConfig.java
+// BStore.java
 // Since: Apr 19, 2010
 //
 // $URL$ 
 // $Author$
 //--------------------------------------
-package org.utgenome.bstore;
+package org.utgenome.weaver.bstore;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.InputStream;
 
 /**
- * B-store configuration
+ * Biological Data Repository (B-Store)
  * 
  * @author leo
  * 
  */
-public class BStoreConfig {
+public class BStore {
+    public InputStream get(UniqueID id) {
 
-    /**
-     * Search paths for storage
-     * 
-     * <ol>
-     * <li>{CURRENT_DIR}/.utgb/b-store
-     * <li>$HOME/.utgb/b-store
-     * <li>(remote repository URLs specified in the config file)
-     * </ol>
-     * 
-     * @author leo
-     * 
-     */
-    public static class LocalRepo {
-        public String path = defaultPath();
-
-        private static String defaultPath() {
-            return new File(System.getProperty("user.home"), ".utgb/bstore").getPath();
-        }
+        return null;
     }
-
-    public static class RemoteRepo {
-        public String url;
-    }
-
-    public String version = "1.0";
-    public String user;
-    public LocalRepo localRepository = new LocalRepo();
-    public List<RemoteRepo> remoteRepository = new ArrayList<RemoteRepo>();
 
 }

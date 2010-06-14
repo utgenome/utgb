@@ -16,42 +16,14 @@
 //--------------------------------------
 // genome-weaver Project
 //
-// BStoreEntry.java
-// Since: Apr 19, 2010
+// UniqueID.java
+// Since: 2010/04/17
 //
 // $URL$ 
-// $Author$
+// $Author$n
 //--------------------------------------
-package org.utgenome.bstore;
-
-import java.util.Date;
-
 /**
- * B-Store's entry information
- * 
- * @author leo
- * 
+ * B-Store: Biological Data Repository
  */
-public class BStoreEntry
-{
-    public final String path;
-    public final String user;
-    public final Date   date;
+package org.utgenome.weaver.bstore;
 
-    private BStoreEntry(String path, String user) {
-        this.path = path;
-        this.user = user;
-        this.date = new Date();
-    }
-
-    private BStoreEntry(String path, String user, Date date) {
-        this.path = path;
-        this.user = user;
-        this.date = date;
-    }
-
-    public static BStoreEntry createNewFile(String path, String user) {
-        return new BStoreEntry(path, user);
-    }
-
-}

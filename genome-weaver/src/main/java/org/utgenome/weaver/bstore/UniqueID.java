@@ -22,7 +22,7 @@
 // $URL$ 
 // $Author$
 //--------------------------------------
-package org.utgenome.bstore;
+package org.utgenome.weaver.bstore;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -38,14 +38,13 @@ import java.security.NoSuchAlgorithmException;
  * @author leo
  * 
  */
-public class UniqueID implements Comparable<UniqueID>
-{
-    public final static int     ID_LENGTH        = 20;
-    public final static int     ID_PREFIX_LENGTH = 6;
-    private final static char[] HEX              = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A',
-            'B', 'C', 'D', 'E', 'F'             };
+public class UniqueID implements Comparable<UniqueID> {
+    public final static int ID_LENGTH = 20;
+    public final static int ID_PREFIX_LENGTH = 6;
+    private final static char[] HEX = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8',
+            '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
-    private byte[]              id               = new byte[ID_LENGTH];
+    private byte[] id = new byte[ID_LENGTH];
 
     /**
      * Computes the SHA-1 value of the input stream

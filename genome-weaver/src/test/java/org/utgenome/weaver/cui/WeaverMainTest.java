@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------------------
- *  Copyright 2008 utgenome.org
+ *  Copyright 2010 utgenome.org
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,29 +16,42 @@
 //--------------------------------------
 // genome-weaver Project
 //
-// Repository.java
-// Since: 2010/04/17
+// WeaverMainTest.java
+// Since: Jun 14, 2010
 //
 // $URL$ 
 // $Author$
 //--------------------------------------
-package org.utgenome.bstore;
+package org.utgenome.weaver.cui;
 
-/**
- * Repository
- * 
- * @author leo
- * 
- */
-public class Repository
-{
-    public final static String version = "1.0";
-    public final String        name;
-    public final String        owner;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.xerial.util.log.Logger;
 
-    public Repository(String name, String owner) {
-        this.name = name;
-        this.owner = owner;
+public class WeaverMainTest {
+
+    private static Logger _logger = Logger.getLogger(WeaverMainTest.class);
+
+    @Before
+    public void setUp() throws Exception {}
+
+    @After
+    public void tearDown() throws Exception {}
+
+    @Test
+    public void programInfo() throws Exception {
+        WeaverMain.main(new String[] {});
+    }
+
+    @Test
+    public void helpCommand() throws Exception {
+        WeaverMain.main(new String[] { "--help" });
+    }
+
+    @Test
+    public void help() throws Exception {
+        WeaverMain.main(new String[] { "help", "--help" });
     }
 
 }
