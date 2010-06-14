@@ -108,10 +108,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 
 	private void prepare() {
 
-		final TrackWindow newWindow = getTrackWindow();
-
 		// set the grpah style
-		graphCanvas.setTrackWindow(newWindow);
 		style.load(getConfig());
 		graphCanvas.setStyle(style);
 
@@ -124,8 +121,10 @@ public class WIGGraphCanvasTrack extends TrackBase {
 	@Override
 	public void draw() {
 
-		prepare();
 		final TrackWindow newWindow = getTrackWindow();
+		graphCanvas.setTrackWindow(newWindow);
+
+		prepare();
 
 		WindowUpdateInfo updateInfo = chain.setViewWindow(newWindow);
 		List<TrackWindow> windowToCreate = updateInfo.windowToCreate;
@@ -148,6 +147,11 @@ public class WIGGraphCanvasTrack extends TrackBase {
 			graphCanvas.clear(each);
 		}
 
+	}
+
+	@Override
+	public void beforeChangeTrackWindow(TrackWindow newWindow) {
+		graphCanvas.setTrackWindow(newWindow);
 	}
 
 	public void loadGraph(final TrackWindow queryWindow) {

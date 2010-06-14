@@ -294,6 +294,13 @@ public interface Track extends TrackEntry, TrackGroupPropertyChangeListener {
 	public void onChangeTrackGroupProperty(TrackGroupPropertyChange change);
 
 	/**
+	 * An event handler that will be invoked before the track window location change
+	 * 
+	 * @param newWindow
+	 */
+	public void beforeChangeTrackWindow(TrackWindow newWindow);
+
+	/**
 	 * An event handler when the track window location has changed
 	 * 
 	 * @param newWindow

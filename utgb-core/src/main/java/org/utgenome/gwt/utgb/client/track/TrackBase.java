@@ -129,6 +129,10 @@ public abstract class TrackBase implements Track {
 		// do nothing in default
 	}
 
+	public void beforeChangeTrackWindow(TrackWindow newWindow) {
+		// do nothing in default 
+	}
+
 	public void onChangeTrackWindow(TrackWindow newWindow) {
 		// do nothing in default
 	}

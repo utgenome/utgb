@@ -246,6 +246,15 @@ public class TrackGroup implements TrackEntry, Comparable<TrackGroup>, HasFactor
 	 *            changes of track properties
 	 */
 	public void broadcastChange(TrackGroupPropertyChange change, TrackWindow newWindow) {
+
+		// broadcast for all tracks in this group
+		for (Iterator<Track> it = _trackList.iterator(); it.hasNext();) {
+			Track track = it.next();
+			if (track.isInitialized()) {
+				track.beforeChangeTrackWindow(newWindow);
+			}
+		}
+
 		// broadcast for all tracks in this group
 		for (Iterator<Track> it = _trackList.iterator(); it.hasNext();) {
 			Track track = it.next();

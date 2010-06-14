@@ -33,6 +33,7 @@ import org.utgenome.gwt.utgb.client.canvas.GWTGenomeCanvas.DragPoint;
 import org.utgenome.gwt.utgb.client.track.TrackConfig;
 import org.utgenome.gwt.utgb.client.track.TrackGroup;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
+import org.utgenome.gwt.utgb.client.ui.Animation;
 import org.utgenome.gwt.utgb.client.util.Optional;
 import org.utgenome.gwt.widget.client.Style;
 
@@ -607,14 +608,45 @@ public class GWTGraphCanvas extends Composite {
 		return temp;
 	}
 
-	public void setTrackWindow(TrackWindow w) {
+	private class ScrollAnimation extends Animation {
+
+		private final TrackWindow from;
+		private final TrackWindow to;
+
+		private ScrollAnimation(TrackWindow from, TrackWindow to) {
+			super(10);
+			this.from = new TrackWindow(from);
+			this.to = new TrackWindow(to);
+		}
+
+		@Override
+		protected void onUpdate(double ratio) {
+			for (GraphCanvas each : canvasMap.values()) {
+				int start = each.window.getStartOnGenome();
+				double s = from.convertToPixelX(start);
+				double e = to.convertToPixelX(start);
+				int p = (int) ((1.0d - ratio) * s + ratio * e);
+				panel.setWidgetPosition(each.canvas, p, 0);
+			}
+		}
+
+		@Override
+		protected void onComplete() {
+			for (GraphCanvas each : canvasMap.values()) {
+				int start = each.window.getStartOnGenome();
+				int e = to.convertToPixelX(start);
+				panel.setWidgetPosition(each.canvas, e, 0);
+			}
+		}
+
+	}
+
+	public void setTrackWindow(final TrackWindow w) {
 		if (trackWindow != null) {
 			if (trackWindow.hasSameScaleWith(w)) {
-				// slide the canvas
-				for (GraphCanvas each : canvasMap.values()) {
-					int x = w.convertToPixelX(each.window.getStartOnGenome());
-					panel.setWidgetPosition(each.canvas, x, 0);
-				}
+				ScrollAnimation animation = new ScrollAnimation(trackWindow, w);
+				animation.run(1000);
+
 			}
 			else {
 				//				// scroll & zoom in/out

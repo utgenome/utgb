@@ -55,6 +55,10 @@ public class TrackWindow implements Serializable, Comparable<TrackWindow> {
 		this.endIndexOnGenome = endIndexOnGenome;
 	}
 
+	public TrackWindow(TrackWindow other) {
+		this(other.pixelWidth, other.getStartOnGenome(), other.getEndOnGenome());
+	}
+
 	/**
 	 * calculate the X position (pixel address) in a track window of a given index on genome.
 	 * 
