@@ -48,7 +48,7 @@ Next, you have to create ".m2/settings.xml" file in your home directory:
 </settings>
 </code>
 
-* In this file, write the same usernamae and password described in your tomcat-users.xml file.
+* In this file, write the same user name and password described in your tomcat-users.xml file.
 
 
 == Deploy Your Web Application to the Tomcat 
