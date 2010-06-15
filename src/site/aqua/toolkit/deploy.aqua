@@ -1,7 +1,7 @@
 @title("How to deploy your web application")
 
 [index.html Top Page]
-= How to deploy your web application 
+= How to Deploy Your Web Application 
 
 UTGB Shell has an embedded Tomcat web server, so you don't have to read this page for simply browsing UTGB (via utgb server command) in your desktop PC. This page is written for system administrators, who have to publish UTGB applications on the Web by using Apache and Tomcat web servers.  
 
@@ -32,7 +32,7 @@ In order to deploy your UTGB browser, you have to set up the Tomcat manager's us
 
 * Then, restart your Tomcat to apply the above configuration change.
 
-== Create settings.xml file
+== Create settings.xml File
 Next, you have to create ".m2/settings.xml" file in your home directory:
 
 * "(HOME)/.m2/settings.xml"
@@ -63,7 +63,7 @@ Now, you are ready to deploy your UTGB browser to your Tomcat server. Type {b|ut
 Then, access the http://localhost:8080/myapp
 
 
-== How to use both Apache and Tomcat servers simultaneously 
+== How to Use Both Apache and Tomcat Servers Simultaneously 
 
 Add the follwoing settings in your Apache's configuration file, httpd.conf (which is usually found at /etc/httpd/conf/httpd.conf):
 
@@ -100,7 +100,7 @@ ProxyPass / balancer://utgb/ nofailover=Off
 </code>
 
 
-== Load Balancing without local Tomcat servers
+== Load Balancing without Installing Tomcat 
 
 The {b|utgb server} command launches a proxy engine at port 8009 as well as a Tomcat engine (port 8989). Therefore, to simply test the load balancing, installation of Tomcat is not necessary; Login to each server which has a replica of your UTGB application folder, then run {b|utgb server}. The same Apache configuration described above works. 
 
