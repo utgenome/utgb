@@ -65,7 +65,7 @@ Then, access the http://localhost:8080/myapp
 
 == How to use both Apache and Tomcat servers simultaneously 
 
-Add the follwoing settings in your Apache's configuration file, httpd.conf (which usually can be found at /etc/httpd/conf/httpd.conf):
+Add the follwoing settings in your Apache's configuration file, httpd.conf (which is usually found at /etc/httpd/conf/httpd.conf):
 
 <code>
 LoadModule proxy_module modules/mod_proxy.so
@@ -78,7 +78,7 @@ ProxyPassReverseCookiePath / /
 
 </code>
 
-With this configuration, web accesses to "http://(your hostname)/myapp" are internally redirected to the Tomcat server ("http://localhost:8080/myapp"), but the web user sees the address "http://(your hostname)/myapp".
+With this configuration, web accesses to "http://(your hostname)/myapp" are internally redirected to the Tomcat server ("http://localhost:8080/myapp"), but the web user still sees the address "http://(your hostname)/myapp" without noticing such redirections.
 
 
 == Load Balancing
