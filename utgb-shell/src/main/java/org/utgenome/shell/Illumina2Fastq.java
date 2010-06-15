@@ -32,13 +32,16 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
 import org.utgenome.format.illumina.Seq2Fastq;
+import org.xerial.util.opt.Argument;
 
 public class Illumina2Fastq extends UTGBShellCommand {
 
 	/**
 	 * 
 	 */
+	@Argument(index = 0)
 	private String in = "-";
+	@Argument(index = 1)
 	private String out = "-";
 
 	@Override
@@ -62,11 +65,13 @@ public class Illumina2Fastq extends UTGBShellCommand {
 
 		Seq2Fastq.convert(input, output);
 
+		output.flush();
+
 	}
 
 	@Override
 	public String getOneLinerDescription() {
-		return "converting Illumina's raw read (*_sequence.txt) into fastq format";
+		return "convert Illumina's raw read (*_sequence.txt) into fastq format";
 	}
 
 	@Override
