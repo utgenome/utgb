@@ -3,7 +3,7 @@
 [index.html Top Page]
 = How to deploy your web application 
 
-UTGB Shell has an embedded Tomcat web server, so you don't need to read this page unless you have to publish your UTGB applications on the Web. This page is written for system administrators, who have to run UTGB applications using Apache and Tomcat web servers.  
+UTGB Shell has an embedded Tomcat web server, so you don't have to read this page for simply browsing UTGB (via utgb server command) in your desktop PC. This page is written for system administrators, who have to publish UTGB applications on the Web by using Apache and Tomcat web servers.  
 
 == Install Tomcat Web Server
 
