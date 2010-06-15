@@ -105,7 +105,7 @@ ProxyPass / balancer://utgb/ nofailover=Off
 
 == Load Balancing without local Tomcat servers
 
-The {b|utgb server} command launches a proxy engine at port 8009 as well as a Tomcat engine (port 8080). Therefore, to simply test the load balancing, installation of Tomcat is not necessary; Login to each server which has a replica of your UTGB application folder, then run {b|utgb server}. The same Apache configuration described above works. 
+The {b|utgb server} command launches a proxy engine at port 8009 as well as a Tomcat engine (port 8989). Therefore, to simply test the load balancing, installation of Tomcat is not necessary; Login to each server which has a replica of your UTGB application folder, then run {b|utgb server}. The same Apache configuration described above works. 
 
 "A" drawback of this approach is that you have to redo {b|utgb server} command every time after restarting the servers. 
 
