@@ -1,0 +1,4 @@
+Convert Illumina's output into Fastq format.
+ 
+
+ 
