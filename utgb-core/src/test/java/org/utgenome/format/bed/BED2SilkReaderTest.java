@@ -26,6 +26,8 @@ package org.utgenome.format.bed;
 
 import static org.junit.Assert.fail;
 
+import java.io.FileReader;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -61,6 +63,8 @@ public class BED2SilkReaderTest {
 				fail(e.getMessage());
 			}
 		}, r);
+		
+		FileReader
+		
 	}
-
 }
