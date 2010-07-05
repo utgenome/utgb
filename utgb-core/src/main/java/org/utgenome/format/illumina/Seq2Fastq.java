@@ -28,6 +28,7 @@ import java.io.Writer;
 
 import org.utgenome.UTGBErrorCode;
 import org.utgenome.UTGBException;
+import org.utgenome.format.fastq.FastqRead;
 import org.xerial.util.log.Logger;
 
 /**

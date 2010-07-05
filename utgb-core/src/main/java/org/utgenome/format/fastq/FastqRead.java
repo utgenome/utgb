@@ -20,8 +20,14 @@
 // Since: Jun 14, 2010
 //
 //--------------------------------------
-package org.utgenome.format.illumina;
+package org.utgenome.format.fastq;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+
+import org.utgenome.UTGBErrorCode;
+import org.utgenome.UTGBException;
+import org.xerial.silk.SilkWriter;
 import org.xerial.util.StringUtil;
 
 /**
@@ -31,9 +37,12 @@ import org.xerial.util.StringUtil;
  * 
  */
 public class FastqRead {
-	public final String seqname;
-	public final String seq;
-	public final String qual;
+	public String seqname;
+	public String seq;
+	public String qual;
+
+	public FastqRead() {
+	}
 
 	public FastqRead(String seqname, String seq, String qual) {
 		this.seqname = seqname;
@@ -53,6 +62,36 @@ public class FastqRead {
 		buf.append(qual);
 		buf.append(StringUtil.NEW_LINE);
 		return buf.toString();
+	}
+
+	public static FastqRead parse(BufferedReader reader) throws UTGBException {
+
+		try {
+			String seqNameLine = reader.readLine();
+			String sequence = reader.readLine();
+			reader.readLine();
+			String qual = reader.readLine();
+
+			if (seqNameLine == null || sequence == null || qual == null) {
+				return null; // no more entry
+			}
+
+			if (seqNameLine.length() < 2) {
+				throw new UTGBException(UTGBErrorCode.PARSE_ERROR, "invalid sequence name: " + seqNameLine);
+			}
+
+			return new FastqRead(seqNameLine.substring(1), sequence, qual);
+		}
+		catch (IOException e) {
+			throw new UTGBException(UTGBErrorCode.PARSE_ERROR, "invalid fastq block");
+		}
+	}
+
+	public void toSilk(SilkWriter silk) {
+		SilkWriter sub = silk.node("fastq");
+		sub.leaf("name", seqname);
+		sub.leaf("seq", seq);
+		sub.leaf("qual", qual);
 	}
 
 }

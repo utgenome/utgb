@@ -1,4 +1,12 @@
+usage: utgb illumina2fastq (input) (output)
+
 Convert Illumina's output into Fastq format.
- 
+
+Usage examples:
+$ cat s_1_1_sequence.txt | utgb illumina2fastq | gzip > s_1_1_sequence.fastq.gz
+
+$ utgb illumina2fastq s_1_1_sequence.txt | gzip > s_1_1_sequence.fastq.gz
+
+
 
  
