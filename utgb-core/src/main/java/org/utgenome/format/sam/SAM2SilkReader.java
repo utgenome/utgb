@@ -56,6 +56,7 @@ public class SAM2SilkReader extends FormatConversionReader {
 
 	private static class Converter extends FormatConversionReader.PipeConsumer {
 
+		@Override
 		public void consume(InputStream in, Writer out) throws Exception {
 			if (out == null)
 				return;
@@ -79,7 +80,7 @@ public class SAM2SilkReader extends FormatConversionReader {
 				rw.leaf("mpos", rec.getMateAlignmentStart());
 				rw.leaf("isize", rec.getInferredInsertSize());
 				rw.leaf("seq", rec.getReadString());
-				rw.leaf("qual", rec.getBaseQualityString());
+				rw.leaf("qual", String.format("\"%s\"", rec.getBaseQualityString()));
 				SilkWriter tw = rw.node("tag");
 				for (SAMTagAndValue each : rec.getAttributes()) {
 					tw.leaf(each.tag, each.value);
