@@ -35,7 +35,7 @@ import org.xerial.util.StringUtil;
 import org.xerial.util.log.Logger;
 
 /**
- * Subcommand to add the current project to the subversion repository
+ * Sub-command to add the current project to the subversion repository
  * 
  * @author leo
  * 

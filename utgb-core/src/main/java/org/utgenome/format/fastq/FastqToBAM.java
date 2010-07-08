@@ -32,6 +32,7 @@ import net.sf.samtools.SAMReadGroupRecord;
 import net.sf.samtools.SAMRecord;
 
 import org.utgenome.UTGBException;
+import org.xerial.util.opt.Option;
 
 /**
  * Converting Illumina's FASTQ read data (single or paired-end) into BAM format, which can be used BLOAD's GATK
@@ -44,8 +45,13 @@ import org.utgenome.UTGBException;
  */
 public class FastqToBAM {
 
+	@Option(longName = "rg", description = "read group name")
 	private String readGroupName;
+
+	@Option(longName = "sn", description = "sample name")
 	private String sampleName;
+
+	@Option(longName = "sn", description = "sample name")
 	private String readPrefix;
 
 	private File outputFile;
@@ -66,9 +72,7 @@ public class FastqToBAM {
 
 		int readsSeen = 0;
 
-		FastqRead fqr1, fqr2 = null;
-
-		while ((fqr1 = end1.next()) != null && (end2 == null || (fqr2 = end2.next()) != null)) {
+		for (FastqRead fqr1, fqr2 = null; (fqr1 = end1.next()) != null && (end2 == null || (fqr2 = end2.next()) != null);) {
 
 			String fqr1Name = fqr1.seqname;
 

@@ -145,7 +145,11 @@ public class GenomeTrack extends TrackBase {
 		p.add("width", w.getPixelWidth() - leftMargin);
 
 		for (String key : queryParams) {
-			String v = getTrackGroup().getProperty(key);
+			// override the group property using the corresponding config parameter 
+			String v = getConfig().getParameter(key);
+			if (v == null) {
+				v = getTrackGroup().getProperty(key);
+			}
 			if (v != null)
 				p.add(key, v);
 		}

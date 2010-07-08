@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------------------
- *  Copyright 2009 utgenome.org
+ *  Copyright 2010 utgenome.org
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,26 +16,17 @@
 //--------------------------------------
 // utgb-core Project
 //
-// BED2SilkReaderTest.java
-// Since: 2009/05/27
+// FastqToSilkReaderTest.java
+// Since: 2010/07/08
 //
-// $URL$ 
-// $Author$
 //--------------------------------------
-package org.utgenome.format.bed;
+package org.utgenome.format.fastq;
 
-import static org.junit.Assert.fail;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
-import org.xerial.lens.Lens;
-import org.xerial.util.FileResource;
-import org.xerial.util.log.Logger;
 
-public class BED2SilkReaderTest {
-
-	private static Logger _logger = Logger.getLogger(BED2SilkReaderTest.class);
+public class FastqToSilkReaderTest {
 
 	@Before
 	public void setUp() throws Exception {
@@ -45,22 +36,8 @@ public class BED2SilkReaderTest {
 	public void tearDown() throws Exception {
 	}
 
-	@Test
-	public void testGen() throws Exception {
-		BED2SilkReader r = new BED2SilkReader(FileResource.open(BED2SilkReaderTest.class, "sample.bed"));
-		Lens.loadSilk(new BEDQuery() {
-			public void addGene(BEDGene gene) {
-				_logger.info(Lens.toSilk(gene));
-			}
-
-			public void addTrack(BEDTrack track) {
-				_logger.info(Lens.toSilk(track));
-			}
-
-			public void reportError(Exception e) {
-				fail(e.getMessage());
-			}
-		}, r);
-
-	}
 }
+
+
+
+
