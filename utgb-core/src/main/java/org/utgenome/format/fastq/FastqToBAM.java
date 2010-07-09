@@ -22,7 +22,10 @@
 //--------------------------------------
 package org.utgenome.format.fastq;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.Reader;
 
 import net.sf.samtools.SAMFileHeader;
@@ -31,8 +34,13 @@ import net.sf.samtools.SAMFileWriterFactory;
 import net.sf.samtools.SAMReadGroupRecord;
 import net.sf.samtools.SAMRecord;
 
+import org.utgenome.UTGBErrorCode;
 import org.utgenome.UTGBException;
+import org.xerial.util.log.Logger;
+import org.xerial.util.opt.Argument;
 import org.xerial.util.opt.Option;
+import org.xerial.util.opt.OptionParser;
+import org.xerial.util.opt.OptionParserException;
 
 /**
  * Converting Illumina's FASTQ read data (single or paired-end) into BAM format, which can be used BLOAD's GATK
@@ -45,18 +53,52 @@ import org.xerial.util.opt.Option;
  */
 public class FastqToBAM {
 
-	@Option(longName = "rg", description = "read group name")
+	private static Logger _logger = Logger.getLogger(FastqToBAM.class);
+
+	@Option(longName = "readGroup", description = "read group name")
 	private String readGroupName;
 
-	@Option(longName = "sn", description = "sample name")
+	@Option(longName = "sample", description = "sample name")
 	private String sampleName;
 
-	@Option(longName = "sn", description = "sample name")
+	@Option(longName = "prefix", description = "prefix of the read")
 	private String readPrefix;
 
+	@Argument(index = 0, name = "input fastq (.fastq, .fastq.gz)", required = true)
+	private File input1;
+	@Argument(index = 1, name = "input fastq (.fastq, .fastq.gz, when paried-end read)")
+	private File input2;
+
+	@Option(symbol = "o", longName = "output", description = "output file name (.sam or .bam)")
 	private File outputFile;
 
-	public int convert(Reader input1, Reader input2) throws UTGBException {
+	public static int execute(String[] args) throws Exception {
+
+		FastqToBAM main = new FastqToBAM();
+		OptionParser parser = new OptionParser(main);
+		try {
+			parser.parse(args);
+
+			main.convert();
+		}
+		catch (OptionParserException e) {
+			_logger.error(e);
+			return 1;
+		}
+
+		return 0;
+
+	}
+
+	public int convert() throws UTGBException, IOException {
+		if (input1 == null) {
+			throw new UTGBException(UTGBErrorCode.MISSING_OPTION, "missing fastq file");
+		}
+
+		return convert(new BufferedReader(new FileReader(input1)), input2 == null ? null : new BufferedReader(new FileReader(input2)));
+	}
+
+	public int convert(Reader input1, Reader input2) throws UTGBException, IOException {
 
 		FastqReader end1 = new FastqReader(input1);
 		FastqReader end2 = (input2 == null) ? null : new FastqReader(input2);
@@ -68,52 +110,64 @@ public class FastqToBAM {
 		sfh.addReadGroup(srg);
 		sfh.setSortOrder(SAMFileHeader.SortOrder.queryname);
 
-		SAMFileWriter sfw = (new SAMFileWriterFactory()).makeSAMOrBAMWriter(sfh, false, outputFile);
+		if (outputFile == null)
+			throw new UTGBException(UTGBErrorCode.MISSING_OPTION, "no output file is specified by -o option");
 
+		SAMFileWriter sfw = (new SAMFileWriterFactory()).makeSAMOrBAMWriter(sfh, false, outputFile);
 		int readsSeen = 0;
 
-		for (FastqRead fqr1, fqr2 = null; (fqr1 = end1.next()) != null && (end2 == null || (fqr2 = end2.next()) != null);) {
+		try {
+			for (FastqRead fqr1, fqr2 = null; (fqr1 = end1.next()) != null && (end2 == null || (fqr2 = end2.next()) != null);) {
 
-			String fqr1Name = fqr1.seqname;
+				String fqr1Name = fqr1.seqname;
 
-			SAMRecord sr1 = new SAMRecord(sfh);
-			sr1.setReadName(readPrefix != null ? (readPrefix + ":" + fqr1Name) : fqr1Name);
-			sr1.setReadString(fqr1.seq);
-			sr1.setBaseQualityString(fqr1.qual);
-			sr1.setReadUnmappedFlag(true);
-			sr1.setReadPairedFlag(false);
-			sr1.setAttribute("RG", readGroupName);
+				SAMRecord sr1 = new SAMRecord(sfh);
+				sr1.setReadName(readPrefix != null ? (readPrefix + ":" + fqr1Name) : fqr1Name);
+				sr1.setReadString(fqr1.seq);
+				sr1.setBaseQualityString(fqr1.qual);
+				sr1.setReadUnmappedFlag(true);
+				sr1.setReadPairedFlag(false);
+				sr1.setAttribute("RG", readGroupName);
 
-			SAMRecord sr2 = null;
+				SAMRecord sr2 = null;
 
-			// paired-end read
-			if (fqr2 != null) {
-				sr1.setReadPairedFlag(true);
-				sr1.setFirstOfPairFlag(true);
-				sr1.setSecondOfPairFlag(false);
-				sr1.setMateUnmappedFlag(true);
+				// paired-end read
+				if (fqr2 != null) {
+					sr1.setReadPairedFlag(true);
+					sr1.setFirstOfPairFlag(true);
+					sr1.setSecondOfPairFlag(false);
+					sr1.setMateUnmappedFlag(true);
 
-				String fqr2Name = fqr2.seqname;
-				sr2 = new SAMRecord(sfh);
-				sr2.setReadName(readPrefix != null ? (readPrefix + ":" + fqr2Name) : fqr2Name);
-				sr2.setReadString(fqr2.seq);
-				sr2.setBaseQualityString(fqr2.qual);
-				sr2.setReadUnmappedFlag(true);
-				sr2.setReadPairedFlag(true);
-				sr2.setAttribute("RG", readGroupName);
-				sr2.setFirstOfPairFlag(false);
-				sr2.setSecondOfPairFlag(true);
-				sr2.setMateUnmappedFlag(true);
+					String fqr2Name = fqr2.seqname;
+					sr2 = new SAMRecord(sfh);
+					sr2.setReadName(readPrefix != null ? (readPrefix + ":" + fqr2Name) : fqr2Name);
+					sr2.setReadString(fqr2.seq);
+					sr2.setBaseQualityString(fqr2.qual);
+					sr2.setReadUnmappedFlag(true);
+					sr2.setReadPairedFlag(true);
+					sr2.setAttribute("RG", readGroupName);
+					sr2.setFirstOfPairFlag(false);
+					sr2.setSecondOfPairFlag(true);
+					sr2.setMateUnmappedFlag(true);
+				}
+
+				sfw.addAlignment(sr1);
+				if (fqr2 != null) {
+					sfw.addAlignment(sr2);
+				}
+				readsSeen++;
 			}
+		}
+		finally {
+			if (end1 != null)
+				end1.close();
+			if (end2 != null)
+				end2.close();
 
-			sfw.addAlignment(sr1);
-			if (fqr2 != null) {
-				sfw.addAlignment(sr2);
-			}
-			readsSeen++;
+			if (sfw != null)
+				sfw.close();
 		}
 
-		sfw.close();
 		return readsSeen;
 	}
 }

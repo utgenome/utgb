@@ -23,6 +23,7 @@
 package org.utgenome.format.fastq;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.Reader;
 
 import org.utgenome.UTGBException;
@@ -114,6 +115,10 @@ public class FastqReader {
 	 */
 	public FastqRead next() throws UTGBException {
 		return FastqRead.parse(reader);
+	}
+
+	public void close() throws IOException {
+		reader.close();
 	}
 
 }
