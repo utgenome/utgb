@@ -1,0 +1,4 @@
+usage: fastq2sam [option] (fastq1) (fastq2)? -o (output .sam or .bam)   
+
+Convert FASTQ file(s) into SAM/BAM format
+
