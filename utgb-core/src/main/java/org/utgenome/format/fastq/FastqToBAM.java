@@ -24,9 +24,12 @@ package org.utgenome.format.fastq;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.zip.GZIPInputStream;
 
 import net.sf.samtools.SAMFileHeader;
 import net.sf.samtools.SAMFileWriter;
@@ -95,7 +98,22 @@ public class FastqToBAM {
 			throw new UTGBException(UTGBErrorCode.MISSING_OPTION, "missing fastq file");
 		}
 
-		return convert(new BufferedReader(new FileReader(input1)), input2 == null ? null : new BufferedReader(new FileReader(input2)));
+		Reader in1;
+		if (input1.getName().endsWith(".gz")) {
+			in1 = new InputStreamReader(new GZIPInputStream(new FileInputStream(input1)));
+		}
+		else
+			in1 = new FileReader(input1);
+
+		Reader in2 = null;
+		if (input2 != null) {
+			if (input2.getName().endsWith(".gz"))
+				in2 = new InputStreamReader(new GZIPInputStream(new FileInputStream(input2)));
+			else
+				in2 = new FileReader(input2);
+		}
+
+		return convert(new BufferedReader(in1), in2 == null ? null : new BufferedReader(in2));
 	}
 
 	public int convert(Reader input1, Reader input2) throws UTGBException, IOException {

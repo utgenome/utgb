@@ -90,4 +90,36 @@ public class FastqToBAMTest {
 		assertEquals(4, count);
 	}
 
+	@Test
+	public void convertSample() throws Exception {
+		File sam = FileUtil.createTempFile(outdir, "sample", ".sam");
+		sam.deleteOnExit();
+		File input = FileUtil.createTempFile(outdir, "sample", ".fastq");
+		FileUtil.copy(FileResource.openByteStream(FastqToBAMTest.class, "sample.fastq"), input);
+		input.deleteOnExit();
+		FastqToBAM.execute(new String[] { input.getPath(), "-o", sam.getPath() });
+		SAMFileReader r = new SAMFileReader(sam);
+		int count = 0;
+		for (SAMRecord rec : r) {
+			count++;
+		}
+		assertEquals(3, count);
+	}
+
+	@Test
+	public void convertGZSample() throws Exception {
+		File sam = FileUtil.createTempFile(outdir, "sample", ".sam");
+		sam.deleteOnExit();
+		File input = FileUtil.createTempFile(outdir, "sample", ".fastq.gz");
+		FileUtil.copy(FileResource.openByteStream(FastqToBAMTest.class, "sample.fastq.gz"), input);
+		input.deleteOnExit();
+		FastqToBAM.execute(new String[] { input.getPath(), "-o", sam.getPath() });
+		SAMFileReader r = new SAMFileReader(sam);
+		int count = 0;
+		for (SAMRecord rec : r) {
+			count++;
+		}
+		assertEquals(3, count);
+	}
+
 }
