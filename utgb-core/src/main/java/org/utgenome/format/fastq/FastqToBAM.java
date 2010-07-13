@@ -103,17 +103,18 @@ public class FastqToBAM {
 		FastqReader end1 = new FastqReader(input1);
 		FastqReader end2 = (input2 == null) ? null : new FastqReader(input2);
 
-		SAMReadGroupRecord srg = new SAMReadGroupRecord(readGroupName);
-		srg.setSample(sampleName);
-
-		SAMFileHeader sfh = new SAMFileHeader();
-		sfh.addReadGroup(srg);
-		sfh.setSortOrder(SAMFileHeader.SortOrder.queryname);
+		SAMReadGroupRecord readGroupRecord = new SAMReadGroupRecord(readGroupName);
+		SAMFileHeader samHeader = new SAMFileHeader();
+		if (readGroupName != null) {
+			samHeader.addReadGroup(readGroupRecord);
+		}
+		readGroupRecord.setSample(sampleName);
+		samHeader.setSortOrder(SAMFileHeader.SortOrder.queryname);
 
 		if (outputFile == null)
 			throw new UTGBException(UTGBErrorCode.MISSING_OPTION, "no output file is specified by -o option");
 
-		SAMFileWriter sfw = (new SAMFileWriterFactory()).makeSAMOrBAMWriter(sfh, false, outputFile);
+		SAMFileWriter sfw = (new SAMFileWriterFactory()).makeSAMOrBAMWriter(samHeader, false, outputFile);
 		int readsSeen = 0;
 
 		try {
@@ -121,7 +122,7 @@ public class FastqToBAM {
 
 				String fqr1Name = fqr1.seqname;
 
-				SAMRecord sr1 = new SAMRecord(sfh);
+				SAMRecord sr1 = new SAMRecord(samHeader);
 				sr1.setReadName(readPrefix != null ? (readPrefix + ":" + fqr1Name) : fqr1Name);
 				sr1.setReadString(fqr1.seq);
 				sr1.setBaseQualityString(fqr1.qual);
@@ -139,7 +140,7 @@ public class FastqToBAM {
 					sr1.setMateUnmappedFlag(true);
 
 					String fqr2Name = fqr2.seqname;
-					sr2 = new SAMRecord(sfh);
+					sr2 = new SAMRecord(samHeader);
 					sr2.setReadName(readPrefix != null ? (readPrefix + ":" + fqr2Name) : fqr2Name);
 					sr2.setReadString(fqr2.seq);
 					sr2.setBaseQualityString(fqr2.qual);

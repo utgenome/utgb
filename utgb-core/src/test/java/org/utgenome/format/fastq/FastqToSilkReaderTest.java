@@ -22,9 +22,9 @@
 //--------------------------------------
 package org.utgenome.format.fastq;
 
-
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 
 public class FastqToSilkReaderTest {
 
@@ -36,8 +36,9 @@ public class FastqToSilkReaderTest {
 	public void tearDown() throws Exception {
 	}
 
+	@Test
+	public void convert() throws Exception {
+
+	}
+
 }
-
-
-
-
