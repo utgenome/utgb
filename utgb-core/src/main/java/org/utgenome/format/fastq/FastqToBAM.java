@@ -159,6 +159,10 @@ public class FastqToBAM {
 				readsSeen++;
 			}
 		}
+		catch (IllegalArgumentException e) {
+			_logger.error(String.format("error found in read (%d) : %s", readsSeen, e.getMessage()));
+			throw e;
+		}
 		finally {
 			if (end1 != null)
 				end1.close();
