@@ -132,7 +132,7 @@ public class FastqToBAM {
 		if (outputFile == null)
 			throw new UTGBException(UTGBErrorCode.MISSING_OPTION, "no output file is specified by -o option");
 
-		SAMFileWriter sfw = (new SAMFileWriterFactory()).makeSAMOrBAMWriter(samHeader, false, outputFile);
+		SAMFileWriter sfw = (new SAMFileWriterFactory()).makeSAMOrBAMWriter(samHeader, true, outputFile);
 		int readsSeen = 0;
 
 		try {
