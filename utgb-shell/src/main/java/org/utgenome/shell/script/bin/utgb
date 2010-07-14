@@ -57,7 +57,7 @@ case "`uname`" in
            if [ -z "$JAVA_VERSION" ] ; then
              JAVA_VERSION="CurrentJDK"
            else
-            echo "Using Java version: $JAVA_VERSION"
+            echo "Using Java version: $JAVA_VERSION" 1>&2 
            fi
            if [ -z "$JAVA_HOME" ] ; then
              JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Versions/${JAVA_VERSION}/Home
@@ -81,13 +81,13 @@ if [ -z "$JAVACMD" ] ; then
 fi
 
 if [ ! -x "$JAVACMD" ] ; then
-  echo "Error: JAVA_HOME is not defined correctly."
-  echo "  We cannot execute $JAVACMD"
+  echo "Error: JAVA_HOME is not defined correctly." 1>&2
+  echo "  We cannot execute $JAVACMD" > 1>&2
   exit 1
 fi
 
 if [ -z "$JAVA_HOME" ] ; then
-  echo "Warning: JAVA_HOME environment variable is not set."
+  echo "Warning: JAVA_HOME environment variable is not set." 1>&2
 fi
 
 
