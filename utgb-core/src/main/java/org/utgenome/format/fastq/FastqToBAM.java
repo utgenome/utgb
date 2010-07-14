@@ -181,9 +181,9 @@ public class FastqToBAM {
 				}
 			}
 		}
-		catch (IllegalArgumentException e) {
-			_logger.error(String.format("error found in read (%d) : %s", readsSeen, e.getMessage()));
-			throw e;
+		catch (Exception e) {
+			_logger.error(String.format("error found when reading %d-th read: %s", readsSeen, e.getMessage()));
+			throw UTGBException.convert(e);
 		}
 		finally {
 			if (end1 != null)
