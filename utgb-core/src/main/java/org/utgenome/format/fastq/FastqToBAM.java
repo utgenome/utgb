@@ -175,6 +175,10 @@ public class FastqToBAM {
 					sfw.addAlignment(sr2);
 				}
 				readsSeen++;
+
+				if (readsSeen > 0 && (readsSeen % 100000) == 0) {
+					_logger.info(String.format("%d (paired) reads has been processed.", readsSeen));
+				}
 			}
 		}
 		catch (IllegalArgumentException e) {
