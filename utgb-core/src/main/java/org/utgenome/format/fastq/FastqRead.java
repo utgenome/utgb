@@ -24,6 +24,7 @@ package org.utgenome.format.fastq;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.StringWriter;
 
 import org.utgenome.UTGBErrorCode;
 import org.utgenome.UTGBException;
@@ -92,6 +93,14 @@ public class FastqRead {
 		sub.leaf("name", seqname);
 		sub.leaf("seq", seq);
 		sub.leaf("qual", qual);
+	}
+
+	public String toSilk() {
+		StringWriter w = new StringWriter();
+		SilkWriter sw = new SilkWriter(w);
+		toSilk(sw);
+		sw.flush();
+		return w.toString();
 	}
 
 }

@@ -145,9 +145,9 @@ public class FastqToBAM {
 
 		SAMFileWriter sfw = (new SAMFileWriterFactory()).makeSAMOrBAMWriter(samHeader, false, outputFile);
 		int readsSeen = 0;
-
+		FastqRead fqr1 = null, fqr2 = null;
 		try {
-			for (FastqRead fqr1, fqr2 = null; (fqr1 = end1.next()) != null && (end2 == null || (fqr2 = end2.next()) != null);) {
+			for (; (fqr1 = end1.next()) != null && (end2 == null || (fqr2 = end2.next()) != null);) {
 
 				String fqr1Name = fqr1.seqname;
 
@@ -193,7 +193,8 @@ public class FastqToBAM {
 			}
 		}
 		catch (Exception e) {
-			_logger.error(String.format("error found when reading %d-th read: %s", readsSeen, e.getMessage()));
+			_logger.error(String.format("error found when reading %d-th read: %s\n%s%s", readsSeen, e.getMessage(), fqr1 != null ? "fq1:\n" + fqr1.toSilk()
+					: "", fqr2 != null ? "fq2:\n" + fqr2.toSilk() : ""));
 			throw UTGBException.convert(e);
 		}
 		finally {
