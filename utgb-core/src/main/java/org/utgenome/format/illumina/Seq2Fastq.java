@@ -51,7 +51,7 @@ public class Seq2Fastq {
 		}
 
 		// name, lane, x, y, pair? 
-		String readName = String.format("%s:%s:%s:%s:%s", sanitizeReadName(c[0]), c[1], c[2], c[3], sanitizeReadName(c[4]));
+		String readName = String.format("%s:%s:%s:%s:%s", sanitizeReadName(c[0]), c[1], c[2], c[3], c[4]);
 		String seq = c[5];
 		String qual = c[6];
 		StringBuilder phreadQualityString = new StringBuilder();
@@ -65,7 +65,7 @@ public class Seq2Fastq {
 	}
 
 	public static String sanitizeReadName(String name) {
-		return name.replaceAll("[^A-Za-z0-9_.:-]+", "_");
+		return name.replaceAll("\\s+", "_");
 	}
 
 	public static String sanitizeQualityValue(String qual) {
