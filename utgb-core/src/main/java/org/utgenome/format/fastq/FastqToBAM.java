@@ -176,7 +176,7 @@ public class FastqToBAM {
 				}
 				readsSeen++;
 
-				if (readsSeen > 0 && (readsSeen % 100000) == 0) {
+				if (readsSeen > 0 && (readsSeen % 1000000) == 0) {
 					_logger.info(String.format("%d (paired) reads has been processed.", readsSeen));
 				}
 			}
