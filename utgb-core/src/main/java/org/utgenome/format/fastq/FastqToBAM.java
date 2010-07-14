@@ -75,6 +75,9 @@ public class FastqToBAM {
 	@Option(symbol = "o", longName = "output", description = "output file name (.sam or .bam)")
 	private File outputFile;
 
+	@Option(longName = "tmpdir", description = "temporary directory.for storing merge sort runs. default = System.getProperty(\"java.io.tmpdir\"));")
+	private File tmpDir = new File(System.getProperty("java.io.tmpdir"));
+
 	public static int execute(String[] args) throws Exception {
 
 		FastqToBAM main = new FastqToBAM();
@@ -117,6 +120,14 @@ public class FastqToBAM {
 	}
 
 	public int convert(Reader input1, Reader input2) throws UTGBException, IOException {
+
+		if (!tmpDir.exists()) {
+			_logger.info("create dir: " + tmpDir.getPath());
+			tmpDir.mkdirs();
+			// set the temporary directory for storing merge sort runs. 
+			// Picard library will look up this java.io.tmpdir system property value. 
+			System.setProperty("java.io.tmpdir", tmpDir.getAbsolutePath());
+		}
 
 		FastqReader end1 = new FastqReader(input1);
 		FastqReader end2 = (input2 == null) ? null : new FastqReader(input2);
