@@ -66,6 +66,18 @@ public class Interval implements OnGenome, Comparable<Interval>, Serializable {
 			end += 1;
 	}
 
+	public boolean isSense() {
+		return true;
+	}
+
+	public boolean isAntiSense() {
+		return false;
+	}
+
+	public String getColor() {
+		return null;
+	}
+
 	/**
 	 * Get the start position of the locus. (start <= end)
 	 * 

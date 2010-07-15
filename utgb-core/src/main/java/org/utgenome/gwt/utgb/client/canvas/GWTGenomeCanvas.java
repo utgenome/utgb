@@ -647,8 +647,8 @@ public class GWTGenomeCanvas extends Composite {
 	private static String getExonColorText(OnGenome g) {
 		final String senseColor = "#d80067";
 		final String antiSenseColor = "#0067d8";
-		if (g instanceof Read) {
-			Read r = (Read) g;
+		if (g instanceof Interval) {
+			Interval r = (Interval) g;
 			if (r.getColor() == null) {
 				return r.isSense() ? senseColor : antiSenseColor;
 			}
