@@ -11,7 +11,7 @@ DEPLOY_CMD = mvn deploy:deploy-file  $(DEPLOY_GROUP)
 deploy: sam gwt-incubator
 
 sam:
-	$(DEPLOY_CMD) -DartifactId=sam -Dversion=1.16 -Dfile=lib/sam-1.16.jar
+	$(DEPLOY_CMD) -DartifactId=sam -Dversion=1.25 -Dfile=lib/sam-1.25.jar
 
 GWT_INCUBATOR_VERSION=20100204-r1747
 
