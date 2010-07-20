@@ -99,7 +99,7 @@ public class QSeqToFASTQ {
 				FastqRead r = convertToFastq(line);
 				output.write(r.toFASTQString());
 			}
-			catch (UTGBException e) {
+			catch (Exception e) {
 				_logger.warn(String.format("line %d: %s", lineCount, e));
 			}
 		}
