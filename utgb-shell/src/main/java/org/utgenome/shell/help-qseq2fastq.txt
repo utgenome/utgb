@@ -1,0 +1,3 @@
+usage: qseq2fastq -g (read group) (input qseq) (output fastq)
+
+Convert a qseq file into FASTQ format.
