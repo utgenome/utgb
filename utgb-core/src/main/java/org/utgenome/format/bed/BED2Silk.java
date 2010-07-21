@@ -252,7 +252,7 @@ public class BED2Silk {
 						geneNode.attribute("name");
 						geneNode.attribute("strand");
 						geneNode.attribute("cds(start, end)");
-						geneNode.attribute("exon(strat, end)*");
+						geneNode.attribute("exon(start, end)*");
 						geneNode.attribute("color");
 						geneNode.attribute("_[json]");
 					}

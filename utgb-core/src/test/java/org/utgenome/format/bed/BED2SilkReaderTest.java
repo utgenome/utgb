@@ -24,11 +24,13 @@
 //--------------------------------------
 package org.utgenome.format.bed;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.utgenome.gwt.utgb.client.bio.Exon;
 import org.xerial.lens.Lens;
 import org.xerial.util.FileResource;
 import org.xerial.util.log.Logger;
@@ -63,4 +65,33 @@ public class BED2SilkReaderTest {
 		}, r);
 
 	}
+
+	@Test
+	public void testExon() throws Exception {
+		BED2Silk b2s = new BED2Silk(FileResource.open(BED2SilkReaderTest.class, "exon.bed"));
+		String silk = b2s.toSilk();
+		_logger.info(silk);
+
+		BED2SilkReader r = new BED2SilkReader(FileResource.open(BED2SilkReaderTest.class, "exon.bed"));
+
+		Lens.loadSilk(new BEDQuery() {
+			public void addGene(BEDGene gene) {
+				_logger.info(Lens.toSilk(gene));
+
+				for (Exon each : gene.getExon()) {
+					assertTrue(each.getStart() != -1);
+				}
+			}
+
+			public void addTrack(BEDTrack track) {
+				_logger.info(Lens.toSilk(track));
+			}
+
+			public void reportError(Exception e) {
+				fail(e.getMessage());
+			}
+		}, r);
+
+	}
+
 }
