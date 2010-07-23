@@ -157,6 +157,8 @@ public class Import extends UTGBShellCommand {
 			}
 			reader.close();
 			writer.close();
+
+			// new BAMFileIndexWriter().createIndex(arg0, arg1, arg2)
 		}
 			break;
 		case UNKNOWN:

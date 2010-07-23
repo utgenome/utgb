@@ -141,6 +141,9 @@ public class WIGGraphCanvasTrack extends TrackBase {
 		for (TrackWindow each : windowToCreate) {
 			loadGraph(each);
 		}
+		if (windowToCreate.isEmpty()) {
+			getFrame().loadingDone();
+		}
 
 		// clear the remaining windows out of the global view
 		for (TrackWindow each : updateInfo.windowToDiscard) {

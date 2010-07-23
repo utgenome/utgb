@@ -289,7 +289,7 @@ public class TrackFrame extends SimplePanel {
 	private final HideButton hideButton = new HideButton();
 	private final PackButton packButton = new PackButton();
 	private final CloseButton closeButton = new CloseButton(this);
-	private TrackFrameState _frameState = new TrackFrameState();
+	TrackFrameState _frameState = new TrackFrameState();
 
 	/**
 	 * <pre>

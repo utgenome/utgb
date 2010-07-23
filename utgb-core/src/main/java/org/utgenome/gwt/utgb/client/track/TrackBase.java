@@ -29,7 +29,6 @@ import java.util.HashMap;
 import org.utgenome.gwt.utgb.client.BrowserServiceAsync;
 import org.utgenome.gwt.utgb.client.RPCServiceManager;
 import org.utgenome.gwt.utgb.client.bio.Coordinate;
-import org.utgenome.gwt.utgb.client.track.bean.TrackBean;
 import org.utgenome.gwt.utgb.client.util.Properties;
 import org.utgenome.gwt.utgb.client.util.xml.XMLAttribute;
 import org.utgenome.gwt.utgb.client.util.xml.XMLUtil;
@@ -53,8 +52,6 @@ public abstract class TrackBase implements Track {
 	private int defaultTrackHeight = TrackFrameState.DEFAULT_MIN_TRACKFRAME_HEIGHT;
 
 	private TrackConfig __config;
-
-	private TrackBean _loadedState = null;
 
 	public TrackBase(String trackName) {
 		this(new TrackInfo(trackName));
@@ -99,17 +96,16 @@ public abstract class TrackBase implements Track {
 	private void validateTrackEnvironment() {
 		if (_trackGroup != null && _frame != null) {
 			_trackGroup.setResizeNotification(false);
-			if (_loadedState != null) {
+			if (frameConfig != null) {
+
+				_frame.setPacked(frameConfig.pack);
+
 				// restore trackFrame State
-				if (_loadedState.getHeight() > TrackFrameState.DEFAULT_MIN_TRACKFRAME_HEIGHT) {
-					defaultTrackHeight = _loadedState.getHeight();
+				if (frameConfig.height > TrackFrameState.DEFAULT_MIN_TRACKFRAME_HEIGHT) {
+					defaultTrackHeight = frameConfig.height;
 					_frame.resize(defaultTrackHeight);
 				}
 
-				Boolean packed = _loadedState.getPack();
-				if (packed != null) {
-					_frame.setPacked(packed.booleanValue());
-				}
 			}
 			setUp(_frame, _trackGroup);
 			_trackGroup.setResizeNotification(true);
@@ -205,12 +201,24 @@ public abstract class TrackBase implements Track {
 		return false;
 	}
 
+	public static class TrackFrameConfig {
+		public int height = TrackFrameState.DEFAULT_MIN_TRACKFRAME_HEIGHT;
+		public boolean pack = true;
+	}
+
+	public TrackFrameConfig frameConfig = null;
+
 	public void loadView(TrackView.Track view) {
 		getTrackInfo().setTrackName(view.name);
-		Properties p = new Properties();
-		p.putAll(view.property);
-		p.put("height", Integer.toString(view.height));
-		p.put("pack", Boolean.toString(view.pack));
+
+		//		Properties p = new Properties();
+		//		p.putAll(view.property);
+		//		p.put("height", Integer.toString(view.height));
+		//		p.put("pack", Boolean.toString(view.pack));
+
+		frameConfig = new TrackFrameConfig();
+		frameConfig.height = view.height;
+		frameConfig.pack = view.pack;
 
 		restoreProperties(view.property);
 	}
