@@ -647,6 +647,7 @@ public class GWTGenomeCanvas extends Composite {
 	private static String getExonColorText(OnGenome g) {
 		final String senseColor = "#d80067";
 		final String antiSenseColor = "#0067d8";
+
 		if (g instanceof Interval) {
 			Interval r = (Interval) g;
 			if (r.getColor() == null) {
@@ -658,6 +659,14 @@ public class GWTGenomeCanvas extends Composite {
 		}
 		else
 			return senseColor;
+	}
+
+	public static Color getExonColor(Gene g) {
+		return getGeneColor(g, 0.5f);
+	}
+
+	public static Color getCDSColor(Interval g) {
+		return getGeneColor(g);
 	}
 
 	public void draw(Gene gene, List<Exon> exonList, CDS cds, int yPosition) {
@@ -719,14 +728,6 @@ public class GWTGenomeCanvas extends Composite {
 			return (trackWindow.getPixelWidth() - x);
 		else
 			return x;
-	}
-
-	public static Color getExonColor(Gene g) {
-		return getGeneColor(g, 0.5f);
-	}
-
-	public static Color getCDSColor(Interval g) {
-		return getGeneColor(g);
 	}
 
 	public void draw(Interval gene, int yPosition) {

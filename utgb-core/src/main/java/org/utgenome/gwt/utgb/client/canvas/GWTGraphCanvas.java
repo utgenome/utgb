@@ -644,9 +644,15 @@ public class GWTGraphCanvas extends Composite {
 	public void setTrackWindow(final TrackWindow w) {
 		if (trackWindow != null) {
 			if (trackWindow.hasSameScaleWith(w)) {
-				ScrollAnimation animation = new ScrollAnimation(trackWindow, w);
-				animation.run(1000);
 
+				for (GraphCanvas each : canvasMap.values()) {
+					int start = each.window.getStartOnGenome();
+					int e = w.convertToPixelX(start);
+					panel.setWidgetPosition(each.canvas, e, 0);
+				}
+
+				//ScrollAnimation animation = new ScrollAnimation(trackWindow, w);
+				//animation.run(1000);
 			}
 			else {
 				//				// scroll & zoom in/out
