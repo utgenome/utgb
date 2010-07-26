@@ -662,7 +662,7 @@ public class BrowserServiceImpl extends RpcServlet implements BrowserService {
 
 				// convert SAMRecord to SAMRead
 
-				SAMRead read = ReadView.convertToSAMRead(record);
+				SAMRead read = SAM2SilkReader.convertToSAMRead(record);
 				// get refseq
 				read.refSeq = cf.getSequence(read.rname, read.getStart() - 1, read.getEnd()).toString();
 
