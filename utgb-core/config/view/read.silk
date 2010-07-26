@@ -25,8 +25,8 @@
   -class: RulerTrack
 -track
   -name: Read
-  -pack: false
-  -height: 200
+  -pack: pack
+  -height: 100
   -class: ReadTrack
   -property
     -path: db/testdata/genomic_sorted_5_plus.bam

@@ -45,7 +45,7 @@ import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig.Layout;
 import org.utgenome.gwt.utgb.client.util.Properties;
 import org.utgenome.gwt.utgb.server.WebTrackBase;
 import org.utgenome.gwt.utgb.server.util.WebApplicationResource;
-import org.xerial.lens.ObjectHandler;
+import org.xerial.ObjectHandlerBase;
 import org.xerial.silk.SilkWriter;
 import org.xerial.util.StopWatch;
 import org.xerial.util.log.Logger;
@@ -199,7 +199,7 @@ public class ReadView extends WebTrackBase {
 		return new ReadCoverage(start, end, pixelWidth, coverage);
 	}
 
-	private static class OnGenomeDataRetriever<T extends OnGenome> implements ObjectHandler<T> {
+	private static class OnGenomeDataRetriever<T extends OnGenome> extends ObjectHandlerBase<T> {
 		private ArrayList<OnGenome> geneList = new ArrayList<OnGenome>();
 
 		public OnGenomeDataRetriever() {

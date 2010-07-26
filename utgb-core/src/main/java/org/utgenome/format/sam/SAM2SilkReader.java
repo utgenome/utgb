@@ -27,6 +27,7 @@ package org.utgenome.format.sam;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.io.StringWriter;
 import java.io.Writer;
 
 import net.sf.samtools.SAMFileReader;
@@ -39,7 +40,7 @@ import org.utgenome.format.FormatConversionReader;
 import org.xerial.silk.SilkWriter;
 
 /**
- * Converting SAM into Silk
+ * Reader for converting SAM into Silk
  * 
  * @author leo
  * 
@@ -68,27 +69,52 @@ public class SAM2SilkReader extends FormatConversionReader {
 			w.preamble("schema record(qname, flag, rname, start, end, mapq, cigar, mrnm, mpos, isize, seq, qual, tag, vtype, tag*)");
 			for (CloseableIterator<SAMRecord> it = samReader.iterator(); it.hasNext();) {
 				SAMRecord rec = it.next();
-				SilkWriter rw = w.node("record");
-				rw.leaf("qname", rec.getReadName());
-				rw.leaf("flag", rec.getFlags());
-				rw.leaf("rname", rec.getReferenceName());
-				rw.leaf("start", rec.getAlignmentStart());
-				rw.leaf("end", rec.getAlignmentEnd());
-				rw.leaf("mapq", rec.getMappingQuality());
-				rw.leaf("cigar", rec.getCigarString());
-				rw.leaf("mrname", rec.getMateReferenceName());
-				rw.leaf("mpos", rec.getMateAlignmentStart());
-				rw.leaf("isize", rec.getInferredInsertSize());
-				rw.leaf("seq", rec.getReadString());
-				rw.leaf("qual", String.format("\"%s\"", rec.getBaseQualityString()));
-				SilkWriter tw = rw.node("tag");
-				for (SAMTagAndValue each : rec.getAttributes()) {
-					tw.leaf(each.tag, each.value);
-				}
+				toSilk(rec, w);
 			}
 
 		}
 
+	}
+
+	/**
+	 * Convert an input SAMRecord into Silk format by using a given SilkWriter
+	 * 
+	 * @param rec
+	 * @param w
+	 */
+	public static void toSilk(SAMRecord rec, SilkWriter w) {
+		StringWriter buf = new StringWriter();
+		SilkWriter rw = w.node("record");
+		rw.leaf("qname", rec.getReadName());
+		rw.leaf("flag", rec.getFlags());
+		rw.leaf("rname", rec.getReferenceName());
+		rw.leaf("start", rec.getAlignmentStart());
+		rw.leaf("end", rec.getAlignmentEnd() + 1);
+		rw.leaf("mapq", rec.getMappingQuality());
+		rw.leaf("cigar", rec.getCigarString());
+		rw.leaf("mrname", rec.getMateReferenceName());
+		rw.leaf("mstart", rec.getMateAlignmentStart());
+		rw.leaf("isize", rec.getInferredInsertSize());
+		rw.leaf("seq", rec.getReadString());
+		rw.leaf("qual", String.format("\"%s\"", rec.getBaseQualityString()));
+		SilkWriter tw = rw.node("tag");
+		for (SAMTagAndValue each : rec.getAttributes()) {
+			tw.leaf(each.tag, each.value);
+		}
+	}
+
+	/**
+	 * Convert an input SAMRecord into Silk format
+	 * 
+	 * @param rec
+	 * @return
+	 */
+	public static String toSilk(SAMRecord rec) {
+		StringWriter buf = new StringWriter();
+		SilkWriter w = new SilkWriter(buf);
+		toSilk(rec, w);
+		w.flush();
+		return buf.toString();
 	}
 
 }

@@ -72,6 +72,7 @@ import org.utgenome.gwt.utgb.client.view.TrackView;
 import org.utgenome.gwt.utgb.server.app.ChromosomeMap;
 import org.utgenome.gwt.utgb.server.app.ReadView;
 import org.utgenome.gwt.utgb.server.util.WebApplicationResource;
+import org.xerial.ObjectHandlerBase;
 import org.xerial.core.XerialException;
 import org.xerial.db.DBException;
 import org.xerial.db.sql.SQLExpression;
@@ -80,7 +81,6 @@ import org.xerial.db.sql.sqlite.SQLiteCatalog;
 import org.xerial.json.JSONArray;
 import org.xerial.json.JSONObject;
 import org.xerial.lens.Lens;
-import org.xerial.lens.ObjectHandler;
 import org.xerial.util.StopWatch;
 import org.xerial.util.bean.BeanUtil;
 import org.xerial.util.log.Logger;
@@ -384,7 +384,7 @@ public class BrowserServiceImpl extends RpcServlet implements BrowserService {
 		return in;
 	}
 
-	static class BeanRetriever<T> implements ObjectHandler<T> {
+	static class BeanRetriever<T> extends ObjectHandlerBase<T> {
 		private ArrayList<T> geneList = new ArrayList<T>();
 
 		public BeanRetriever() {
@@ -625,7 +625,7 @@ public class BrowserServiceImpl extends RpcServlet implements BrowserService {
 			final CompactFASTA cf = new CompactFASTA(WebTrackBase.getProjectRootPath() + "/" + refSeqFileName);
 
 			Lens.findFromSilk(new SAM2SilkReader(new FileReader(new File(WebTrackBase.getProjectRootPath() + "/" + readFileName))), "record", SAMRead.class,
-					new ObjectHandler<SAMRead>() {
+					new ObjectHandlerBase<SAMRead>() {
 						public void handle(SAMRead input) throws Exception {
 							input.refSeq = cf.getSequence(input.rname, input.getStart() - 1, input.getEnd()).toString();
 							_logger.info(Lens.toSilk(input));

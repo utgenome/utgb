@@ -67,8 +67,16 @@ public class CompactFASTAIndex {
 
 		ArrayList<CompactFASTAIndex> index = new ArrayList<CompactFASTAIndex>();
 
+		public void init() throws Exception {
+
+		}
+
 		public void handle(CompactFASTAIndex input) throws Exception {
 			index.add(input);
+		}
+
+		public void finish() throws Exception {
+
 		}
 
 	}
