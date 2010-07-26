@@ -37,6 +37,8 @@ import net.sf.samtools.util.CloseableIterator;
 
 import org.apache.tools.ant.util.ReaderInputStream;
 import org.utgenome.format.FormatConversionReader;
+import org.utgenome.gwt.utgb.client.bio.SAMRead;
+import org.utgenome.gwt.utgb.client.util.Properties;
 import org.xerial.silk.SilkWriter;
 
 /**
@@ -74,6 +76,34 @@ public class SAM2SilkReader extends FormatConversionReader {
 
 		}
 
+	}
+
+	/**
+	 * convert a SAMRecord into a SAMRead, which can be used in GWT code.
+	 * 
+	 * @param record
+	 * @return
+	 */
+	public static SAMRead convertToSAMRead(SAMRecord record) {
+		SAMRead read = new SAMRead(record.getAlignmentStart(), record.getAlignmentEnd() + 1);
+		if (record != null) {
+			read.qname = record.getReadName();
+			read.flag = record.getFlags();
+			read.rname = record.getReferenceName();
+			read.mapq = record.getMappingQuality();
+			read.cigar = record.getCigarString();
+			read.mrnm = record.getMateReferenceName();
+			read.mStart = record.getMateAlignmentStart();
+			read.iSize = record.getInferredInsertSize();
+			read.seq = record.getReadString();
+			read.qual = record.getBaseQualityString();
+			read.tag = new Properties();
+			for (SAMTagAndValue tag : record.getAttributes()) {
+				read.tag.add(tag.tag, String.valueOf(tag.value));
+			}
+		}
+
+		return read;
 	}
 
 	/**

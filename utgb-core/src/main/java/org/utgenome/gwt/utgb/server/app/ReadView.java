@@ -21,12 +21,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.samtools.SAMFileReader;
 import net.sf.samtools.SAMRecord;
-import net.sf.samtools.SAMRecord.SAMTagAndValue;
 import net.sf.samtools.util.CloseableIterator;
 
 import org.utgenome.UTGBErrorCode;
 import org.utgenome.UTGBException;
 import org.utgenome.format.bed.BEDDatabase;
+import org.utgenome.format.sam.SAM2SilkReader;
 import org.utgenome.graphics.GenomeWindow;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.DASLocation;
@@ -42,7 +42,6 @@ import org.utgenome.gwt.utgb.client.bio.DASResult.Segment.DASFeature;
 import org.utgenome.gwt.utgb.client.bio.GenomeDB.DBType;
 import org.utgenome.gwt.utgb.client.bio.Read.ReadType;
 import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig.Layout;
-import org.utgenome.gwt.utgb.client.util.Properties;
 import org.utgenome.gwt.utgb.server.WebTrackBase;
 import org.utgenome.gwt.utgb.server.util.WebApplicationResource;
 import org.xerial.ObjectHandlerBase;
@@ -114,7 +113,7 @@ public class ReadView extends WebTrackBase {
 				File baiFile = new File(WebTrackBase.getProjectRootPath(), db.path + ".bai");
 				SAMFileReader sam = new SAMFileReader(bamFile, baiFile);
 				for (CloseableIterator<SAMRecord> it = sam.queryOverlapping(loc.chr, loc.start, loc.end); it.hasNext();) {
-					SAMRead r = convertToSAMRead(it.next());
+					SAMRead r = SAM2SilkReader.convertToSAMRead(it.next());
 					result.read.add(r);
 				}
 			}
@@ -232,34 +231,6 @@ public class ReadView extends WebTrackBase {
 			in = new BufferedReader(new InputStreamReader(address.openStream()));
 		}
 		return in;
-	}
-
-	/**
-	 * convert a SAMRecord into a SAMRead, which can be used in GWT code.
-	 * 
-	 * @param record
-	 * @return
-	 */
-	public static SAMRead convertToSAMRead(SAMRecord record) {
-		SAMRead read = new SAMRead(record.getAlignmentStart(), record.getAlignmentEnd());
-		if (record != null) {
-			read.qname = record.getReadName();
-			read.flag = record.getFlags();
-			read.rname = record.getReferenceName();
-			read.mapq = record.getMappingQuality();
-			read.cigar = record.getCigarString();
-			read.mrnm = record.getMateReferenceName();
-			read.mStart = record.getMateAlignmentStart();
-			read.iSize = record.getInferredInsertSize();
-			read.seq = record.getReadString();
-			read.qual = record.getBaseQualityString();
-			read.tag = new Properties();
-			for (SAMTagAndValue tag : record.getAttributes()) {
-				read.tag.add(tag.tag, String.valueOf(tag.value));
-			}
-		}
-
-		return read;
 	}
 
 }
