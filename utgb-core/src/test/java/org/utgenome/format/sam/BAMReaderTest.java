@@ -35,7 +35,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
-import org.utgenome.gwt.utgb.server.app.ReadView;
 import org.xerial.util.FileResource;
 import org.xerial.util.FileUtil;
 import org.xerial.util.log.Logger;
@@ -77,7 +76,7 @@ public class BAMReaderTest {
 			SAMRecord each = iterator.next();
 			_logger.info(each.format());
 
-			SAMRead read = ReadView.convertToSAMRead(each);
+			SAMRead read = SAM2SilkReader.convertToSAMRead(each);
 			_logger.info(read);
 
 			readDataList.add(read);
