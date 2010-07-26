@@ -31,10 +31,11 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Iterator;
 
+import net.sf.samtools.BAMFileWriter;
+import net.sf.samtools.SAMFileHeader;
 import net.sf.samtools.SAMFileReader;
-import net.sf.samtools.SAMFileWriter;
-import net.sf.samtools.SAMFileWriterFactory;
 import net.sf.samtools.SAMRecord;
+import net.sf.samtools.SAMFileHeader.SortOrder;
 
 import org.apache.tools.ant.util.ReaderInputStream;
 import org.utgenome.format.bed.BEDDatabase;
@@ -150,15 +151,28 @@ public class Import extends UTGBShellCommand {
 			if (!bamOut.endsWith(".bam"))
 				bamOut += ".bam";
 			_logger.info("output BAM: " + bamOut);
-			final SAMFileWriter writer = new SAMFileWriterFactory().makeBAMWriter(reader.getFileHeader(), true, new File(bamOut));
+			final BAMFileWriter writer = new BAMFileWriter(new File(bamOut));
+			SAMFileHeader header = reader.getFileHeader();
+			SortOrder sortOrder = header.getSortOrder();
+			boolean sorted = false;
+			switch (sortOrder) {
+			case coordinate:
+				sorted = true;
+				break;
+			default:
+				sorted = false;
+				break;
+			}
+			writer.setSortOrder(SortOrder.coordinate, sorted);
+
+			writer.setHeader(header);
+			writer.enableBamIndexConstruction(true);
 			final Iterator<SAMRecord> iterator = reader.iterator();
 			while (iterator.hasNext()) {
 				writer.addAlignment(iterator.next());
 			}
 			reader.close();
 			writer.close();
-
-			// new BAMFileIndexWriter().createIndex(arg0, arg1, arg2)
 		}
 			break;
 		case UNKNOWN:
