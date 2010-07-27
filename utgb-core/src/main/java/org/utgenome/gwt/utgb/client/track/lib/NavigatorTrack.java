@@ -52,6 +52,7 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONException;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
@@ -459,28 +460,34 @@ public class NavigatorTrack extends TrackBase {
 	@Override
 	public void restoreProperties(Properties properties) {
 
-		JSONValue v = JSONParser.parse(properties.get("sequenceList", "[]"));
-		sequenceInfoList.clear();
-		JSONArray list = v.isArray();
-		if (list != null) {
-			for (int i = 0; i < list.size(); i++) {
-				JSONObject sequenceInfo = list.get(i).isObject();
-				if (sequenceInfo != null) {
-					JSONValue speciesValue = sequenceInfo.get("species");
-					if (speciesValue == null)
-						continue;
+		try {
+			JSONValue v = JSONParser.parse(properties.get("sequenceList", "[]"));
+			sequenceInfoList.clear();
+			JSONArray list = v.isArray();
+			if (list != null) {
+				for (int i = 0; i < list.size(); i++) {
+					JSONObject sequenceInfo = list.get(i).isObject();
+					if (sequenceInfo != null) {
+						JSONValue speciesValue = sequenceInfo.get("species");
+						if (speciesValue == null)
+							continue;
 
-					String species = JSONUtil.toStringValue(speciesValue);
-					SequenceInfo si = new SequenceInfo(species);
-					JSONValue arrayValue = sequenceInfo.get("revision");
-					JSONArray revisionArray = arrayValue.isArray();
-					for (int j = 0; j < revisionArray.size(); j++) {
-						String revision = JSONUtil.toStringValue(revisionArray.get(j));
-						si.addRevision(revision);
+						String species = JSONUtil.toStringValue(speciesValue);
+						SequenceInfo si = new SequenceInfo(species);
+						JSONValue arrayValue = sequenceInfo.get("revision");
+						JSONArray revisionArray = arrayValue.isArray();
+						for (int j = 0; j < revisionArray.size(); j++) {
+							String revision = JSONUtil.toStringValue(revisionArray.get(j));
+							si.addRevision(revision);
+						}
+						sequenceInfoList.add(si);
 					}
-					sequenceInfoList.add(si);
 				}
 			}
 		}
+		catch (JSONException e) {
+			GWT.log("failed to parse json : " + properties.get("sequenceList"), e);
+		}
+
 	}
 }
