@@ -4,14 +4,14 @@
   <parent>
     <groupId>org.utgenome</groupId>
     <artifactId>utgb-toolkit</artifactId>
-    <version>1.4.1-SNAPSHOT</version>
+    <version>1.4.1</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.utgenome.theme</groupId>
   <artifactId>utgb-themes</artifactId>
   <name>UTGB Themes</name>
-  <version>1.4.1-SNAPSHOT</version>
+  <version>1.4.1</version>
   <description>UTGB Theme Collection</description>
   <packaging>pom</packaging>
  
