@@ -165,15 +165,18 @@ public class Import extends UTGBShellCommand {
 				sorted = false;
 				break;
 			}
+
 			writer.setSortOrder(SortOrder.coordinate, sorted);
-			writer.setHeader(header);
 			writer.enableBamIndexConstruction(true);
+			writer.setHeader(header);
+
 			final Iterator<SAMRecord> iterator = reader.iterator();
 			while (iterator.hasNext()) {
 				writer.addAlignment(iterator.next());
 			}
 			reader.close();
 			writer.close();
+
 		}
 			break;
 		case UNKNOWN:

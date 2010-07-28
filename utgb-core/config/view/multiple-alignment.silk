@@ -1,0 +1,38 @@
+%silk(version:1.0)
+-track group
+  -id: 1
+  -class: org.utgenome.gwt.utgb.client.track.TrackGroup
+  -coordinate
+    -species: xenopus
+    -ref: xenTro2
+    -chr: scaffold_1
+    -start: 4200
+    -end: 4300
+-track
+  -name: UTGB Navigator
+  -height: 41
+  -pack: true
+  -class: NavigatorTrack
+  -property
+    -sequenceList: [{"species":"xenopus", "revision":["xenTro2"]}]
+-track
+  -name: Sequence Overview
+  -pack: true
+  -class: SequenceRulerTrack
+-track
+  -name: Ruler
+  -pack: true
+  -class: RulerTrack
+-track
+  -name: Genome Sequence
+  -pack: true
+  -class: GenomeTrack
+  -property
+    -trackBaseURL: utgb-core/Sequence.png?%q&path=db/xenTro2.fa.sqlite
+-track
+  -name: Read
+  -pack: true
+  -height: 100
+  -class: ReadTrack
+  -property
+    -path: db/test.bam
