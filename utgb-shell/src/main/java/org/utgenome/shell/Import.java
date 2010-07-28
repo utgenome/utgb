@@ -36,6 +36,7 @@ import net.sf.samtools.SAMFileHeader;
 import net.sf.samtools.SAMFileReader;
 import net.sf.samtools.SAMRecord;
 import net.sf.samtools.SAMFileHeader.SortOrder;
+import net.sf.samtools.SAMFileReader.ValidationStringency;
 
 import org.apache.tools.ant.util.ReaderInputStream;
 import org.utgenome.format.bed.BEDDatabase;
@@ -147,6 +148,7 @@ public class Import extends UTGBShellCommand {
 		case SAM: {
 			_logger.info("creating a BAM file from the input SAM.");
 			SAMFileReader reader = new SAMFileReader(new ReaderInputStream(in));
+			reader.setValidationStringency(ValidationStringency.LENIENT);
 			String bamOut = outputFileName;
 			if (!bamOut.endsWith(".bam"))
 				bamOut += ".bam";
@@ -164,7 +166,6 @@ public class Import extends UTGBShellCommand {
 				break;
 			}
 			writer.setSortOrder(SortOrder.coordinate, sorted);
-
 			writer.setHeader(header);
 			writer.enableBamIndexConstruction(true);
 			final Iterator<SAMRecord> iterator = reader.iterator();

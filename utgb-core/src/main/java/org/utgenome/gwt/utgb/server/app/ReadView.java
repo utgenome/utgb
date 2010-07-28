@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.samtools.SAMFileReader;
 import net.sf.samtools.SAMRecord;
+import net.sf.samtools.SAMFileReader.ValidationStringency;
 import net.sf.samtools.util.CloseableIterator;
 
 import org.utgenome.UTGBErrorCode;
@@ -112,6 +113,7 @@ public class ReadView extends WebTrackBase {
 				File bamFile = new File(WebTrackBase.getProjectRootPath(), db.path);
 				File baiFile = new File(WebTrackBase.getProjectRootPath(), db.path + ".bai");
 				SAMFileReader sam = new SAMFileReader(bamFile, baiFile);
+				sam.setValidationStringency(ValidationStringency.LENIENT);
 				for (CloseableIterator<SAMRecord> it = sam.queryOverlapping(loc.chr, loc.start, loc.end); it.hasNext();) {
 					SAMRead r = SAM2SilkReader.convertToSAMRead(it.next());
 					result.read.add(r);
