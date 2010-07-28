@@ -25,7 +25,9 @@ package org.utgenome.gwt.utgb.client.canvas;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.utgenome.gwt.utgb.client.UTGBClientException;
 import org.utgenome.gwt.utgb.client.bio.CDS;
+import org.utgenome.gwt.utgb.client.bio.CIGAR;
 import org.utgenome.gwt.utgb.client.bio.Exon;
 import org.utgenome.gwt.utgb.client.bio.Gene;
 import org.utgenome.gwt.utgb.client.bio.GraphData;
@@ -451,7 +453,67 @@ public class GWTGenomeCanvas extends Composite {
 		}
 
 		public void visitSAMRead(SAMRead r) {
-			draw(r, gl.getYOffset());
+
+			int y = gl.getYOffset();
+
+			try {
+				int gx1 = pixelPositionOnWindow(r.getStart());
+				int gx2 = pixelPositionOnWindow(r.getEnd());
+
+				if ((gx2 - gx1) <= 2) {
+					// when the pixel range is narrow, draw a rectangle only 
+					draw(r, y);
+				}
+				else {
+					CIGAR cigar = new CIGAR(r.cigar);
+					int readStart = r.getStart();
+					for (CIGAR.Element e : cigar) {
+						int readEnd = readStart + e.length;
+
+						int x1 = pixelPositionOnWindow(readStart);
+						switch (e.type) {
+						case Deletions:
+							// ref : AAAAAA
+							// read: ---AAA
+							// cigar: 3D3M
+							drawPadding(x1, pixelPositionOnWindow(readEnd), y, getCDSColor(r), true);
+							break;
+						case Insertions:
+							// ref : ---AAA
+							// read: AAAAAA
+							// cigar: 3I3M
+							readEnd = readStart;
+							drawGeneRect(x1, pixelPositionOnWindow(readStart) + 1, y, getColor("#FFAAFF", 0.8f), true);
+							break;
+						case Padding:
+							// ref : AAAAAA
+							// read: ---AAA
+							// cigar: 3P3M
+							readEnd = readStart;
+							drawPadding(x1, pixelPositionOnWindow(readStart) + 1, y, getColor("#CCCCCC", 0.8f), true);
+							break;
+						case Matches:
+							drawGeneRect(x1, pixelPositionOnWindow(readEnd), y, getCDSColor(r), true);
+							break;
+						case SkippedRegion:
+							drawPadding(x1, pixelPositionOnWindow(readEnd), y, getCDSColor(r), true);
+							break;
+						case SoftClip:
+							drawGeneRect(pixelPositionOnWindow(readStart - e.length), x1, y, getCDSColor(r, 0.3f), true);
+							break;
+						case HardClip:
+							break;
+						}
+						readStart = readEnd;
+					}
+				}
+
+			}
+			catch (UTGBClientException e) {
+				// when parsing CIGAR string fails, simply draw a rectangle
+				draw(r, y);
+			}
+
 			drawLabel(r);
 		}
 
@@ -665,6 +727,10 @@ public class GWTGenomeCanvas extends Composite {
 		return getGeneColor(g, 0.5f);
 	}
 
+	public static Color getCDSColor(Interval g, float alpha) {
+		return getGeneColor(g, alpha);
+	}
+
 	public static Color getCDSColor(Interval g) {
 		return getGeneColor(g);
 	}
@@ -719,6 +785,23 @@ public class GWTGenomeCanvas extends Composite {
 			}
 
 		}
+		canvas.restoreContext();
+
+	}
+
+	public void drawPadding(int x1, int x2, int y, Color c, boolean drawShadow) {
+
+		canvas.saveContext();
+		canvas.setFillStyle(c);
+		canvas.setStrokeStyle(c);
+		canvas.setLineWidth(0.5f);
+		float yPos = y + (geneHeight / 2) + 0.5f;
+
+		canvas.beginPath();
+		canvas.moveTo(drawPosition(x1) + 0.5f, yPos);
+		canvas.lineTo(drawPosition(x2) - 0.5f, yPos);
+		canvas.stroke();
+
 		canvas.restoreContext();
 
 	}
