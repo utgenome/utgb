@@ -32,6 +32,7 @@ import java.io.Reader;
 import java.util.Iterator;
 
 import net.sf.samtools.BAMFileWriter;
+import net.sf.samtools.BAMIndexer;
 import net.sf.samtools.SAMFileHeader;
 import net.sf.samtools.SAMFileReader;
 import net.sf.samtools.SAMRecord;
@@ -147,14 +148,15 @@ public class Import extends UTGBShellCommand {
 			break;
 		case SAM: {
 			_logger.info("creating a BAM file from the input SAM.");
+			SAMFileReader.setDefaultValidationStringency(ValidationStringency.LENIENT);
 			SAMFileReader reader = new SAMFileReader(new ReaderInputStream(in));
-			reader.setValidationStringency(ValidationStringency.LENIENT);
 			String bamOut = outputFileName;
 			if (!bamOut.endsWith(".bam"))
 				bamOut += ".bam";
 			_logger.info("output BAM: " + bamOut);
 			final BAMFileWriter writer = new BAMFileWriter(new File(bamOut));
 			SAMFileHeader header = reader.getFileHeader();
+			int nRefs = header.getSequenceDictionary().size();
 			SortOrder sortOrder = header.getSortOrder();
 			boolean sorted = false;
 			switch (sortOrder) {
@@ -167,7 +169,7 @@ public class Import extends UTGBShellCommand {
 			}
 
 			writer.setSortOrder(SortOrder.coordinate, sorted);
-			writer.enableBamIndexConstruction(true);
+			// writer.enableBamIndexConstruction(true);
 			writer.setHeader(header);
 
 			final Iterator<SAMRecord> iterator = reader.iterator();
@@ -176,6 +178,14 @@ public class Import extends UTGBShellCommand {
 			}
 			reader.close();
 			writer.close();
+
+			// create BAM Index (.bai)
+			_logger.info("creating BAM indexes...");
+			SAMFileReader.setDefaultValidationStringency(ValidationStringency.SILENT);
+			BAMIndexer indexer = new BAMIndexer(new File(bamOut), new File(bamOut + ".bai"), nRefs, false);
+			indexer.createIndex();
+
+			_logger.info("done.");
 
 		}
 			break;

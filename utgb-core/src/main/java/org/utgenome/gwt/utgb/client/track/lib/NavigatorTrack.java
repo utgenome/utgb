@@ -176,6 +176,8 @@ public class NavigatorTrack extends TrackBase {
 		zoomWindow(group, nextWindowSize);
 	}
 
+	public final static int MINIMUM_WINDOW_SIZE = 10;
+
 	public static void zoomWindow(TrackGroup group, int windowSize) {
 		TrackWindow currentWindow = group.getTrackWindow();
 		int start = currentWindow.getStartOnGenome();
@@ -183,8 +185,8 @@ public class NavigatorTrack extends TrackBase {
 
 		int middle = (start + end) / 2;
 
-		if (windowSize <= 100)
-			windowSize = 100;
+		if (windowSize <= MINIMUM_WINDOW_SIZE)
+			windowSize = MINIMUM_WINDOW_SIZE;
 		if (windowSize >= 100000000) // 100M
 			windowSize = 100000000;
 
