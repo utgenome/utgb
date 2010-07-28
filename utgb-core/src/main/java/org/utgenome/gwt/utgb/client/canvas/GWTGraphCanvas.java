@@ -305,7 +305,7 @@ public class GWTGraphCanvas extends Composite {
 			// create a new graph canvas
 			graphCanvas = new GraphCanvas(w, data, style.windowHeight);
 			canvasMap.put(w, graphCanvas);
-			int x = trackWindow.convertToPixelX(w.getStartOnGenome());
+			int x = w.convertToPixelX(w.getStartOnGenome());
 			panel.add(graphCanvas.canvas, 0, 0);
 			panel.setWidgetPosition(graphCanvas.canvas, x, 0);
 		}
