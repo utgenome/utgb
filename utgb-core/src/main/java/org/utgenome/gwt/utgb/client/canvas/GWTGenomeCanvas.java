@@ -48,6 +48,8 @@ import org.utgenome.gwt.utgb.client.ui.RoundCornerFrame;
 import org.utgenome.gwt.utgb.client.util.Optional;
 import org.utgenome.gwt.widget.client.Style;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
@@ -61,6 +63,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.widgetideas.graphics.client.Color;
 import com.google.gwt.widgetideas.graphics.client.GWTCanvas;
+import com.google.gwt.widgetideas.graphics.client.ImageLoader;
+import com.google.gwt.widgetideas.graphics.client.ImageLoader.CallBack;
 
 /**
  * Browser-side graphic canvas for drawing gene objects
@@ -96,6 +100,7 @@ public class GWTGenomeCanvas extends Composite {
 	private TrackGroup trackGroup;
 
 	public GWTGenomeCanvas() {
+
 		initWidget();
 	}
 
@@ -324,17 +329,18 @@ public class GWTGenomeCanvas extends Composite {
 	}
 
 	public void setWindow(TrackWindow w) {
+
 		if (trackWindow != null) {
 			if (trackWindow.hasSameScaleWith(w)) {
 				// slide the canvas
 				int newX = trackWindow.convertToPixelX(w.getStartOnGenome());
 				basePanel.setWidgetPosition(panel, -newX, 0);
-
 			}
 		}
 
 		this.trackWindow = w;
 		reverse = w.isReverseStrand();
+
 		intervalLayout.setTrackWindow(w);
 	}
 
@@ -489,6 +495,57 @@ public class GWTGenomeCanvas extends Composite {
 			drawLabel(g);
 		}
 
+		public void drawBases(int startOnGenome, int y, String seq) {
+
+			int pixelWidthOfBase = (int) (trackWindow.getPixelLengthPerBase() + 0.5d);
+
+			if (imageACGT == null) {
+				GWT.log("font image is not loaded");
+				return;
+			}
+
+			for (int i = 0; i < seq.length(); i++) {
+				int baseIndex = 0;
+				switch (seq.charAt(i)) {
+				case 'A':
+					baseIndex = 0;
+					break;
+				case 'C':
+					baseIndex = 1;
+					break;
+				case 'G':
+					baseIndex = 2;
+					break;
+				case 'T':
+					baseIndex = 3;
+					break;
+				case 'a':
+					baseIndex = 4;
+					break;
+				case 'c':
+					baseIndex = 5;
+					break;
+				case 'g':
+					baseIndex = 6;
+					break;
+				case 't':
+					baseIndex = 7;
+					break;
+				case 'N':
+					baseIndex = 8;
+					break;
+				default:
+					continue;
+				}
+
+				int x1 = pixelPositionOnWindow(startOnGenome + i);
+
+				canvas.drawImage(imageACGT, pixelWidthOfBase * baseIndex, 0, pixelWidthOfBase, DEFAULT_GENE_HEIGHT, x1, y, pixelWidthOfBase,
+						DEFAULT_GENE_HEIGHT);
+			}
+
+		}
+
 		private void drawLabel(OnGenome r) {
 			int gx1 = pixelPositionOnWindow(r.getStart());
 			int gx2 = pixelPositionOnWindow(r.getStart() + r.length());
@@ -592,9 +649,7 @@ public class GWTGenomeCanvas extends Composite {
 
 							if (drawBase) {
 								//drawGeneRect(x1, x2, y, getCDSColor(r, 0.3f), true);
-								SequenceText sequenceText = new SequenceText(x2 - x1, r.seq.substring(seqIndex, seqIndex + e.length));
-								panel.add(sequenceText, drawPosition(reverse ? x2 : x1), y - 1);
-								readLabels.add(sequenceText);
+								drawBases(readStart, y, r.seq.substring(seqIndex, seqIndex + e.length));
 							}
 							else {
 								drawGeneRect(x1, x2, y, getCDSColor(r), true);
@@ -612,9 +667,8 @@ public class GWTGenomeCanvas extends Composite {
 							drawGeneRect(x0, x1, y, getCDSColor(r, 0.2f), true);
 
 							if (drawBase) {
-								SequenceText sequenceText = new SequenceText(x1 - x0, r.seq.substring(seqIndex, seqIndex + e.length).toLowerCase());
-								panel.add(sequenceText, drawPosition(x0), y - 1);
-								readLabels.add(sequenceText);
+								drawBases(readStart - e.length, y, r.seq.substring(seqIndex, seqIndex + e.length).toLowerCase());
+
 							}
 
 							seqIndex += e.length;
@@ -785,15 +839,26 @@ public class GWTGenomeCanvas extends Composite {
 		drawLayout();
 	}
 
+	private ImageElement imageACGT = null;
+
 	private void drawLayout() {
 		final ReadPainter painter = new ReadPainter();
 
-		intervalLayout.depthFirstSearch(new PrioritySearchTree.Visitor<LocusLayout>() {
-			public void visit(LocusLayout gl) {
-				painter.setLayoutInfo(gl);
-				gl.getLocus().accept(painter);
+		int pixelWidthOfBase = (int) (trackWindow.getPixelLengthPerBase() + 0.5d);
+
+		ImageLoader.loadImages(new String[] { "utgb-core/ACGT.png?fontWidth=" + pixelWidthOfBase + "&=height=" + DEFAULT_GENE_HEIGHT }, new CallBack() {
+			public void onImagesLoaded(ImageElement[] imageElements) {
+				imageACGT = imageElements[0];
+
+				intervalLayout.depthFirstSearch(new PrioritySearchTree.Visitor<LocusLayout>() {
+					public void visit(LocusLayout gl) {
+						painter.setLayoutInfo(gl);
+						gl.getLocus().accept(painter);
+					}
+				});
 			}
 		});
+
 	}
 
 	private void layoutRead(List<OnGenome> readList) {

@@ -60,7 +60,7 @@ public class ACGT extends WebTrackBase {
 
 		final int letterSize = 9; // ACGTacgtN
 
-		GenomeCanvas canvas = new GenomeCanvas(fontWidth * letterSize, height, new GenomeWindow(1, letterSize + 1));
+		GenomeCanvas canvas = new GenomeCanvas(fontWidth * letterSize, height, new GenomeWindow(1, letterSize));
 		final Color textColor = new Color(255, 255, 255);
 		long offset = 1;
 		canvas.drawGeneRect(offset, offset + 1L, 0, height, GraphicUtil.parseColor(colorA));
