@@ -483,14 +483,14 @@ public class GWTGenomeCanvas extends Composite {
 							// read: AAAAAA
 							// cigar: 3I3M
 							readEnd = readStart;
-							drawGeneRect(x1, pixelPositionOnWindow(readStart) + 1, y, getColor("#FFAAFF", 0.8f), true);
+							drawGeneRect(x1, pixelPositionOnWindow(readStart) + 1, y, getColor("#FFAAFF", 0.8f), false);
 							break;
 						case Padding:
 							// ref : AAAAAA
 							// read: ---AAA
 							// cigar: 3P3M
 							readEnd = readStart;
-							drawPadding(x1, pixelPositionOnWindow(readStart) + 1, y, getColor("#CCCCCC", 0.8f), true);
+							drawPadding(x1, pixelPositionOnWindow(readStart) + 1, y, getColor("#CCCCCC", 0.8f), false);
 							break;
 						case Matches:
 							drawGeneRect(x1, pixelPositionOnWindow(readEnd), y, getCDSColor(r), true);

@@ -191,14 +191,15 @@ public class NavigatorTrack extends TrackBase {
 			windowSize = 100000000;
 
 		int half = windowSize / 2;
+		int remaining = windowSize % 2;
 
 		if (middle - half < 0)
 			middle = half;
 
 		if (start <= end)
-			group.setTrackWindowLocation(middle - half + 1, middle + half);
+			group.setTrackWindowLocation(middle - half + 1, middle + half + remaining);
 		else
-			group.setTrackWindowLocation(middle + half, middle - half + 1);
+			group.setTrackWindowLocation(middle + half + remaining, middle - half + 1);
 
 	}
 
