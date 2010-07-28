@@ -47,7 +47,7 @@ public class Sequence extends WebTrackBase {
 	private static final String DEFAULT_COLOR_A = "50B6E8";
 	private static final String DEFAULT_COLOR_C = "E7846E";
 	private static final String DEFAULT_COLOR_G = "84AB51";
-	private static final String DEFAULT_COLOR_T = "FFE980";
+	private static final String DEFAULT_COLOR_T = "FFA930";
 	private static final String DEFAULT_COLOR_N = "EEEEEE";
 
 	public String dbGroup = "org/utgenome/leo/genome";

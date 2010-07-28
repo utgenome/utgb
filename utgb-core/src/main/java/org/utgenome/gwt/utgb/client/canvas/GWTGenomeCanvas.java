@@ -374,13 +374,13 @@ public class GWTGenomeCanvas extends Composite {
 		return (x1 < x2) ? x2 - x1 : x1 - x2;
 	}
 
-	public class SequenceText extends Grid {
+	private static final String DEFAULT_COLOR_A = "#50B6E8";
+	private static final String DEFAULT_COLOR_C = "#E7846E";
+	private static final String DEFAULT_COLOR_G = "#84AB51";
+	private static final String DEFAULT_COLOR_T = "#FFE980";
+	private static final String DEFAULT_COLOR_N = "#EEEEEE";
 
-		private static final String DEFAULT_COLOR_A = "#50B6E8";
-		private static final String DEFAULT_COLOR_C = "#E7846E";
-		private static final String DEFAULT_COLOR_G = "#84AB51";
-		private static final String DEFAULT_COLOR_T = "#FFE980";
-		private static final String DEFAULT_COLOR_N = "#EEEEEE";
+	public class SequenceText extends Grid {
 
 		public SequenceText(int width, String seq) {
 			super(1, seq.length());
@@ -402,7 +402,7 @@ public class GWTGenomeCanvas extends Composite {
 			Style.textAlign(this, "center");
 			Style.fontFamily(this, "SansSerif");
 			Style.overflowHidden(this);
-			Style.fontSize(this, DEFAULT_GENE_HEIGHT);
+			Style.fontSize(this, DEFAULT_GENE_HEIGHT - 1);
 			Style.fontColor(this, "black");
 			this.setPixelSize(width, DEFAULT_GENE_HEIGHT);
 		}
