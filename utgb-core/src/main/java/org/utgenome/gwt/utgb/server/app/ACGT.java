@@ -58,6 +58,10 @@ public class ACGT extends WebTrackBase {
 	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+		if (fontWidth < 1 || height < 1) {
+			return;
+		}
+
 		final int letterSize = 9; // ACGTacgtN
 
 		GenomeCanvas canvas = new GenomeCanvas(fontWidth * letterSize, height, new GenomeWindow(1, letterSize));

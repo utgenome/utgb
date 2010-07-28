@@ -469,6 +469,8 @@ public class GWTGenomeCanvas extends Composite {
 
 	}
 
+	private final int FONT_WIDTH = 7;
+
 	class ReadPainter implements OnGenomeDataVisitor {
 
 		private LocusLayout gl;
@@ -613,7 +615,6 @@ public class GWTGenomeCanvas extends Composite {
 				}
 				else {
 
-					final int FONT_WIDTH = 7;
 					boolean drawBase = trackWindow.getSequenceLength() <= (trackWindow.getPixelWidth() / FONT_WIDTH);
 
 					CIGAR cigar = new CIGAR(r.cigar);
@@ -841,23 +842,30 @@ public class GWTGenomeCanvas extends Composite {
 	private ImageElement imageACGT = null;
 
 	private void drawLayout() {
+
+		boolean drawBase = trackWindow.getSequenceLength() <= (trackWindow.getPixelWidth() / FONT_WIDTH);
+		if (drawBase) {
+			int pixelWidthOfBase = (int) (trackWindow.getPixelLengthPerBase() + 0.5d);
+			ImageLoader.loadImages(new String[] { "utgb-core/ACGT.png?fontWidth=" + pixelWidthOfBase + "&height=" + DEFAULT_GENE_HEIGHT }, new CallBack() {
+				public void onImagesLoaded(ImageElement[] imageElements) {
+					imageACGT = imageElements[0];
+					traverseLayout();
+				}
+			});
+		}
+		else {
+			traverseLayout();
+		}
+	}
+
+	private void traverseLayout() {
 		final ReadPainter painter = new ReadPainter();
-
-		int pixelWidthOfBase = (int) (trackWindow.getPixelLengthPerBase() + 0.5d);
-
-		ImageLoader.loadImages(new String[] { "utgb-core/ACGT.png?fontWidth=" + pixelWidthOfBase + "&height=" + DEFAULT_GENE_HEIGHT }, new CallBack() {
-			public void onImagesLoaded(ImageElement[] imageElements) {
-				imageACGT = imageElements[0];
-
-				intervalLayout.depthFirstSearch(new PrioritySearchTree.Visitor<LocusLayout>() {
-					public void visit(LocusLayout gl) {
-						painter.setLayoutInfo(gl);
-						gl.getLocus().accept(painter);
-					}
-				});
+		intervalLayout.depthFirstSearch(new PrioritySearchTree.Visitor<LocusLayout>() {
+			public void visit(LocusLayout gl) {
+				painter.setLayoutInfo(gl);
+				gl.getLocus().accept(painter);
 			}
 		});
-
 	}
 
 	private void layoutRead(List<OnGenome> readList) {
