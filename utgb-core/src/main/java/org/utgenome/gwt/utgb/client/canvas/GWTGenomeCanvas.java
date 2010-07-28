@@ -499,7 +499,8 @@ public class GWTGenomeCanvas extends Composite {
 							drawPadding(x1, pixelPositionOnWindow(readEnd), y, getCDSColor(r), true);
 							break;
 						case SoftClip:
-							drawGeneRect(pixelPositionOnWindow(readStart - e.length), x1, y, getCDSColor(r, 0.3f), true);
+							readEnd = readStart;
+							drawGeneRect(pixelPositionOnWindow(readStart - e.length), x1, y, getCDSColor(r, 0.2f), true);
 							break;
 						case HardClip:
 							break;
