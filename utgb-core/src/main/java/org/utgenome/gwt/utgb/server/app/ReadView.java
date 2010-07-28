@@ -113,7 +113,7 @@ public class ReadView extends WebTrackBase {
 				File bamFile = new File(WebTrackBase.getProjectRootPath(), db.path);
 				File baiFile = new File(WebTrackBase.getProjectRootPath(), db.path + ".bai");
 				SAMFileReader sam = new SAMFileReader(bamFile, baiFile);
-				sam.setValidationStringency(ValidationStringency.LENIENT);
+				sam.setValidationStringency(ValidationStringency.SILENT);
 				for (CloseableIterator<SAMRecord> it = sam.queryOverlapping(loc.chr, loc.start, loc.end); it.hasNext();) {
 					SAMRead r = SAM2SilkReader.convertToSAMRead(it.next());
 					result.read.add(r);

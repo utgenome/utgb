@@ -668,7 +668,6 @@ public class GWTGenomeCanvas extends Composite {
 
 							if (drawBase) {
 								drawBases(readStart - e.length, y, r.seq.substring(seqIndex, seqIndex + e.length).toLowerCase());
-
 							}
 
 							seqIndex += e.length;
@@ -846,7 +845,7 @@ public class GWTGenomeCanvas extends Composite {
 
 		int pixelWidthOfBase = (int) (trackWindow.getPixelLengthPerBase() + 0.5d);
 
-		ImageLoader.loadImages(new String[] { "utgb-core/ACGT.png?fontWidth=" + pixelWidthOfBase + "&=height=" + DEFAULT_GENE_HEIGHT }, new CallBack() {
+		ImageLoader.loadImages(new String[] { "utgb-core/ACGT.png?fontWidth=" + pixelWidthOfBase + "&height=" + DEFAULT_GENE_HEIGHT }, new CallBack() {
 			public void onImagesLoaded(ImageElement[] imageElements) {
 				imageACGT = imageElements[0];
 
