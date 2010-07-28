@@ -275,7 +275,8 @@ public class Sequence extends WebTrackBase {
 			this.endOffset = end + 1;
 
 			int seqWidth = end - start;
-			if (seqWidth <= width / 7)
+			final int FONT_WIDTH = 7;
+			if (seqWidth <= width / FONT_WIDTH)
 				drawBase = true;
 
 			int repeatColorAlpha = 50;

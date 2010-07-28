@@ -54,6 +54,7 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -69,7 +70,7 @@ import com.google.gwt.widgetideas.graphics.client.GWTCanvas;
  */
 public class GWTGenomeCanvas extends Composite {
 
-	private final int DEFAULT_GENE_HEIGHT = 9;
+	private final int DEFAULT_GENE_HEIGHT = 12;
 	private int geneHeight = DEFAULT_GENE_HEIGHT;
 	private int geneMargin = 2;
 	private boolean reverse = false;
@@ -373,6 +374,95 @@ public class GWTGenomeCanvas extends Composite {
 		return (x1 < x2) ? x2 - x1 : x1 - x2;
 	}
 
+	public class SequenceText extends Grid {
+
+		private static final String DEFAULT_COLOR_A = "#50B6E8";
+		private static final String DEFAULT_COLOR_C = "#E7846E";
+		private static final String DEFAULT_COLOR_G = "#84AB51";
+		private static final String DEFAULT_COLOR_T = "#FFE980";
+		private static final String DEFAULT_COLOR_N = "#EEEEEE";
+
+		public SequenceText(int width, String seq) {
+			super(1, seq.length());
+
+			this.setCellPadding(0);
+			this.setCellSpacing(0);
+			this.setBorderWidth(0);
+
+			final String cellWidth = width / seq.length() + "px";
+			final CellFormatter f = this.getCellFormatter();
+
+			for (int i = 0; i < seq.length(); i++) {
+				char c = seq.charAt(i);
+				HTML base = getBaseHTML(c);
+				this.setWidget(0, i, base);
+				f.setWidth(0, i, cellWidth);
+			}
+
+			Style.textAlign(this, "center");
+			Style.fontFamily(this, "SansSerif");
+			Style.overflowHidden(this);
+			Style.fontSize(this, DEFAULT_GENE_HEIGHT);
+			Style.fontColor(this, "black");
+			this.setPixelSize(width, DEFAULT_GENE_HEIGHT);
+		}
+
+		public void setColor(String colorStr) {
+			Style.fontColor(this, colorStr);
+		}
+
+		public HTML getBaseHTML(char ch) {
+			switch (ch) {
+			case 'A': {
+				HTML h = new HTML("A");
+				Style.backgroundColor(h, DEFAULT_COLOR_A);
+				return h;
+			}
+			case 'C': {
+				HTML h = new HTML("C");
+				Style.backgroundColor(h, DEFAULT_COLOR_C);
+				return h;
+			}
+			case 'G': {
+				HTML h = new HTML("G");
+				Style.backgroundColor(h, DEFAULT_COLOR_G);
+				return h;
+			}
+			case 'T': {
+				HTML h = new HTML("T");
+				Style.backgroundColor(h, DEFAULT_COLOR_T);
+				return h;
+			}
+			case 'a': {
+				HTML h = new HTML("a");
+				Style.backgroundColor(h, DEFAULT_COLOR_A);
+				return h;
+			}
+			case 'c': {
+				HTML h = new HTML("c");
+				Style.backgroundColor(h, DEFAULT_COLOR_C);
+				return h;
+			}
+			case 'g': {
+				HTML h = new HTML("g");
+				Style.backgroundColor(h, DEFAULT_COLOR_G);
+				return h;
+			}
+			case 't': {
+				HTML h = new HTML("t");
+				Style.backgroundColor(h, DEFAULT_COLOR_T);
+				return h;
+			}
+			default: {
+				HTML h = new HTML(Character.toString(ch));
+				Style.backgroundColor(h, DEFAULT_COLOR_N);
+				return h;
+			}
+			}
+		}
+
+	}
+
 	class ReadPainter implements OnGenomeDataVisitor {
 
 		private LocusLayout gl;
@@ -465,11 +555,15 @@ public class GWTGenomeCanvas extends Composite {
 					draw(r, y);
 				}
 				else {
+
+					final int FONT_WIDTH = 7;
+					boolean drawBase = trackWindow.getSequenceLength() <= (trackWindow.getPixelWidth() / FONT_WIDTH);
+
 					CIGAR cigar = new CIGAR(r.cigar);
 					int readStart = r.getStart();
+					int seqIndex = 0;
 					for (CIGAR.Element e : cigar) {
 						int readEnd = readStart + e.length;
-
 						int x1 = pixelPositionOnWindow(readStart);
 						switch (e.type) {
 						case Deletions:
@@ -483,6 +577,7 @@ public class GWTGenomeCanvas extends Composite {
 							// read: AAAAAA
 							// cigar: 3I3M
 							readEnd = readStart;
+							seqIndex += e.length;
 							drawGeneRect(x1, pixelPositionOnWindow(readStart) + 1, y, getColor("#FFAAFF", 0.8f), false);
 							break;
 						case Padding:
@@ -492,15 +587,38 @@ public class GWTGenomeCanvas extends Composite {
 							readEnd = readStart;
 							drawPadding(x1, pixelPositionOnWindow(readStart) + 1, y, getColor("#CCCCCC", 0.8f), false);
 							break;
-						case Matches:
-							drawGeneRect(x1, pixelPositionOnWindow(readEnd), y, getCDSColor(r), true);
+						case Matches: {
+							int x2 = pixelPositionOnWindow(readEnd);
+
+							if (drawBase) {
+								//drawGeneRect(x1, x2, y, getCDSColor(r, 0.3f), true);
+								SequenceText sequenceText = new SequenceText(x2 - x1, r.seq.substring(seqIndex, seqIndex + e.length));
+								panel.add(sequenceText, drawPosition(reverse ? x2 : x1), y - 1);
+								readLabels.add(sequenceText);
+							}
+							else {
+								drawGeneRect(x1, x2, y, getCDSColor(r), true);
+							}
+
+							seqIndex += e.length;
+						}
 							break;
 						case SkippedRegion:
 							drawPadding(x1, pixelPositionOnWindow(readEnd), y, getCDSColor(r), true);
 							break;
-						case SoftClip:
+						case SoftClip: {
 							readEnd = readStart;
-							drawGeneRect(pixelPositionOnWindow(readStart - e.length), x1, y, getCDSColor(r, 0.2f), true);
+							int x0 = pixelPositionOnWindow(readStart - e.length);
+							drawGeneRect(x0, x1, y, getCDSColor(r, 0.2f), true);
+
+							if (drawBase) {
+								SequenceText sequenceText = new SequenceText(x1 - x0, r.seq.substring(seqIndex, seqIndex + e.length).toLowerCase());
+								panel.add(sequenceText, drawPosition(x0), y - 1);
+								readLabels.add(sequenceText);
+							}
+
+							seqIndex += e.length;
+						}
 							break;
 						case HardClip:
 							break;
