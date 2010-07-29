@@ -69,9 +69,18 @@ public class TrackWindow implements Serializable, Comparable<TrackWindow> {
 		double v = (indexOnGenome - startIndexOnGenome) * (double) pixelWidth;
 		double v2 = v / (endIndexOnGenome - startIndexOnGenome + 1);
 		if (!isReverseStrand())
-			return (int) v2;
+			return (int) (v2 + 0.5d);
 		else
-			return (int) (pixelWidth - v2);
+			return (int) (pixelWidth - v2 + 0.5d);
+	}
+
+	public double convertToPixelXDouble(int indexOnGenome) {
+		double v = (indexOnGenome - startIndexOnGenome) * (double) pixelWidth;
+		double v2 = v / (endIndexOnGenome - startIndexOnGenome + 1);
+		if (!isReverseStrand())
+			return v2;
+		else
+			return (pixelWidth - v2);
 	}
 
 	/**

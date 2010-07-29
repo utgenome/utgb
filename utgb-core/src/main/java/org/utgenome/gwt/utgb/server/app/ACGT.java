@@ -64,40 +64,36 @@ public class ACGT extends WebTrackBase {
 
 		final int letterSize = 9; // ACGTacgtN
 
+		boolean drawLetter = height >= DEFAULT_HEIGHT - 2;
+
+		final HashMap<Character, String> colorTable = new HashMap<Character, String>();
+		colorTable.put('A', colorA);
+		colorTable.put('C', colorC);
+		colorTable.put('G', colorG);
+		colorTable.put('T', colorT);
+		colorTable.put('N', colorN);
 		GenomeCanvas canvas = new GenomeCanvas(fontWidth * letterSize, height, new GenomeWindow(1, letterSize));
-		final Color textColor = new Color(255, 255, 255);
+
 		long offset = 1;
-		canvas.drawGeneRect(offset, offset + 1L, 0, height, GraphicUtil.parseColor(colorA));
-		canvas.drawBase("A", offset, offset + 1L, height - 2, fontSize, textColor);
-		offset++;
-		canvas.drawGeneRect(offset, offset + 1L, 0, height, GraphicUtil.parseColor(colorC));
-		canvas.drawBase("C", offset, offset + 1L, height - 2, fontSize, textColor);
-		offset++;
-		canvas.drawGeneRect(offset, offset + 1L, 0, height, GraphicUtil.parseColor(colorG));
-		canvas.drawBase("G", offset, offset + 1L, height - 2, fontSize, textColor);
-		offset++;
-		canvas.drawGeneRect(offset, offset + 1L, 0, height, GraphicUtil.parseColor(colorT));
-		canvas.drawBase("T", offset, offset + 1L, height - 2, fontSize, textColor);
+		final String letters = "ACGTacgtN";
 
 		final int repeatColorAlpha = 70;
+		final Color defaultTextColor = new Color(255, 255, 255);
 		final Color repeatTextColor = new Color(140, 140, 140);
-		offset++;
-		canvas.drawGeneRect(offset, offset + 1L, 0, height, GraphicUtil.parseColor(colorA, repeatColorAlpha));
-		canvas.drawBase("a", offset, offset + 1L, height - 2, fontSize, repeatTextColor);
-		offset++;
-		canvas.drawGeneRect(offset, offset + 1L, 0, height, GraphicUtil.parseColor(colorC, repeatColorAlpha));
-		canvas.drawBase("c", offset, offset + 1L, height - 2, fontSize, repeatTextColor);
-		offset++;
-		canvas.drawGeneRect(offset, offset + 1L, 0, height, GraphicUtil.parseColor(colorG, repeatColorAlpha));
-		canvas.drawBase("g", offset, offset + 1L, height - 2, fontSize, repeatTextColor);
-		offset++;
-		canvas.drawGeneRect(offset, offset + 1L, 0, height, GraphicUtil.parseColor(colorT, repeatColorAlpha));
-		canvas.drawBase("t", offset, offset + 1L, height - 2, fontSize, repeatTextColor);
 
-		offset++;
-		canvas.drawGeneRect(offset, offset + 1L, 0, height, GraphicUtil.parseColor(colorN));
-		canvas.drawBase("N", offset, offset + 1L, height - 2, fontSize, repeatTextColor);
+		for (int i = 0; i < letters.length(); ++i) {
+			char ch = letters.charAt(i);
+			String colorStr = colorTable.containsKey(ch) ? colorTable.get(ch) : "E0E0E0";
+			boolean isRepeatChar = Character.isLowerCase(ch);
+			Color color = isRepeatChar ? GraphicUtil.parseColor(colorStr, repeatColorAlpha) : GraphicUtil.parseColor(colorStr);
+			canvas.drawGeneRect(offset, offset + 1L, 0, height, color);
 
+			Color textColor = isRepeatChar ? repeatTextColor : defaultTextColor;
+			if (drawLetter)
+				canvas.drawBase(letters.substring(i, i + 1), offset, offset + 1L, height - 2, fontSize, textColor);
+
+			offset++;
+		}
 		canvas.outputImage(response, "png");
 	}
 

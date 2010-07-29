@@ -56,7 +56,6 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -336,6 +335,9 @@ public class GWTGenomeCanvas extends Composite {
 				int newX = trackWindow.convertToPixelX(w.getStartOnGenome());
 				basePanel.setWidgetPosition(panel, -newX, 0);
 			}
+			else {
+				imageACGT = null;
+			}
 		}
 
 		this.trackWindow = w;
@@ -380,96 +382,18 @@ public class GWTGenomeCanvas extends Composite {
 		return (x1 < x2) ? x2 - x1 : x1 - x2;
 	}
 
+	private final int FONT_WIDTH = 7;
+
 	private static final String DEFAULT_COLOR_A = "#50B6E8";
 	private static final String DEFAULT_COLOR_C = "#E7846E";
 	private static final String DEFAULT_COLOR_G = "#84AB51";
-	private static final String DEFAULT_COLOR_T = "#FFE980";
-	private static final String DEFAULT_COLOR_N = "#EEEEEE";
+	private static final String DEFAULT_COLOR_T = "#FFA930";
+	private static final String DEFAULT_COLOR_N = "#FFFFFF";
 
-	public class SequenceText extends Grid {
-
-		public SequenceText(int width, String seq) {
-			super(1, seq.length());
-
-			this.setCellPadding(0);
-			this.setCellSpacing(0);
-			this.setBorderWidth(0);
-
-			final String cellWidth = width / seq.length() + "px";
-			final CellFormatter f = this.getCellFormatter();
-
-			for (int i = 0; i < seq.length(); i++) {
-				char c = seq.charAt(i);
-				HTML base = getBaseHTML(c);
-				this.setWidget(0, i, base);
-				f.setWidth(0, i, cellWidth);
-			}
-
-			Style.textAlign(this, "center");
-			Style.fontFamily(this, "SansSerif");
-			Style.overflowHidden(this);
-			Style.fontSize(this, DEFAULT_GENE_HEIGHT - 1);
-			Style.fontColor(this, "black");
-			this.setPixelSize(width, DEFAULT_GENE_HEIGHT);
-		}
-
-		public void setColor(String colorStr) {
-			Style.fontColor(this, colorStr);
-		}
-
-		public HTML getBaseHTML(char ch) {
-			switch (ch) {
-			case 'A': {
-				HTML h = new HTML("A");
-				Style.backgroundColor(h, DEFAULT_COLOR_A);
-				return h;
-			}
-			case 'C': {
-				HTML h = new HTML("C");
-				Style.backgroundColor(h, DEFAULT_COLOR_C);
-				return h;
-			}
-			case 'G': {
-				HTML h = new HTML("G");
-				Style.backgroundColor(h, DEFAULT_COLOR_G);
-				return h;
-			}
-			case 'T': {
-				HTML h = new HTML("T");
-				Style.backgroundColor(h, DEFAULT_COLOR_T);
-				return h;
-			}
-			case 'a': {
-				HTML h = new HTML("a");
-				Style.backgroundColor(h, DEFAULT_COLOR_A);
-				return h;
-			}
-			case 'c': {
-				HTML h = new HTML("c");
-				Style.backgroundColor(h, DEFAULT_COLOR_C);
-				return h;
-			}
-			case 'g': {
-				HTML h = new HTML("g");
-				Style.backgroundColor(h, DEFAULT_COLOR_G);
-				return h;
-			}
-			case 't': {
-				HTML h = new HTML("t");
-				Style.backgroundColor(h, DEFAULT_COLOR_T);
-				return h;
-			}
-			default: {
-				HTML h = new HTML(Character.toString(ch));
-				Style.backgroundColor(h, DEFAULT_COLOR_N);
-				return h;
-			}
-			}
-		}
-
-	}
-
-	private final int FONT_WIDTH = 7;
+	private static final float repeatColorAlpha = 0.25f;
+	private static final Color[] colors = { getColor(DEFAULT_COLOR_A, 1.0f), getColor(DEFAULT_COLOR_C, 1.0f), getColor(DEFAULT_COLOR_G, 1.0f),
+			getColor(DEFAULT_COLOR_T, 1.0f), getColor(DEFAULT_COLOR_N, 1.0f), getColor(DEFAULT_COLOR_A, repeatColorAlpha),
+			getColor(DEFAULT_COLOR_C, repeatColorAlpha), getColor(DEFAULT_COLOR_G, repeatColorAlpha), getColor(DEFAULT_COLOR_T, repeatColorAlpha) };
 
 	class ReadPainter implements OnGenomeDataVisitor {
 
@@ -507,7 +431,7 @@ public class GWTGenomeCanvas extends Composite {
 			}
 
 			for (int i = 0; i < seq.length(); i++) {
-				int baseIndex = 0;
+				int baseIndex = 8;
 				switch (seq.charAt(i)) {
 				case 'A':
 					baseIndex = 0;
@@ -540,10 +464,14 @@ public class GWTGenomeCanvas extends Composite {
 					continue;
 				}
 
-				int x1 = pixelPositionOnWindow(startOnGenome + i);
+				double x1 = trackWindow.convertToPixelXDouble(startOnGenome + i);
+				double x2 = trackWindow.convertToPixelXDouble(startOnGenome + i + 1);
 
-				canvas.drawImage(imageACGT, pixelWidthOfBase * baseIndex, 0, pixelWidthOfBase, DEFAULT_GENE_HEIGHT, x1, y, pixelWidthOfBase,
-						DEFAULT_GENE_HEIGHT);
+				canvas.saveContext();
+				canvas.setFillStyle(colors[baseIndex]);
+				canvas.fillRect(x1, y, x2 - x1, geneHeight);
+				canvas.drawImage(imageACGT, pixelWidthOfBase * baseIndex, 0, pixelWidthOfBase, geneHeight, (int) x1, y, pixelWidthOfBase, geneHeight);
+				canvas.restoreContext();
 			}
 
 		}
@@ -609,7 +537,9 @@ public class GWTGenomeCanvas extends Composite {
 				int gx1 = pixelPositionOnWindow(r.getStart());
 				int gx2 = pixelPositionOnWindow(r.getEnd());
 
-				if ((gx2 - gx1) <= 2) {
+				int width = gx2 - gx1;
+
+				if ((gx2 - gx1) <= 10) {
 					// when the pixel range is narrow, draw a rectangle only 
 					draw(r, y);
 				}
@@ -844,7 +774,7 @@ public class GWTGenomeCanvas extends Composite {
 	private void drawLayout() {
 
 		boolean drawBase = trackWindow.getSequenceLength() <= (trackWindow.getPixelWidth() / FONT_WIDTH);
-		if (drawBase) {
+		if (drawBase && imageACGT == null) {
 			int pixelWidthOfBase = (int) (trackWindow.getPixelLengthPerBase() + 0.5d);
 			ImageLoader.loadImages(new String[] { "utgb-core/ACGT.png?fontWidth=" + pixelWidthOfBase + "&height=" + DEFAULT_GENE_HEIGHT }, new CallBack() {
 				public void onImagesLoaded(ImageElement[] imageElements) {
