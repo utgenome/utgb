@@ -280,7 +280,15 @@ public class GWTGenomeCanvas extends Composite {
 			public void run() {
 				popupLabel.removeFromParent();
 				if (popupLabel.locus == g) {
-					popupLabel.setPopupPosition(clientX + 10, clientY + 3);
+
+					int x = clientX + 10;
+					int y = clientY + 3;
+					int w = Window.getClientWidth();
+					final int xMax = w - 300;
+					if (x > xMax)
+						x = xMax;
+
+					popupLabel.setPopupPosition(x, clientY + 3);
 					popupLabel.update();
 					popupLabel.show();
 				}
@@ -480,7 +488,7 @@ public class GWTGenomeCanvas extends Composite {
 			int gx1 = pixelPositionOnWindow(r.getStart());
 			int gx2 = pixelPositionOnWindow(r.getStart() + r.length());
 
-			if (intervalLayout.hasEnoughSpaceForLables()) {
+			if (intervalLayout.hasEnoughHeightForLabels()) {
 				String n = r.getName();
 				if (n != null) {
 					int textWidth = IntervalLayout.estimiateLabelWidth(r, geneHeight);
