@@ -44,6 +44,9 @@ public class ReadCoverage extends Interval {
 	public int[] coverage;
 	public int pixelWidth;
 
+	public int maxHeight = 0;
+	public int minHeight = 0;
+
 	public ReadCoverage() {
 	}
 
@@ -51,6 +54,13 @@ public class ReadCoverage extends Interval {
 		super(start, end);
 		this.pixelWidth = pixelWidth;
 		this.coverage = coverage;
+
+		for (int each : coverage) {
+			if (maxHeight < each)
+				maxHeight = each;
+			if (minHeight > each)
+				minHeight = each;
+		}
 	}
 
 	@Override

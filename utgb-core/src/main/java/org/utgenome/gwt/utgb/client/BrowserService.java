@@ -33,7 +33,7 @@ import org.utgenome.gwt.utgb.client.bio.ChrRange;
 import org.utgenome.gwt.utgb.client.bio.CompactWIGData;
 import org.utgenome.gwt.utgb.client.bio.GenomeDB;
 import org.utgenome.gwt.utgb.client.bio.KeywordSearchResult;
-import org.utgenome.gwt.utgb.client.bio.OnGenomeDataSet;
+import org.utgenome.gwt.utgb.client.bio.OnGenome;
 import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig;
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.bio.WigGraphData;
@@ -97,6 +97,6 @@ public interface BrowserService extends RpcService {
 	 *            browser information
 	 * @return
 	 */
-	public OnGenomeDataSet getOnGenomeData(GenomeDB db, ChrLoc range, ReadQueryConfig config);
+	public List<OnGenome> getOnGenomeData(GenomeDB db, ChrLoc range, ReadQueryConfig config);
 
 }

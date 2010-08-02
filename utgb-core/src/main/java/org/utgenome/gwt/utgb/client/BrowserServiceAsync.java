@@ -33,7 +33,7 @@ import org.utgenome.gwt.utgb.client.bio.ChrRange;
 import org.utgenome.gwt.utgb.client.bio.CompactWIGData;
 import org.utgenome.gwt.utgb.client.bio.GenomeDB;
 import org.utgenome.gwt.utgb.client.bio.KeywordSearchResult;
-import org.utgenome.gwt.utgb.client.bio.OnGenomeDataSet;
+import org.utgenome.gwt.utgb.client.bio.OnGenome;
 import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig;
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.bio.WigGraphData;
@@ -84,6 +84,6 @@ public interface BrowserServiceAsync extends RpcService {
 
 	public void getRefSeq(String refSeqFileName, String rname, int start, int end, AsyncCallback<String> callback);
 
-	public void getOnGenomeData(GenomeDB db, ChrLoc range, ReadQueryConfig config, AsyncCallback<OnGenomeDataSet> callback);
+	public void getOnGenomeData(GenomeDB db, ChrLoc range, ReadQueryConfig config, AsyncCallback<List<OnGenome>> callback);
 
 }

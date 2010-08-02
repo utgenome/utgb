@@ -31,6 +31,7 @@ import java.util.List;
 import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
 import org.utgenome.gwt.utgb.client.bio.OnGenomeDataVisitorBase;
+import org.utgenome.gwt.utgb.client.bio.ReadCoverage;
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.bio.SAMReadPair;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
@@ -45,17 +46,29 @@ public class IntervalLayout {
 
 	private boolean keepSpaceForLabels = true;
 	private boolean hasEnoughHeightForLabels = false;
-	private PrioritySearchTree<LocusLayout> locusLayout = new PrioritySearchTree<LocusLayout>();
+	private PrioritySearchTree<OnGenome> globalLayout = new PrioritySearchTree<OnGenome>();
+	private PrioritySearchTree<LocusLayout> localLayoutInView = new PrioritySearchTree<LocusLayout>();
 
 	private TrackWindow w;
 
-	public class LocusLayout {
+	public static class LocusLayout {
 		private OnGenome locus;
 		private int yOffset;
+		private int height = 1;
 
 		public LocusLayout(OnGenome locus, int yOffset) {
 			this.locus = locus;
 			this.yOffset = yOffset;
+		}
+
+		public LocusLayout(OnGenome locus, int yOffset, int height) {
+			this.locus = locus;
+			this.yOffset = yOffset;
+			this.height = height;
+		}
+
+		public int getHeight() {
+			return height;
 		}
 
 		public OnGenome getLocus() {
@@ -66,8 +79,12 @@ public class IntervalLayout {
 			return yOffset;
 		}
 
-		public void scaleHeight(int scale) {
-			this.yOffset = this.yOffset * scale;
+		public int scaledHeight(int scale) {
+			return scaledHeight(yOffset, scale);
+		}
+
+		public static int scaledHeight(int y, int scale) {
+			return y * scale;
 		}
 
 	}
@@ -88,14 +105,11 @@ public class IntervalLayout {
 	}
 
 	public List<OnGenome> activeReads() {
-
 		final ArrayList<OnGenome> activeData = new ArrayList<OnGenome>();
-
-		locusLayout.depthFirstSearch(new PrioritySearchTree.Visitor<LocusLayout>() {
-			public void visit(LocusLayout l) {
-				OnGenome g = l.locus;
-				if (w.overlapWith(g))
-					activeData.add(g);
+		globalLayout.depthFirstSearch(new PrioritySearchTree.Visitor<OnGenome>() {
+			public void visit(OnGenome l) {
+				if (w.overlapWith(l))
+					activeData.add(l);
 			}
 		});
 		return activeData;
@@ -105,6 +119,7 @@ public class IntervalLayout {
 
 		public int start = -1;
 		public int end = -1;
+		public int height = 1;
 		public boolean isDefined = false;
 
 		public void clear() {
@@ -126,75 +141,172 @@ public class IntervalLayout {
 		}
 
 		@Override
+		public void visitReadCoverage(ReadCoverage readCoverage) {
+			this.height = Math.abs(readCoverage.maxHeight - readCoverage.minHeight);
+			visitInterval(readCoverage);
+		}
+
+		@Override
 		public void visitSAMReadPair(SAMReadPair pair) {
 			start = pair.getStart();
 			end = pair.getEnd();
 			isDefined = true;
+
+			if (pair.getFirst().unclippedSequenceHasOverlapWith(pair.getSecond())) {
+				height = 2;
+			}
 		}
 
 	}
 
-	<T extends OnGenome> int createLayout(List<T> locusList, int geneHeight) {
+	private static class DepthMeasure implements PrioritySearchTree.ResultHandler<LocusLayout> {
+		int maxDepth = 0;
 
+		public void handle(LocusLayout l) {
+			if (maxDepth < l.getYOffset()) {
+				maxDepth = l.getYOffset();
+			}
+		}
+
+		public boolean toContinue() {
+			return true;
+		}
+	}
+
+	public int maxDepth(TrackWindow view) {
+		int x1 = pixelPositionOnWindow(view.getStartOnGenome());
+		int x2 = pixelPositionOnWindow(view.getEndOnGenome());
+		int maxDepth = 0;
+
+		DepthMeasure dm = new DepthMeasure();
+		localLayoutInView.rangeQuery(x1, Integer.MAX_VALUE, x2, dm);
+		return dm.maxDepth;
+	}
+
+	/**
+	 * Creates an X-Y layout of the given intervals
+	 * 
+	 * @param <T>
+	 * @param intervalList
+	 * @param geneHeight
+	 *            * @return
+	 */
+	<T extends OnGenome> void reset(List<T> intervalList, int geneHeight) {
+
+		globalLayout.clear();
+		IntervalRetriever ir = new IntervalRetriever();
+		for (OnGenome l : intervalList) {
+			ir.clear();
+			l.accept(ir);
+			if (!ir.isDefined)
+				continue;
+			globalLayout.insert(l, ir.end, ir.start);
+		}
+		createLocalLayout(geneHeight);
+	}
+
+	private class LayoutGenerator implements PrioritySearchTree.ResultHandler<OnGenome> {
+
+		private final int geneHeight;
+
+		IntervalRetriever ir = new IntervalRetriever();
+
+		private boolean toContinue = true;
+		boolean showLabelsFlag = keepSpaceForLabels;
+		boolean needRelayout = false;
 		int maxYOffset = 0;
-		boolean showLabelsFlag = keepSpaceForLabels && (locusList.size() < 500);
-		boolean toContinue = false;
 
-		do {
-			toContinue = false;
+		public LayoutGenerator(int geneHeight) {
+			this.geneHeight = geneHeight;
+			reset();
+		}
+
+		/**
+		 * reset except the show lables flag
+		 */
+		public void reset() {
+			toContinue = true;
+			needRelayout = false;
 			maxYOffset = 0;
-			locusLayout.clear();
+		}
 
-			IntervalRetriever ir = new IntervalRetriever();
+		public void handle(OnGenome l) {
+			ir.clear();
+			l.accept(ir);
+			if (!ir.isDefined)
+				return;
 
-			for (OnGenome l : locusList) {
+			int x1 = pixelPositionOnWindow(ir.start);
+			int x2 = pixelPositionOnWindow(ir.end);
 
-				ir.clear();
-				l.accept(ir);
-				if (!ir.isDefined)
-					continue;
+			if (showLabelsFlag) {
+				int labelWidth = estimiateLabelWidth(l, geneHeight);
+				if (x1 - labelWidth > 0)
+					x1 -= labelWidth;
+				else
+					x2 += labelWidth;
+			}
 
-				int x1 = pixelPositionOnWindow(ir.start);
-				int x2 = pixelPositionOnWindow(ir.end);
+			List<LocusLayout> activeLocus = localLayoutInView.rangeQuery(x1, Integer.MAX_VALUE, x2);
 
-				if (showLabelsFlag) {
-					int labelWidth = estimiateLabelWidth(l, geneHeight);
-					if (x1 - labelWidth > 0)
-						x1 -= labelWidth;
-					else
-						x2 += labelWidth;
-				}
+			HashSet<Integer> filledY = new HashSet<Integer>();
+			// overlap test
+			for (LocusLayout al : activeLocus) {
+				for (int i = 0; i < al.getHeight(); i++)
+					filledY.add(al.yOffset + i);
+			}
 
-				List<LocusLayout> activeLocus = locusLayout.rangeQuery(x1, Integer.MAX_VALUE, x2);
+			int blankY = 0;
+			for (; filledY.contains(blankY); blankY++) {
+			}
 
-				HashSet<Integer> filledY = new HashSet<Integer>();
-				// overlap test
-				for (LocusLayout al : activeLocus) {
-					filledY.add(al.yOffset);
-				}
-
-				int blankY = 0;
-				for (; filledY.contains(blankY); blankY++) {
-				}
-
-				locusLayout.insert(new LocusLayout(l, blankY), x2, x1);
-
-				if (blankY > maxYOffset) {
-					maxYOffset = blankY;
-					if (showLabelsFlag && maxYOffset > 30) {
-						showLabelsFlag = false;
-						toContinue = true;
-						break;
-					}
+			localLayoutInView.insert(new LocusLayout(l, blankY, ir.height), x2, x1);
+			if (blankY > maxYOffset) {
+				maxYOffset = blankY;
+				if (showLabelsFlag && maxYOffset > 30) {
+					showLabelsFlag = false;
+					// reset the current layout, then create another layout without the read labels 
+					needRelayout = true;
+					toContinue = false;
 				}
 			}
+
+		}
+
+		public boolean toContinue() {
+			return toContinue;
+		}
+
+	}
+
+	/**
+	 * Creates an X-Y layout of the given intervals, then return the max depth of the intervals
+	 * 
+	 * @param <T>
+	 * @param intervalList
+	 * @param geneHeight
+	 *            * @return
+	 */
+	<T extends OnGenome> int createLocalLayout(final int geneHeight) {
+
+		//int maxYOffset = 0;
+
+		LayoutGenerator layoutGenerator = new LayoutGenerator(geneHeight);
+
+		boolean toContinue = false;
+		do {
+			localLayoutInView.clear();
+			layoutGenerator.reset();
+			globalLayout.rangeQuery(w.getStartOnGenome(), Integer.MAX_VALUE, w.getEndOnGenome(), layoutGenerator);
+			toContinue = layoutGenerator.needRelayout;
 		}
 		while (toContinue);
 
+		int maxYOffset = layoutGenerator.maxYOffset;
 		if (maxYOffset <= 0)
 			maxYOffset = 1;
 
-		hasEnoughHeightForLabels = showLabelsFlag;
+		hasEnoughHeightForLabels = layoutGenerator.showLabelsFlag;
 		return maxYOffset;
 	}
 
@@ -207,7 +319,7 @@ public class IntervalLayout {
 	}
 
 	public void depthFirstSearch(PrioritySearchTree.Visitor<LocusLayout> visitor) {
-		locusLayout.depthFirstSearch(visitor);
+		localLayoutInView.depthFirstSearch(visitor);
 	}
 
 	/**
@@ -219,10 +331,10 @@ public class IntervalLayout {
 	 */
 	public OnGenome overlappedInterval(int x, int y, int xBorder, int geneHeight) {
 
-		for (LocusLayout gl : locusLayout.rangeQuery(x, Integer.MAX_VALUE, x)) {
+		for (LocusLayout gl : localLayoutInView.rangeQuery(x, Integer.MAX_VALUE, x)) {
 			OnGenome g = gl.getLocus();
-			int y1 = gl.getYOffset();
-			int y2 = y1 + geneHeight;
+			int y1 = gl.getYOffset() * geneHeight;
+			int y2 = y1 + geneHeight * gl.getHeight();
 
 			if (y1 <= y && y <= y2) {
 				int x1 = pixelPositionOnWindow(g.getStart()) - xBorder;
@@ -249,7 +361,8 @@ public class IntervalLayout {
 	}
 
 	public void clear() {
-		locusLayout.clear();
+		localLayoutInView.clear();
+		globalLayout.clear();
 	}
 
 }

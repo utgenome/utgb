@@ -35,6 +35,7 @@ import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChangeListener;
 import org.utgenome.gwt.utgb.client.track.TrackQueue;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.track.UTGBProperty;
+import org.utgenome.gwt.utgb.client.ui.RoundCornerFrame;
 import org.utgenome.gwt.utgb.client.util.BrowserInfo;
 import org.utgenome.gwt.utgb.client.util.Properties;
 import org.utgenome.gwt.utgb.client.util.StringUtil;
@@ -57,6 +58,7 @@ import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 
 public class UTGBEntryPointBase implements EntryPoint {
@@ -310,6 +312,18 @@ public class UTGBEntryPointBase implements EntryPoint {
 
 	public void main() {
 		displayTrackView();
+	}
+
+	public static void showErrorMessage(String message) {
+		RoundCornerFrame errorFrame = new RoundCornerFrame("#FF3366", 0.7f, 2);
+		PopupPanel popup = new PopupPanel(true);
+		errorFrame.setWidget(new Label(message));
+		popup.setWidget(errorFrame);
+
+		int x = Window.getClientWidth() / 2;
+		int y = 10;
+		popup.setPopupPosition(x, y);
+		popup.show();
 	}
 
 	public static void hideLoadingMessage() {

@@ -128,4 +128,12 @@ public class SAMRead extends Interval {
 		return SAMReadFlag.isQueryUnmapped(this.flag);
 	}
 
+	public boolean unclippedSequenceHasOverlapWith(SAMRead other) {
+		if (unclippedStart <= other.unclippedStart)
+			return other.unclippedStart <= unclippedEnd;
+		else
+			return unclippedStart <= other.unclippedEnd;
+
+	}
+
 }

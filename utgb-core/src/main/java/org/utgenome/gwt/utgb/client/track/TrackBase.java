@@ -35,9 +35,6 @@ import org.utgenome.gwt.utgb.client.util.xml.XMLUtil;
 import org.utgenome.gwt.utgb.client.util.xml.XMLWriter;
 import org.utgenome.gwt.utgb.client.view.TrackView;
 
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
-
 /**
  * {@link TrackBase} is a base class that supports to implement your own {@link Track}s.
  * 
@@ -149,12 +146,15 @@ public abstract class TrackBase implements Track {
 	}
 
 	public void refresh() {
-		DeferredCommand.addCommand(new Command() {
-			public void execute() {
-				TrackBase.this.draw();
-				getFrame().onUpdateTrackWidget();
-			}
-		});
+		TrackBase.this.draw();
+		getFrame().onUpdateTrackWidget();
+		//		DeferredCommand.addCommand(new Command() {
+		//			public void execute() {
+		//				TrackBase.this.draw();
+		//				getFrame().onUpdateTrackWidget();
+		//
+		//			}
+		//		});
 	}
 
 	/**

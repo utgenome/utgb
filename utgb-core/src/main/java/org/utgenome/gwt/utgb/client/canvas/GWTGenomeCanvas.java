@@ -313,10 +313,11 @@ public class GWTGenomeCanvas extends Composite {
 	 */
 	private OnGenome overlappedInterval(Event event, int xBorder) {
 
+		int h = getReadHeight();
 		int x = drawPosition(getXOnCanvas(event));
 		int y = getYOnCanvas(event);
 
-		return intervalLayout.overlappedInterval(x, y, xBorder, geneHeight);
+		return intervalLayout.overlappedInterval(x, y, xBorder, h);
 	}
 
 	public int getXOnCanvas(Event event) {
@@ -337,15 +338,32 @@ public class GWTGenomeCanvas extends Composite {
 		sinkEvents(Event.ONMOUSEMOVE | Event.ONMOUSEOVER | Event.ONMOUSEDOWN | Event.ONMOUSEUP | Event.ONMOUSEOUT);
 	}
 
-	public void setWindow(TrackWindow w) {
+	private TrackWindow prefetchWindow;
+
+	public boolean hasCacheCovering(TrackWindow newWindow) {
+		return prefetchWindow != null && prefetchWindow.contains(newWindow);
+	}
+
+	public TrackWindow getPrefetchWindow() {
+		return prefetchWindow;
+	}
+
+	private final int PREFETCH_FACTOR = 1;
+
+	/**
+	 * @param w
+	 */
+	public void setTrackWindow(TrackWindow w) {
+
+		if (!hasCacheCovering(w)) {
+			int prefetchStart = w.getStartOnGenome() - w.getSequenceLength() * PREFETCH_FACTOR;
+			int prefetchEnd = w.getEndOnGenome() + w.getSequenceLength() * PREFETCH_FACTOR;
+			int prefetchPixelSize = w.getPixelWidth() * (1 + PREFETCH_FACTOR * 2);
+			prefetchWindow = new TrackWindow(prefetchPixelSize, prefetchStart, prefetchEnd);
+		}
 
 		if (trackWindow != null) {
-			if (trackWindow.hasSameScaleWith(w)) {
-				// slide the canvas
-				int newX = trackWindow.convertToPixelX(w.getStartOnGenome());
-				basePanel.setWidgetPosition(panel, -newX, 0);
-			}
-			else {
+			if (!trackWindow.hasSameScaleWith(w)) {
 				imageACGT = null;
 			}
 		}
@@ -364,8 +382,9 @@ public class GWTGenomeCanvas extends Composite {
 		return trackWindow.convertToPixelX(indexOnGenome);
 	}
 
-	public void clear() {
+	public void clearWidgets() {
 		canvas.clear();
+		//imageACGT = null;
 
 		if (popupLabel != null)
 			popupLabel.removeFromParent();
@@ -375,17 +394,11 @@ public class GWTGenomeCanvas extends Composite {
 		}
 		readLabels.clear();
 		basePanel.setWidgetPosition(panel, 0, 0);
-
-		intervalLayout.clear();
 	}
 
-	@Override
-	public void setPixelSize(int width, int height) {
-		canvas.setCoordSize(width, height);
-		canvas.setPixelWidth(width);
-		canvas.setPixelHeight(height);
-		panel.setPixelSize(width, height);
-		basePanel.setPixelSize(width, height);
+	public void clear() {
+		clearWidgets();
+		intervalLayout.clear();
 	}
 
 	public static int width(int x1, int x2) {
@@ -405,14 +418,25 @@ public class GWTGenomeCanvas extends Composite {
 			getColor(DEFAULT_COLOR_T, 1.0f), getColor(DEFAULT_COLOR_A, repeatColorAlpha), getColor(DEFAULT_COLOR_C, repeatColorAlpha),
 			getColor(DEFAULT_COLOR_G, repeatColorAlpha), getColor(DEFAULT_COLOR_T, repeatColorAlpha), getColor(DEFAULT_COLOR_N, 1.0f) };
 
+	private int getReadHeight() {
+		return geneHeight + geneMargin;
+	}
+
 	class ReadPainter implements OnGenomeDataVisitor {
 
 		private LocusLayout gl;
-		private int h = GWTGenomeCanvas.this.geneHeight + GWTGenomeCanvas.this.geneMargin;
+		private int h = getReadHeight();
 
 		public void setLayoutInfo(LocusLayout layout) {
 			this.gl = layout;
-			gl.scaleHeight(h);
+		}
+
+		public int getYPos() {
+			return gl.scaledHeight(h);
+		}
+
+		public int getYPos(int y) {
+			return LocusLayout.scaledHeight(y, h);
 		}
 
 		public void visitGene(Gene g) {
@@ -421,11 +445,11 @@ public class GWTGenomeCanvas extends Composite {
 
 			int geneWidth = gx2 - gx1;
 			if (geneWidth <= 10) {
-				draw(g, gl.getYOffset());
+				draw(g, getYPos());
 			}
 			else {
 				CDS cds = g.getCDS().size() > 0 ? g.getCDS().get(0) : null;
-				draw(g, g.getExon(), cds, gl.getYOffset());
+				draw(g, g.getExon(), cds, getYPos());
 			}
 
 			drawLabel(g);
@@ -486,8 +510,7 @@ public class GWTGenomeCanvas extends Composite {
 
 		}
 
-		private void drawLabel(OnGenome r) {
-
+		private void drawLabel(OnGenome r, int y) {
 			if (!intervalLayout.hasEnoughHeightForLabels())
 				return;
 
@@ -507,7 +530,7 @@ public class GWTGenomeCanvas extends Composite {
 
 				Style.verticalAlign(label, "middle");
 
-				int yPos = gl.getYOffset() - 1;
+				int yPos = y - 1;
 
 				if (gx1 - textWidth < 0) {
 					if (reverse) {
@@ -535,12 +558,16 @@ public class GWTGenomeCanvas extends Composite {
 
 		}
 
+		private void drawLabel(OnGenome r) {
+			drawLabel(r, getYPos());
+		}
+
 		public void visitInterval(Interval interval) {
-			draw(interval, gl.getYOffset());
+			draw(interval, getYPos());
 		}
 
 		public void visitRead(Read r) {
-			draw(r, gl.getYOffset());
+			draw(r, getYPos());
 			drawLabel(r);
 		}
 
@@ -549,22 +576,28 @@ public class GWTGenomeCanvas extends Composite {
 			SAMRead first = pair.getFirst();
 			SAMRead second = pair.getSecond();
 
-			visitSAMRead(first, false);
-			visitSAMRead(second, false);
+			if (first.unclippedSequenceHasOverlapWith(second)) {
+				if (first.unclippedStart > second.unclippedStart) {
+					SAMRead tmp = first;
+					first = second;
+					second = tmp;
+				}
 
-			drawLabel(pair);
+				visitSAMRead(first, getYPos(), true);
+				visitSAMRead(second, getYPos(gl.getYOffset() + 1), true);
+			}
 
-			// draw connector between paired reads
+			//drawLabel(pair);
+
+			// TODO: draw connector between paired reads
 
 		}
 
 		public void visitSAMRead(SAMRead r) {
-			visitSAMRead(r, true);
+			visitSAMRead(r, getYPos(), true);
 		}
 
-		public void visitSAMRead(SAMRead r, boolean drawLabel) {
-
-			int y = gl.getYOffset();
+		public void visitSAMRead(SAMRead r, int y, boolean drawLabel) {
 
 			try {
 				int cx1 = pixelPositionOnWindow(r.unclippedStart);
@@ -663,7 +696,7 @@ public class GWTGenomeCanvas extends Composite {
 			}
 
 			if (drawLabel)
-				drawLabel(r);
+				drawLabel(r, y);
 		}
 
 		public void visitSequence(ReferenceSequence referenceSequence) {
@@ -810,14 +843,13 @@ public class GWTGenomeCanvas extends Composite {
 		}
 	}
 
-	public void draw(List<OnGenome> locusList) {
-		layoutRead(locusList);
-		drawLayout();
+	public void resetData(List<OnGenome> readSet) {
+		intervalLayout.reset(readSet, geneHeight);
 	}
 
 	private ImageElement imageACGT = null;
 
-	private void drawLayout() {
+	public void draw() {
 
 		boolean drawBase = trackWindow.getSequenceLength() <= (trackWindow.getPixelWidth() / FONT_WIDTH);
 		if (drawBase && imageACGT == null) {
@@ -825,28 +857,19 @@ public class GWTGenomeCanvas extends Composite {
 			ImageLoader.loadImages(new String[] { "utgb-core/ACGT.png?fontWidth=" + pixelWidthOfBase + "&height=" + DEFAULT_GENE_HEIGHT }, new CallBack() {
 				public void onImagesLoaded(ImageElement[] imageElements) {
 					imageACGT = imageElements[0];
-					traverseLayout();
+					layout();
 				}
 			});
 		}
 		else {
-			traverseLayout();
+			layout();
 		}
 	}
 
-	private void traverseLayout() {
-		final ReadPainter painter = new ReadPainter();
-		intervalLayout.depthFirstSearch(new PrioritySearchTree.Visitor<LocusLayout>() {
-			public void visit(LocusLayout gl) {
-				painter.setLayoutInfo(gl);
-				gl.getLocus().accept(painter);
-			}
-		});
-	}
+	private void layout() {
 
-	private void layoutRead(List<OnGenome> readList) {
+		int maxOffset = intervalLayout.createLocalLayout(geneHeight);
 
-		int maxOffset = intervalLayout.createLayout(readList, geneHeight);
 		if (maxOffset > 30)
 			geneHeight = 2;
 		else
@@ -855,7 +878,26 @@ public class GWTGenomeCanvas extends Composite {
 		int h = geneHeight + geneMargin;
 		int height = (maxOffset + 1) * h;
 
+		clearWidgets();
 		setPixelSize(trackWindow.getPixelWidth(), height);
+
+		final ReadPainter painter = new ReadPainter();
+
+		intervalLayout.depthFirstSearch(new PrioritySearchTree.Visitor<LocusLayout>() {
+			public void visit(LocusLayout gl) {
+				painter.setLayoutInfo(gl);
+				gl.getLocus().accept(painter);
+			}
+		});
+	}
+
+	@Override
+	public void setPixelSize(int width, int height) {
+		canvas.setCoordSize(width, height);
+		canvas.setPixelWidth(width);
+		canvas.setPixelHeight(height);
+		panel.setPixelSize(width, height);
+		basePanel.setPixelSize(width, height);
 	}
 
 	public static Color getGeneColor(Interval l) {

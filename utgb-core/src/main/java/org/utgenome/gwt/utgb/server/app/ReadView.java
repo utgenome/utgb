@@ -29,7 +29,6 @@ import org.utgenome.gwt.utgb.client.bio.DASLocation;
 import org.utgenome.gwt.utgb.client.bio.DASResult;
 import org.utgenome.gwt.utgb.client.bio.GenomeDB;
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
-import org.utgenome.gwt.utgb.client.bio.OnGenomeDataSet;
 import org.utgenome.gwt.utgb.client.bio.Read;
 import org.utgenome.gwt.utgb.client.bio.ReadCoverage;
 import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig;
@@ -75,25 +74,22 @@ public class ReadView extends WebTrackBase {
 		if (start == -1 || end == -1 || chr == null)
 			return;
 
-		OnGenomeDataSet result = overlapQuery(new GenomeDB(path, ref), new ChrLoc(chr, start, end), new ReadQueryConfig(width, useCanvas, layout));
+		List<OnGenome> result = overlapQuery(new GenomeDB(path, ref), new ChrLoc(chr, start, end), new ReadQueryConfig(width, useCanvas, layout));
 
 		response.setContentType("text/html");
 
 		// output the result in Silk format
 		SilkWriter w = new SilkWriter(response.getWriter());
 		w.preamble();
-		for (OnGenome each : result.read) {
-			w.leafObject("read", each);
-		}
-		for (OnGenome each : result.block) {
-			w.leafObject("block", each);
+		for (OnGenome each : result) {
+			w.leafObject("entry", each);
 		}
 		w.endDocument();
 	}
 
-	public static OnGenomeDataSet overlapQuery(GenomeDB db, ChrLoc loc, ReadQueryConfig config) {
+	public static List<OnGenome> overlapQuery(GenomeDB db, ChrLoc loc, ReadQueryConfig config) {
 
-		OnGenomeDataSet result = new OnGenomeDataSet();
+		List<OnGenome> result = new ArrayList<OnGenome>();
 		StopWatch sw = new StopWatch();
 		DBType dbType = db.resolveDBType();
 		loc = loc.getLocForPositiveStrand();
@@ -105,11 +101,11 @@ public class ReadView extends WebTrackBase {
 			switch (dbType) {
 			case BAM: {
 				File bamFile = new File(WebTrackBase.getProjectRootPath(), db.path);
-				result.read = SAMReader.overlapQuery(bamFile, loc);
+				result = SAMReader.overlapQuery(bamFile, loc);
 			}
 				break;
 			case BED: {
-				result.read = BEDDatabase.overlapQuery(new File(getProjectRootPath(), db.path), loc);
+				result = BEDDatabase.overlapQuery(new File(getProjectRootPath(), db.path), loc);
 				break;
 			}
 			case DAS: {
@@ -120,7 +116,7 @@ public class ReadView extends WebTrackBase {
 				DASResult queryDAS = DASViewer.queryDAS(db.path, dasType, loc);
 				if (queryDAS != null) {
 					for (DASFeature each : queryDAS.segment.feature) {
-						result.read.add(each);
+						result.add(each);
 					}
 				}
 				break;
@@ -147,11 +143,11 @@ public class ReadView extends WebTrackBase {
 
 		_logger.debug("query done. " + sw.getElapsedTime() + " sec.");
 
-		if (config.layout == Layout.COVERAGE || result.read.size() > 1000) {
+		if (config.layout == Layout.COVERAGE || result.size() > 1000) {
 			// compute coverage
-			ReadCoverage coverage = computeCoverage(result.read, loc.start, loc.end, config.pixelWidth);
-			result.read.clear();
-			result.block.add(coverage);
+			ReadCoverage coverage = computeCoverage(result, loc.start, loc.end, config.pixelWidth);
+			result.clear();
+			result.add(coverage);
 		}
 
 		return result;

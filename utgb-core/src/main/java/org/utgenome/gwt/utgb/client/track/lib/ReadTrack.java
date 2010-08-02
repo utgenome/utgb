@@ -24,10 +24,12 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.track.lib;
 
+import java.util.List;
+
+import org.utgenome.gwt.utgb.client.UTGBEntryPointBase;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.GenomeDB;
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
-import org.utgenome.gwt.utgb.client.bio.OnGenomeDataSet;
 import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig;
 import org.utgenome.gwt.utgb.client.bio.GenomeDB.DBType;
 import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig.Layout;
@@ -175,9 +177,6 @@ public class ReadTrack extends TrackBase {
 	private final String CONFIG_ONCLICK_P_KEY = "onclick.p.key";
 	private final String CONFIG_ONCLICK_P_VALUE = "onclick.p.value";
 
-	// read data
-	private OnGenomeDataSet dataSet;
-
 	// widgets
 	private FlexTable layoutTable = new FlexTable();
 	private GWTGenomeCanvas geneCanvas = new GWTGenomeCanvas();
@@ -303,29 +302,13 @@ public class ReadTrack extends TrackBase {
 	@Override
 	public void draw() {
 
+		// set up drawing options
 		geneCanvas.setShowLabels(getConfig().getBoolean(CONFIG_SHOW_LABELS, true));
-		geneCanvas.clear();
+		geneCanvas.setCoverageStyle(getConfig().getString(CONFIG_COVERAGE_STYLE, "default"));
 
-		String layout = getConfig().getString(CONFIG_LAYOUT, "pileup");
-		if ("pileup".equals(layout)) {
-			if (dataSet.read != null && !dataSet.read.isEmpty()) {
-				geneCanvas.draw(dataSet.read);
-			}
-			else
-				drawCoverage();
-		}
-		else {
-			drawCoverage();
-		}
-
+		geneCanvas.draw();
 		getFrame().loadingDone();
 
-	}
-
-	private void drawCoverage() {
-		String style = getConfig().getString(CONFIG_COVERAGE_STYLE, "default");
-		geneCanvas.setCoverageStyle(style);
-		geneCanvas.drawBlock(dataSet.block);
 	}
 
 	public static int calcXPositionOnWindow(long indexOnGenome, long startIndexOnGenome, long endIndexOnGenome, int windowWidth) {
@@ -365,8 +348,8 @@ public class ReadTrack extends TrackBase {
 		ValueDomain layoutTypes = ValueDomain.createNewValueDomain(new String[] { "pileup", "coverage" });
 		config.addConfig("Layout", new StringType(CONFIG_LAYOUT, layoutTypes), "pileup");
 		config.addConfig("Show Labels", new BooleanType(CONFIG_SHOW_LABELS), "true");
-		config.addConfig("Coverage Display Style", new StringType(CONFIG_COVERAGE_STYLE, ValueDomain.createNewValueDomain(new String[] { "default",
-				"smooth" })), "default");
+		config.addConfig("Coverage Display Style",
+				new StringType(CONFIG_COVERAGE_STYLE, ValueDomain.createNewValueDomain(new String[] { "default", "smooth" })), "default");
 		ValueDomain actionTypes = ValueDomain.createNewValueDomain(new String[] { "none", "link", "info", "set" });
 		config.addConfig("On Click Action", new StringType(CONFIG_ONCLICK_ACTION, actionTypes), "link");
 		config.addConfig("On Click URL", new StringType(CONFIG_ONCLICK_URL), "http://www.google.com/search?q=%q");
@@ -377,25 +360,35 @@ public class ReadTrack extends TrackBase {
 	}
 
 	protected void update(TrackWindow newWindow) {
+
+		if (geneCanvas.hasCacheCovering(newWindow)) {
+			geneCanvas.setTrackWindow(newWindow);
+			refresh();
+			return;
+		}
+
+		geneCanvas.setTrackWindow(newWindow);
+
 		// retrieve gene data from the API
+		TrackWindow prefetchWindow = geneCanvas.getPrefetchWindow();
 		String chr = getTrackGroupProperty(UTGBProperty.TARGET);
 
 		String layout = getConfig().getString(CONFIG_LAYOUT, "pileup");
-		ReadQueryConfig queryConfig = new ReadQueryConfig(newWindow.getPixelWidth(), BrowserInfo.isCanvasSupported(), Layout.valueOf(Layout.class, layout
+		ReadQueryConfig queryConfig = new ReadQueryConfig(prefetchWindow.getPixelWidth(), BrowserInfo.isCanvasSupported(), Layout.valueOf(Layout.class, layout
 				.toUpperCase()));
 
 		getFrame().setNowLoading();
-		geneCanvas.setWindow(getTrackWindow());
-		getBrowserService().getOnGenomeData(getGenomeDB(), new ChrLoc(chr, newWindow.getStartOnGenome(), newWindow.getEndOnGenome()), queryConfig,
-				new AsyncCallback<OnGenomeDataSet>() {
+		getBrowserService().getOnGenomeData(getGenomeDB(), new ChrLoc(chr, prefetchWindow.getStartOnGenome(), prefetchWindow.getEndOnGenome()), queryConfig,
+				new AsyncCallback<List<OnGenome>>() {
 
 					public void onFailure(Throwable e) {
 						GWT.log("failed to retrieve gene data", e);
+						UTGBEntryPointBase.showErrorMessage("read data retrieval failed: " + e.getMessage());
 						getFrame().loadingDone();
 					}
 
-					public void onSuccess(OnGenomeDataSet readSet) {
-						dataSet = readSet;
+					public void onSuccess(List<OnGenome> dataSet) {
+						geneCanvas.resetData(dataSet);
 						refresh();
 					}
 

@@ -142,18 +142,47 @@ public class PrioritySearchTree<E> {
 	 */
 	public List<E> rangeQuery(int x1, int x2, int upperY) {
 		ArrayList<E> result = new ArrayList<E>();
-		rangeQuery_internal(root, new QueryBox(x1, x2, upperY), x1, x2, result);
-		return result;
+		ResultCollector<E> resultCollector = new ResultCollector<E>();
+		rangeQuery_internal(root, new QueryBox(x1, x2, upperY), x1, x2, resultCollector);
+		return resultCollector.result;
 	}
 
-	boolean rangeQuery_internal(Node currentNode, QueryBox queryBox, int rangeX1, int rangeX2, List<E> result) {
-		boolean toContinue = true;
+	public void rangeQuery(int x1, int x2, int upperY, ResultHandler<E> handler) {
+		rangeQuery_internal(root, new QueryBox(x1, x2, upperY), x1, x2, handler);
+	}
+
+	public static interface ResultHandler<E> {
+		public void handle(E elem);
+
+		public boolean toContinue();
+	}
+
+	private static class ResultCollector<E> implements ResultHandler<E> {
+
+		public List<E> result = new ArrayList<E>();
+
+		public void handle(E elem) {
+			result.add(elem);
+		}
+
+		public boolean toContinue() {
+			return true;
+		}
+
+	}
+
+	boolean rangeQuery_internal(Node currentNode, QueryBox queryBox, int rangeX1, int rangeX2, ResultHandler<E> resultHandler) {
+		boolean toContinue = resultHandler.toContinue();
+		if (!toContinue)
+			return false;
+
 		if (currentNode != null) {
 			if (currentNode.y <= queryBox.upperY) {
 				// the current node is within the y constraint
 				if (queryBox.x1 <= currentNode.x && currentNode.x <= queryBox.x2) {
 					// The current node is contained in the query box
-					result.add(currentNode.elem);
+					resultHandler.handle(currentNode.elem);
+					toContinue = resultHandler.toContinue();
 				}
 
 				// search the descendant nodes
@@ -161,12 +190,12 @@ public class PrioritySearchTree<E> {
 
 				// search the left tree
 				if (toContinue && queryBox.x1 < middleX) {
-					toContinue = rangeQuery_internal(currentNode.left, queryBox, rangeX1, middleX, result);
+					toContinue = rangeQuery_internal(currentNode.left, queryBox, rangeX1, middleX, resultHandler);
 				}
 
 				// search the right tree
 				if (toContinue && middleX <= queryBox.x2) {
-					toContinue = rangeQuery_internal(currentNode.right, queryBox, middleX, rangeX2, result);
+					toContinue = rangeQuery_internal(currentNode.right, queryBox, middleX, rangeX2, resultHandler);
 				}
 			}
 		}
