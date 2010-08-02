@@ -97,6 +97,8 @@ public class SAM2SilkReader extends FormatConversionReader {
 			read.iSize = record.getInferredInsertSize();
 			read.seq = record.getReadString();
 			read.qual = record.getBaseQualityString();
+			read.unclippedStart = record.getUnclippedStart();
+			read.unclippedEnd = record.getUnclippedEnd() + 1;
 			read.tag = new Properties();
 			for (SAMTagAndValue tag : record.getAttributes()) {
 				read.tag.add(tag.tag, String.valueOf(tag.value));
@@ -120,6 +122,8 @@ public class SAM2SilkReader extends FormatConversionReader {
 		rw.leaf("rname", rec.getReferenceName());
 		rw.leaf("start", rec.getAlignmentStart());
 		rw.leaf("end", rec.getAlignmentEnd() + 1);
+		rw.leaf("unclipped start", rec.getUnclippedStart());
+		rw.leaf("unclipped end", rec.getUnclippedEnd() + 1);
 		rw.leaf("mapq", rec.getMappingQuality());
 		rw.leaf("cigar", rec.getCigarString());
 		rw.leaf("mrname", rec.getMateReferenceName());

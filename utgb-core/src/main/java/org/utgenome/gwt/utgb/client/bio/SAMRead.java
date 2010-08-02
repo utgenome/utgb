@@ -40,8 +40,8 @@ public class SAMRead extends Interval {
 	public int flag;
 	public String rname;
 	// left-most position on the reference sequence
-	//public int start; 
-	//public int end;
+	public int unclippedStart;
+	public int unclippedEnd;
 	public int mapq; // Mapping Quality
 	public String cigar;
 	public String mrnm; // mate reference name

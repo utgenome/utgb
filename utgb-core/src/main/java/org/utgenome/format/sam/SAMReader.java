@@ -130,6 +130,7 @@ public class SAMReader {
 
 		Collections.sort(result, new Comparator<OnGenome>() {
 			public int compare(OnGenome o1, OnGenome o2) {
+
 				return o1.getStart() - o2.getStart();
 			}
 		});

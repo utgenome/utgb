@@ -28,7 +28,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
+import org.utgenome.gwt.utgb.client.bio.OnGenomeDataVisitorBase;
+import org.utgenome.gwt.utgb.client.bio.SAMRead;
+import org.utgenome.gwt.utgb.client.bio.SAMReadPair;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 
 /**
@@ -97,6 +101,39 @@ public class IntervalLayout {
 		return activeData;
 	}
 
+	public static class IntervalRetriever extends OnGenomeDataVisitorBase {
+
+		public int start = -1;
+		public int end = -1;
+		public boolean isDefined = false;
+
+		public void clear() {
+			isDefined = false;
+		}
+
+		@Override
+		public void visitInterval(Interval interval) {
+			start = interval.getStart();
+			end = interval.getEnd();
+			isDefined = true;
+		}
+
+		@Override
+		public void visitSAMRead(SAMRead r) {
+			start = r.unclippedStart;
+			end = r.unclippedEnd;
+			isDefined = true;
+		}
+
+		@Override
+		public void visitSAMReadPair(SAMReadPair pair) {
+			start = pair.getStart();
+			end = pair.getEnd();
+			isDefined = true;
+		}
+
+	}
+
 	<T extends OnGenome> int createLayout(List<T> locusList, int geneHeight) {
 
 		int maxYOffset = 0;
@@ -108,10 +145,17 @@ public class IntervalLayout {
 			maxYOffset = 0;
 			locusLayout.clear();
 
+			IntervalRetriever ir = new IntervalRetriever();
+
 			for (OnGenome l : locusList) {
 
-				int x1 = pixelPositionOnWindow(l.getStart());
-				int x2 = pixelPositionOnWindow(l.getEnd());
+				ir.clear();
+				l.accept(ir);
+				if (!ir.isDefined)
+					continue;
+
+				int x1 = pixelPositionOnWindow(ir.start);
+				int x2 = pixelPositionOnWindow(ir.end);
 
 				if (showLabelsFlag) {
 					int labelWidth = estimiateLabelWidth(l, geneHeight);

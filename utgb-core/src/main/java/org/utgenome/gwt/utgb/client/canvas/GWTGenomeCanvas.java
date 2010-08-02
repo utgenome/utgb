@@ -41,6 +41,7 @@ import org.utgenome.gwt.utgb.client.bio.ReadCoverage;
 import org.utgenome.gwt.utgb.client.bio.ReferenceSequence;
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.bio.SAMReadPair;
+import org.utgenome.gwt.utgb.client.canvas.IntervalLayout.IntervalRetriever;
 import org.utgenome.gwt.utgb.client.canvas.IntervalLayout.LocusLayout;
 import org.utgenome.gwt.utgb.client.track.TrackGroup;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
@@ -401,8 +402,8 @@ public class GWTGenomeCanvas extends Composite {
 
 	private static final float repeatColorAlpha = 0.25f;
 	private static final Color[] colors = { getColor(DEFAULT_COLOR_A, 1.0f), getColor(DEFAULT_COLOR_C, 1.0f), getColor(DEFAULT_COLOR_G, 1.0f),
-			getColor(DEFAULT_COLOR_T, 1.0f), getColor(DEFAULT_COLOR_N, 1.0f), getColor(DEFAULT_COLOR_A, repeatColorAlpha),
-			getColor(DEFAULT_COLOR_C, repeatColorAlpha), getColor(DEFAULT_COLOR_G, repeatColorAlpha), getColor(DEFAULT_COLOR_T, repeatColorAlpha) };
+			getColor(DEFAULT_COLOR_T, 1.0f), getColor(DEFAULT_COLOR_A, repeatColorAlpha), getColor(DEFAULT_COLOR_C, repeatColorAlpha),
+			getColor(DEFAULT_COLOR_G, repeatColorAlpha), getColor(DEFAULT_COLOR_T, repeatColorAlpha), getColor(DEFAULT_COLOR_N, 1.0f) };
 
 	class ReadPainter implements OnGenomeDataVisitor {
 
@@ -477,8 +478,8 @@ public class GWTGenomeCanvas extends Composite {
 				double x2 = trackWindow.convertToPixelXDouble(startOnGenome + i + 1);
 
 				canvas.saveContext();
-				canvas.setFillStyle(colors[baseIndex]);
-				canvas.fillRect(x1, y, x2 - x1, geneHeight);
+				//canvas.setFillStyle(colors[baseIndex]);
+				//canvas.fillRect(x1, y, x2 - x1, geneHeight);
 				canvas.drawImage(imageACGT, pixelWidthOfBase * baseIndex, 0, pixelWidthOfBase, geneHeight, (int) x1, y, pixelWidthOfBase, geneHeight);
 				canvas.restoreContext();
 			}
@@ -486,45 +487,50 @@ public class GWTGenomeCanvas extends Composite {
 		}
 
 		private void drawLabel(OnGenome r) {
-			int gx1 = pixelPositionOnWindow(r.getStart());
-			int gx2 = pixelPositionOnWindow(r.getStart() + r.length());
 
-			if (intervalLayout.hasEnoughHeightForLabels()) {
-				String n = r.getName();
-				if (n != null) {
-					int textWidth = IntervalLayout.estimiateLabelWidth(r, geneHeight);
+			if (!intervalLayout.hasEnoughHeightForLabels())
+				return;
 
-					FixedWidthLabel label = new FixedWidthLabel(n, textWidth);
-					Style.fontSize(label, geneHeight);
-					Style.fontColor(label, getExonColorText(r));
+			IntervalRetriever ir = new IntervalRetriever();
+			r.accept(ir);
 
-					Style.verticalAlign(label, "middle");
+			int gx1 = pixelPositionOnWindow(ir.start);
+			int gx2 = pixelPositionOnWindow(ir.end);
 
-					int yPos = gl.getYOffset() - 1;
+			String n = r.getName();
+			if (n != null) {
+				int textWidth = IntervalLayout.estimiateLabelWidth(r, geneHeight);
 
-					if (gx1 - textWidth < 0) {
-						if (reverse) {
-							Style.textAlign(label, "right");
-							panel.add(label, drawPosition(gx2) - textWidth - 1, yPos);
-						}
-						else {
-							Style.textAlign(label, "left");
-							panel.add(label, drawPosition(gx2) + 1, yPos);
-						}
+				FixedWidthLabel label = new FixedWidthLabel(n, textWidth);
+				Style.fontSize(label, geneHeight);
+				Style.fontColor(label, getExonColorText(r));
+
+				Style.verticalAlign(label, "middle");
+
+				int yPos = gl.getYOffset() - 1;
+
+				if (gx1 - textWidth < 0) {
+					if (reverse) {
+						Style.textAlign(label, "right");
+						panel.add(label, drawPosition(gx2) - textWidth - 1, yPos);
 					}
 					else {
-						if (reverse) {
-							Style.textAlign(label, "left");
-							panel.add(label, drawPosition(gx1) + 1, yPos);
-						}
-						else {
-							Style.textAlign(label, "right");
-							panel.add(label, drawPosition(gx1) - textWidth - 1, yPos);
-						}
+						Style.textAlign(label, "left");
+						panel.add(label, drawPosition(gx2) + 1, yPos);
 					}
-
-					readLabels.add(label);
 				}
+				else {
+					if (reverse) {
+						Style.textAlign(label, "left");
+						panel.add(label, drawPosition(gx1) + 1, yPos);
+					}
+					else {
+						Style.textAlign(label, "right");
+						panel.add(label, drawPosition(gx1) - textWidth - 1, yPos);
+					}
+				}
+
+				readLabels.add(label);
 			}
 
 		}
@@ -623,10 +629,12 @@ public class GWTGenomeCanvas extends Composite {
 
 							int x0 = pixelPositionOnWindow(softclipStart);
 							x1 = pixelPositionOnWindow(softclipEnd);
-							drawGeneRect(x0, x1, y, getCDSColor(r, 0.2f), true);
 
 							if (drawBase) {
 								drawBases(softclipStart, y, r.seq.substring(seqIndex, seqIndex + e.length).toLowerCase());
+							}
+							else {
+								drawGeneRect(x0, x1, y, getCDSColor(r, 0.2f), true);
 							}
 
 							seqIndex += e.length;

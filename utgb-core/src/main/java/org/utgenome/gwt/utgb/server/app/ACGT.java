@@ -83,8 +83,10 @@ public class ACGT extends WebTrackBase {
 
 		for (int i = 0; i < letters.length(); ++i) {
 			char ch = letters.charAt(i);
-			String colorStr = colorTable.containsKey(ch) ? colorTable.get(ch) : "E0E0E0";
 			boolean isRepeatChar = Character.isLowerCase(ch);
+			if (isRepeatChar)
+				ch = Character.toUpperCase(ch);
+			String colorStr = colorTable.containsKey(ch) ? colorTable.get(ch) : "E0E0E0";
 			Color color = isRepeatChar ? GraphicUtil.parseColor(colorStr, repeatColorAlpha) : GraphicUtil.parseColor(colorStr);
 			canvas.drawGeneRect(offset, offset + 1L, 0, height, color);
 

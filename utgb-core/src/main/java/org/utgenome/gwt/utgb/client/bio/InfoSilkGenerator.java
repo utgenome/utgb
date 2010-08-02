@@ -80,7 +80,7 @@ public class InfoSilkGenerator implements OnGenomeDataVisitor {
 		addLine("-flag: " + Integer.toBinaryString(r.flag));
 		addLine("-strand: " + (r.isSense() ? "+" : "-"));
 		addLine("-cigar: " + r.cigar);
-		if (r.iSize > 0)
+		if (r.iSize != 0)
 			addLine("-insert size: " + r.iSize);
 		addLine("-mapq: " + r.mapq);
 		if (r.isPairedRead()) {

@@ -62,15 +62,15 @@ public class SAMReadPair extends Interval {
 
 	@Override
 	public int getStart() {
-		int s1 = first.getStart();
-		int s2 = second.getStart();
+		int s1 = first.unclippedStart;
+		int s2 = second.unclippedStart;
 		return s1 < s2 ? s1 : s2;
 	}
 
 	@Override
 	public int getEnd() {
-		int e1 = first.getEnd();
-		int e2 = second.getEnd();
+		int e1 = first.unclippedEnd;
+		int e2 = second.unclippedEnd;
 		return e1 < e2 ? e2 : e1;
 	}
 
