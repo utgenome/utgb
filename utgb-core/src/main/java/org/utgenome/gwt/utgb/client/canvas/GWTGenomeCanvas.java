@@ -338,10 +338,11 @@ public class GWTGenomeCanvas extends Composite {
 		sinkEvents(Event.ONMOUSEMOVE | Event.ONMOUSEOVER | Event.ONMOUSEDOWN | Event.ONMOUSEUP | Event.ONMOUSEOUT);
 	}
 
+	private boolean hasCache = false;
 	private TrackWindow prefetchWindow;
 
 	public boolean hasCacheCovering(TrackWindow newWindow) {
-		return prefetchWindow != null && prefetchWindow.contains(newWindow);
+		return prefetchWindow != null && hasCache && prefetchWindow.contains(newWindow);
 	}
 
 	public TrackWindow getPrefetchWindow() {
@@ -360,6 +361,7 @@ public class GWTGenomeCanvas extends Composite {
 			int prefetchEnd = w.getEndOnGenome() + w.getSequenceLength() * PREFETCH_FACTOR;
 			int prefetchPixelSize = w.getPixelWidth() * (1 + PREFETCH_FACTOR * 2);
 			prefetchWindow = new TrackWindow(prefetchPixelSize, prefetchStart, prefetchEnd);
+			hasCache = false;
 		}
 
 		if (trackWindow != null) {
@@ -399,6 +401,7 @@ public class GWTGenomeCanvas extends Composite {
 	public void clear() {
 		clearWidgets();
 		prefetchWindow = null;
+		hasCache = false;
 		intervalLayout.clear();
 	}
 
@@ -848,6 +851,7 @@ public class GWTGenomeCanvas extends Composite {
 
 	public void resetData(List<OnGenome> readSet) {
 		intervalLayout.reset(readSet, geneHeight);
+		hasCache = true;
 	}
 
 	private ImageElement imageACGT = null;
