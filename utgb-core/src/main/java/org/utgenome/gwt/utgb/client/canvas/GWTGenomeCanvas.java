@@ -398,6 +398,7 @@ public class GWTGenomeCanvas extends Composite {
 
 	public void clear() {
 		clearWidgets();
+		prefetchWindow = null;
 		intervalLayout.clear();
 	}
 

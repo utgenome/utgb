@@ -327,6 +327,7 @@ public class ReadTrack extends TrackBase {
 	public void onChangeTrackGroupProperty(TrackGroupPropertyChange change) {
 
 		if (change.containsOneOf(new String[] { UTGBProperty.SPECIES, UTGBProperty.REVISION, UTGBProperty.TARGET })) {
+			geneCanvas.clear();
 			update(change.getTrackWindow());
 		}
 	}
