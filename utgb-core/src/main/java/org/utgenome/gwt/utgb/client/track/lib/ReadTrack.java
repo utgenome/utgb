@@ -320,7 +320,7 @@ public class ReadTrack extends TrackBase {
 	@Override
 	public void onChangeTrackWindow(TrackWindow newWindow) {
 
-		update(newWindow);
+		update(newWindow, false);
 	}
 
 	@Override
@@ -328,7 +328,7 @@ public class ReadTrack extends TrackBase {
 
 		if (change.containsOneOf(new String[] { UTGBProperty.SPECIES, UTGBProperty.REVISION, UTGBProperty.TARGET })) {
 			geneCanvas.clear();
-			update(change.getTrackWindow());
+			update(change.getTrackWindow(), false);
 		}
 	}
 
@@ -337,7 +337,7 @@ public class ReadTrack extends TrackBase {
 
 		geneCanvas.setTrackGroup(group);
 
-		update(group.getTrackWindow());
+		update(group.getTrackWindow(), true);
 		TrackConfig config = getConfig();
 		config.addHiddenConfig(CONFIG_LEFT_MARGIN, "0");
 		config.addConfig("DB Path", new StringType(CONFIG_PATH));
@@ -360,9 +360,9 @@ public class ReadTrack extends TrackBase {
 		updateClickAction();
 	}
 
-	protected void update(TrackWindow newWindow) {
+	protected void update(TrackWindow newWindow, boolean forceReload) {
 
-		if (geneCanvas.hasCacheCovering(newWindow)) {
+		if (!forceReload && geneCanvas.hasCacheCovering(newWindow)) {
 			geneCanvas.setTrackWindow(newWindow);
 			refresh();
 			return;
@@ -424,7 +424,7 @@ public class ReadTrack extends TrackBase {
 		}
 
 		if (change.containsOneOf(new String[] { CONFIG_LAYOUT, CONFIG_COVERAGE_STYLE })) {
-			update(getTrackWindow());
+			update(getTrackWindow(), true);
 		}
 	}
 

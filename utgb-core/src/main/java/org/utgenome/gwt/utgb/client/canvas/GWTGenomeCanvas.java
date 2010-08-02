@@ -359,6 +359,10 @@ public class GWTGenomeCanvas extends Composite {
 		if (!hasCacheCovering(w)) {
 			int prefetchStart = w.getStartOnGenome() - w.getSequenceLength() * PREFETCH_FACTOR;
 			int prefetchEnd = w.getEndOnGenome() + w.getSequenceLength() * PREFETCH_FACTOR;
+			if (prefetchStart <= 0) {
+				prefetchStart = 1;
+				prefetchEnd = w.getEndOnGenome() + (w.getSequenceLength() * PREFETCH_FACTOR * 2);
+			}
 			int prefetchPixelSize = w.getPixelWidth() * (1 + PREFETCH_FACTOR * 2);
 			prefetchWindow = new TrackWindow(prefetchPixelSize, prefetchStart, prefetchEnd);
 			hasCache = false;
@@ -711,7 +715,7 @@ public class GWTGenomeCanvas extends Composite {
 		}
 
 		public void visitReadCoverage(ReadCoverage readCoverage) {
-
+			drawBlock(readCoverage);
 		}
 
 		public void visitGraph(GraphData graph) {
@@ -755,18 +759,29 @@ public class GWTGenomeCanvas extends Composite {
 			canvas.setLineWidth(0.1f);
 			canvas.setLineCap("round");
 
+			int x1 = pixelPositionOnWindow(trackWindow.getStartOnGenome());
+			int x2 = pixelPositionOnWindow(trackWindow.getEndOnGenome());
+
+			if (x1 < 0)
+				x1 = 0;
+			if (x2 > readCoverage.pixelWidth)
+				x2 = readCoverage.pixelWidth;
+
+			int w = x2 - x1;
+			canvas.scale(trackWindow.getPixelWidth() / (double) w, 1.0f);
+
 			canvas.saveContext();
 			canvas.beginPath();
 			canvas.moveTo(-0.5f, -1.0f);
-			for (int x = 0; x < readCoverage.pixelWidth; ++x) {
+			for (int x = x1; x < x2; ++x) {
 				int h = readCoverage.coverage[x];
 				if (h <= 0) {
-					canvas.lineTo(x + 0.5f, -1.0f);
+					canvas.lineTo(x - x1 + 0.5f, -1.0f);
 					continue;
 				}
 
 				int y = (int) ((h * heigtOfRead) * scalingFactor);
-				canvas.lineTo(x + 0.5f, y + 0.5f);
+				canvas.lineTo(x - x1 + 0.5f, y + 0.5f);
 				canvas.stroke();
 			}
 			canvas.moveTo(readCoverage.pixelWidth + 0.5f, -1.0f);
@@ -790,22 +805,33 @@ public class GWTGenomeCanvas extends Composite {
 		@Override
 		public void visitReadCoverage(ReadCoverage readCoverage) {
 			canvas.saveContext();
-			canvas.setStrokeStyle(getColor("#6699CC", 0.6f));
+			canvas.setFillStyle(getColor("#6699CC", 0.6f));
 			canvas.setLineWidth(1.0f);
 			canvas.setLineCap("round");
 
-			for (int x = 0; x < readCoverage.pixelWidth; ++x) {
+			if (prefetchWindow == null)
+				return;
+
+			int x1 = prefetchWindow.convertToPixelX(trackWindow.getStartOnGenome());
+			int x2 = prefetchWindow.convertToPixelX(trackWindow.getEndOnGenome());
+
+			int w = x2 - x1;
+			canvas.scale(trackWindow.getPixelWidth() / (double) w, 1.0f);
+
+			if (x1 < 0)
+				x1 = 0;
+			if (x2 > readCoverage.pixelWidth)
+				x2 = readCoverage.pixelWidth;
+
+			for (int x = x1; x < x2; ++x) {
 				int h = readCoverage.coverage[x];
 				if (h <= 0) {
 					continue;
 				}
 				int y = (int) ((h * heigtOfRead) * scalingFactor);
 				canvas.saveContext();
-				canvas.translate(x + 0.5f, 0);
-				canvas.beginPath();
-				canvas.moveTo(0, 0);
-				canvas.lineTo(0, y + 0.5f);
-				canvas.stroke();
+				canvas.translate((x - x1) + 0.5f, 0);
+				canvas.fillRect(0, 0, 1, y + 0.5f);
 				canvas.restoreContext();
 			}
 
@@ -813,13 +839,12 @@ public class GWTGenomeCanvas extends Composite {
 		}
 	}
 
-	public <T extends OnGenome> void drawBlock(List<T> block) {
+	public <T extends OnGenome> void drawBlock(ReadCoverage block) {
 
 		// compute max height
 		FindMaximumHeight hFinder = new FindMaximumHeight();
-		for (OnGenome each : block) {
-			each.accept(hFinder);
-		}
+		block.accept(hFinder);
+
 		int heightOfRead = hFinder.maxHeight > 30 ? 2 : DEFAULT_GENE_HEIGHT;
 
 		int canvasHeight = hFinder.maxHeight * heightOfRead;
@@ -844,9 +869,8 @@ public class GWTGenomeCanvas extends Composite {
 			cPainter = new RoughCoveragePainter(heightOfRead, scalingFactor);
 			break;
 		}
-		for (OnGenome each : block) {
-			each.accept(cPainter);
-		}
+
+		block.accept(cPainter);
 	}
 
 	public void resetData(List<OnGenome> readSet) {
