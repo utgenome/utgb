@@ -549,24 +549,33 @@ public class GWTGenomeCanvas extends Composite {
 			SAMRead first = pair.getFirst();
 			SAMRead second = pair.getSecond();
 
-			visitSAMRead(first);
-			visitSAMRead(second);
+			visitSAMRead(first, false);
+			visitSAMRead(second, false);
+
+			drawLabel(pair);
 
 			// draw connector between paired reads
 
 		}
 
 		public void visitSAMRead(SAMRead r) {
+			visitSAMRead(r, true);
+		}
+
+		public void visitSAMRead(SAMRead r, boolean drawLabel) {
 
 			int y = gl.getYOffset();
 
 			try {
+				int cx1 = pixelPositionOnWindow(r.unclippedStart);
+				int cx2 = pixelPositionOnWindow(r.unclippedEnd);
+
 				int gx1 = pixelPositionOnWindow(r.getStart());
 				int gx2 = pixelPositionOnWindow(r.getEnd());
 
 				int width = gx2 - gx1;
 
-				if ((gx2 - gx1) <= 10) {
+				if ((cx2 - cx1) <= 5) {
 					// when the pixel range is narrow, draw a rectangle only 
 					draw(r, y);
 				}
@@ -653,7 +662,8 @@ public class GWTGenomeCanvas extends Composite {
 				draw(r, y);
 			}
 
-			drawLabel(r);
+			if (drawLabel)
+				drawLabel(r);
 		}
 
 		public void visitSequence(ReferenceSequence referenceSequence) {
