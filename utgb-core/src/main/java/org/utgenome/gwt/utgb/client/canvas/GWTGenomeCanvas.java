@@ -577,21 +577,23 @@ public class GWTGenomeCanvas extends Composite {
 			SAMRead first = pair.getFirst();
 			SAMRead second = pair.getSecond();
 
+			int y1 = getYPos();
+			int y2 = y1;
+
 			if (first.unclippedSequenceHasOverlapWith(second)) {
 				if (first.unclippedStart > second.unclippedStart) {
 					SAMRead tmp = first;
 					first = second;
 					second = tmp;
 				}
-
-				visitSAMRead(first, getYPos(), true);
-				visitSAMRead(second, getYPos(gl.getYOffset() + 1), true);
+				y2 = getYPos(gl.getYOffset() + 1);
+			}
+			else {
+				drawPadding(pixelPositionOnWindow(first.unclippedEnd), pixelPositionOnWindow(second.unclippedStart), y1, Color.GREY, true);
 			}
 
-			//drawLabel(pair);
-
-			// TODO: draw connector between paired reads
-
+			visitSAMRead(first, y1, true);
+			visitSAMRead(second, y2, true);
 		}
 
 		public void visitSAMRead(SAMRead r) {

@@ -124,6 +124,7 @@ public class IntervalLayout {
 
 		public void clear() {
 			isDefined = false;
+			height = 1;
 		}
 
 		@Override
