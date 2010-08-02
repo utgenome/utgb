@@ -28,9 +28,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import org.utgenome.gwt.utgb.client.bio.Gene;
 import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
 import org.utgenome.gwt.utgb.client.bio.OnGenomeDataVisitorBase;
+import org.utgenome.gwt.utgb.client.bio.Read;
 import org.utgenome.gwt.utgb.client.bio.ReadCoverage;
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.bio.SAMReadPair;
@@ -125,6 +127,16 @@ public class IntervalLayout {
 		public void clear() {
 			isDefined = false;
 			height = 1;
+		}
+
+		@Override
+		public void visitGene(Gene g) {
+			visitInterval(g);
+		}
+
+		@Override
+		public void visitRead(Read r) {
+			visitInterval(r);
 		}
 
 		@Override
