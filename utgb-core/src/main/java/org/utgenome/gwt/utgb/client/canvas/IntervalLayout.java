@@ -40,7 +40,7 @@ import org.utgenome.gwt.utgb.client.track.TrackWindow;
 public class IntervalLayout {
 
 	private boolean keepSpaceForLabels = true;
-	private boolean hasEnoughSpaceForLabels = false;
+	private boolean hasEnoughHeightForLabels = false;
 	private PrioritySearchTree<LocusLayout> locusLayout = new PrioritySearchTree<LocusLayout>();
 
 	private TrackWindow w;
@@ -150,7 +150,7 @@ public class IntervalLayout {
 		if (maxYOffset <= 0)
 			maxYOffset = 1;
 
-		hasEnoughSpaceForLabels = showLabelsFlag;
+		hasEnoughHeightForLabels = showLabelsFlag;
 		return maxYOffset;
 	}
 
@@ -159,7 +159,7 @@ public class IntervalLayout {
 	}
 
 	public boolean hasEnoughHeightForLabels() {
-		return hasEnoughSpaceForLabels;
+		return hasEnoughHeightForLabels;
 	}
 
 	public void depthFirstSearch(PrioritySearchTree.Visitor<LocusLayout> visitor) {
@@ -184,7 +184,7 @@ public class IntervalLayout {
 				int x1 = pixelPositionOnWindow(g.getStart()) - xBorder;
 				int x2 = pixelPositionOnWindow(g.getStart() + g.length()) + xBorder;
 
-				if (hasEnoughSpaceForLabels) {
+				if (hasEnoughHeightForLabels) {
 					int labelWidth = estimiateLabelWidth(g, geneHeight);
 					if (x1 - labelWidth > 0)
 						x1 -= labelWidth;

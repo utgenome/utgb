@@ -65,7 +65,8 @@ public class SAMRead extends Interval {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 
-		sb.append("flag=" + flag);
+		sb.append("name=" + qname);
+		sb.append(", flag=" + flag);
 		sb.append(", mapq=" + mapq);
 		sb.append(", cigar=" + cigar);
 		sb.append(", iSize=" + iSize);
@@ -75,17 +76,31 @@ public class SAMRead extends Interval {
 		return sb.toString();
 	}
 
+	public boolean isMate(SAMRead other) {
+		if (this.isFirstRead()) {
+			if (other.isSecondRead())
+				return qname != null && qname.equals(other.qname);
+		}
+		else {
+			if (other.isFirstRead())
+				return qname != null && qname.equals(other.qname);
+		}
+		return false;
+	}
+
 	@Override
 	public String getName() {
 		return qname;
 	}
 
+	@Override
 	public boolean isSense() {
 		return (flag & SAMReadFlag.FLAG_STRAND_OF_QUERY) == 0;
 	}
 
+	@Override
 	public boolean isAntiSense() {
-		return (flag & SAMReadFlag.FLAG_STRAND_OF_QUERY) == 1;
+		return !isSense();
 	}
 
 	@Override
@@ -94,7 +109,23 @@ public class SAMRead extends Interval {
 	}
 
 	public boolean isPairedRead() {
-		return (flag & SAMReadFlag.FLAG_PAIRED_READ) == 1;
+		return SAMReadFlag.isPairedRead(this.flag);
+	}
+
+	public boolean isMappedInProperPair() {
+		return SAMReadFlag.isMappedInProperPair(this.flag);
+	}
+
+	public boolean isFirstRead() {
+		return SAMReadFlag.isFirstRead(this.flag);
+	}
+
+	public boolean isSecondRead() {
+		return SAMReadFlag.isSecondRead(this.flag);
+	}
+
+	public boolean isUnmapped() {
+		return SAMReadFlag.isQueryUnmapped(this.flag);
 	}
 
 }

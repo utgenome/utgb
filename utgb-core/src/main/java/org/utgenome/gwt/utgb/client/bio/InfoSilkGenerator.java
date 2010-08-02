@@ -94,6 +94,12 @@ public class InfoSilkGenerator implements OnGenomeDataVisitor {
 		}
 	}
 
+	public void visitSAMReadPair(SAMReadPair pair) {
+
+		visitSAMRead(pair.getFirst());
+		visitSAMRead(pair.getSecond());
+	}
+
 	public void visitSequence(ReferenceSequence referenceSequence) {
 		// TODO Auto-generated method stub
 

@@ -19,15 +19,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.samtools.SAMFileReader;
-import net.sf.samtools.SAMRecord;
-import net.sf.samtools.SAMFileReader.ValidationStringency;
-import net.sf.samtools.util.CloseableIterator;
-
 import org.utgenome.UTGBErrorCode;
 import org.utgenome.UTGBException;
 import org.utgenome.format.bed.BEDDatabase;
-import org.utgenome.format.sam.SAM2SilkReader;
+import org.utgenome.format.sam.SAMReader;
 import org.utgenome.graphics.GenomeWindow;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.DASLocation;
@@ -38,7 +33,6 @@ import org.utgenome.gwt.utgb.client.bio.OnGenomeDataSet;
 import org.utgenome.gwt.utgb.client.bio.Read;
 import org.utgenome.gwt.utgb.client.bio.ReadCoverage;
 import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig;
-import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.bio.DASResult.Segment.DASFeature;
 import org.utgenome.gwt.utgb.client.bio.GenomeDB.DBType;
 import org.utgenome.gwt.utgb.client.bio.Read.ReadType;
@@ -111,13 +105,7 @@ public class ReadView extends WebTrackBase {
 			switch (dbType) {
 			case BAM: {
 				File bamFile = new File(WebTrackBase.getProjectRootPath(), db.path);
-				File baiFile = new File(WebTrackBase.getProjectRootPath(), db.path + ".bai");
-				SAMFileReader sam = new SAMFileReader(bamFile, baiFile);
-				sam.setValidationStringency(ValidationStringency.SILENT);
-				for (CloseableIterator<SAMRecord> it = sam.queryOverlapping(loc.chr, loc.start, loc.end); it.hasNext();) {
-					SAMRead r = SAM2SilkReader.convertToSAMRead(it.next());
-					result.read.add(r);
-				}
+				result.read = SAMReader.overlapQuery(bamFile, loc);
 			}
 				break;
 			case BED: {

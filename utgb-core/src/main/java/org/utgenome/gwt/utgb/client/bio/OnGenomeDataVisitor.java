@@ -40,6 +40,8 @@ public interface OnGenomeDataVisitor {
 
 	public void visitSAMRead(SAMRead r);
 
+	public void visitSAMReadPair(SAMReadPair pair);
+
 	public void visitSequence(ReferenceSequence referenceSequence);
 
 	public void visitReadCoverage(ReadCoverage readCoverage);

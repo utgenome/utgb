@@ -165,6 +165,8 @@ public class CIGAR implements Serializable, Iterable<CIGAR.Element> {
 			if (c >= '0' && c <= '9')
 				continue;
 			else {
+				if (startIndexOfNumber == cursor)
+					break; // not a CIGAR string, ignoring the error
 				int len = Integer.parseInt(cigarString.substring(startIndexOfNumber, cursor));
 				Type t = Type.convert(cigarString.charAt(cursor));
 				result.add(new Element(t, len));

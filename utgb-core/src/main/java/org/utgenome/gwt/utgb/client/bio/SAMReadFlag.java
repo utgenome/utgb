@@ -44,4 +44,36 @@ public class SAMReadFlag {
 	public static final int FLAG_FAILS_QUALITY_CHECK = 0x0200;
 	public static final int FLAG_PCR_OR_OPTICAL_DUPLICATE = 0x0400;
 
+	public static boolean isPairedRead(int flag) {
+		return (flag & FLAG_PAIRED_READ) != 0;
+	}
+
+	public static boolean isMappedInProperPair(int flag) {
+		return (flag & FLAG_MAPPED_IN_A_PROPER_PAIR) != 0;
+	}
+
+	public static boolean isQueryUnmapped(int flag) {
+		return (flag & FLAG_QUERY_IS_UNMAPPED) != 0;
+	}
+
+	public static boolean isMateUnmapped(int flag) {
+		return (flag & FLAG_MATE_IS_UNMAPPED) != 0;
+	}
+
+	public static boolean isQueryForwardStrand(int flag) {
+		return (flag & FLAG_STRAND_OF_QUERY) == 0;
+	}
+
+	public static boolean isMateForwardStrand(int flag) {
+		return (flag & FLAG_STRAND_OF_MATE) == 0;
+	}
+
+	public static boolean isFirstRead(int flag) {
+		return (flag & FLAG_IS_FIRST_READ) != 0;
+	}
+
+	public static boolean isSecondRead(int flag) {
+		return (flag & FLAG_IS_SECOND_READ) != 0;
+	}
+
 }

@@ -40,6 +40,7 @@ import org.utgenome.gwt.utgb.client.bio.Read;
 import org.utgenome.gwt.utgb.client.bio.ReadCoverage;
 import org.utgenome.gwt.utgb.client.bio.ReferenceSequence;
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
+import org.utgenome.gwt.utgb.client.bio.SAMReadPair;
 import org.utgenome.gwt.utgb.client.canvas.IntervalLayout.LocusLayout;
 import org.utgenome.gwt.utgb.client.track.TrackGroup;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
@@ -537,6 +538,18 @@ public class GWTGenomeCanvas extends Composite {
 			drawLabel(r);
 		}
 
+		public void visitSAMReadPair(SAMReadPair pair) {
+
+			SAMRead first = pair.getFirst();
+			SAMRead second = pair.getSecond();
+
+			visitSAMRead(first);
+			visitSAMRead(second);
+
+			// draw connector between paired reads
+
+		}
+
 		public void visitSAMRead(SAMRead r) {
 
 			int y = gl.getYOffset();
@@ -558,7 +571,10 @@ public class GWTGenomeCanvas extends Composite {
 					CIGAR cigar = new CIGAR(r.cigar);
 					int readStart = r.getStart();
 					int seqIndex = 0;
-					for (CIGAR.Element e : cigar) {
+
+					for (int cigarIndex = 0; cigarIndex < cigar.size(); cigarIndex++) {
+						CIGAR.Element e = cigar.get(cigarIndex);
+
 						int readEnd = readStart + e.length;
 						int x1 = pixelPositionOnWindow(readStart);
 						switch (e.type) {
@@ -601,12 +617,16 @@ public class GWTGenomeCanvas extends Composite {
 							drawPadding(x1, pixelPositionOnWindow(readEnd), y, getCDSColor(r), true);
 							break;
 						case SoftClip: {
-							readEnd = readStart;
-							int x0 = pixelPositionOnWindow(readStart - e.length);
+							int softclipStart = cigarIndex == 0 ? readStart - e.length : readStart;
+							int softclipEnd = cigarIndex == 0 ? readStart : readStart + e.length;
+							readEnd = softclipEnd;
+
+							int x0 = pixelPositionOnWindow(softclipStart);
+							x1 = pixelPositionOnWindow(softclipEnd);
 							drawGeneRect(x0, x1, y, getCDSColor(r, 0.2f), true);
 
 							if (drawBase) {
-								drawBases(readStart - e.length, y, r.seq.substring(seqIndex, seqIndex + e.length).toLowerCase());
+								drawBases(softclipStart, y, r.seq.substring(seqIndex, seqIndex + e.length).toLowerCase());
 							}
 
 							seqIndex += e.length;

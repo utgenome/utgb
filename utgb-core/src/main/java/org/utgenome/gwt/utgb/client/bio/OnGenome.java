@@ -35,14 +35,14 @@ import java.io.Serializable;
 public interface OnGenome extends Serializable {
 
 	/**
-	 * return 1-based start position of the data
+	 * return 1-based start position of the data. The interval represents [start, end). ([inclusive, exclusive))
 	 * 
 	 * @return
 	 */
 	public int getStart();
 
 	/**
-	 * return 1-based end position of the data. The interval represents [start, end).
+	 * return 1-based end position of the data. The interval represents [start, end). ([inclusive, exclusive))
 	 * 
 	 * @return
 	 */
