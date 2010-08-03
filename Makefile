@@ -14,6 +14,7 @@
 #   limitations under the License.
 #--------------------------------------------------------------------------
 
+PREFIX=${HOME}/.utgb
 MVN=mvn
 
 .PHONY: install test release-prepare release-perform clean update-version
@@ -21,7 +22,7 @@ MVN=mvn
 
 install:
 	$(MVN) install -Dmaven.test.skip=true
-	cd utgb-shell; $(MAKE) MVN_OPTS="-Dmaven.test.skip=true" install 
+	cd utgb-shell; $(MAKE) PREFIX="$(PREFIX)" MVN_OPTS="-Dmaven.test.skip=true" install 
 
 test: install
 	$(MVN) test
