@@ -380,6 +380,10 @@ public class ReadTrack extends TrackBase {
 
 						if ("pileup".equals(layout) && dataSet.size() > 0 && DataChecker.isReadCoverage(dataSet.get(0))) {
 							needUpdateForGraphicRefinement = true;
+							// narrow down the prefetch range
+							float prefetchFactor = geneCanvas.getPrefetchFactor();
+							prefetchFactor /= 2.0;
+							geneCanvas.setPrefetchFactor(prefetchFactor);
 						}
 						else
 							needUpdateForGraphicRefinement = false;

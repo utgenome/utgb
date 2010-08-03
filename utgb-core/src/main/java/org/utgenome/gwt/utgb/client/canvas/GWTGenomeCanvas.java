@@ -349,7 +349,17 @@ public class GWTGenomeCanvas extends Composite {
 		return prefetchWindow;
 	}
 
-	private final int PREFETCH_FACTOR = 1;
+	private float PREFETCH_FACTOR = 1.0f;
+
+	public float getPrefetchFactor() {
+		return this.PREFETCH_FACTOR;
+	}
+
+	public void setPrefetchFactor(float factor) {
+		if (factor <= 0.0f)
+			factor = 0.0f;
+		this.PREFETCH_FACTOR = factor;
+	}
 
 	/**
 	 * @param w
@@ -357,13 +367,13 @@ public class GWTGenomeCanvas extends Composite {
 	public void setTrackWindow(TrackWindow w) {
 
 		if (!hasCacheCovering(w)) {
-			int prefetchStart = w.getStartOnGenome() - w.getSequenceLength() * PREFETCH_FACTOR;
-			int prefetchEnd = w.getEndOnGenome() + w.getSequenceLength() * PREFETCH_FACTOR;
+			int prefetchStart = w.getStartOnGenome() - (int) (w.getSequenceLength() * PREFETCH_FACTOR);
+			int prefetchEnd = w.getEndOnGenome() + (int) (w.getSequenceLength() * PREFETCH_FACTOR);
 			if (prefetchStart <= 0) {
 				prefetchStart = 1;
-				prefetchEnd = w.getEndOnGenome() + (w.getSequenceLength() * PREFETCH_FACTOR * 2);
+				prefetchEnd = w.getEndOnGenome() + (int) (w.getSequenceLength() * PREFETCH_FACTOR * 2);
 			}
-			int prefetchPixelSize = w.getPixelWidth() * (1 + PREFETCH_FACTOR * 2);
+			int prefetchPixelSize = (int) (w.getPixelWidth() * (1 + PREFETCH_FACTOR * 2));
 			prefetchWindow = new TrackWindow(prefetchPixelSize, prefetchStart, prefetchEnd);
 			hasCache = false;
 		}
