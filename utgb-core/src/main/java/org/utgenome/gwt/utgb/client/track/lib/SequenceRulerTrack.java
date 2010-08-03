@@ -41,7 +41,7 @@ import org.utgenome.gwt.utgb.client.track.TrackRangeSelector;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.track.UTGBProperty;
 import org.utgenome.gwt.utgb.client.ui.AbsoluteFocusPanel;
-import org.utgenome.gwt.utgb.client.util.Properties;
+import org.utgenome.gwt.utgb.client.util.CanonicalProperties;
 import org.utgenome.gwt.utgb.client.util.StringUtil;
 import org.utgenome.gwt.widget.client.Style;
 
@@ -240,7 +240,7 @@ public class SequenceRulerTrack extends TrackBase implements RangeSelectable {
 	}
 
 	@Override
-	public void restoreProperties(Properties properties) {
+	public void restoreProperties(CanonicalProperties properties) {
 		super.restoreProperties(properties);
 		_windowLeftMargin = properties.getInt("leftMargin", _windowLeftMargin);
 		_sequenceSize = properties.getInt("ruler.length", _sequenceSize);

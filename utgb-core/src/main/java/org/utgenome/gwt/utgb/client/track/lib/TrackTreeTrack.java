@@ -32,7 +32,7 @@ import org.utgenome.gwt.utgb.client.track.TrackFrame;
 import org.utgenome.gwt.utgb.client.track.TrackGroup;
 import org.utgenome.gwt.utgb.client.track.TrackInfo;
 import org.utgenome.gwt.utgb.client.track.TrackUpdateListener;
-import org.utgenome.gwt.utgb.client.util.Properties;
+import org.utgenome.gwt.utgb.client.util.CanonicalProperties;
 
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
@@ -136,7 +136,7 @@ public class TrackTreeTrack extends TrackBase implements TrackUpdateListener {
 	public void onResizeTrack() {
 	}
 
-	public void saveProperties(Properties saveData) {
+	public void saveProperties(CanonicalProperties saveData) {
 		if (rootTrackGroup != null)
 			saveData.add("rootTrackGroup", rootTrackGroup.getClass().getName());
 	}

@@ -39,7 +39,7 @@ import org.utgenome.gwt.utgb.client.track.TrackFrame;
 import org.utgenome.gwt.utgb.client.track.TrackGroup;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.ui.FormLabel;
-import org.utgenome.gwt.utgb.client.util.Properties;
+import org.utgenome.gwt.utgb.client.util.CanonicalProperties;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -259,7 +259,7 @@ public class SAMTrack extends TrackBase {
 	//	}
 
 	@Override
-	public void restoreProperties(Properties properties) {
+	public void restoreProperties(CanonicalProperties properties) {
 		super.restoreProperties(properties);
 
 		readFileName = properties.get("readFileName", readFileName);

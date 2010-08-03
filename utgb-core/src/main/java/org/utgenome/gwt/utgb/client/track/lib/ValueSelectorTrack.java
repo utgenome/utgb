@@ -33,8 +33,8 @@ import org.utgenome.gwt.utgb.client.track.TrackBase;
 import org.utgenome.gwt.utgb.client.track.TrackFrame;
 import org.utgenome.gwt.utgb.client.track.TrackGroup;
 import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChange;
+import org.utgenome.gwt.utgb.client.util.CanonicalProperties;
 import org.utgenome.gwt.utgb.client.util.JSONUtil;
-import org.utgenome.gwt.utgb.client.util.Properties;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -188,13 +188,13 @@ public class ValueSelectorTrack extends TrackBase {
 		trackFrame.pack();
 	}
 
-	public void saveProperties(Properties saveData) {
+	public void saveProperties(CanonicalProperties saveData) {
 		saveData.add("targetProperty", _targetProperty);
 		saveData.add("valueList", JSONUtil.toJSONArray(_linkList));
 		saveData.add("selectedValue", _selectedValue);
 	}
 
-	public void restoreProperties(Properties properties) {
+	public void restoreProperties(CanonicalProperties properties) {
 		_targetProperty = properties.get("targetProperty", _targetProperty);
 		_selectedValue = properties.get("selectedValue", _selectedValue);
 		ArrayList<String> valueList = JSONUtil.parseJSONArray(properties.get("valueList", "[]"));

@@ -36,8 +36,8 @@ import org.utgenome.gwt.utgb.client.track.TrackGroup;
 import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChange;
 import org.utgenome.gwt.utgb.client.track.UTGBProperty;
 import org.utgenome.gwt.utgb.client.ui.FormLabel;
+import org.utgenome.gwt.utgb.client.util.CanonicalProperties;
 import org.utgenome.gwt.utgb.client.util.JSONUtil;
-import org.utgenome.gwt.utgb.client.util.Properties;
 import org.utgenome.gwt.widget.client.Style;
 
 import com.google.gwt.core.client.GWT;
@@ -267,7 +267,7 @@ public class DBSelectTrack extends TrackBase {
 	}
 
 	@Override
-	public void restoreProperties(Properties properties) {
+	public void restoreProperties(CanonicalProperties properties) {
 
 		favoriteGroup.clear();
 
@@ -281,7 +281,7 @@ public class DBSelectTrack extends TrackBase {
 	}
 
 	@Override
-	public void saveProperties(Properties saveData) {
+	public void saveProperties(CanonicalProperties saveData) {
 		saveData.add("favoriteGroup", JSONUtil.toJSONArray(favoriteGroup));
 	}
 

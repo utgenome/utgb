@@ -36,6 +36,7 @@ import org.utgenome.gwt.utgb.client.track.TrackGroup;
 import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChange;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.track.UTGBProperty;
+import org.utgenome.gwt.utgb.client.util.CanonicalProperties;
 import org.utgenome.gwt.utgb.client.util.Properties;
 import org.utgenome.gwt.widget.client.Style;
 
@@ -206,7 +207,7 @@ public class GenomeTrackTextTest extends TrackBase {
 	}
 
 	@Override
-	public void saveProperties(Properties saveData) {
+	public void saveProperties(CanonicalProperties saveData) {
 		saveData.add("type", type);
 		saveData.add("trackBaseURL", trackBaseURL);
 		saveData.add("leftMargin", leftMargin);
@@ -214,7 +215,7 @@ public class GenomeTrackTextTest extends TrackBase {
 	}
 
 	@Override
-	public void restoreProperties(Properties properties) {
+	public void restoreProperties(CanonicalProperties properties) {
 		trackBaseURL = properties.get("trackBaseURL", trackBaseURL);
 		leftMargin = properties.getInt("leftMargin", leftMargin);
 		type = properties.get("type", type);

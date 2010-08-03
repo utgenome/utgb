@@ -36,7 +36,7 @@ import org.utgenome.gwt.utgb.client.track.impl.TrackConfigChangeImpl;
 import org.utgenome.gwt.utgb.client.ui.DraggableTable;
 import org.utgenome.gwt.utgb.client.ui.Icon;
 import org.utgenome.gwt.utgb.client.ui.MouseMoveListener;
-import org.utgenome.gwt.utgb.client.util.Properties;
+import org.utgenome.gwt.utgb.client.util.CanonicalProperties;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -79,7 +79,7 @@ public class TrackConfig extends PopupPanel {
 	private DockPanel _panel = new DockPanel();
 	private ConfigurationTable _configTable = new ConfigurationTable(this);
 	private Label _label;
-	Properties properties = new Properties();
+	CanonicalProperties properties = new CanonicalProperties();
 
 	public TrackConfig(Track track) {
 		super(true);
@@ -193,11 +193,15 @@ public class TrackConfig extends PopupPanel {
 		_track.onChangeTrackConfig(new TrackConfigChangeImpl(this, parameterName));
 	}
 
-	public void saveProperties(Properties toSave) {
-		toSave.putAll(properties);
+	public void saveProperties(CanonicalProperties toSave) {
+
+		for (String key : properties.keySet()) {
+			String nKey = CanonicalProperties.toNaturalName(key);
+			toSave.put(nKey, properties.get(key));
+		}
 	}
 
-	public void restoreProperties(Properties forLoad) {
+	public void restoreProperties(CanonicalProperties forLoad) {
 		properties.putAll(forLoad);
 	}
 
@@ -300,11 +304,13 @@ class ConfigurationTable extends Composite {
 		if (currentValue == null)
 			currentValue = defaultValue;
 
-		_config.properties.put(dataType.getName(), currentValue);
+		String cKey = CanonicalProperties.toCanonicalName(dataType.getName());
+
+		_config.properties.put(cKey, currentValue);
 		form.setValue(currentValue);
-		Entry entry = new Entry(label, dataType.getName(), form);
+		Entry entry = new Entry(label, cKey, form);
 		_table.add(entry, entry.getDragEdge());
-		_paramToEntryMap.put(dataType.getName(), entry);
+		_paramToEntryMap.put(cKey, entry);
 
 		if (form.getOffsetWidth() > _table.getOffsetWidth())
 			_table.setWidth((form.getOffsetWidth() + 10) + "px");

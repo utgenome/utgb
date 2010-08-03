@@ -39,6 +39,7 @@ import org.utgenome.gwt.utgb.client.track.TrackGroup;
 import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChange;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.track.UTGBProperty;
+import org.utgenome.gwt.utgb.client.util.CanonicalProperties;
 import org.utgenome.gwt.utgb.client.util.Properties;
 import org.utgenome.gwt.utgb.client.util.StringUtil;
 import org.utgenome.gwt.widget.client.Style;
@@ -217,14 +218,14 @@ public class GenomeTrack extends TrackBase {
 	private boolean monitorWindowChange = true;
 
 	@Override
-	public void saveProperties(Properties saveData) {
+	public void saveProperties(CanonicalProperties saveData) {
 		super.saveProperties(saveData);
 		String q = StringUtil.joinIterable(queryParams, ",");
 		saveData.add("queryParams", q);
 	}
 
 	@Override
-	public void restoreProperties(Properties properties) {
+	public void restoreProperties(CanonicalProperties properties) {
 		super.restoreProperties(properties);
 
 		trackBaseURL = properties.get("trackBaseURL", trackBaseURL);

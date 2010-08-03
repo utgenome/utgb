@@ -37,8 +37,8 @@ import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.track.UTGBProperty;
 import org.utgenome.gwt.utgb.client.track.bean.SequenceInfo;
 import org.utgenome.gwt.utgb.client.ui.FormLabel;
+import org.utgenome.gwt.utgb.client.util.CanonicalProperties;
 import org.utgenome.gwt.utgb.client.util.JSONUtil;
-import org.utgenome.gwt.utgb.client.util.Properties;
 import org.utgenome.gwt.utgb.client.util.StringUtil;
 import org.utgenome.gwt.utgb.client.util.xml.XMLWriter;
 import org.utgenome.gwt.widget.client.Style;
@@ -445,7 +445,7 @@ public class NavigatorTrack extends TrackBase {
 	}
 
 	@Override
-	public void saveProperties(Properties saveData) {
+	public void saveProperties(CanonicalProperties saveData) {
 
 		StringBuffer buf = new StringBuffer();
 		buf.append("[");
@@ -461,7 +461,7 @@ public class NavigatorTrack extends TrackBase {
 	}
 
 	@Override
-	public void restoreProperties(Properties properties) {
+	public void restoreProperties(CanonicalProperties properties) {
 
 		try {
 			JSONValue v = JSONParser.parse(properties.get("sequenceList", "[]"));

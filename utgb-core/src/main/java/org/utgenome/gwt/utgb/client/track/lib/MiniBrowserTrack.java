@@ -32,7 +32,7 @@ import org.utgenome.gwt.utgb.client.track.TrackConfig;
 import org.utgenome.gwt.utgb.client.track.TrackConfigChange;
 import org.utgenome.gwt.utgb.client.track.TrackFrame;
 import org.utgenome.gwt.utgb.client.track.TrackGroup;
-import org.utgenome.gwt.utgb.client.util.Properties;
+import org.utgenome.gwt.utgb.client.util.CanonicalProperties;
 import org.utgenome.gwt.widget.client.Style;
 
 import com.google.gwt.event.dom.client.ErrorEvent;
@@ -173,13 +173,13 @@ public class MiniBrowserTrack extends TrackBase {
 	}
 
 	@Override
-	public void saveProperties(Properties saveData) {
+	public void saveProperties(CanonicalProperties saveData) {
 		saveData.add("type", type);
 		saveData.add("URL", trackBaseURL);
 	}
 
 	@Override
-	public void restoreProperties(Properties properties) {
+	public void restoreProperties(CanonicalProperties properties) {
 		trackBaseURL = properties.get("URL", trackBaseURL);
 		type = properties.get("type", type);
 	}

@@ -37,6 +37,7 @@ import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChange;
 import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChangeListener;
 import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyWriter;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
+import org.utgenome.gwt.utgb.client.util.CanonicalProperties;
 import org.utgenome.gwt.utgb.client.util.xml.XMLAttribute;
 import org.utgenome.gwt.utgb.client.util.xml.XMLUtil;
 import org.utgenome.gwt.utgb.client.util.xml.XMLWriter;
@@ -54,7 +55,7 @@ import org.utgenome.gwt.utgb.client.util.xml.XMLWriter;
 public class TrackGroupPropertyImpl implements TrackGroupProperty, TrackGroupPropertyWriter {
 	private final TrackGroup _trackGroup;
 	private TrackWindow _trackWindow = new TrackWindow(700, 1, 100);
-	private HashMap<String, String> _properties = new HashMap<String, String>();
+	private CanonicalProperties _properties = new CanonicalProperties();
 	private ArrayList<TrackGroupPropertyChangeListener> _changeListener = new ArrayList<TrackGroupPropertyChangeListener>();
 	private boolean enableNotifiaction = true;
 
@@ -178,7 +179,7 @@ public class TrackGroupPropertyImpl implements TrackGroupProperty, TrackGroupPro
 
 	public void toXML(XMLWriter xmlWriter) {
 		xmlWriter.start("groupProperties");
-		XMLUtil.toXML(_properties, xmlWriter);
+		XMLUtil.toCanonicalXML(_properties, xmlWriter);
 		toXML(_trackWindow, xmlWriter);
 		xmlWriter.end(); // group-properties
 	}

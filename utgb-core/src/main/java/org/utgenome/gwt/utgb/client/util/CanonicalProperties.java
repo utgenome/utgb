@@ -24,6 +24,8 @@ package org.utgenome.gwt.utgb.client.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Using canonical parameter keys for providing case and space insensitive property map.
@@ -51,8 +53,9 @@ public class CanonicalProperties extends HashMap<String, String> {
 
 		if (!canonicalNameTable.containsKey(key)) {
 			String cKey = key.replaceAll("[\\s-_]", "");
-			cKey = key.toLowerCase();
+			cKey = cKey.toLowerCase();
 			canonicalNameTable.put(key, cKey);
+			naturalNameTable.put(cKey, toNaturalName(key));
 		}
 		return canonicalNameTable.get(key);
 	}
@@ -95,28 +98,40 @@ public class CanonicalProperties extends HashMap<String, String> {
 		return nName;
 	}
 
+	@Override
+	public void putAll(Map<? extends String, ? extends String> m) {
+		for (Entry<? extends String, ? extends String> e : m.entrySet()) {
+			put(e.getKey(), e.getValue());
+		}
+	}
+
+	@Override
+	public String put(String key, String value) {
+		return super.put(toCanonicalName(key), value);
+	}
+
 	private static boolean isSplitChar(char c) {
 		return Character.isUpperCase(c) || c == '_' || c == '-' || c == ' ';
 	}
 
 	public void add(String key, String value) {
-		super.put(toCanonicalName(key), value);
+		put(key, value);
 	}
 
 	public void add(String key, int value) {
-		super.put(toCanonicalName(key), Integer.toString(value));
+		put(key, Integer.toString(value));
 	}
 
 	public void add(String key, long value) {
-		super.put(toCanonicalName(key), Long.toString(value));
+		put(key, Long.toString(value));
 	}
 
 	public void add(String key, float value) {
-		super.put(toCanonicalName(key), Float.toString(value));
+		put(key, Float.toString(value));
 	}
 
 	public void add(String key, boolean value) {
-		super.put(toCanonicalName(key), Boolean.toString(value));
+		put(key, Boolean.toString(value));
 	}
 
 	public String get(String key) {

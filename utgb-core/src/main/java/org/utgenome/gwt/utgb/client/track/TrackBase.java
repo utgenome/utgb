@@ -29,6 +29,7 @@ import java.util.HashMap;
 import org.utgenome.gwt.utgb.client.BrowserServiceAsync;
 import org.utgenome.gwt.utgb.client.RPCServiceManager;
 import org.utgenome.gwt.utgb.client.bio.Coordinate;
+import org.utgenome.gwt.utgb.client.util.CanonicalProperties;
 import org.utgenome.gwt.utgb.client.util.Properties;
 import org.utgenome.gwt.utgb.client.util.xml.XMLAttribute;
 import org.utgenome.gwt.utgb.client.util.xml.XMLUtil;
@@ -64,6 +65,36 @@ public abstract class TrackBase implements Track {
 
 	public void setUp(TrackFrame trackFrame, TrackGroup group) {
 		// do nothing
+	}
+
+	/**
+	 * Substitute the query parameters in the given string with the actual values.
+	 * 
+	 * @param template
+	 * @return
+	 */
+	public String resolvePropertyValues(String template) {
+		// replace track group properties
+		TrackWindow w = getTrackWindow();
+		if (template.contains("%start"))
+			template = template.replaceAll("%start", Integer.toString(w.getStartOnGenome()));
+		if (template.contains("%end"))
+			template = template.replaceAll("%end", Integer.toString(w.getEndOnGenome()));
+		if (template.contains("%len"))
+			template = template.replaceAll("%len", Integer.toString(w.getSequenceLength()));
+		if (template.contains("%pixelwidth"))
+			template = template.replaceAll("%pixelwidth", Integer.toString(w.getPixelWidth()));
+		String chr = getTrackGroupProperty(UTGBProperty.TARGET);
+		if (chr != null && template.contains("%chr"))
+			template = template.replaceAll("%chr", chr);
+		String ref = getTrackGroupProperty(UTGBProperty.REVISION);
+		if (ref != null && template.contains("%ref"))
+			template = template.replaceAll("%ref", ref);
+		String species = getTrackGroupProperty(UTGBProperty.SPECIES);
+		if (species != null && template.contains("%species"))
+			template = template.replaceAll("%species", species);
+
+		return template;
 	}
 
 	public TrackGroup getTrackGroup() {
@@ -246,9 +277,9 @@ public abstract class TrackBase implements Track {
 		xmlWriter.start("track", new XMLAttribute().add("className", getClassName()).add("name", getName()).add("height", getWidget().getOffsetHeight()).add(
 				"pack", _frame.isPacked()));
 
-		Properties trackProperties = new Properties();
+		CanonicalProperties trackProperties = new CanonicalProperties();
 		saveProperties(trackProperties);
-		XMLUtil.toXML(trackProperties, xmlWriter);
+		XMLUtil.toCanonicalXML(trackProperties, xmlWriter);
 		xmlWriter.end(); // track
 	}
 
@@ -261,7 +292,7 @@ public abstract class TrackBase implements Track {
 	 * 
 	 * @param xmlWriter
 	 */
-	public void saveProperties(Properties saveData) {
+	public void saveProperties(CanonicalProperties saveData) {
 		__config.saveProperties(saveData);
 	}
 
@@ -270,7 +301,7 @@ public abstract class TrackBase implements Track {
 	 * 
 	 * @param properties
 	 */
-	public void restoreProperties(Properties properties) {
+	public void restoreProperties(CanonicalProperties properties) {
 		__config.restoreProperties(properties);
 	}
 

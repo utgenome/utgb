@@ -117,7 +117,7 @@ public class GWTGraphCanvas extends Composite {
 		private final static String CONFIG_MAX_VALUE = "maxValue";
 		private final static String CONFIG_MIN_VALUE = "minValue";
 		private final static String CONFIG_AUTO_SCALE = "autoScale";
-		private final static String CONFIG_LOG_SCALE = "isLog";
+		private final static String CONFIG_LOG_SCALE = "logScale";
 		private final static String CONFIG_SHOW_ZERO_VALUE = "showZero";
 		private final static String CONFIG_DRAW_SCALE = "drawScale";
 		private final static String CONFIG_SHOW_SCALE_LABEL = "showScaleLabel";
@@ -332,11 +332,6 @@ public class GWTGraphCanvas extends Composite {
 	}
 
 	protected void drawWigGraph(GraphCanvas graphCanvas) {
-
-		if (style.autoScale) {
-			drawFrame(graphCanvas.graphData);
-			drawScaleLabel();
-		}
 
 		for (CompactWIGData data : graphCanvas.graphData) {
 

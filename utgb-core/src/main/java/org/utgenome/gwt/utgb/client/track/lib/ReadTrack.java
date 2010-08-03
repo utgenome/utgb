@@ -48,7 +48,7 @@ import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChange;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.track.UTGBProperty;
 import org.utgenome.gwt.utgb.client.util.BrowserInfo;
-import org.utgenome.gwt.utgb.client.util.Properties;
+import org.utgenome.gwt.utgb.client.util.CanonicalProperties;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
@@ -117,15 +117,15 @@ import com.google.gwt.user.client.ui.Widget;
  * <td>Clicked read name</td>
  * </tr>
  * <tr>
- * <td>%start</td>
+ * <td>%qstart</td>
  * <td>Start position of the clicked read</td>
  * </tr>
  * <tr>
- * <td>%end</td>
+ * <td>%qend</td>
  * <td>End position of the clicked read</td>
  * </tr>
  * <tr>
- * <td>%length</td>
+ * <td>%qlen</td>
  * <td>Length of the clicked read</td>
  * </tr>
  * <tr>
@@ -141,15 +141,15 @@ import com.google.gwt.user.client.ui.Widget;
  * <td>Chromosome/contig/scaffold name</td>
  * </tr>
  * <tr>
- * <td>%rstart</td>
+ * <td>%start</td>
  * <td>Start position on the genome (inclusive)</td>
  * </tr>
  * <tr>
- * <td>%rend</td>
+ * <td>%end</td>
  * <td>End position on the genome (exclusive)</td>
  * </tr>
  * <tr>
- * <td>%rlength</td>
+ * <td>%len</td>
  * <td>Sequence length currently displayed</td>
  * </tr>
  * <tr>
@@ -217,40 +217,21 @@ public class ReadTrack extends TrackBase {
 			if (locus.getName() != null) {
 				if (url.contains("%q"))
 					url = url.replaceAll("%q", locus.getName());
-				if (url.contains("%name"))
-					url = url.replaceAll("%name", locus.getName());
+				if (url.contains("%qname"))
+					url = url.replaceAll("%qname", locus.getName());
 			}
 
-			if (url.contains("%start"))
-				url = url.replaceAll("%start", Integer.toString(locus.getStart()));
-			if (url.contains("%end"))
-				url = url.replaceAll("%end", Integer.toString(locus.getEnd()));
-			if (url.contains("%length"))
-				url = url.replaceAll("%length", Integer.toString(locus.length()));
+			if (url.contains("%qstart"))
+				url = url.replaceAll("%qstart", Integer.toString(locus.getStart()));
+			if (url.contains("%qend"))
+				url = url.replaceAll("%qend", Integer.toString(locus.getEnd()));
+			if (url.contains("%qlen"))
+				url = url.replaceAll("%qlen", Integer.toString(locus.length()));
 
 		}
 
 		// replace track group properties
-		TrackWindow w = getTrackWindow();
-		if (url.contains("%rstart"))
-			url = url.replaceAll("%rstart", Integer.toString(w.getStartOnGenome()));
-		if (url.contains("%rend"))
-			url = url.replaceAll("%rend", Integer.toString(w.getEndOnGenome()));
-		if (url.contains("%rlength"))
-			url = url.replaceAll("%rlength", Integer.toString(w.getSequenceLength()));
-		if (url.contains("%pixelwidth"))
-			url = url.replaceAll("%pixelwidth", Integer.toString(w.getPixelWidth()));
-		String chr = getTrackGroupProperty(UTGBProperty.TARGET);
-		if (chr != null && url.contains("%chr"))
-			url = url.replaceAll("%chr", chr);
-		String ref = getTrackGroupProperty(UTGBProperty.REVISION);
-		if (ref != null && url.contains("%ref"))
-			url = url.replaceAll("%ref", ref);
-		String species = getTrackGroupProperty(UTGBProperty.SPECIES);
-		if (species != null && url.contains("%species"))
-			url = url.replaceAll("%species", species);
-
-		return url;
+		return resolvePropertyValues(url);
 	}
 
 	private void updateClickAction() {
@@ -398,7 +379,8 @@ public class ReadTrack extends TrackBase {
 	}
 
 	public String getPath() {
-		return getConfig().getParameter(CONFIG_PATH);
+		String path = getConfig().getParameter(CONFIG_PATH);
+		return resolvePropertyValues(path);
 	}
 
 	/**
@@ -429,7 +411,7 @@ public class ReadTrack extends TrackBase {
 	}
 
 	@Override
-	public void restoreProperties(Properties properties) {
+	public void restoreProperties(CanonicalProperties properties) {
 		super.restoreProperties(properties);
 		updateClickAction();
 	}

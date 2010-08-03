@@ -27,7 +27,7 @@ package org.utgenome.gwt.utgb.client.view;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import org.utgenome.gwt.utgb.client.util.Properties;
+import org.utgenome.gwt.utgb.client.util.CanonicalProperties;
 
 /**
  * view definition of tracks
@@ -71,7 +71,7 @@ public class TrackView implements Serializable {
 		 */
 		public Coordinate coordinate;
 
-		public Properties property = new Properties();
+		public CanonicalProperties property = new CanonicalProperties();
 	}
 
 	public static class Track implements Serializable {
@@ -91,7 +91,7 @@ public class TrackView implements Serializable {
 		 * same name Java keyword, <i>class</i>
 		 */
 		public String class_;
-		public Properties property = new Properties();
+		public CanonicalProperties property = new CanonicalProperties();
 
 	}
 

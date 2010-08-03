@@ -27,6 +27,8 @@ package org.utgenome.gwt.utgb.client.util.xml;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.utgenome.gwt.utgb.client.util.CanonicalProperties;
+
 public class XMLUtil {
 
 	/**
@@ -42,6 +44,17 @@ public class XMLUtil {
 			String key = it.next();
 			Object value = map.get(key);
 			xmlWriter.element("property", new XMLAttribute("key", key), value != null ? value.toString() : "");
+		}
+	}
+
+	public static void toCanonicalXML(CanonicalProperties map, XMLWriter xmlWriter) {
+		if (map == null)
+			return;
+
+		for (String cKey : map.keySet()) {
+			Object value = map.get(cKey);
+			String nKey = CanonicalProperties.toNaturalName(cKey);
+			xmlWriter.element("property", new XMLAttribute("key", nKey), value != null ? value.toString() : "");
 		}
 	}
 

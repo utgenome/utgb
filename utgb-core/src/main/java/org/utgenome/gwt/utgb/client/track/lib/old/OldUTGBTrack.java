@@ -43,9 +43,9 @@ import org.utgenome.gwt.utgb.client.track.TrackGroupProperty;
 import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChange;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.track.operation.OperationParser;
+import org.utgenome.gwt.utgb.client.util.CanonicalProperties;
 import org.utgenome.gwt.utgb.client.util.GETMethodURL;
 import org.utgenome.gwt.utgb.client.util.JSONUtil;
-import org.utgenome.gwt.utgb.client.util.Properties;
 import org.utgenome.gwt.widget.client.Style;
 
 import com.google.gwt.core.client.GWT;
@@ -712,7 +712,7 @@ public class OldUTGBTrack extends TrackBase {
 	}
 
 	@Override
-	public void saveProperties(Properties saveData) {
+	public void saveProperties(CanonicalProperties saveData) {
 		final ArrayList<String> descriptionURLs = new ArrayList<String>();
 		for (int i = 0; i < descriptionURLList.size(); i++) {
 			final DescriptionURLInfo descriptionURLInfo = (descriptionURLList.get(i));
@@ -723,7 +723,7 @@ public class OldUTGBTrack extends TrackBase {
 	}
 
 	@Override
-	public void restoreProperties(Properties properties) {
+	public void restoreProperties(CanonicalProperties properties) {
 		ArrayList<String> valueList = JSONUtil.parseJSONArray(properties.get("descriptionXMLURL", "[]"));
 		for (Iterator<String> it = valueList.iterator(); it.hasNext();) {
 			String value = it.next();

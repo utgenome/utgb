@@ -465,7 +465,7 @@ public class GWTGenomeCanvas extends Composite {
 
 		public void drawBases(int startOnGenome, int y, String seq) {
 
-			int pixelWidthOfBase = (int) (trackWindow.getPixelLengthPerBase() + 0.5d);
+			int pixelWidthOfBase = (int) (trackWindow.getPixelLengthPerBase() + 0.1d);
 
 			if (imageACGT == null) {
 				GWT.log("font image is not loaded");
@@ -512,6 +512,7 @@ public class GWTGenomeCanvas extends Composite {
 				canvas.saveContext();
 				//canvas.setFillStyle(colors[baseIndex]);
 				//canvas.fillRect(x1, y, x2 - x1, geneHeight);
+
 				canvas.drawImage(imageACGT, pixelWidthOfBase * baseIndex, 0, pixelWidthOfBase, geneHeight, (int) x1, y, pixelWidthOfBase, geneHeight);
 				canvas.restoreContext();
 			}
@@ -884,7 +885,7 @@ public class GWTGenomeCanvas extends Composite {
 
 		boolean drawBase = trackWindow.getSequenceLength() <= (trackWindow.getPixelWidth() / FONT_WIDTH);
 		if (drawBase && imageACGT == null) {
-			int pixelWidthOfBase = (int) (trackWindow.getPixelLengthPerBase() + 0.5d);
+			int pixelWidthOfBase = (int) (trackWindow.getPixelLengthPerBase() + 0.1d);
 			ImageLoader.loadImages(new String[] { "utgb-core/ACGT.png?fontWidth=" + pixelWidthOfBase + "&height=" + DEFAULT_GENE_HEIGHT }, new CallBack() {
 				public void onImagesLoaded(ImageElement[] imageElements) {
 					imageACGT = imageElements[0];

@@ -38,7 +38,7 @@ import org.utgenome.gwt.utgb.client.track.TrackConfigChange;
 import org.utgenome.gwt.utgb.client.track.TrackFrame;
 import org.utgenome.gwt.utgb.client.track.TrackGroup;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
-import org.utgenome.gwt.utgb.client.util.Properties;
+import org.utgenome.gwt.utgb.client.util.CanonicalProperties;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
@@ -279,7 +279,7 @@ public class SAMQueryTrack extends TrackBase {
 	//	}
 
 	@Override
-	public void restoreProperties(Properties properties) {
+	public void restoreProperties(CanonicalProperties properties) {
 		super.restoreProperties(properties);
 
 		bamFileName = properties.get("bamFileName", bamFileName);

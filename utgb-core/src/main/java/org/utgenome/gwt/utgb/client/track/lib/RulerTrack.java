@@ -33,7 +33,7 @@ import org.utgenome.gwt.utgb.client.track.TrackGroup;
 import org.utgenome.gwt.utgb.client.track.TrackRangeSelector;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.ui.AbsoluteFocusPanel;
-import org.utgenome.gwt.utgb.client.util.Properties;
+import org.utgenome.gwt.utgb.client.util.CanonicalProperties;
 import org.utgenome.gwt.widget.client.Style;
 
 import com.google.gwt.event.dom.client.MouseDownEvent;
@@ -289,7 +289,7 @@ public class RulerTrack extends TrackBase implements RangeSelectable {
 	}
 
 	@Override
-	public void restoreProperties(Properties properties) {
+	public void restoreProperties(CanonicalProperties properties) {
 		super.restoreProperties(properties);
 
 		_windowLeftMargin = properties.getInt("leftMargin", _windowLeftMargin);

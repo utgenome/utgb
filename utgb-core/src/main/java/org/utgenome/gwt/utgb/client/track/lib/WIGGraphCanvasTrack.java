@@ -95,14 +95,14 @@ public class WIGGraphCanvasTrack extends TrackBase {
 	/**
 	 * Configuration parameter names
 	 */
-	private final static String CONFIG_FILENAME = "fileName";
+	private final static String CONFIG_PATH = "path";
 
 	@Override
 	public void setUp(TrackFrame trackFrame, TrackGroup group) {
 
 		graphCanvas.setTrackGroup(group);
 		TrackConfig config = getConfig();
-		config.addConfigString("Path", CONFIG_FILENAME, "");
+		config.addConfigString("Path", CONFIG_PATH, "");
 		style.setup(config);
 	}
 
@@ -113,10 +113,10 @@ public class WIGGraphCanvasTrack extends TrackBase {
 		graphCanvas.setStyle(style);
 
 		graphCanvas.clearScale();
-		if (!style.autoScale) {
-			graphCanvas.drawFrame(null);
-			graphCanvas.drawScaleLabel();
-		}
+		//		if (!style.autoScale) {
+		graphCanvas.drawFrame(null);
+		graphCanvas.drawScaleLabel();
+		//		}
 
 	}
 
@@ -162,7 +162,8 @@ public class WIGGraphCanvasTrack extends TrackBase {
 	public void loadGraph(final TrackWindow queryWindow) {
 
 		getFrame().setNowLoading();
-		String fileName = getConfig().getString(CONFIG_FILENAME, "");
+		String fileName = resolvePropertyValues(getConfig().getString(CONFIG_PATH, ""));
+
 		int s = queryWindow.getStartOnGenome();
 		int e = queryWindow.getEndOnGenome();
 		ChrLoc l = new ChrLoc(getTrackGroupProperty(UTGBProperty.TARGET), s, e);
@@ -189,7 +190,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 	@Override
 	public void onChangeTrackConfig(TrackConfigChange change) {
 
-		if (change.contains(CONFIG_FILENAME)) {
+		if (change.contains(CONFIG_PATH)) {
 			clearCanvas();
 			refresh();
 		}

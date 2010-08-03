@@ -39,7 +39,7 @@
   -pack: true
   -class: WIGGraphCanvasTrack
   -property
-    -isLog: true
-    -fileName: db/sample.wig.sqlite
+    -log scale: true
+    -path: db/sample.wig.sqlite
     -trackHeight: 50
     -maxValue: 1200

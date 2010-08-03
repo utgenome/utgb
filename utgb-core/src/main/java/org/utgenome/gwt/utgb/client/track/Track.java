@@ -25,6 +25,7 @@
 package org.utgenome.gwt.utgb.client.track;
 
 import org.utgenome.gwt.utgb.client.track.lib.ToolBoxTrack;
+import org.utgenome.gwt.utgb.client.util.CanonicalProperties;
 import org.utgenome.gwt.utgb.client.util.Properties;
 import org.utgenome.gwt.utgb.client.util.xml.XMLWriter;
 import org.utgenome.gwt.utgb.client.view.TrackView;
@@ -277,14 +278,14 @@ public interface Track extends TrackEntry, TrackGroupPropertyChangeListener {
 	 * 
 	 * @param xmlWriter
 	 */
-	public void saveProperties(Properties saveData);
+	public void saveProperties(CanonicalProperties saveData);
 
 	/**
 	 * Override this method to restore internal state of this track
 	 * 
 	 * @param properties
 	 */
-	public void restoreProperties(Properties properties);
+	public void restoreProperties(CanonicalProperties properties);
 
 	/**
 	 * An event handler when some properties shared within the track group has changed
