@@ -242,6 +242,16 @@ public class WIGDatabaseReader {
 			//float[] dataValues = new float[nDatas];
 			String[] dataValues;
 
+			int span = 1;
+			try {
+				String spanStr = track.get("span");
+				if (spanStr != null)
+					span = Integer.parseInt(spanStr);
+			}
+			catch (NumberFormatException e) {
+				_logger.error("inavlid span: " + track.get("span"));
+			}
+
 			// read data point
 			if (track.get("stepType").equals("variableStep")) {
 				bis = new ByteArrayInputStream(rs.getBytes("chrom_starts"));
@@ -295,8 +305,11 @@ public class WIGDatabaseReader {
 			in.close();
 			bis.close();
 
+			long wigStart = start - span;
+			long wigEnd = end + span;
+
 			for (i = 0; i < nDatas; i++) {
-				if (chromStarts[i] >= start && chromStarts[i] <= end) {
+				if (chromStarts[i] > wigStart && chromStarts[i] < wigEnd) {
 					int chromStart = chromStarts[i] - (chromStarts[i] % rough);
 					if (data.containsKey(chromStarts))
 						//					data.put(chromStart, Math.max(dataValues[i], data.get(chromStarts)));
