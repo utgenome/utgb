@@ -30,6 +30,8 @@ import org.utgenome.gwt.utgb.client.UTGBEntryPointBase;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.GenomeDB;
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
+import org.utgenome.gwt.utgb.client.bio.OnGenomeDataVisitorBase;
+import org.utgenome.gwt.utgb.client.bio.ReadCoverage;
 import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig;
 import org.utgenome.gwt.utgb.client.bio.GenomeDB.DBType;
 import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig.Layout;
@@ -341,12 +343,16 @@ public class ReadTrack extends TrackBase {
 		updateClickAction();
 	}
 
+	private boolean needUpdateForGraphicRefinement = false;
+
 	protected void update(TrackWindow newWindow, boolean forceReload) {
 
 		if (!forceReload && geneCanvas.hasCacheCovering(newWindow)) {
-			geneCanvas.setTrackWindow(newWindow);
-			refresh();
-			return;
+			if (!needUpdateForGraphicRefinement) {
+				geneCanvas.setTrackWindow(newWindow);
+				refresh();
+				return;
+			}
 		}
 
 		geneCanvas.setTrackWindow(newWindow);
@@ -355,7 +361,7 @@ public class ReadTrack extends TrackBase {
 		TrackWindow prefetchWindow = geneCanvas.getPrefetchWindow();
 		String chr = getTrackGroupProperty(UTGBProperty.TARGET);
 
-		String layout = getConfig().getString(CONFIG_LAYOUT, "pileup");
+		final String layout = getConfig().getString(CONFIG_LAYOUT, "pileup");
 		ReadQueryConfig queryConfig = new ReadQueryConfig(prefetchWindow.getPixelWidth(), BrowserInfo.isCanvasSupported(), Layout.valueOf(Layout.class, layout
 				.toUpperCase()));
 
@@ -366,16 +372,38 @@ public class ReadTrack extends TrackBase {
 					public void onFailure(Throwable e) {
 						GWT.log("failed to retrieve gene data", e);
 						UTGBEntryPointBase.showErrorMessage("read data retrieval failed: " + e.getMessage());
+						needUpdateForGraphicRefinement = true;
 						getFrame().loadingDone();
 					}
 
 					public void onSuccess(List<OnGenome> dataSet) {
+
+						if ("pileup".equals(layout) && dataSet.size() > 0 && DataChecker.isReadCoverage(dataSet.get(0))) {
+							needUpdateForGraphicRefinement = true;
+						}
+						else
+							needUpdateForGraphicRefinement = false;
 						geneCanvas.resetData(dataSet);
 						refresh();
 					}
 
 				});
 
+	}
+
+	private static class DataChecker extends OnGenomeDataVisitorBase {
+		public boolean flag = false;
+
+		public static boolean isReadCoverage(OnGenome data) {
+			DataChecker dataChecker = new DataChecker();
+			data.accept(dataChecker);
+			return dataChecker.flag;
+		}
+
+		@Override
+		public void visitReadCoverage(ReadCoverage readCoverage) {
+			flag = true;
+		}
 	}
 
 	public String getPath() {

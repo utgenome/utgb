@@ -28,6 +28,7 @@ import java.util.HashSet;
 
 import org.utgenome.gwt.utgb.client.track.TrackConfig;
 import org.utgenome.gwt.utgb.client.track.TrackConfigChange;
+import org.utgenome.gwt.utgb.client.util.CanonicalProperties;
 
 public class TrackConfigChangeImpl implements TrackConfigChange {
 
@@ -40,12 +41,13 @@ public class TrackConfigChangeImpl implements TrackConfigChange {
 	}
 
 	public boolean contains(String configParameterName) {
-		return changedParamSet.contains(configParameterName);
+		return changedParamSet.contains(CanonicalProperties.toCanonicalName(configParameterName));
 	}
 
 	public boolean containsOneOf(String[] configParameterName) {
+
 		for (int i = 0; i < configParameterName.length; i++) {
-			if (changedParamSet.contains(configParameterName[i]))
+			if (changedParamSet.contains(CanonicalProperties.toCanonicalName(configParameterName[i])))
 				return true;
 		}
 		return false;
@@ -62,15 +64,15 @@ public class TrackConfigChangeImpl implements TrackConfigChange {
 
 	public float getFloatValue(String configParamName) {
 		String value = _config.getParameter(configParamName);
-		return Float.parseFloat(value);		
+		return Float.parseFloat(value);
 	}
 
 	public boolean getBoolValue(String configParamName) {
 		String value = _config.getParameter(configParamName);
-		return Boolean.parseBoolean(value);		
+		return Boolean.parseBoolean(value);
 	}
-	public HashSet<String> getChangedParamSet()
-	{
+
+	public HashSet<String> getChangedParamSet() {
 		return changedParamSet;
 	}
 }
