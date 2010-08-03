@@ -356,17 +356,17 @@ public class GWTGenomeCanvas extends Composite {
 	}
 
 	public void setPrefetchFactor(float factor) {
-		if (factor <= 0.0f)
-			factor = 0.0f;
+		if (factor <= 0.05f)
+			factor = 0.05f;
 		this.PREFETCH_FACTOR = factor;
 	}
 
 	/**
 	 * @param w
 	 */
-	public void setTrackWindow(TrackWindow w) {
+	public void setTrackWindow(TrackWindow w, boolean resetPrefetchWindow) {
 
-		if (!hasCacheCovering(w)) {
+		if (resetPrefetchWindow || !hasCacheCovering(w)) {
 			int prefetchStart = w.getStartOnGenome() - (int) (w.getSequenceLength() * PREFETCH_FACTOR);
 			int prefetchEnd = w.getEndOnGenome() + (int) (w.getSequenceLength() * PREFETCH_FACTOR);
 			if (prefetchStart <= 0) {

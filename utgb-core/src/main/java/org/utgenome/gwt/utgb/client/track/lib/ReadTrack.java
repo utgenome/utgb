@@ -349,13 +349,13 @@ public class ReadTrack extends TrackBase {
 
 		if (!forceReload && geneCanvas.hasCacheCovering(newWindow)) {
 			if (!needUpdateForGraphicRefinement) {
-				geneCanvas.setTrackWindow(newWindow);
+				geneCanvas.setTrackWindow(newWindow, false);
 				refresh();
 				return;
 			}
 		}
 
-		geneCanvas.setTrackWindow(newWindow);
+		geneCanvas.setTrackWindow(newWindow, true);
 
 		// retrieve gene data from the API
 		TrackWindow prefetchWindow = geneCanvas.getPrefetchWindow();

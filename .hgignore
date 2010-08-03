@@ -5,6 +5,7 @@ target
 war/utgb
 utgb-core/src/main/webapp/theme
 utgb-core/db/genome
+utgb-core/db/tmp
 
 syntax: glob
 *~
