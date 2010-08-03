@@ -113,8 +113,10 @@ public class WIGGraphCanvasTrack extends TrackBase {
 		graphCanvas.setStyle(style);
 
 		graphCanvas.clearScale();
-		graphCanvas.drawFrame(null);
-		graphCanvas.drawScaleLabel();
+		if (!style.autoScale) {
+			graphCanvas.drawFrame(null);
+			graphCanvas.drawScaleLabel();
+		}
 
 	}
 

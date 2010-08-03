@@ -116,7 +116,7 @@ public class GWTGraphCanvas extends Composite {
 		private final static String CONFIG_TRACK_HEIGHT = "trackHeight";
 		private final static String CONFIG_MAX_VALUE = "maxValue";
 		private final static String CONFIG_MIN_VALUE = "minValue";
-		private final static String CONFIG_AUTO_SCALE = "isAutoRange";
+		private final static String CONFIG_AUTO_SCALE = "autoScale";
 		private final static String CONFIG_LOG_SCALE = "isLog";
 		private final static String CONFIG_SHOW_ZERO_VALUE = "showZero";
 		private final static String CONFIG_DRAW_SCALE = "drawScale";
@@ -333,6 +333,11 @@ public class GWTGraphCanvas extends Composite {
 
 	protected void drawWigGraph(GraphCanvas graphCanvas) {
 
+		if (style.autoScale) {
+			drawFrame(graphCanvas.graphData);
+			drawScaleLabel();
+		}
+
 		for (CompactWIGData data : graphCanvas.graphData) {
 
 			// get graph color
@@ -398,8 +403,8 @@ public class GWTGraphCanvas extends Composite {
 			return;
 
 		if (style.autoScale && wigDataList != null) {
-			float tempMinValue = 0.0f;
-			float tempMaxValue = 0.0f;
+			float tempMinValue = Math.min(style.minValue, Float.MAX_VALUE);
+			float tempMaxValue = Math.min(style.maxValue, Float.MIN_VALUE);
 			for (CompactWIGData data : wigDataList) {
 				tempMinValue = Math.min(tempMinValue, data.getMinValue());
 				tempMaxValue = Math.max(tempMaxValue, data.getMaxValue());

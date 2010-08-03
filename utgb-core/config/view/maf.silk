@@ -39,7 +39,8 @@
   -pack: true
   -class: WIGGraphCanvasTrack
   -property
-    -isLog: true
+    -autoScale: true
+    -isLog: false
     -fileName: db/maf.wig.sqlite
     -trackHeight: 50
     -maxValue: 1200
