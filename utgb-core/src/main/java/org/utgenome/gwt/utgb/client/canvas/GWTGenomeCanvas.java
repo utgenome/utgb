@@ -912,7 +912,7 @@ public class GWTGenomeCanvas extends Composite {
 
 		int maxOffset = intervalLayout.createLocalLayout(geneHeight);
 
-		if (maxOffset > 30)
+		if (!intervalLayout.keepSpaceForLabels() || maxOffset > 30)
 			geneHeight = 2;
 		else
 			geneHeight = DEFAULT_GENE_HEIGHT;

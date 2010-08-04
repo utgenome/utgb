@@ -327,6 +327,10 @@ public class IntervalLayout {
 		this.keepSpaceForLabels = keep;
 	}
 
+	public boolean keepSpaceForLabels() {
+		return this.keepSpaceForLabels;
+	}
+
 	public boolean hasEnoughHeightForLabels() {
 		return hasEnoughHeightForLabels;
 	}
