@@ -40,11 +40,11 @@ import org.utgenome.gwt.utgb.client.bio.WigGraphData;
 import org.utgenome.gwt.utgb.client.track.bean.TrackBean;
 import org.utgenome.gwt.utgb.client.view.TrackView;
 
-import com.google.gwt.rpc.client.RpcService;
+import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 @RemoteServiceRelativePath("service")
-public interface BrowserService extends RpcService {
+public interface BrowserService extends RemoteService {
 
 	public TrackView createTrackView(String silk) throws UTGBClientException;
 

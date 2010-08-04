@@ -85,7 +85,7 @@ import org.xerial.util.StopWatch;
 import org.xerial.util.bean.BeanUtil;
 import org.xerial.util.log.Logger;
 
-import com.google.gwt.rpc.server.RpcServlet;
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
  * 
@@ -95,7 +95,7 @@ import com.google.gwt.rpc.server.RpcServlet;
  * @author leo
  * 
  */
-public class BrowserServiceImpl extends RpcServlet implements BrowserService {
+public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserService {
 
 	static Logger _logger = Logger.getLogger(BrowserServiceImpl.class);
 

@@ -40,10 +40,10 @@ import org.utgenome.gwt.utgb.client.bio.WigGraphData;
 import org.utgenome.gwt.utgb.client.track.bean.TrackBean;
 import org.utgenome.gwt.utgb.client.view.TrackView;
 
-import com.google.gwt.rpc.client.RpcService;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.RemoteService;
 
-public interface BrowserServiceAsync extends RpcService {
+public interface BrowserServiceAsync extends RemoteService {
 
 	public void createTrackView(String silk, AsyncCallback<TrackView> callback);
 
