@@ -37,6 +37,3 @@
   -name: Scale
   -pack: true
   -class: ScaleBarTrack
-  -property
-    -trackBaseURL: utgb-core/ScaleBar?%q
-    -type: image

@@ -158,6 +158,10 @@ public class GenomeTrack extends TrackBase {
 		return c.getTrackURL(trackBaseURL, p);
 	}
 
+	protected void setTrackBaseURL(String trackBaseURL) {
+		this.trackBaseURL = trackBaseURL;
+	}
+
 	@Override
 	public void setUp(TrackFrame trackFrame, TrackGroup group) {
 
@@ -182,9 +186,12 @@ public class GenomeTrack extends TrackBase {
 
 		// set up the configuration panel
 		TrackConfig config = getConfig();
-		config.addConfig("Track Base URL", new StringType("baseURL"), trackBaseURL);
+		config.addConfig("Track Base URL", new StringType(CONFIG_TRACK_BASE_URL), trackBaseURL);
 		config.addConfig("Track URL", new StringType("trackURL"), trackURL);
 	}
+
+	public static final String CONFIG_TRACK_BASE_URL = "trackBaseURL";
+	public static final String CONFIG_TRACK_TYPE = "type";
 
 	@Override
 	public void onChange(TrackGroupPropertyChange change, TrackWindow newWindow) {
@@ -208,8 +215,8 @@ public class GenomeTrack extends TrackBase {
 
 	@Override
 	public void onChangeTrackConfig(TrackConfigChange change) {
-		if (change.contains("baseURL")) {
-			trackBaseURL = change.getValue("baseURL");
+		if (change.contains(CONFIG_TRACK_BASE_URL)) {
+			trackBaseURL = change.getValue(CONFIG_TRACK_BASE_URL);
 			draw();
 		}
 	}
@@ -228,9 +235,9 @@ public class GenomeTrack extends TrackBase {
 	public void restoreProperties(CanonicalProperties properties) {
 		super.restoreProperties(properties);
 
-		trackBaseURL = properties.get("trackBaseURL", trackBaseURL);
+		trackBaseURL = properties.get(CONFIG_TRACK_BASE_URL, trackBaseURL);
 		leftMargin = properties.getInt("leftMargin", leftMargin);
-		type = properties.get("type", type);
+		type = properties.get(CONFIG_TRACK_TYPE, type);
 		monitorCoordinateChange = properties.getBoolean("monitorCoordinateChange", monitorCoordinateChange);
 		monitorWindowChange = properties.getBoolean("monitorWindowChange", monitorWindowChange);
 

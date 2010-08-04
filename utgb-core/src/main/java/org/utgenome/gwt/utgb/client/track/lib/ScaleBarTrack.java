@@ -22,20 +22,38 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.track.lib;
 
+import org.utgenome.gwt.utgb.client.track.Track;
 import org.utgenome.gwt.utgb.client.track.TrackFrame;
 import org.utgenome.gwt.utgb.client.track.TrackGroup;
 
+/**
+ * Scale bar
+ * 
+ * @author hatsuda
+ * 
+ */
 public class ScaleBarTrack extends GenomeTrack {
-	
+
+	public static TrackFactory factory() {
+		return new TrackFactory() {
+			@Override
+			public Track newInstance() {
+				return new ScaleBarTrack();
+			}
+		};
+	}
+
 	public ScaleBarTrack() {
 		super("ScaleBar Track");
 	}
-	
+
+	@Override
 	public void setUp(TrackFrame trackFrame, TrackGroup group) {
 		super.setUp(trackFrame, group);
+
+		String trackBaseURL = "utgb-core/ScaleBar?%q";
+		setTrackBaseURL(trackBaseURL);
+		getConfig().setParameter(GenomeTrack.CONFIG_TRACK_BASE_URL, trackBaseURL);
+		getConfig().setParameter(GenomeTrack.CONFIG_TRACK_TYPE, "image");
 	}
 }
-
-
-
-

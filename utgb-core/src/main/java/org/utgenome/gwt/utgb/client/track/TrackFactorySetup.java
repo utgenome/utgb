@@ -49,6 +49,8 @@ public class TrackFactorySetup {
 		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.BEDTrack", org.utgenome.gwt.utgb.client.track.lib.BEDTrack.factory());
 
 		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.RulerTrack", org.utgenome.gwt.utgb.client.track.lib.RulerTrack.factory());
+		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.ScaleBarTrack", org.utgenome.gwt.utgb.client.track.lib.ScaleBarTrack
+				.factory());
 		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.ScrollButtonTrack", org.utgenome.gwt.utgb.client.track.lib.ScrollButtonTrack
 				.factory());
 		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.SequenceRulerTrack",
