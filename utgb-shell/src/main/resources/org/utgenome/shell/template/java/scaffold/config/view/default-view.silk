@@ -19,15 +19,15 @@
   -height: 14
   -pack: true
   -class: SequenceRulerTrack
-  -property
-    -leftMargin: 100
 -track
   -name: Ruler
   -height: 14
   -pack: true
   -class: RulerTrack
-  -property
-    -leftMargin: 100
+-track
+  -name: Scale Bar
+  -pack: true
+  -class: ScaleBarTrack
 -track
   -name: DAS Track
   -height: 0
@@ -36,7 +36,6 @@
   -property
     -path: http://www.ensembl.org/das/Homo_sapiens.NCBI36.transcript/
     -dasType: refGene
-    -leftMargin: 100
 -track
   -name: BED Track
   -height: 0
@@ -44,4 +43,3 @@
   -class: ReadTrack
   -property
     -path: db/sample.bed
-    -leftMargin: 100
