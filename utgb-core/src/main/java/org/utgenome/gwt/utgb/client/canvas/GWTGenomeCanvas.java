@@ -75,9 +75,9 @@ import com.google.gwt.widgetideas.graphics.client.ImageLoader.CallBack;
  */
 public class GWTGenomeCanvas extends Composite {
 
-	private final int DEFAULT_MIN_GENE_HEIGHT = 2;
-
 	private int defaultGeneHeight = 12;
+	private int defaultMinGeneHeight = 2;
+
 	private int geneHeight = defaultGeneHeight;
 	private int geneMargin = 2;
 
@@ -531,7 +531,11 @@ public class GWTGenomeCanvas extends Composite {
 				//canvas.setFillStyle(colors[baseIndex]);
 				//canvas.fillRect(x1, y, x2 - x1, geneHeight);
 
-				canvas.drawImage(imageACGT, pixelWidthOfBase * baseIndex, 0, pixelWidthOfBase, geneHeight, (int) x1, y, pixelWidthOfBase, geneHeight);
+				int h = imageACGT.getHeight();
+				if (h >= geneHeight)
+					h = geneHeight;
+
+				canvas.drawImage(imageACGT, pixelWidthOfBase * baseIndex, 0, pixelWidthOfBase, h, (int) x1, y, pixelWidthOfBase, h);
 				canvas.restoreContext();
 			}
 
@@ -752,8 +756,19 @@ public class GWTGenomeCanvas extends Composite {
 			if (readCoverage.coverage == null)
 				return;
 
+			int startPosOfCoverageOnGenome = readCoverage.getStart();
+			int viewStartOnGenome = trackWindow.getStartOnGenome();
+			int viewEndOnGenome = trackWindow.getEndOnGenome();
+
+			TrackWindow w = new TrackWindow(readCoverage.pixelWidth, readCoverage.getStart(), readCoverage.getEnd());
+			int startPosInCoveragePixel = w.convertToPixelX(viewStartOnGenome);
+			int endPosInCoveragePixel = w.convertToPixelX(viewEndOnGenome);
+			if (endPosInCoveragePixel > readCoverage.pixelWidth)
+				endPosInCoveragePixel = readCoverage.pixelWidth;
+
 			// set canvas size
-			for (int height : readCoverage.coverage) {
+			for (int i = startPosInCoveragePixel; i < endPosInCoveragePixel; ++i) {
+				int height = readCoverage.coverage[i];
 				if (height > maxHeight)
 					maxHeight = height;
 			}
@@ -858,13 +873,15 @@ public class GWTGenomeCanvas extends Composite {
 		}
 	}
 
+	private final int TRACK_COLLAPSE_COVERAGE_THRESHOLD = 40;
+
 	public <T extends OnGenome> void drawBlock(ReadCoverage block) {
 
 		// compute max height
 		FindMaximumHeight hFinder = new FindMaximumHeight();
 		block.accept(hFinder);
 
-		int heightOfRead = hFinder.maxHeight > 30 ? 2 : defaultGeneHeight;
+		int heightOfRead = hFinder.maxHeight > TRACK_COLLAPSE_COVERAGE_THRESHOLD ? 2 : defaultGeneHeight;
 
 		int canvasHeight = hFinder.maxHeight * heightOfRead;
 		float scalingFactor = 1.0f;
@@ -920,8 +937,8 @@ public class GWTGenomeCanvas extends Composite {
 
 		int maxOffset = intervalLayout.createLocalLayout(geneHeight);
 
-		if (maxOffset > 30)
-			geneHeight = DEFAULT_MIN_GENE_HEIGHT;
+		if (maxOffset > TRACK_COLLAPSE_COVERAGE_THRESHOLD)
+			geneHeight = defaultMinGeneHeight;
 		else
 			geneHeight = defaultGeneHeight;
 
@@ -1141,6 +1158,12 @@ public class GWTGenomeCanvas extends Composite {
 
 	public void setReadHeight(int height) {
 		this.defaultGeneHeight = height;
+		imageACGT = null;
+	}
+
+	public void setReadHeightMin(int height) {
+		this.defaultMinGeneHeight = height;
+		imageACGT = null;
 	}
 
 }
