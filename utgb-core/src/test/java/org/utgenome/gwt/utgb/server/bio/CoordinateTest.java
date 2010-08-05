@@ -46,12 +46,12 @@ public class CoordinateTest {
 	@Test
 	public void testname() throws Exception {
 		Coordinate c = Coordinate.newUTGBCoordinate("human", "hg18", "chr1");
-		assertEquals("http://somewhere.org/mytrack?group=utgb&species=human&revision=hg18&name=chr1", c.getTrackURL("http://somewhere.org/mytrack"));
+		assertEquals("http://somewhere.org/mytrack?group=utgb&species=human&revision=hg18&name=chr1", c.getTrackURL("http://somewhere.org/mytrack?%q"));
 
 		Properties p = new Properties();
 		p.put("width", 700);
-		assertEquals("http://somewhere.org/mytrack?group=utgb&species=human&revision=hg18&name=chr1&width=700", c
-				.getTrackURL("http://somewhere.org/mytrack", p));
+		assertEquals("http://somewhere.org/mytrack?group=utgb&species=human&revision=hg18&name=chr1&width=700", c.getTrackURL(
+				"http://somewhere.org/mytrack?%q", p));
 	}
 
 }

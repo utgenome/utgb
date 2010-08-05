@@ -243,7 +243,8 @@ public abstract class TrackBase implements Track {
 	public TrackFrameConfig frameConfig = null;
 
 	public void loadView(TrackView.Track view) {
-		getTrackInfo().setTrackName(view.name);
+		if (view.name != null)
+			getTrackInfo().setTrackName(view.name);
 
 		//		Properties p = new Properties();
 		//		p.putAll(view.property);

@@ -66,6 +66,7 @@ public class Coordinate implements IsSerializable {
 	}
 
 	public String getTrackURL(String baseURL, Map additionalProperties) {
+
 		String url = getTrackURL(baseURL);
 		StringBuilder buf = new StringBuilder();
 		buf.append(url);
@@ -79,31 +80,17 @@ public class Coordinate implements IsSerializable {
 	}
 
 	public String getTrackURL(String baseURL) {
-		StringBuilder buf = new StringBuilder();
-		String base = baseURL.trim();
 
-		buf.append("group=");
-		buf.append(group);
+		if (baseURL.contains("%q"))
+			baseURL = baseURL.replace("%q", "group=%group&species=%species&revision=%ref&name=%chr&start=%start&end=%end&width=%pixelwidth");
 
-		buf.append("&species=");
-		buf.append(species);
+		baseURL = baseURL.replaceAll("%group", group);
+		baseURL = baseURL.replaceAll("%species", species);
+		baseURL = baseURL.replaceAll("%ref", revision);
+		baseURL = baseURL.replaceAll("%chr", name);
 
-		buf.append("&revision=");
-		buf.append(revision);
+		return baseURL.trim();
 
-		buf.append("&name=");
-		buf.append(name);
-
-		String param = buf.toString();
-
-		if (base.contains("%q"))
-			return base.replace("%q", param);
-		else {
-			if (!base.endsWith("?"))
-				return base + "?" + param;
-			else
-				return base + param;
-		}
 	}
 
 	/**

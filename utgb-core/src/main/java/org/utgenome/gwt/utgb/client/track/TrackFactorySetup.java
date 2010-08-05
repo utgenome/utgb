@@ -55,6 +55,8 @@ public class TrackFactorySetup {
 				.factory());
 		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.SequenceRulerTrack",
 				org.utgenome.gwt.utgb.client.track.lib.SequenceRulerTrack.factory());
+		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.RefSeqTrack", org.utgenome.gwt.utgb.client.track.lib.RefSeqTrack.factory());
+
 		TrackFactoryHolder
 				.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.ToolBoxTrack", org.utgenome.gwt.utgb.client.track.lib.ToolBoxTrack.factory());
 		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.TrackTreeTrack", org.utgenome.gwt.utgb.client.track.lib.TrackTreeTrack

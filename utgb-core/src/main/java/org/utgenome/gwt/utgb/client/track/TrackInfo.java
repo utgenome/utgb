@@ -28,25 +28,24 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
- * TrackInfo class holds track name, track id, descriptions etc. 
+ * TrackInfo class holds track name, track id, descriptions etc.
+ * 
  * @author leo
- *
+ * 
  */
-public class TrackInfo
-{
-    private String trackName;
-    private String description = "";
-    private String linkURL = "";
-    
-    private ArrayList<TrackInfoChangeListener> _listenerList = new ArrayList<TrackInfoChangeListener>();
-    
-    public TrackInfo(String trackName)
-    {
-        setTrackName(trackName);
-        description = trackName;
-    }
-    
-    /**
+public class TrackInfo {
+	private String trackName;
+	private String description = "";
+	private String linkURL = "";
+
+	private ArrayList<TrackInfoChangeListener> _listenerList = new ArrayList<TrackInfoChangeListener>();
+
+	public TrackInfo(String trackName) {
+		setTrackName(trackName);
+		description = trackName;
+	}
+
+	/**
 	 * @param trackName
 	 * @param description
 	 */
@@ -55,21 +54,21 @@ public class TrackInfo
 		this.description = description;
 	}
 
-
 	/**
 	 * add a change listener
+	 * 
 	 * @param listener
 	 */
-	public void addChangeListener(TrackInfoChangeListener listener)
-	{
+	public void addChangeListener(TrackInfoChangeListener listener) {
 		_listenerList.add(listener);
 	}
+
 	/**
 	 * remove the specified change listener
+	 * 
 	 * @param listner
 	 */
-	public void removeChangeListner(TrackInfoChangeListener listner)
-	{
+	public void removeChangeListner(TrackInfoChangeListener listner) {
 		_listenerList.remove(listner);
 	}
 
@@ -77,30 +76,27 @@ public class TrackInfo
 		return description;
 	}
 
-
 	public void setDescription(String description) {
 		this.description = description;
 		notifyTheChange();
 	}
 
-	public String getTrackName()
-    {
-        return trackName;
-    }
-    
-    public void setTrackName(final String trackName) {
-        this.trackName = trackName;
-        notifyTheChange();
-    }
-    
-    
-    
-    public String getLinkURL() {
+	public String getTrackName() {
+		return trackName;
+	}
+
+	public void setTrackName(final String trackName) {
+		this.trackName = trackName;
+		notifyTheChange();
+	}
+
+	public String getLinkURL() {
 		return linkURL;
 	}
 
 	/**
-	 * Set a link for this track 
+	 * Set a link for this track
+	 * 
 	 * @param linkURL
 	 */
 	public void setLinkURL(String linkURL) {
@@ -108,16 +104,10 @@ public class TrackInfo
 		notifyTheChange();
 	}
 
-	private void notifyTheChange()
-    {
-    	for(Iterator<TrackInfoChangeListener> it = _listenerList.iterator(); it.hasNext();) 
-    	{
-    		TrackInfoChangeListener listener = it.next();
-    		listener.onChange(this);
-    	}
-    }
+	private void notifyTheChange() {
+		for (Iterator<TrackInfoChangeListener> it = _listenerList.iterator(); it.hasNext();) {
+			TrackInfoChangeListener listener = it.next();
+			listener.onChange(this);
+		}
+	}
 }
-
-
-
-

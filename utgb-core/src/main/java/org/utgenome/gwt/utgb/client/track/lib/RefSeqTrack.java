@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------------------
- *  Copyright 2009 utgenome.org
+ *  Copyright 2010 utgenome.org
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,49 +16,47 @@
 //--------------------------------------
 // utgb-core Project
 //
-// GenomeTrack.java
-// Since: Feb 17, 2009
+// RefseqTrack.java
+// Since: Aug 5, 2010
 //
-// $URL: http://svn.utgenome.org/utgb/trunk/utgb/utgb-core/src/main/java/org/utgenome/gwt/utgb/client/track/lib/GenomeTrack.java $ 
-// $Author: yoshimura $
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.track.lib;
 
-import org.utgenome.gwt.utgb.client.db.datatype.StringType;
 import org.utgenome.gwt.utgb.client.track.Track;
 import org.utgenome.gwt.utgb.client.track.TrackConfigChange;
 import org.utgenome.gwt.utgb.client.track.TrackFrame;
 import org.utgenome.gwt.utgb.client.track.TrackGroup;
 
 /**
- * BEDTrack is for visualizing data that can be located on BDE Format Data.
+ * Reference sequence track
  * 
- * @deprecated Use {@link ReadTrack} instead
- * 
- * @author yoshimura
+ * @author leo
  * 
  */
-@Deprecated
-public class BEDTrack extends GenomeTrack {
-
-	protected final String CONFIG_FILENAME = "fileName";
+public class RefSeqTrack extends GenomeTrack {
 
 	public static TrackFactory factory() {
 		return new TrackFactory() {
 			@Override
 			public Track newInstance() {
-				return new BEDTrack();
+				return new RefSeqTrack();
 			}
 		};
 	}
 
-	public BEDTrack() {
-		super("BED Track");
+	public RefSeqTrack() {
+		super("Reference Sequence");
 	}
+
+	private static final String CONFIG_PATH = "path";
 
 	@Override
 	public void draw() {
-		getConfig().setParameter(CONFIG_TRACK_BASE_URL, "utgb-core/BEDViewer?%q&fileName=" + getConfig().getString(CONFIG_FILENAME, ""));
+
+		String path = getConfig().getString(CONFIG_PATH, "");
+		String trackBaseURL = "utgb-core/Sequence.png?path=" + path + "&%q";
+		getConfig().setParameter(GenomeTrack.CONFIG_TRACK_BASE_URL, trackBaseURL);
+
 		super.draw();
 	}
 
@@ -66,14 +64,14 @@ public class BEDTrack extends GenomeTrack {
 	public void setUp(TrackFrame trackFrame, TrackGroup group) {
 		super.setUp(trackFrame, group);
 
-		getConfig().addConfig("File Name", new StringType(CONFIG_FILENAME));
+		getConfig().addConfigString("path", CONFIG_PATH, "");
+		getConfig().setParameter(GenomeTrack.CONFIG_TRACK_TYPE, "image");
 	}
 
 	@Override
 	public void onChangeTrackConfig(TrackConfigChange change) {
-		super.onChangeTrackConfig(change);
 
-		if (change.contains(CONFIG_FILENAME)) {
+		if (change.contains(CONFIG_PATH)) {
 			refresh();
 		}
 	}
