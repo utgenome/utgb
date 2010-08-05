@@ -59,76 +59,77 @@ public class DASResult implements Serializable {
 		public long stop;
 		public List<DASFeature> feature;
 
-		public static class DASFeature extends Read {
+	}
+
+	public static class DASFeature extends Read {
+		private static final long serialVersionUID = 1L;
+
+		public String id;
+
+		public String label;
+		public String score;
+		public String orientation;
+		public String phase;
+
+		public Method method;
+		public FeatureType type;
+		public Group group;
+		public Target target;
+
+		public void setId(String id) {
+			setName(id);
+		}
+
+		public static class Target implements Serializable {
+			/**
+			 * 
+			 */
 			private static final long serialVersionUID = 1L;
-
 			public String id;
+			public long start;
+			public long stop;
+			public String value;
+		}
 
+		public static class FeatureType implements Serializable {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+			public String id;
+			public String category;
+			public String reference;
+			public String value;
+		}
+
+		public static class Group implements Serializable {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+			public String id;
+			public String type;
 			public String label;
-			public String score;
-			public String orientation;
-			public String phase;
-
-			public Method method;
-			public FeatureType type;
-			public Group group;
+			public Link link;
 			public Target target;
 
-			public void setId(String id) {
-				setName(id);
-			}
-
-			public static class Target implements Serializable {
+			public static class Link implements Serializable {
 				/**
 				 * 
 				 */
 				private static final long serialVersionUID = 1L;
-				public String id;
-				public long start;
-				public long stop;
+				public String href;
 				public String value;
 			}
+		}
 
-			public static class FeatureType implements Serializable {
-				/**
-				 * 
-				 */
-				private static final long serialVersionUID = 1L;
-				public String id;
-				public String category;
-				public String reference;
-				public String value;
-			}
-
-			public static class Group implements Serializable {
-				/**
-				 * 
-				 */
-				private static final long serialVersionUID = 1L;
-				public String id;
-				public String type;
-				public String label;
-				public Link link;
-				public Target target;
-
-				public static class Link implements Serializable {
-					/**
-					 * 
-					 */
-					private static final long serialVersionUID = 1L;
-					public String href;
-					public String value;
-				}
-			}
-
-			public static class Method implements Serializable {
-				/**
-				 * 
-				 */
-				private static final long serialVersionUID = 1L;
-				public String id;
-				public String value;
-			}
+		public static class Method implements Serializable {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+			public String id;
+			public String value;
 		}
 	}
 

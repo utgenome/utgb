@@ -32,7 +32,7 @@ import org.utgenome.gwt.utgb.client.bio.OnGenome;
 import org.utgenome.gwt.utgb.client.bio.Read;
 import org.utgenome.gwt.utgb.client.bio.ReadCoverage;
 import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig;
-import org.utgenome.gwt.utgb.client.bio.DASResult.Segment.DASFeature;
+import org.utgenome.gwt.utgb.client.bio.DASResult.DASFeature;
 import org.utgenome.gwt.utgb.client.bio.GenomeDB.DBType;
 import org.utgenome.gwt.utgb.client.bio.Read.ReadType;
 import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig.Layout;

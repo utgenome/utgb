@@ -40,6 +40,7 @@ import org.utgenome.gwt.utgb.client.util.BrowserInfo;
 import org.utgenome.gwt.utgb.client.util.Properties;
 import org.utgenome.gwt.utgb.client.util.StringUtil;
 import org.utgenome.gwt.utgb.client.view.TrackView;
+import org.utgenome.gwt.widget.client.Style;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -50,7 +51,9 @@ import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
@@ -314,16 +317,29 @@ public class UTGBEntryPointBase implements EntryPoint {
 		displayTrackView();
 	}
 
-	public static void showErrorMessage(String message) {
-		RoundCornerFrame errorFrame = new RoundCornerFrame("#FF3366", 0.7f, 2);
-		PopupPanel popup = new PopupPanel(true);
-		errorFrame.setWidget(new Label(message));
-		popup.setWidget(errorFrame);
+	private static RoundCornerFrame errorFrame;
+	private static Label errorLabel = new Label();
+	private static PopupPanel errorPopup = new PopupPanel(true);
+	{
+		errorFrame = new RoundCornerFrame("FF6699", 0.7f, 2);
+		errorFrame.setWidth("400px");
+		errorFrame.setWidget(errorLabel);
+		Style.fontColor(errorLabel, "white");
+		errorPopup.setWidget(errorFrame);
+	}
 
-		int x = Window.getClientWidth() / 2;
-		int y = 10;
-		popup.setPopupPosition(x, y);
-		popup.show();
+	public static void showErrorMessage(final String message) {
+
+		DeferredCommand.addCommand(new Command() {
+
+			public void execute() {
+				errorLabel.setText(message);
+				int x = Window.getClientWidth() / 2 - 200;
+				int y = 10;
+				errorPopup.setPopupPosition(x, y);
+				errorPopup.show();
+			}
+		});
 	}
 
 	public static void hideLoadingMessage() {

@@ -385,8 +385,15 @@ public class ReadTrack extends TrackBase {
 							prefetchFactor /= 2.0;
 							geneCanvas.setPrefetchFactor(prefetchFactor);
 						}
-						else
+						else {
+							float newPrefetchFactor = geneCanvas.getPrefetchFactor() * 2.0f;
+							if (newPrefetchFactor > 1.0)
+								newPrefetchFactor = 1.0f;
+
+							// broaden the prefetch range upon successful read data retrieval
+							geneCanvas.setPrefetchFactor(newPrefetchFactor);
 							needUpdateForGraphicRefinement = false;
+						}
 						geneCanvas.resetData(dataSet);
 						refresh();
 					}
