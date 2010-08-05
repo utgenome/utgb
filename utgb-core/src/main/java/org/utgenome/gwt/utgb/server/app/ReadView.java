@@ -143,7 +143,7 @@ public class ReadView extends WebTrackBase {
 
 		_logger.debug("query done. " + sw.getElapsedTime() + " sec.");
 
-		if (config.layout == Layout.COVERAGE || result.size() > 3000) {
+		if (config.layout == Layout.COVERAGE || result.size() > 1000) {
 			// compute coverage
 			ReadCoverage coverage = computeCoverage(result, loc.start, loc.end, config.pixelWidth);
 			result.clear();
