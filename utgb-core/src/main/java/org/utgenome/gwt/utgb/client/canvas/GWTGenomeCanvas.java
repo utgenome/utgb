@@ -75,10 +75,10 @@ import com.google.gwt.widgetideas.graphics.client.ImageLoader.CallBack;
  */
 public class GWTGenomeCanvas extends Composite {
 
-	public final int DEFAULT_GENE_HEIGHT = 12;
-	public final int DEFAULT_MIN_GENE_HEIGHT = 2;
+	private final int DEFAULT_MIN_GENE_HEIGHT = 2;
 
-	private int geneHeight = DEFAULT_GENE_HEIGHT;
+	private int defaultGeneHeight = 12;
+	private int geneHeight = defaultGeneHeight;
 	private int geneMargin = 2;
 
 	private boolean reverse = false;
@@ -864,7 +864,7 @@ public class GWTGenomeCanvas extends Composite {
 		FindMaximumHeight hFinder = new FindMaximumHeight();
 		block.accept(hFinder);
 
-		int heightOfRead = hFinder.maxHeight > 30 ? 2 : DEFAULT_GENE_HEIGHT;
+		int heightOfRead = hFinder.maxHeight > 30 ? 2 : defaultGeneHeight;
 
 		int canvasHeight = hFinder.maxHeight * heightOfRead;
 		float scalingFactor = 1.0f;
@@ -904,7 +904,7 @@ public class GWTGenomeCanvas extends Composite {
 		boolean drawBase = trackWindow.getSequenceLength() <= (trackWindow.getPixelWidth() / FONT_WIDTH);
 		if (drawBase && imageACGT == null) {
 			int pixelWidthOfBase = (int) (trackWindow.getPixelLengthPerBase() + 0.1d);
-			ImageLoader.loadImages(new String[] { "utgb-core/ACGT.png?fontWidth=" + pixelWidthOfBase + "&height=" + DEFAULT_GENE_HEIGHT }, new CallBack() {
+			ImageLoader.loadImages(new String[] { "utgb-core/ACGT.png?fontWidth=" + pixelWidthOfBase + "&height=" + defaultGeneHeight }, new CallBack() {
 				public void onImagesLoaded(ImageElement[] imageElements) {
 					imageACGT = imageElements[0];
 					layout();
@@ -920,10 +920,10 @@ public class GWTGenomeCanvas extends Composite {
 
 		int maxOffset = intervalLayout.createLocalLayout(geneHeight);
 
-		if (!intervalLayout.keepSpaceForLabels() || maxOffset > 30)
+		if (maxOffset > 30)
 			geneHeight = DEFAULT_MIN_GENE_HEIGHT;
 		else
-			geneHeight = DEFAULT_GENE_HEIGHT;
+			geneHeight = defaultGeneHeight;
 
 		int h = geneHeight + geneMargin;
 		int height = (maxOffset + 1) * h;
@@ -1140,7 +1140,7 @@ public class GWTGenomeCanvas extends Composite {
 	}
 
 	public void setReadHeight(int height) {
-		this.geneHeight = height;
+		this.defaultGeneHeight = height;
 	}
 
 }
