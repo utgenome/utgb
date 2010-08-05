@@ -65,6 +65,5 @@
   -class: org.utgenome.gwt.utgb.client.track.lib.ChromosomeMapTrack
   -property
     -displayType: "normal"
-    -trackBaseURL: utgb-core/ChromosomeMap
     -leftMargin: 100
     -type: image

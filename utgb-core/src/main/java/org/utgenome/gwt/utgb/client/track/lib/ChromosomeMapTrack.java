@@ -215,17 +215,13 @@ public class ChromosomeMapTrack extends TrackBase {
 	}
 
 	protected String getTrackBaseURL() {
-		return "utgb-core/ChromosomeMap";
+		return "utgb-core/ChromosomeMap?%q";
 	}
 
 	protected String getTrackURL() {
 		Coordinate c = getCoordinate();
 
 		Properties p = new Properties();
-		TrackWindow w = getTrackGroup().getTrackWindow();
-		p.add("start", w.getStartOnGenome());
-		p.add("end", w.getEndOnGenome());
-		p.add("width", w.getPixelWidth() - getLeftMargin());
 		p.add("displayType", getDisplayType());
 
 		for (String key : new String[] { "dbGroup", "dbName", "bss.query" }) {
