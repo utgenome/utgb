@@ -230,7 +230,7 @@ public class ChromosomeMapTrack extends TrackBase {
 				p.add(key, v);
 		}
 
-		return c.getTrackURL(getTrackBaseURL(), p);
+		return resolvePropertyValues(c.getTrackURL(getTrackBaseURL(), p));
 	}
 
 	@Override

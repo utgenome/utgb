@@ -8,7 +8,7 @@
     -chr: chr1
     -start: 1
     -end: 100000
-    -pixel width: 700
+    -pixel width: 800
   -property
     -name: human
 -track
