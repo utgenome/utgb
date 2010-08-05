@@ -75,9 +75,12 @@ import com.google.gwt.widgetideas.graphics.client.ImageLoader.CallBack;
  */
 public class GWTGenomeCanvas extends Composite {
 
-	private final int DEFAULT_GENE_HEIGHT = 12;
+	public final int DEFAULT_GENE_HEIGHT = 12;
+	public final int DEFAULT_MIN_GENE_HEIGHT = 2;
+
 	private int geneHeight = DEFAULT_GENE_HEIGHT;
 	private int geneMargin = 2;
+
 	private boolean reverse = false;
 
 	// widget
@@ -918,7 +921,7 @@ public class GWTGenomeCanvas extends Composite {
 		int maxOffset = intervalLayout.createLocalLayout(geneHeight);
 
 		if (!intervalLayout.keepSpaceForLabels() || maxOffset > 30)
-			geneHeight = 2;
+			geneHeight = DEFAULT_MIN_GENE_HEIGHT;
 		else
 			geneHeight = DEFAULT_GENE_HEIGHT;
 
@@ -1134,6 +1137,10 @@ public class GWTGenomeCanvas extends Composite {
 			canvas.restoreContext();
 		}
 
+	}
+
+	public void setReadHeight(int height) {
+		this.geneHeight = height;
 	}
 
 }

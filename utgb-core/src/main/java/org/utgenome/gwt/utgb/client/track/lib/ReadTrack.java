@@ -38,7 +38,6 @@ import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig.Layout;
 import org.utgenome.gwt.utgb.client.canvas.GWTGenomeCanvas;
 import org.utgenome.gwt.utgb.client.canvas.LocusClickHandler;
 import org.utgenome.gwt.utgb.client.db.ValueDomain;
-import org.utgenome.gwt.utgb.client.db.datatype.BooleanType;
 import org.utgenome.gwt.utgb.client.db.datatype.StringType;
 import org.utgenome.gwt.utgb.client.track.Track;
 import org.utgenome.gwt.utgb.client.track.TrackBase;
@@ -173,6 +172,7 @@ public class ReadTrack extends TrackBase {
 	private final String CONFIG_PATH = "path";
 	private final String CONFIG_LAYOUT = "layout";
 	private final String CONFIG_SHOW_LABELS = "showLabels";
+	private final String CONFIG_READ_HEIGHT = "readHeight";
 	private final String CONFIG_COVERAGE_STYLE = "coverage.style";
 	private final String CONFIG_ONCLICK_ACTION = "onclick.action";
 	private final String CONFIG_ONCLICK_URL = "onclick.url";
@@ -287,6 +287,7 @@ public class ReadTrack extends TrackBase {
 
 		// set up drawing options
 		geneCanvas.setShowLabels(getConfig().getBoolean(CONFIG_SHOW_LABELS, true));
+		geneCanvas.setReadHeight(getConfig().getInt(CONFIG_READ_HEIGHT, 12));
 		geneCanvas.setCoverageStyle(getConfig().getString(CONFIG_COVERAGE_STYLE, "default"));
 
 		geneCanvas.draw();
@@ -331,7 +332,8 @@ public class ReadTrack extends TrackBase {
 
 		ValueDomain layoutTypes = ValueDomain.createNewValueDomain(new String[] { "pileup", "coverage" });
 		config.addConfig("Layout", new StringType(CONFIG_LAYOUT, layoutTypes), "pileup");
-		config.addConfig("Show Labels", new BooleanType(CONFIG_SHOW_LABELS), "true");
+		config.addConfigBoolean("Show Labels", CONFIG_SHOW_LABELS, true);
+		config.addConfigInteger("Read Height", CONFIG_READ_HEIGHT, 12);
 		config.addConfig("Coverage Display Style",
 				new StringType(CONFIG_COVERAGE_STYLE, ValueDomain.createNewValueDomain(new String[] { "default", "smooth" })), "default");
 		ValueDomain actionTypes = ValueDomain.createNewValueDomain(new String[] { "none", "link", "info", "set" });
@@ -440,7 +442,7 @@ public class ReadTrack extends TrackBase {
 			updateClickAction();
 		}
 
-		if (change.containsOneOf(new String[] { CONFIG_SHOW_LABELS, CONFIG_LEFT_MARGIN, CONFIG_PATH, CONFIG_DB_TYPE })) {
+		if (change.containsOneOf(new String[] { CONFIG_SHOW_LABELS, CONFIG_READ_HEIGHT, CONFIG_LEFT_MARGIN, CONFIG_PATH, CONFIG_DB_TYPE })) {
 			refresh();
 		}
 

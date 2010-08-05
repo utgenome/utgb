@@ -112,8 +112,6 @@ if $mingw ; then
 fi
 
 exec "$JAVACMD" ${JVM_OPT} \
-  -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager \
-  -Djava.util.logging.config.file='target/tomcat/conf/logging.properties' \
   -jar "${UTGB_HOME}"/lib/utgb-shell-standalone.jar \
   "$@"
 
