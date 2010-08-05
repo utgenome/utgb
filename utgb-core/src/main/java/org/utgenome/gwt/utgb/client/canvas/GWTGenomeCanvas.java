@@ -349,7 +349,12 @@ public class GWTGenomeCanvas extends Composite {
 		return prefetchWindow;
 	}
 
-	private float PREFETCH_FACTOR = 1.0f;
+	private float DEFAULT_PREFETCH_FACTOR = 1.0f;
+	private float PREFETCH_FACTOR = DEFAULT_PREFETCH_FACTOR;
+
+	public void resetPrefetchFactor() {
+		this.PREFETCH_FACTOR = DEFAULT_PREFETCH_FACTOR;
+	}
 
 	public float getPrefetchFactor() {
 		return this.PREFETCH_FACTOR;
