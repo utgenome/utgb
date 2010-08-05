@@ -110,7 +110,37 @@ public class NavigatorTrack extends TrackBase {
 			int keyCode = e.getNativeKeyCode();
 			if (keyCode == KeyCodes.KEY_ENTER || keyCode == KeyCodes.KEY_TAB) {
 				try {
-					getTrackGroup().setTrackWindowLocation(StringUtil.toInt(startBox.getText()), StringUtil.toInt(endBox.getText()));
+
+					int prevStart = getTrackWindow().getStartOnGenome();
+					int prevEnd = getTrackWindow().getEndOnGenome();
+					int width = getTrackWindow().getSequenceLength();
+					if (width < 1) {
+						width = 1;
+					}
+
+					int start = StringUtil.toInt(startBox.getText());
+					int end = StringUtil.toInt(endBox.getText());
+
+					if (prevStart != start) {
+						// start value is updated
+						end = start + width;
+					}
+					else {
+						// end value is updated
+						start = end - width;
+					}
+
+					if (start <= 0) {
+						start = 1;
+						end = start + width;
+					}
+
+					if (end <= 0) {
+						start = 1;
+						end = start + width;
+					}
+
+					getTrackGroup().setTrackWindowLocation(start, end);
 				}
 				catch (NumberFormatException ex) {
 					GWT.log("(" + startBox.getText() + ", " + endBox.getText() + ") is invalid range", ex);

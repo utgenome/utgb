@@ -105,7 +105,7 @@ public class StringUtil {
 	public static int toInt(String sInt) {
 		if (sInt == null)
 			throw new NullPointerException();
-		String intWithoutComma = sInt.replaceAll(",", "");
+		String intWithoutComma = sInt.replaceAll("[ ,]", "");
 		return Integer.parseInt(intWithoutComma);
 	}
 
