@@ -294,6 +294,8 @@ public interface Track extends TrackEntry, TrackGroupPropertyChangeListener {
 	 */
 	public void onChangeTrackGroupProperty(TrackGroupPropertyChange change);
 
+	public void onChangeTrackHeight(int newHeight);
+
 	/**
 	 * An event handler that will be invoked before the track window location change
 	 * 

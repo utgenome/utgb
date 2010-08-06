@@ -487,13 +487,14 @@ public class TrackFrame extends SimplePanel {
 	}
 
 	public int getFrameHeight() {
-		return _trackWidgetFrame.getOffsetHeight();
+		return _scrollPanel.getOffsetHeight();
 	}
 
 	public void resize(int height) {
 		setFrameHeight(height);
 		packButton.updateIcon();
 		_track.getTrackGroup().notifyResize();
+		_track.onChangeTrackHeight(height);
 	}
 
 	public void adjustFrameHeight() {

@@ -358,4 +358,8 @@ public abstract class TrackBase implements Track {
 		return RPCServiceManager.getRPCService();
 	}
 
+	public void onChangeTrackHeight(int newHeight) {
+		// do nothing
+	}
+
 }
