@@ -841,7 +841,7 @@ public class GWTGenomeCanvas extends Composite {
 		@Override
 		public void visitReadCoverage(ReadCoverage readCoverage) {
 			canvas.saveContext();
-			canvas.setFillStyle(getColor("#6699CC", 0.6f));
+			canvas.setFillStyle(getColor("#6699CC", 0.5f));
 			canvas.setLineWidth(1.0f);
 			canvas.setLineCap("round");
 
@@ -849,7 +849,7 @@ public class GWTGenomeCanvas extends Composite {
 				return;
 
 			double x1 = prefetchWindow.convertToPixelXDouble(trackWindow.getStartOnGenome());
-			double x2 = prefetchWindow.convertToPixelXDouble(trackWindow.getEndOnGenome());
+			double x2 = prefetchWindow.convertToPixelXDouble(trackWindow.getEndOnGenome() + 1);
 
 			double w = x2 - x1;
 			canvas.scale(trackWindow.getPixelWidth() / w, 1.0f);

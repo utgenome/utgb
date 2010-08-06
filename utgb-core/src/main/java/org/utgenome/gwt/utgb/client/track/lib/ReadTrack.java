@@ -365,7 +365,21 @@ public class ReadTrack extends TrackBase {
 
 	private boolean needUpdateForGraphicRefinement = false;
 
+	@Override
+	public void beforeChangeTrackWindow(TrackWindow newWindow) {
+
+		final String layout = getConfig().getString(CONFIG_LAYOUT, "pileup");
+		if ("coverage".equals(layout) && current != null && !current.hasSameScaleWith(newWindow)) {
+			needUpdateForGraphicRefinement = true;
+		}
+
+	}
+
+	private TrackWindow current;
+
 	protected void update(TrackWindow newWindow, boolean forceReload) {
+
+		current = newWindow;
 
 		if (!forceReload && geneCanvas.hasCacheCovering(newWindow)) {
 			if (!needUpdateForGraphicRefinement) {
