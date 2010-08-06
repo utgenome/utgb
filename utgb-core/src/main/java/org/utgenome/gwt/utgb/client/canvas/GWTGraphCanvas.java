@@ -695,9 +695,13 @@ public class GWTGraphCanvas extends Composite {
 								maxValue = Math.max(maxValue, data[pos]);
 							}
 						}
-						if(minValue == maxValue)maxValue += 1.0f;
 						GWT.log("scale: " + minValue + " - " + maxValue);
 					}
+				}
+
+				if(minValue == maxValue){
+					minValue = style.minValue;
+					maxValue = style.maxValue;
 				}
 
 				if(style.autoScale && ( minValue != tempMinValue || maxValue != tempMaxValue )) {
