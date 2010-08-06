@@ -320,7 +320,9 @@ public class GWTGenomeCanvas extends Composite {
 		int x = drawPosition(getXOnCanvas(event));
 		int y = getYOnCanvas(event);
 
-		return intervalLayout.overlappedInterval(x, y, xBorder, h);
+		OnGenome g = intervalLayout.overlappedInterval(x, y, xBorder, h);
+
+		return g;
 	}
 
 	public int getXOnCanvas(Event event) {
@@ -846,26 +848,26 @@ public class GWTGenomeCanvas extends Composite {
 			if (prefetchWindow == null)
 				return;
 
-			int x1 = prefetchWindow.convertToPixelX(trackWindow.getStartOnGenome());
-			int x2 = prefetchWindow.convertToPixelX(trackWindow.getEndOnGenome());
+			double x1 = prefetchWindow.convertToPixelXDouble(trackWindow.getStartOnGenome());
+			double x2 = prefetchWindow.convertToPixelXDouble(trackWindow.getEndOnGenome());
 
-			int w = x2 - x1;
-			canvas.scale(trackWindow.getPixelWidth() / (double) w, 1.0f);
+			double w = x2 - x1;
+			canvas.scale(trackWindow.getPixelWidth() / w, 1.0f);
 
 			if (x1 < 0)
 				x1 = 0;
 			if (x2 > readCoverage.pixelWidth)
 				x2 = readCoverage.pixelWidth;
 
-			for (int x = x1; x < x2; ++x) {
+			for (int x = (int) x1; x < (int) x2; ++x) {
 				int h = readCoverage.coverage[x];
 				if (h <= 0) {
 					continue;
 				}
 				int y = (int) ((h * heigtOfRead) * scalingFactor);
 				canvas.saveContext();
-				canvas.translate((x - x1) + 0.5f, 0);
-				canvas.fillRect(0, 0, 1, y + 0.5f);
+				canvas.translate(x - x1 + 0.5f, 0);
+				canvas.fillRect(0, 0, 1, y - 0.5f);
 				canvas.restoreContext();
 			}
 
@@ -881,7 +883,8 @@ public class GWTGenomeCanvas extends Composite {
 		FindMaximumHeight hFinder = new FindMaximumHeight();
 		block.accept(hFinder);
 
-		int heightOfRead = hFinder.maxHeight > TRACK_COLLAPSE_COVERAGE_THRESHOLD ? 2 : defaultGeneHeight;
+		//int heightOfRead = hFinder.maxHeight > TRACK_COLLAPSE_COVERAGE_THRESHOLD ? 2 : defaultGeneHeight;
+		int heightOfRead = defaultMinGeneHeight;
 
 		int canvasHeight = hFinder.maxHeight * heightOfRead;
 		float scalingFactor = 1.0f;
