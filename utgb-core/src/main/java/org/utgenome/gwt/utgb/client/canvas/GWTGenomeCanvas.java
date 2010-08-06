@@ -364,8 +364,8 @@ public class GWTGenomeCanvas extends Composite {
 	}
 
 	public void setPrefetchFactor(float factor) {
-		if (factor <= 0.05f)
-			factor = 0.05f;
+		if (factor <= 0.3f)
+			factor = 0.3f;
 		this.PREFETCH_FACTOR = factor;
 	}
 
