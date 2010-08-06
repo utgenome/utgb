@@ -841,7 +841,7 @@ public class GWTGenomeCanvas extends Composite {
 		@Override
 		public void visitReadCoverage(ReadCoverage readCoverage) {
 			canvas.saveContext();
-			canvas.setFillStyle(getColor("#6699CC", 0.5f));
+			canvas.setFillStyle(getColor("#6699CC", 0.8f));
 			canvas.setLineWidth(1.0f);
 			canvas.setLineCap("round");
 
