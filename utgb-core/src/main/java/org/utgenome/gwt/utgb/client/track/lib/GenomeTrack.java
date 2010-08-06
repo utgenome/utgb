@@ -55,7 +55,18 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * GenomeTrack is for visualizing data that can be located on genome sequences.
+ * GenomeTrack for visualizing data on genome sequences using an image URL or an HTML page embedded in IFRAME tag.
+ * 
+ * <pre>
+ * -track
+ *  -class: genome track
+ *  -property:
+ *   -type: image (or frame)
+ *   -track base URL: http://somewhere/cgi/drawGenes?ref=%ref&chr=%chr&start=%start&end=%end&pixelwidth=%pixelwidth
+ * </pre>
+ * 
+ * In the track base URL parameter, you can use several keyword parameters starting with %. For the details of available
+ * parameters, see also {@link ReadTrack} page.
  * 
  * @author leo
  * 
@@ -63,7 +74,6 @@ import com.google.gwt.user.client.ui.Widget;
 public class GenomeTrack extends TrackBase {
 
 	protected String type = "image";
-	protected String trackBaseURL;
 	private String trackURL;
 	protected int leftMargin = 0;
 
@@ -114,7 +124,14 @@ public class GenomeTrack extends TrackBase {
 		if (leftMargin > 0)
 			layoutPanel.getCellFormatter().setWidth(0, 0, leftMargin + "px");
 
-		trackURL = getTrackURL();
+		String newURL = getTrackURL();
+		if (trackURL != null && trackURL.equals(newURL)) {
+			getFrame().loadingDone();
+			return; // do nothing when generated URL has no change
+		}
+		else
+			trackURL = newURL;
+
 		getConfig().setParameter("trackURL", trackURL);
 
 		if (type.equals("frame")) {
@@ -141,9 +158,9 @@ public class GenomeTrack extends TrackBase {
 
 		Properties p = new Properties();
 		TrackWindow w = getTrackGroup().getTrackWindow();
-		p.add("start", w.getStartOnGenome());
-		p.add("end", w.getEndOnGenome());
-		p.add("width", w.getPixelWidth() - leftMargin);
+		//		p.add("start", w.getStartOnGenome());
+		//		p.add("end", w.getEndOnGenome());
+		//		p.add("width", w.getPixelWidth() - leftMargin);
 
 		for (String key : queryParams) {
 			// override the group property using the corresponding config parameter 
@@ -155,11 +172,8 @@ public class GenomeTrack extends TrackBase {
 				p.add(key, v);
 		}
 
-		return c.getTrackURL(trackBaseURL, p);
-	}
-
-	protected void setTrackBaseURL(String trackBaseURL) {
-		this.trackBaseURL = trackBaseURL;
+		String trackBaseURL = getConfig().getString(CONFIG_TRACK_BASE_URL, "utgb-core/roundcircle");
+		return resolvePropertyValues(c.getTrackURL(trackBaseURL, p));
 	}
 
 	@Override
@@ -186,7 +200,7 @@ public class GenomeTrack extends TrackBase {
 
 		// set up the configuration panel
 		TrackConfig config = getConfig();
-		config.addConfig("Track Base URL", new StringType(CONFIG_TRACK_BASE_URL), trackBaseURL);
+		config.addConfig("Track Base URL", new StringType(CONFIG_TRACK_BASE_URL), "");
 		config.addConfig("Track URL", new StringType("trackURL"), trackURL);
 	}
 
@@ -216,7 +230,6 @@ public class GenomeTrack extends TrackBase {
 	@Override
 	public void onChangeTrackConfig(TrackConfigChange change) {
 		if (change.contains(CONFIG_TRACK_BASE_URL)) {
-			trackBaseURL = change.getValue(CONFIG_TRACK_BASE_URL);
 			draw();
 		}
 	}
@@ -235,7 +248,6 @@ public class GenomeTrack extends TrackBase {
 	public void restoreProperties(CanonicalProperties properties) {
 		super.restoreProperties(properties);
 
-		trackBaseURL = properties.get(CONFIG_TRACK_BASE_URL, trackBaseURL);
 		leftMargin = properties.getInt("leftMargin", leftMargin);
 		type = properties.get(CONFIG_TRACK_TYPE, type);
 		monitorCoordinateChange = properties.getBoolean("monitorCoordinateChange", monitorCoordinateChange);

@@ -180,11 +180,11 @@ public abstract class TrackBase implements Track {
 	}
 
 	public void refresh() {
+		TrackBase.this.draw();
 		//TrackBase.this.draw();
 		//getFrame().onUpdateTrackWidget();
 		DeferredCommand.addCommand(new Command() {
 			public void execute() {
-				TrackBase.this.draw();
 				getFrame().onUpdateTrackWidget();
 
 			}
@@ -243,7 +243,8 @@ public abstract class TrackBase implements Track {
 	public TrackFrameConfig frameConfig = null;
 
 	public void loadView(TrackView.Track view) {
-		getTrackInfo().setTrackName(view.name);
+		if (view.name != null)
+			getTrackInfo().setTrackName(view.name);
 
 		//		Properties p = new Properties();
 		//		p.putAll(view.property);

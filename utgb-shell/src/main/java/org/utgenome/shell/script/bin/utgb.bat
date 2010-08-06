@@ -125,7 +125,7 @@ if "%@eval[2+2]" == "4" goto 4NTCWJars
 
 @REM Start UTGB
 :runm2
-%UTGB_JAVA_EXE% -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager -Djava.util.logging.config.file=target/tomcat/conf/logging.properties -jar %UTGB_HOME%\lib\utgb-shell-standalone.jar %UTGB_CMD_LINE_ARGS%
+%UTGB_JAVA_EXE% -jar %UTGB_HOME%\lib\utgb-shell-standalone.jar %UTGB_CMD_LINE_ARGS%
 if ERRORLEVEL 1 goto error
 goto end
 

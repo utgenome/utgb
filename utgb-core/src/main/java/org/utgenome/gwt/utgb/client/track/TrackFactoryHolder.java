@@ -30,6 +30,7 @@ import org.utgenome.gwt.utgb.client.UTGBClientErrorCode;
 import org.utgenome.gwt.utgb.client.UTGBClientException;
 import org.utgenome.gwt.utgb.client.track.HasFactory.TrackGroupFactory;
 import org.utgenome.gwt.utgb.client.track.Track.TrackFactory;
+import org.utgenome.gwt.utgb.client.util.CanonicalProperties;
 
 /**
  * 
@@ -51,19 +52,19 @@ public class TrackFactoryHolder {
 	}
 
 	public static void addTrackFactory(String absoluteTrackClassName, TrackFactory factory) {
-		trackFactoryTable.put(absoluteTrackClassName, factory);
+		trackFactoryTable.put(CanonicalProperties.toCanonicalName(absoluteTrackClassName), factory);
 	}
 
 	public static void addTrackGroupFactory(String absoluteTrackGroupClassName, TrackGroupFactory factory) {
-		trackGroupFactoryTable.put(absoluteTrackGroupClassName, factory);
+		trackGroupFactoryTable.put(CanonicalProperties.toCanonicalName(absoluteTrackGroupClassName), factory);
 	}
 
 	public static TrackFactory getTrackFactory(String name) throws UTGBClientException {
-		return trackFactoryTable.get(name);
+		return trackFactoryTable.get(CanonicalProperties.toCanonicalName(name));
 	}
 
 	public static TrackGroupFactory getTrackGroupFactory(String name) throws UTGBClientException {
-		TrackGroupFactory factory = trackGroupFactoryTable.get(name);
+		TrackGroupFactory factory = trackGroupFactoryTable.get(CanonicalProperties.toCanonicalName(name));
 		if (factory == null)
 			throw new UTGBClientException(UTGBClientErrorCode.UNKNOWN_TRACK_GROUP, "unknown track group: " + name);
 		else

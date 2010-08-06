@@ -75,9 +75,12 @@ import com.google.gwt.widgetideas.graphics.client.ImageLoader.CallBack;
  */
 public class GWTGenomeCanvas extends Composite {
 
-	private final int DEFAULT_GENE_HEIGHT = 12;
-	private int geneHeight = DEFAULT_GENE_HEIGHT;
+	private int defaultGeneHeight = 12;
+	private int defaultMinGeneHeight = 2;
+
+	private int geneHeight = defaultGeneHeight;
 	private int geneMargin = 2;
+
 	private boolean reverse = false;
 
 	// widget
@@ -349,15 +352,20 @@ public class GWTGenomeCanvas extends Composite {
 		return prefetchWindow;
 	}
 
-	private float PREFETCH_FACTOR = 1.0f;
+	private float DEFAULT_PREFETCH_FACTOR = 1.0f;
+	private float PREFETCH_FACTOR = DEFAULT_PREFETCH_FACTOR;
+
+	public void resetPrefetchFactor() {
+		this.PREFETCH_FACTOR = DEFAULT_PREFETCH_FACTOR;
+	}
 
 	public float getPrefetchFactor() {
 		return this.PREFETCH_FACTOR;
 	}
 
 	public void setPrefetchFactor(float factor) {
-		if (factor <= 0.05f)
-			factor = 0.05f;
+		if (factor <= 0.3f)
+			factor = 0.3f;
 		this.PREFETCH_FACTOR = factor;
 	}
 
@@ -523,7 +531,11 @@ public class GWTGenomeCanvas extends Composite {
 				//canvas.setFillStyle(colors[baseIndex]);
 				//canvas.fillRect(x1, y, x2 - x1, geneHeight);
 
-				canvas.drawImage(imageACGT, pixelWidthOfBase * baseIndex, 0, pixelWidthOfBase, geneHeight, (int) x1, y, pixelWidthOfBase, geneHeight);
+				int h = imageACGT.getHeight();
+				if (h >= geneHeight)
+					h = geneHeight;
+
+				canvas.drawImage(imageACGT, pixelWidthOfBase * baseIndex, 0, pixelWidthOfBase, h, (int) x1, y, pixelWidthOfBase, h);
 				canvas.restoreContext();
 			}
 
@@ -744,8 +756,19 @@ public class GWTGenomeCanvas extends Composite {
 			if (readCoverage.coverage == null)
 				return;
 
+			int startPosOfCoverageOnGenome = readCoverage.getStart();
+			int viewStartOnGenome = trackWindow.getStartOnGenome();
+			int viewEndOnGenome = trackWindow.getEndOnGenome();
+
+			TrackWindow w = new TrackWindow(readCoverage.pixelWidth, readCoverage.getStart(), readCoverage.getEnd());
+			int startPosInCoveragePixel = w.convertToPixelX(viewStartOnGenome);
+			int endPosInCoveragePixel = w.convertToPixelX(viewEndOnGenome);
+			if (endPosInCoveragePixel > readCoverage.pixelWidth)
+				endPosInCoveragePixel = readCoverage.pixelWidth;
+
 			// set canvas size
-			for (int height : readCoverage.coverage) {
+			for (int i = startPosInCoveragePixel; i < endPosInCoveragePixel; ++i) {
+				int height = readCoverage.coverage[i];
 				if (height > maxHeight)
 					maxHeight = height;
 			}
@@ -850,13 +873,15 @@ public class GWTGenomeCanvas extends Composite {
 		}
 	}
 
+	private final int TRACK_COLLAPSE_COVERAGE_THRESHOLD = 40;
+
 	public <T extends OnGenome> void drawBlock(ReadCoverage block) {
 
 		// compute max height
 		FindMaximumHeight hFinder = new FindMaximumHeight();
 		block.accept(hFinder);
 
-		int heightOfRead = hFinder.maxHeight > 30 ? 2 : DEFAULT_GENE_HEIGHT;
+		int heightOfRead = hFinder.maxHeight > TRACK_COLLAPSE_COVERAGE_THRESHOLD ? 2 : defaultGeneHeight;
 
 		int canvasHeight = hFinder.maxHeight * heightOfRead;
 		float scalingFactor = 1.0f;
@@ -896,7 +921,7 @@ public class GWTGenomeCanvas extends Composite {
 		boolean drawBase = trackWindow.getSequenceLength() <= (trackWindow.getPixelWidth() / FONT_WIDTH);
 		if (drawBase && imageACGT == null) {
 			int pixelWidthOfBase = (int) (trackWindow.getPixelLengthPerBase() + 0.1d);
-			ImageLoader.loadImages(new String[] { "utgb-core/ACGT.png?fontWidth=" + pixelWidthOfBase + "&height=" + DEFAULT_GENE_HEIGHT }, new CallBack() {
+			ImageLoader.loadImages(new String[] { "utgb-core/ACGT.png?fontWidth=" + pixelWidthOfBase + "&height=" + defaultGeneHeight }, new CallBack() {
 				public void onImagesLoaded(ImageElement[] imageElements) {
 					imageACGT = imageElements[0];
 					layout();
@@ -912,10 +937,10 @@ public class GWTGenomeCanvas extends Composite {
 
 		int maxOffset = intervalLayout.createLocalLayout(geneHeight);
 
-		if (!intervalLayout.keepSpaceForLabels() || maxOffset > 30)
-			geneHeight = 2;
+		if (maxOffset > TRACK_COLLAPSE_COVERAGE_THRESHOLD)
+			geneHeight = defaultMinGeneHeight;
 		else
-			geneHeight = DEFAULT_GENE_HEIGHT;
+			geneHeight = defaultGeneHeight;
 
 		int h = geneHeight + geneMargin;
 		int height = (maxOffset + 1) * h;
@@ -1129,6 +1154,16 @@ public class GWTGenomeCanvas extends Composite {
 			canvas.restoreContext();
 		}
 
+	}
+
+	public void setReadHeight(int height) {
+		this.defaultGeneHeight = height;
+		imageACGT = null;
+	}
+
+	public void setReadHeightMin(int height) {
+		this.defaultMinGeneHeight = height;
+		imageACGT = null;
 	}
 
 }

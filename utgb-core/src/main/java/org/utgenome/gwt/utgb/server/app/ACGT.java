@@ -81,6 +81,8 @@ public class ACGT extends WebTrackBase {
 		final Color defaultTextColor = new Color(255, 255, 255);
 		final Color repeatTextColor = new Color(140, 140, 140);
 
+		int baseYPos = height - 2;
+
 		for (int i = 0; i < letters.length(); ++i) {
 			char ch = letters.charAt(i);
 			boolean isRepeatChar = Character.isLowerCase(ch);
@@ -92,7 +94,7 @@ public class ACGT extends WebTrackBase {
 
 			Color textColor = isRepeatChar ? repeatTextColor : defaultTextColor;
 			if (drawLetter)
-				canvas.drawBase(letters.substring(i, i + 1), offset, offset + 1L, height - 2, fontSize, textColor);
+				canvas.drawBase(letters.substring(i, i + 1), offset, offset + 1L, baseYPos, fontSize, textColor);
 
 			offset++;
 		}

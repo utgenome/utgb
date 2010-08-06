@@ -32,7 +32,7 @@ import org.utgenome.gwt.utgb.client.bio.OnGenome;
 import org.utgenome.gwt.utgb.client.bio.Read;
 import org.utgenome.gwt.utgb.client.bio.ReadCoverage;
 import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig;
-import org.utgenome.gwt.utgb.client.bio.DASResult.Segment.DASFeature;
+import org.utgenome.gwt.utgb.client.bio.DASResult.DASFeature;
 import org.utgenome.gwt.utgb.client.bio.GenomeDB.DBType;
 import org.utgenome.gwt.utgb.client.bio.Read.ReadType;
 import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig.Layout;
@@ -143,7 +143,7 @@ public class ReadView extends WebTrackBase {
 
 		_logger.debug("query done. " + sw.getElapsedTime() + " sec.");
 
-		if (config.layout == Layout.COVERAGE || result.size() > 3000) {
+		if (config.layout == Layout.COVERAGE || result.size() > config.maxmumNumberOfReadsToDisplay) {
 			// compute coverage
 			ReadCoverage coverage = computeCoverage(result, loc.start, loc.end, config.pixelWidth);
 			result.clear();

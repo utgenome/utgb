@@ -51,9 +51,9 @@ public class ScaleBarTrack extends GenomeTrack {
 	public void setUp(TrackFrame trackFrame, TrackGroup group) {
 		super.setUp(trackFrame, group);
 
-		String trackBaseURL = "utgb-core/ScaleBar?%q";
-		setTrackBaseURL(trackBaseURL);
+		String trackBaseURL = "utgb-core/ScaleBar?range=%len&width=%pixelwidth";
 		getConfig().setParameter(GenomeTrack.CONFIG_TRACK_BASE_URL, trackBaseURL);
 		getConfig().setParameter(GenomeTrack.CONFIG_TRACK_TYPE, "image");
 	}
+
 }

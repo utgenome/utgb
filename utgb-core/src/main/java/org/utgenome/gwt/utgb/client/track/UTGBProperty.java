@@ -31,7 +31,7 @@ package org.utgenome.gwt.utgb.client.track;
  * 
  */
 public interface UTGBProperty {
-	public static final String SEQUENCE_SIZE = "sequence_size";
+	public static final String SEQUENCE_SIZE = "sequenceSize";
 	public static final String SPECIES = "species";
 	public static final String REVISION = "revision";
 	public static final String TARGET = "target";

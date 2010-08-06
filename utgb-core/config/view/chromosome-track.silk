@@ -8,7 +8,7 @@
     -chr: chr1
     -start: 1
     -end: 100000
-    -pixel width: 700
+    -pixel width: 800
   -property
     -name: human
 -track
@@ -65,6 +65,5 @@
   -class: org.utgenome.gwt.utgb.client.track.lib.ChromosomeMapTrack
   -property
     -displayType: "normal"
-    -trackBaseURL: utgb-core/ChromosomeMap
     -leftMargin: 100
     -type: image
