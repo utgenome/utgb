@@ -46,8 +46,14 @@ public class ReadQueryConfig implements Serializable {
 	public boolean hasCanvasSupport;
 	public Layout layout;
 	public int pixelWidth;
+	public int maxmumNumberOfReadsToDisplay = 500;
 
 	public ReadQueryConfig() {
+	}
+
+	public ReadQueryConfig(int pixelWidth, boolean hasCanvasSupport, Layout layout, int maxmumNumberOfReadsToDisplay) {
+		this(pixelWidth, hasCanvasSupport, layout);
+		this.maxmumNumberOfReadsToDisplay = maxmumNumberOfReadsToDisplay;
 	}
 
 	public ReadQueryConfig(int pixelWidth, boolean hasCanvasSupport, Layout layout) {
@@ -55,4 +61,5 @@ public class ReadQueryConfig implements Serializable {
 		this.layout = layout;
 		this.hasCanvasSupport = hasCanvasSupport;
 	}
+
 }

@@ -180,11 +180,11 @@ public abstract class TrackBase implements Track {
 	}
 
 	public void refresh() {
+		TrackBase.this.draw();
 		//TrackBase.this.draw();
 		//getFrame().onUpdateTrackWidget();
 		DeferredCommand.addCommand(new Command() {
 			public void execute() {
-				TrackBase.this.draw();
 				getFrame().onUpdateTrackWidget();
 
 			}

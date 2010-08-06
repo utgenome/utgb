@@ -50,6 +50,7 @@ import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.track.UTGBProperty;
 import org.utgenome.gwt.utgb.client.util.BrowserInfo;
 import org.utgenome.gwt.utgb.client.util.CanonicalProperties;
+import org.utgenome.gwt.utgb.client.util.Properties;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
@@ -58,7 +59,7 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Track for displaying read data.
+ * Track for displaying read data in BED,SAM,BAM formats.
  * 
  * <h3>View Example</h3>
  * 
@@ -174,11 +175,11 @@ public class ReadTrack extends TrackBase {
 	private final String CONFIG_SHOW_LABELS = "showLabels";
 	private final String CONFIG_READ_HEIGHT = "read height";
 	private final String CONFIG_MIN_READ_HEIGHT = "min read height";
+	private final String CONFIG_NUM_READ_MAX = "num reads to display";
 	private final String CONFIG_COVERAGE_STYLE = "coverage.style";
 	private final String CONFIG_ONCLICK_ACTION = "onclick.action";
 	private final String CONFIG_ONCLICK_URL = "onclick.url";
-	private final String CONFIG_ONCLICK_P_KEY = "onclick.p.key";
-	private final String CONFIG_ONCLICK_P_VALUE = "onclick.p.value";
+	private final String CONFIG_ONCLICK_P_KEY = "onclick.set";
 
 	// widgets
 	private FlexTable layoutTable = new FlexTable();
@@ -267,12 +268,25 @@ public class ReadTrack extends TrackBase {
 					String key = getConfig().getParameter(CONFIG_ONCLICK_P_KEY);
 					if (key == null)
 						return;
-					String value = getConfig().getParameter(CONFIG_ONCLICK_P_VALUE);
-					value = resolveURL(value, locus);
-					if (value == null)
+
+					// parse name:%q,chr:%chr
+					String[] actions = key.split(",");
+					if (actions == null)
 						return;
 
-					setTrackGroupProperty(key, value);
+					Properties prop = new Properties();
+					for (String each : actions) {
+						String[] keyAndValue = each.split(":");
+						if (keyAndValue == null || keyAndValue.length != 2)
+							continue;
+
+						String value = resolveURL(keyAndValue[1].trim(), locus);
+						if (value == null)
+							return;
+						prop.put(keyAndValue[0].trim(), value);
+					}
+
+					getTrackGroup().getPropertyWriter().setProperty(prop);
 				}
 			});
 		}
@@ -337,14 +351,14 @@ public class ReadTrack extends TrackBase {
 		config.addConfigBoolean("Show Labels", CONFIG_SHOW_LABELS, true);
 		config.addConfigInteger("Read Height", CONFIG_READ_HEIGHT, 12);
 		config.addConfigInteger("Read Height (min)", CONFIG_MIN_READ_HEIGHT, 2);
+		config.addConfigInteger("# of Reads to Cache", CONFIG_NUM_READ_MAX, 500);
 
 		config.addConfig("Coverage Display Style",
 				new StringType(CONFIG_COVERAGE_STYLE, ValueDomain.createNewValueDomain(new String[] { "default", "smooth" })), "default");
 		ValueDomain actionTypes = ValueDomain.createNewValueDomain(new String[] { "none", "link", "info", "set" });
 		config.addConfig("On Click Action", new StringType(CONFIG_ONCLICK_ACTION, actionTypes), "link");
 		config.addConfig("On Click URL", new StringType(CONFIG_ONCLICK_URL), "http://www.google.com/search?q=%q");
-		config.addConfig("On Click - Set Key", new StringType(CONFIG_ONCLICK_P_KEY), "read");
-		config.addConfig("On Click - Set Value", new StringType(CONFIG_ONCLICK_P_VALUE), "%q");
+		config.addConfig("On Click Set (key:value, ...)", new StringType(CONFIG_ONCLICK_P_KEY), "read:%q");
 
 		updateClickAction();
 	}
@@ -368,8 +382,9 @@ public class ReadTrack extends TrackBase {
 		String chr = getTrackGroupProperty(UTGBProperty.TARGET);
 
 		final String layout = getConfig().getString(CONFIG_LAYOUT, "pileup");
+		final int numReadsMax = getConfig().getInt(CONFIG_NUM_READ_MAX, 500);
 		ReadQueryConfig queryConfig = new ReadQueryConfig(prefetchWindow.getPixelWidth(), BrowserInfo.isCanvasSupported(), Layout.valueOf(Layout.class, layout
-				.toUpperCase()));
+				.toUpperCase()), numReadsMax);
 
 		getFrame().setNowLoading();
 		getBrowserService().getOnGenomeData(getGenomeDB(), new ChrLoc(chr, prefetchWindow.getStartOnGenome(), prefetchWindow.getEndOnGenome()), queryConfig,
@@ -450,7 +465,7 @@ public class ReadTrack extends TrackBase {
 			refresh();
 		}
 
-		if (change.containsOneOf(new String[] { CONFIG_LAYOUT, CONFIG_READ_HEIGHT, CONFIG_MIN_READ_HEIGHT, CONFIG_COVERAGE_STYLE })) {
+		if (change.containsOneOf(new String[] { CONFIG_LAYOUT, CONFIG_READ_HEIGHT, CONFIG_MIN_READ_HEIGHT, CONFIG_COVERAGE_STYLE, CONFIG_NUM_READ_MAX })) {
 			update(getTrackWindow(), true);
 		}
 	}

@@ -108,8 +108,8 @@ public class InfoSilkGenerator implements OnGenomeDataVisitor {
 
 	public void visitReadCoverage(ReadCoverage readCoverage) {
 		addLine("-name: " + readCoverage.getName());
-		addLine("-start: " + readCoverage.getStart());
-		addLine("-length: " + readCoverage.length());
+		//addLine("-start: " + readCoverage.getStart());
+		//addLine("-length: " + readCoverage.length());
 	}
 
 	public void visitGraph(GraphData graph) {

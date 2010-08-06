@@ -55,7 +55,18 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * GenomeTrack is for visualizing data that can be located on genome sequences.
+ * GenomeTrack for visualizing data on genome sequences using an image URL or an HTML page embedded in IFRAME tag.
+ * 
+ * <pre>
+ * -track
+ *  -class: genome track
+ *  -property:
+ *   -type: image (or frame)
+ *   -track base URL: http://somewhere/cgi/drawGenes?ref=%ref&chr=%chr&start=%start&end=%end&pixelwidth=%pixelwidth
+ * </pre>
+ * 
+ * In the track base URL parameter, you can use several keyword parameters starting with %. For the details of available
+ * parameters, see also {@link ReadTrack} page.
  * 
  * @author leo
  * 
