@@ -396,19 +396,24 @@ public class GWTGraphCanvas extends Composite {
 
 		if (!style.drawScale)
 			return;
+		
+//		if (style.autoScale && wigDataList != null) {
+//			float tempMinValue = Math.min(style.minValue, Float.MAX_VALUE);
+//			float tempMaxValue = Math.max(style.maxValue, Float.MIN_VALUE);
+//			for (CompactWIGData data : wigDataList) {
+//				tempMinValue = Math.min(tempMinValue, data.getMinValue());
+//				tempMaxValue = Math.max(tempMaxValue, data.getMaxValue());
+//			}
+//			GWT.log("range:" + tempMinValue + "-" + tempMaxValue, null);
+//			style.minValue = tempMinValue;
+//			style.maxValue = tempMaxValue;
+//		}
 
-		if (style.autoScale && wigDataList != null) {
-			float tempMinValue = Math.min(style.minValue, Float.MAX_VALUE);
-			float tempMaxValue = Math.min(style.maxValue, Float.MIN_VALUE);
-			for (CompactWIGData data : wigDataList) {
-				tempMinValue = Math.min(tempMinValue, data.getMinValue());
-				tempMaxValue = Math.max(tempMaxValue, data.getMaxValue());
-			}
-			GWT.log("range:" + tempMinValue + "-" + tempMaxValue, null);
-			style.minValue = tempMinValue;
-			style.maxValue = tempMaxValue;
+		if (style.autoScale) {
+			style.minValue = minValue;
+			style.maxValue = maxValue;
 		}
-
+		
 		// draw frame
 		frameCanvas.saveContext();
 		frameCanvas.setStrokeStyle(new Color(0, 0, 0, 0.5f));
@@ -560,6 +565,11 @@ public class GWTGraphCanvas extends Composite {
 	}
 
 	public float getYPosition(float value) {
+		if(style.autoScale){
+			style.minValue = minValue;
+			style.maxValue = maxValue;
+		}
+		
 		if (style.maxValue == style.minValue)
 			return 0.0f;
 
@@ -641,14 +651,59 @@ public class GWTGraphCanvas extends Composite {
 
 	}
 
+	private float minValue = 0.0f;
+	private float maxValue = 0.0f;
+
 	public void setTrackWindow(final TrackWindow w) {
+	
 		if (trackWindow != null) {
 			if (trackWindow.hasSameScaleWith(w)) {
+				float tempMinValue = minValue;
+				float tempMaxValue = maxValue;
 
+				if(style.autoScale) {
+					minValue = 0.0f;
+					maxValue = 0.0f;
+				}
+				
 				for (GraphCanvas each : canvasMap.values()) {
 					int start = each.window.getStartOnGenome();
-					int e = w.convertToPixelX(start);
-					panel.setWidgetPosition(each.canvas, e, 0);
+					int s = w.convertToPixelX(start);
+					panel.setWidgetPosition(each.canvas, s, 0);
+
+					// Auto Scale
+					if(style.autoScale) {
+						
+						int pw = w.getPixelWidth();
+						int pw_e = each.window.getPixelWidth();						
+						
+						for(CompactWIGData wigData : each.graphData) {
+							float data[] = wigData.getData();
+
+							int loopStart, loopEnd;
+							if(!w.isReverseStrand()) {
+								loopStart = Math.max(-s, 0);
+								loopEnd   = Math.min(pw - s, pw_e);
+							}
+							else {
+								loopStart = Math.max(s - pw, 0);
+								loopEnd   = Math.min(s, pw_e);
+							}
+							
+							for(int pos = loopStart;pos < loopEnd;pos++) {
+								minValue = Math.min(minValue, data[pos]);
+								maxValue = Math.max(maxValue, data[pos]);
+							}
+						}
+						if(minValue == maxValue)maxValue += 1.0f;
+						GWT.log("scale: " + minValue + " - " + maxValue);
+					}
+				}
+
+				if(style.autoScale && ( minValue != tempMinValue || maxValue != tempMaxValue )) {
+					style.minValue = minValue;
+					style.maxValue = maxValue;
+					redrawWigGraph();
 				}
 
 				//ScrollAnimation animation = new ScrollAnimation(trackWindow, w);
