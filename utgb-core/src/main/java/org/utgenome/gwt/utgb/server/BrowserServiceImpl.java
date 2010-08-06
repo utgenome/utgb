@@ -128,7 +128,7 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 			_logger.info(String.format("loading view: ", viewName));
 			String view = getHTTPContent(viewName);
 			try {
-				TrackView v = Lens.loadSilk(TrackView.class, new BufferedReader(new InputStreamReader(new URL(viewName).openStream())));
+				TrackView v = Lens.loadSilk(TrackView.class, new URL(viewName));
 				return v;
 			}
 			catch (IOException e) {

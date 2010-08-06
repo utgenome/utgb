@@ -108,13 +108,13 @@ public class WIGGraphCanvasTrack extends TrackBase {
 
 	@Override
 	public void onChangeTrackHeight(int newHeight) {
-		// set graph height
-		int height = getFrame().getFrameHeight();
-		if (height > 16 && height != style.windowHeight) {
-			getConfig().setParameter(GraphStyle.CONFIG_TRACK_HEIGHT, Integer.toString(height));
-		}
-
-		refresh();
+		//		// set graph height
+		//		int height = getFrame().getFrameHeight();
+		//		if (height > 16 && height != style.windowHeight) {
+		//			getConfig().setParameter(GraphStyle.CONFIG_TRACK_HEIGHT, Integer.toString(height));
+		//		}
+		//
+		//		refresh();
 	}
 
 	private void prepare() {
