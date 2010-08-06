@@ -261,7 +261,6 @@ public class UTGBEntryPointBase implements EntryPoint {
 				History.newItem(n, false);
 				String s = propertyReader.getProperty(UTGBProperty.TARGET) + ":" + w.getStartOnGenome() + "-" + w.getEndOnGenome();
 				Window.setTitle(s + " - UTGB");
-				//GWT.log("history: " + n, null);
 			}
 
 		}

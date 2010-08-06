@@ -113,7 +113,14 @@ public class GenomeTrack extends TrackBase {
 		if (leftMargin > 0)
 			layoutPanel.getCellFormatter().setWidth(0, 0, leftMargin + "px");
 
-		trackURL = getTrackURL();
+		String newURL = getTrackURL();
+		if (trackURL != null && trackURL.equals(newURL)) {
+			getFrame().loadingDone();
+			return; // do nothing when generated URL has no change
+		}
+		else
+			trackURL = newURL;
+
 		getConfig().setParameter("trackURL", trackURL);
 
 		if (type.equals("frame")) {
