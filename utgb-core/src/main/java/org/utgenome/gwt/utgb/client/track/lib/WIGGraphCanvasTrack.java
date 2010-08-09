@@ -45,7 +45,6 @@ import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.track.UTGBProperty;
 import org.utgenome.gwt.widget.client.Style;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Widget;
@@ -68,6 +67,11 @@ public class WIGGraphCanvasTrack extends TrackBase {
 		};
 	}
 
+	private final FlexTable layoutTable = new FlexTable();
+	private final GWTGraphCanvas graphCanvas = new GWTGraphCanvas();
+
+	private TrackWindowChain chain = new TrackWindowChain();
+
 	public WIGGraphCanvasTrack() {
 		super("WIG Graph Canvas");
 
@@ -77,14 +81,11 @@ public class WIGGraphCanvasTrack extends TrackBase {
 		Style.margin(layoutTable, 0);
 		Style.padding(layoutTable, 0);
 
+		Style.fullSize(layoutTable);
+
 		layoutTable.setWidget(0, 1, graphCanvas);
 
 	}
-
-	private final FlexTable layoutTable = new FlexTable();
-	private final GWTGraphCanvas graphCanvas = new GWTGraphCanvas();
-
-	private TrackWindowChain chain = new TrackWindowChain();
 
 	public Widget getWidget() {
 		return layoutTable;
@@ -99,8 +100,6 @@ public class WIGGraphCanvasTrack extends TrackBase {
 
 	@Override
 	public void setUp(TrackFrame trackFrame, TrackGroup group) {
-
-		graphCanvas.setTrackGroup(group);
 		TrackConfig config = getConfig();
 		config.addConfigString("Path", CONFIG_PATH, "");
 		style.setup(config);
@@ -108,13 +107,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 
 	@Override
 	public void onChangeTrackHeight(int newHeight) {
-		//		// set graph height
-		//		int height = getFrame().getFrameHeight();
-		//		if (height > 16 && height != style.windowHeight) {
-		//			getConfig().setParameter(GraphStyle.CONFIG_TRACK_HEIGHT, Integer.toString(height));
-		//		}
-		//
-		//		refresh();
+		refresh();
 	}
 
 	private void prepare() {
@@ -125,18 +118,15 @@ public class WIGGraphCanvasTrack extends TrackBase {
 		graphCanvas.setStyle(style);
 
 		graphCanvas.clearScale();
-		//		if (!style.autoScale) {
 		graphCanvas.drawFrame(null);
 		graphCanvas.drawScaleLabel();
-		//		}
-
 	}
 
 	@Override
 	public void draw() {
 
 		final TrackWindow newWindow = getTrackWindow();
-		graphCanvas.setTrackWindow(newWindow);
+		graphCanvas.setViewWindow(newWindow);
 
 		prepare();
 
@@ -168,7 +158,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 
 	@Override
 	public void beforeChangeTrackWindow(TrackWindow newWindow) {
-		graphCanvas.setTrackWindow(newWindow);
+		graphCanvas.setViewWindow(newWindow);
 	}
 
 	public void loadGraph(final TrackWindow queryWindow) {
@@ -181,7 +171,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 		ChrLoc l = new ChrLoc(getTrackGroupProperty(UTGBProperty.TARGET), s, e);
 		getBrowserService().getCompactWigDataList(fileName, queryWindow.getPixelWidth(), l, new AsyncCallback<List<CompactWIGData>>() {
 			public void onFailure(Throwable e) {
-				GWT.log("failed to retrieve wig data", e);
+				error("failed to retrieve wig data: " + e.getMessage());
 				getFrame().loadingDone();
 			}
 

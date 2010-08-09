@@ -340,7 +340,7 @@ public class ReadTrack extends TrackBase {
 		update(group.getTrackWindow(), true);
 		TrackConfig config = getConfig();
 		config.addHiddenConfig(CONFIG_LEFT_MARGIN, "0");
-		config.addConfig("DB Path", new StringType(CONFIG_PATH));
+		config.addConfig("DB Path", new StringType(CONFIG_PATH), "");
 
 		config.addHiddenConfig(CONFIG_DB_TYPE, "AUTO");
 		//ValueDomain dbTypes = ValueDomain.createNewValueDomain(DBType.getDBTypeList());

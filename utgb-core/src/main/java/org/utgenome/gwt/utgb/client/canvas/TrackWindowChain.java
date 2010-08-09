@@ -142,7 +142,8 @@ public class TrackWindowChain {
 			gridStartOnGenome += viewSize;
 		}
 
-		windowList = windowToPreserve;
+		windowList.clear();
+		windowList.addAll(windowToPreserve);
 		windowList.addAll(newWindowList);
 
 		return new WindowUpdateInfo(newWindowList, windowToDiscard);

@@ -66,7 +66,7 @@ public class BEDTrack extends GenomeTrack {
 	public void setUp(TrackFrame trackFrame, TrackGroup group) {
 		super.setUp(trackFrame, group);
 
-		getConfig().addConfig("File Name", new StringType(CONFIG_FILENAME));
+		getConfig().addConfig("File Name", new StringType(CONFIG_FILENAME), "");
 	}
 
 	@Override

@@ -28,6 +28,7 @@ import java.util.HashMap;
 
 import org.utgenome.gwt.utgb.client.BrowserServiceAsync;
 import org.utgenome.gwt.utgb.client.RPCServiceManager;
+import org.utgenome.gwt.utgb.client.UTGBEntryPointBase;
 import org.utgenome.gwt.utgb.client.bio.Coordinate;
 import org.utgenome.gwt.utgb.client.util.CanonicalProperties;
 import org.utgenome.gwt.utgb.client.util.Properties;
@@ -360,6 +361,10 @@ public abstract class TrackBase implements Track {
 
 	public void onChangeTrackHeight(int newHeight) {
 		// do nothing
+	}
+
+	public void error(String message) {
+		UTGBEntryPointBase.showErrorMessage(message);
 	}
 
 }

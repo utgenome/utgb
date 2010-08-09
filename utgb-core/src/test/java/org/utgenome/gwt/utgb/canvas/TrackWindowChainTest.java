@@ -89,7 +89,11 @@ public class TrackWindowChainTest {
 		_logger.debug(String.format("view: %s\n%s", view.toString(), Lens.toSilk(update)));
 		verifyChain(view, chain);
 
+		_logger.debug(String.format("view: %s\n%s", view.toString(), Lens.toSilk(update)));
 		update = chain.setViewWindow(view = view.scroll(3000));
+		verifyChain(view, chain);
+
+		update = chain.setViewWindow(new TrackWindow(view.getPixelWidth(), view.getStartOnGenome() - 1000, view.getEndOnGenome() + 1000));
 		_logger.debug(String.format("view: %s\n%s", view.toString(), Lens.toSilk(update)));
 		verifyChain(view, chain);
 

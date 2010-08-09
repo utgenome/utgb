@@ -77,9 +77,10 @@ public class TrackConfig extends PopupPanel {
 
 	private Track _track;
 	private DockPanel _panel = new DockPanel();
-	private ConfigurationTable _configTable = new ConfigurationTable(this);
+	private ConfigurationTable _configTable = new ConfigurationTable();
 	private Label _label;
 	CanonicalProperties properties = new CanonicalProperties();
+	CanonicalProperties defaultValueTable = new CanonicalProperties();
 
 	public TrackConfig(Track track) {
 		super(true);
@@ -126,40 +127,46 @@ public class TrackConfig extends PopupPanel {
 	}
 
 	public void addConfigString(String label, String paramName, String defaultValue) {
-		_configTable.addConfiguration(new StringType(paramName), label, defaultValue);
+		addConfig(label, new StringType(paramName), defaultValue);
 	}
 
 	public void addConfigInteger(String label, String paramName, int defaultValue) {
-		_configTable.addConfiguration(new IntegerType(paramName), label, Integer.toString(defaultValue));
+		addConfig(label, new IntegerType(paramName), Integer.toString(defaultValue));
 	}
 
 	public void addConfigBoolean(String label, String paramName, boolean defaultValue) {
-		_configTable.addConfiguration(new BooleanType(paramName), label, Boolean.toString(defaultValue));
+		addConfig(label, new BooleanType(paramName), Boolean.toString(defaultValue));
 	}
 
 	public void addConfigDouble(String label, String paramName, double defaultValue) {
-		_configTable.addConfiguration(new DoubleType(paramName), label, Double.toString(defaultValue));
-	}
-
-	public void addHiddenConfig(String paramName, String defaultValue) {
-		properties.put(paramName, properties.get(paramName, defaultValue));
+		addConfig(label, new DoubleType(paramName), Double.toString(defaultValue));
 	}
 
 	public void addConfig(DataType dataType, String defaultValue) {
-		_configTable.addConfiguration(dataType, defaultValue);
+		addConfig(dataType.getName(), dataType, defaultValue);
 	}
 
 	public void addConfig(String label, DataType dataType, String defaultValue) {
 		_configTable.addConfiguration(dataType, label, defaultValue);
 	}
 
-	public void addConfig(String label, DataType dataType) {
-		String defaultValue = properties.get(dataType.getName());
-		addConfig(label, dataType, defaultValue);
+	public void addHiddenConfig(String paramName, String defaultValue) {
+		properties.put(paramName, properties.get(paramName, defaultValue));
 	}
 
 	public String getParameter(String parameterName) {
 		return properties.get(parameterName);
+	}
+
+	/**
+	 * Set the parameter value. This method does not notify the configuration change to the {@link TrackConfig}
+	 * 
+	 * @param parameterName
+	 * @param value
+	 */
+	public void setParameter(String parameterName, String value) {
+		properties.put(parameterName, value);
+		_configTable.setValue(parameterName, value);
 	}
 
 	public String getString(String parameterName, String defaultValue) {
@@ -176,17 +183,6 @@ public class TrackConfig extends PopupPanel {
 
 	public boolean getBoolean(String parameterName, boolean devaultValue) {
 		return properties.getBoolean(parameterName, devaultValue);
-	}
-
-	/**
-	 * Set the parameter value. This method does not notify the configuration change to the {@link TrackConfig}
-	 * 
-	 * @param parameterName
-	 * @param value
-	 */
-	public void setParameter(String parameterName, String value) {
-		properties.put(parameterName, value);
-		_configTable.setValue(parameterName, value);
 	}
 
 	public void notifyConfigChange(String parameterName) {
@@ -209,136 +205,129 @@ public class TrackConfig extends PopupPanel {
 		return !properties.isEmpty();
 	}
 
-}
+	class ConfigurationTable extends Composite {
+		private DraggableTable _table = new DraggableTable();
+		private HashMap<String, Entry> _paramToEntryMap = new HashMap<String, Entry>();
 
-class ConfigurationTable extends Composite {
-	private TrackConfig _config;
-	private DraggableTable _table = new DraggableTable();
-	private HashMap<String, Entry> _paramToEntryMap = new HashMap<String, Entry>();
+		class Entry extends Composite {
+			class InputChangeListener implements KeyPressHandler, ChangeHandler {
 
-	class Entry extends Composite {
-		class InputChangeListener implements KeyPressHandler, ChangeHandler {
-
-			public void onKeyPress(KeyPressEvent e) {
-				if (e.getCharCode() == KeyboardHandler.KEY_ENTER) {
-					_config.properties.put(_parameterName, _form.getUserInput());
-					_config.notifyConfigChange(_parameterName);
+				public void onKeyPress(KeyPressEvent e) {
+					if (e.getCharCode() == KeyboardHandler.KEY_ENTER) {
+						properties.put(_parameterName, _form.getUserInput());
+						notifyConfigChange(_parameterName);
+					}
+					else {
+						// resize();
+					}
 				}
-				else {
-					// resize();
+
+				public void onChange(ChangeEvent e) {
+					properties.put(_parameterName, _form.getUserInput());
+					notifyConfigChange(_parameterName);
+				}
+
+			}
+
+			private String _parameterName;
+			private Label _label;
+			private InputForm _form;
+			private DockPanel _layoutPanel = new DockPanel();
+
+			/**
+			 * @param label
+			 * @param form
+			 */
+			public Entry(String parameterLabel, String parameterName, InputForm form) {
+				this._parameterName = parameterName;
+				this._label = new Label(parameterLabel + ":");
+				this._form = form;
+
+				_label.setStyleName("form-label");
+				_form.setStyleName("form-field");
+				// resize();
+
+				_layoutPanel.setStyleName("form");
+				_layoutPanel.setVerticalAlignment(DockPanel.ALIGN_MIDDLE);
+
+				_layoutPanel.add(_label, DockPanel.WEST);
+				_layoutPanel.add(_form, DockPanel.CENTER);
+
+				InputChangeListener listener = new InputChangeListener();
+				_form.addKeyPressHandler(listener);
+				_form.addChangeHandler(listener);
+
+				initWidget(_layoutPanel);
+			}
+
+			public void resize() {
+				String input = _form.getUserInput();
+				int widgetWidth = _form.getOffsetWidth();
+				if (input != null) {
+					int width = input.length() * 8;
+					width = width > widgetWidth ? width : widgetWidth;
+					if (width > 800)
+						width = 800;
+					_form.setWidth(width + "px");
 				}
 			}
 
-			public void onChange(ChangeEvent e) {
-				_config.properties.put(_parameterName, _form.getUserInput());
-				_config.notifyConfigChange(_parameterName);
+			public Label getDragEdge() {
+				return _label;
+			}
+
+			public InputForm getForm() {
+				return _form;
 			}
 
 		}
 
-		private String _parameterName;
-		private Label _label;
-		private InputForm _form;
-		private DockPanel _layoutPanel = new DockPanel();
-
-		/**
-		 * @param label
-		 * @param form
-		 */
-		public Entry(String parameterLabel, String parameterName, InputForm form) {
-			this._parameterName = parameterName;
-			this._label = new Label(parameterLabel + ":");
-			this._form = form;
-
-			_label.setStyleName("form-label");
-			_form.setStyleName("form-field");
-			// resize();
-
-			_layoutPanel.setStyleName("form");
-			_layoutPanel.setVerticalAlignment(DockPanel.ALIGN_MIDDLE);
-
-			_layoutPanel.add(_label, DockPanel.WEST);
-			_layoutPanel.add(_form, DockPanel.CENTER);
-
-			InputChangeListener listener = new InputChangeListener();
-			_form.addKeyPressHandler(listener);
-			_form.addChangeHandler(listener);
-
-			initWidget(_layoutPanel);
+		public ConfigurationTable() {
+			initWidget(_table);
 		}
 
-		public void resize() {
-			String input = _form.getUserInput();
-			int widgetWidth = _form.getOffsetWidth();
-			if (input != null) {
-				int width = input.length() * 8;
-				width = width > widgetWidth ? width : widgetWidth;
-				if (width > 800)
-					width = 800;
-				_form.setWidth(width + "px");
+		public void addConfiguration(DataType dataType, String label, String defaultValue) {
+			InputForm form = dataType.getInputForm();
+			String currentValue = getParameter(dataType.getName());
+			if (currentValue == null)
+				currentValue = defaultValue;
+
+			String cKey = CanonicalProperties.toCanonicalName(dataType.getName());
+			properties.put(cKey, currentValue);
+			form.setValue(currentValue);
+			Entry entry = new Entry(label, cKey, form);
+			_table.add(entry, entry.getDragEdge());
+			_paramToEntryMap.put(cKey, entry);
+
+			if (form.getOffsetWidth() > _table.getOffsetWidth())
+				_table.setWidth((form.getOffsetWidth() + 10) + "px");
+		}
+
+		private boolean isValidParameterName(String parameterName) {
+			if (_paramToEntryMap.containsKey(parameterName))
+				return true;
+			else {
+				GWT.log("[WARN] no input form for the given parameter name " + parameterName + " is found", null);
+				return false;
 			}
 		}
 
-		public Label getDragEdge() {
-			return _label;
+		public String getValue(String parameterName) {
+			if (!isValidParameterName(parameterName))
+				return "";
+
+			Entry entry = _paramToEntryMap.get(parameterName);
+			return entry.getForm().getUserInput();
 		}
 
-		public InputForm getForm() {
-			return _form;
+		public void setValue(String parameterName, String value) {
+			if (!isValidParameterName(parameterName))
+				return;
+
+			Entry entry = _paramToEntryMap.get(parameterName);
+			entry.getForm().setValue(value);
 		}
 
-	}
-
-	public ConfigurationTable(TrackConfig config) {
-		_config = config;
-		initWidget(_table);
-	}
-
-	public void addConfiguration(DataType dataType, String defaultValue) {
-		addConfiguration(dataType, dataType.getName(), defaultValue);
-	}
-
-	public void addConfiguration(DataType dataType, String label, String defaultValue) {
-		InputForm form = dataType.getInputForm();
-		String currentValue = _config.getParameter(dataType.getName());
-		if (currentValue == null)
-			currentValue = defaultValue;
-
-		String cKey = CanonicalProperties.toCanonicalName(dataType.getName());
-
-		_config.properties.put(cKey, currentValue);
-		form.setValue(currentValue);
-		Entry entry = new Entry(label, cKey, form);
-		_table.add(entry, entry.getDragEdge());
-		_paramToEntryMap.put(cKey, entry);
-
-		if (form.getOffsetWidth() > _table.getOffsetWidth())
-			_table.setWidth((form.getOffsetWidth() + 10) + "px");
-	}
-
-	private boolean isValidParameterName(String parameterName) {
-		if (_paramToEntryMap.containsKey(parameterName))
-			return true;
-		else {
-			GWT.log("[WARN] no input form for the given parameter name " + parameterName + " is found", null);
-			return false;
-		}
-	}
-
-	public String getValue(String parameterName) {
-		if (!isValidParameterName(parameterName))
-			return "";
-
-		Entry entry = _paramToEntryMap.get(parameterName);
-		return entry.getForm().getUserInput();
-	}
-
-	public void setValue(String parameterName, String value) {
-		if (!isValidParameterName(parameterName))
-			return;
-
-		Entry entry = _paramToEntryMap.get(parameterName);
-		entry.getForm().setValue(value);
 	}
 
 }

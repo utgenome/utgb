@@ -313,4 +313,11 @@ public interface Track extends TrackEntry, TrackGroupPropertyChangeListener {
 	// @see org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChangeListener#onChange(org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChange, org.utgenome.gwt.utgb.client.track.TrackWindow)
 	public void onChange(TrackGroupPropertyChange change, TrackWindow newWindow);
 
+	/**
+	 * Report an error
+	 * 
+	 * @param string
+	 */
+	public void error(String string);
+
 }

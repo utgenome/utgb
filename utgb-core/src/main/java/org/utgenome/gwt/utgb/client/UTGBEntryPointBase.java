@@ -146,6 +146,8 @@ public class UTGBEntryPointBase implements EntryPoint {
 	public void onModuleLoad() {
 		RPCServiceManager.initServices();
 		queryParam = BrowserInfo.getURLQueryRequestParameters();
+		RootPanel.get().setStyleName("utgb");
+
 		basePanel.add(trackQueue, DockPanel.CENTER);
 
 		History.addValueChangeHandler(new HistoryChangeHandler());
@@ -205,7 +207,7 @@ public class UTGBEntryPointBase implements EntryPoint {
 
 		RPCServiceManager.getRPCService().getTrackView(viewName, new AsyncCallback<TrackView>() {
 			public void onFailure(Throwable e) {
-
+				showErrorMessage("failed to load view: " + e.getMessage());
 			}
 
 			public void onSuccess(TrackView v) {
@@ -221,6 +223,7 @@ public class UTGBEntryPointBase implements EntryPoint {
 					mainGroup.addTrackGroupPropertyChangeListener(new URLRewriter(mainGroup));
 				}
 				catch (UTGBClientException e) {
+					showErrorMessage("failed to load view: " + e.getMessage());
 					GWT.log(e.getMessage(), e);
 				}
 			}

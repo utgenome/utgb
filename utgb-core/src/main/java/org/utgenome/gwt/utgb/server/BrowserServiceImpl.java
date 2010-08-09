@@ -576,7 +576,7 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 
 		GenomeWindow window = new GenomeWindow(location.start, location.end);
 
-		float[] pixelWiseGraphData = new float[windowWidth];
+		float[] pixelWiseGraphData = new float[windowWidth + span];
 
 		Map<Integer, Float> data = w.getData();
 		for (Map.Entry<Integer, Float> each : data.entrySet()) {
@@ -591,7 +591,7 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 			if (x1 < 0)
 				x1 = 0;
 
-			for (int i = x1; i < x2 && i < windowWidth; ++i) {
+			for (int i = x1; i < x2 && i < windowWidth + span; ++i) {
 				float current = pixelWiseGraphData[i];
 				float abs = Math.abs(val);
 				if (current < abs) {

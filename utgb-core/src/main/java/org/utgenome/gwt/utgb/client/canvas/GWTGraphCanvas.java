@@ -31,9 +31,7 @@ import java.util.List;
 import org.utgenome.gwt.utgb.client.bio.CompactWIGData;
 import org.utgenome.gwt.utgb.client.canvas.GWTGenomeCanvas.DragPoint;
 import org.utgenome.gwt.utgb.client.track.TrackConfig;
-import org.utgenome.gwt.utgb.client.track.TrackGroup;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
-import org.utgenome.gwt.utgb.client.ui.Animation;
 import org.utgenome.gwt.utgb.client.util.Optional;
 import org.utgenome.gwt.widget.client.Style;
 
@@ -59,7 +57,7 @@ public class GWTGraphCanvas extends Composite {
 
 	private GWTCanvas frameCanvas = new GWTCanvas();
 	private AbsolutePanel panel = new AbsolutePanel();
-	private TrackWindow trackWindow;
+	private TrackWindow viewWindow;
 	private final HashMap<TrackWindow, GraphCanvas> canvasMap = new HashMap<TrackWindow, GraphCanvas>();
 
 	private int indentHeight = 0;
@@ -99,6 +97,8 @@ public class GWTGraphCanvas extends Composite {
 	}
 
 	/**
+	 * Graph Drawing Configurations
+	 * 
 	 * @author leo
 	 * 
 	 */
@@ -177,15 +177,10 @@ public class GWTGraphCanvas extends Composite {
 	}
 
 	private GraphStyle style = new GraphStyle();
-	private TrackGroup trackGroup;
 
 	public GWTGraphCanvas() {
 
 		init();
-	}
-
-	public void setTrackGroup(TrackGroup trackGroup) {
-		this.trackGroup = trackGroup;
 	}
 
 	private void init() {
@@ -419,7 +414,7 @@ public class GWTGraphCanvas extends Composite {
 		frameCanvas.setStrokeStyle(new Color(0, 0, 0, 0.5f));
 		frameCanvas.setLineWidth(1.0f);
 		frameCanvas.beginPath();
-		frameCanvas.rect(0, 0, trackWindow.getPixelWidth(), style.windowHeight);
+		frameCanvas.rect(0, 0, viewWindow.getPixelWidth(), style.windowHeight);
 		frameCanvas.stroke();
 		frameCanvas.restoreContext();
 
@@ -439,7 +434,7 @@ public class GWTGraphCanvas extends Composite {
 				frameCanvas.beginPath();
 				frameCanvas.translate(0, getYPosition(value) + 0.5d);
 				frameCanvas.moveTo(0d, 0d);
-				frameCanvas.lineTo(trackWindow.getPixelWidth(), 0);
+				frameCanvas.lineTo(viewWindow.getPixelWidth(), 0);
 				frameCanvas.stroke();
 				frameCanvas.restoreContext();
 			}
@@ -449,7 +444,7 @@ public class GWTGraphCanvas extends Composite {
 				frameCanvas.beginPath();
 				frameCanvas.translate(0, getYPosition(0f));
 				frameCanvas.moveTo(0, 0);
-				frameCanvas.lineTo(trackWindow.getPixelWidth(), 0);
+				frameCanvas.lineTo(viewWindow.getPixelWidth(), 0);
 				frameCanvas.stroke();
 				frameCanvas.restoreContext();
 			}
@@ -625,46 +620,13 @@ public class GWTGraphCanvas extends Composite {
 		return temp;
 	}
 
-	private class ScrollAnimation extends Animation {
-
-		private final TrackWindow from;
-		private final TrackWindow to;
-
-		private ScrollAnimation(TrackWindow from, TrackWindow to) {
-			super(10);
-			this.from = new TrackWindow(from);
-			this.to = new TrackWindow(to);
-		}
-
-		@Override
-		protected void onUpdate(double ratio) {
-			for (GraphCanvas each : canvasMap.values()) {
-				int start = each.window.getStartOnGenome();
-				double s = from.convertToPixelX(start);
-				double e = to.convertToPixelX(start);
-				int p = (int) ((1.0d - ratio) * s + ratio * e);
-				panel.setWidgetPosition(each.canvas, p, 0);
-			}
-		}
-
-		@Override
-		protected void onComplete() {
-			for (GraphCanvas each : canvasMap.values()) {
-				int start = each.window.getStartOnGenome();
-				int e = to.convertToPixelX(start);
-				panel.setWidgetPosition(each.canvas, e, 0);
-			}
-		}
-
-	}
-
 	private float autoScaledMinValue = 0.0f;
 	private float autoScaledMaxValue = 0.0f;
 
-	public void setTrackWindow(final TrackWindow w) {
+	public void setViewWindow(final TrackWindow view) {
 
-		if (trackWindow != null) {
-			if (trackWindow.hasSameScaleWith(w)) {
+		if (viewWindow != null) {
+			if (viewWindow.hasSameScaleWith(view)) {
 				float tempMinValue = autoScaledMinValue;
 				float tempMaxValue = autoScaledMaxValue;
 
@@ -675,20 +637,20 @@ public class GWTGraphCanvas extends Composite {
 
 				for (GraphCanvas each : canvasMap.values()) {
 					int start = each.window.getStartOnGenome();
-					int s = w.convertToPixelX(start);
+					int s = view.convertToPixelX(start);
 					panel.setWidgetPosition(each.canvas, s, 0);
 
 					// Auto Scale
 					if (style.autoScale) {
 
-						int pw = w.getPixelWidth();
+						int pw = view.getPixelWidth();
 						int pw_e = each.window.getPixelWidth();
 
 						for (CompactWIGData wigData : each.graphData) {
 							float data[] = wigData.getData();
 
 							int loopStart, loopEnd;
-							if (!w.isReverseStrand()) {
+							if (!view.isReverseStrand()) {
 								loopStart = Math.max(-s, 0);
 								loopEnd = Math.min(pw - s, pw_e);
 							}
@@ -716,19 +678,23 @@ public class GWTGraphCanvas extends Composite {
 				}
 
 			}
+			else {
+				// zoom in/out
+
+			}
 
 		}
 
-		trackWindow = w;
+		viewWindow = view;
 	}
 
-	public TrackWindow getTrackWindow() {
-		return trackWindow;
+	public TrackWindow getViewWindow() {
+		return viewWindow;
 	}
 
 	public void setStyle(GraphStyle style) {
 		this.style = style;
-		setPixelSize(trackWindow.getPixelWidth(), style.windowHeight);
+		setPixelSize(viewWindow.getPixelWidth(), style.windowHeight);
 	}
 
 	public GraphStyle getStyle() {
