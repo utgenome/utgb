@@ -118,7 +118,9 @@ public class WIGGraphCanvasTrack extends TrackBase {
 		graphCanvas.setStyle(style);
 
 		graphCanvas.clearScale();
-		graphCanvas.drawFrame(null);
+
+		graphCanvas.drawFrame();
+
 		graphCanvas.drawScaleLabel();
 	}
 
@@ -131,6 +133,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 		prepare();
 
 		WindowUpdateInfo updateInfo = chain.setViewWindow(newWindow);
+
 		List<TrackWindow> windowToCreate = updateInfo.windowToCreate;
 		// sort the windows in the nearest neighbor order from the view window 
 		Collections.sort(windowToCreate, new Comparator<TrackWindow>() {

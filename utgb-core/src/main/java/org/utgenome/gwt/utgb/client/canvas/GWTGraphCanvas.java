@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.utgenome.gwt.utgb.client.UTGBEntryPointBase;
 import org.utgenome.gwt.utgb.client.bio.CompactWIGData;
 import org.utgenome.gwt.utgb.client.canvas.GWTGenomeCanvas.DragPoint;
 import org.utgenome.gwt.utgb.client.track.TrackConfig;
@@ -36,6 +37,7 @@ import org.utgenome.gwt.utgb.client.util.Optional;
 import org.utgenome.gwt.widget.client.Style;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
@@ -59,8 +61,6 @@ public class GWTGraphCanvas extends Composite {
 	private AbsolutePanel panel = new AbsolutePanel();
 	private TrackWindow viewWindow;
 	private final HashMap<TrackWindow, GraphCanvas> canvasMap = new HashMap<TrackWindow, GraphCanvas>();
-
-	private int indentHeight = 0;
 
 	private static class GraphCanvas {
 		public final TrackWindow window;
@@ -113,12 +113,14 @@ public class GWTGraphCanvas extends Composite {
 		public boolean drawScale = true;
 		public boolean showScaleLabel = true;
 		public Optional<String> color = new Optional<String>();
+		public float logBase = 2.0f;
 
 		public final static String CONFIG_TRACK_HEIGHT = "trackHeight";
 		private final static String CONFIG_MAX_VALUE = "maxValue";
 		private final static String CONFIG_MIN_VALUE = "minValue";
 		private final static String CONFIG_AUTO_SCALE = "autoScale";
 		private final static String CONFIG_LOG_SCALE = "logScale";
+		private final static String CONFIG_LOG_BASE = "log base";
 		private final static String CONFIG_SHOW_ZERO_VALUE = "showZero";
 		private final static String CONFIG_DRAW_SCALE = "drawScale";
 		private final static String CONFIG_SHOW_SCALE_LABEL = "showScaleLabel";
@@ -146,10 +148,13 @@ public class GWTGraphCanvas extends Composite {
 			minValue = config.getFloat(CONFIG_MIN_VALUE, minValue);
 			autoScale = config.getBoolean(CONFIG_AUTO_SCALE, autoScale);
 			logScale = config.getBoolean(CONFIG_LOG_SCALE, logScale);
+			logBase = config.getFloat(CONFIG_LOG_BASE, logBase);
 			drawZeroValue = config.getBoolean(CONFIG_SHOW_ZERO_VALUE, drawZeroValue);
 			drawScale = config.getBoolean(CONFIG_DRAW_SCALE, drawScale);
 			showScaleLabel = config.getBoolean(CONFIG_SHOW_SCALE_LABEL, showScaleLabel);
 			windowHeight = config.getInt(CONFIG_TRACK_HEIGHT, windowHeight);
+			if (windowHeight <= 0)
+				windowHeight = 100;
 			String colorStr = config.getString(CONFIG_COLOR, "");
 			if (colorStr != null && colorStr.length() > 0)
 				color.set(colorStr);
@@ -167,6 +172,7 @@ public class GWTGraphCanvas extends Composite {
 			config.addConfigDouble("Y Min", CONFIG_MIN_VALUE, minValue);
 			config.addConfigBoolean("Auto Scale", CONFIG_AUTO_SCALE, autoScale);
 			config.addConfigBoolean("Log Scale", CONFIG_LOG_SCALE, logScale);
+			config.addConfigDouble("Log Base", CONFIG_LOG_BASE, logBase);
 			config.addConfigBoolean("Show Zero Value", CONFIG_SHOW_ZERO_VALUE, drawZeroValue);
 			config.addConfigBoolean("Draw Scale", CONFIG_DRAW_SCALE, drawScale);
 			config.addConfigBoolean("Show Scale Label", CONFIG_SHOW_SCALE_LABEL, showScaleLabel);
@@ -404,7 +410,7 @@ public class GWTGraphCanvas extends Composite {
 
 	private List<Label> graphLabels = new ArrayList<Label>();
 
-	public void drawFrame(List<CompactWIGData> wigDataList) {
+	public void drawFrame() {
 
 		if (!style.drawScale)
 			return;
@@ -419,38 +425,35 @@ public class GWTGraphCanvas extends Composite {
 		frameCanvas.restoreContext();
 
 		// draw indent line & label
+		Indent indent = createIndent();
 
-		Indent indent = new Indent();
-
-		{
+		frameCanvas.saveContext();
+		frameCanvas.setStrokeStyle(Color.BLACK);
+		frameCanvas.setGlobalAlpha(0.2f);
+		frameCanvas.setLineWidth(0.5f);
+		for (int i = 0; i <= indent.nSteps; i++) {
+			float value = indent.getIndentValue(i);
+			// draw indent line
 			frameCanvas.saveContext();
-			frameCanvas.setStrokeStyle(Color.BLACK);
-			frameCanvas.setGlobalAlpha(0.2f);
-			frameCanvas.setLineWidth(0.5f);
-			for (int i = 0; i <= indent.nSteps; i++) {
-				float value = indent.getIndentValue(i);
-				// draw indent line
-				frameCanvas.saveContext();
-				frameCanvas.beginPath();
-				frameCanvas.translate(0, getYPosition(value) + 0.5d);
-				frameCanvas.moveTo(0d, 0d);
-				frameCanvas.lineTo(viewWindow.getPixelWidth(), 0);
-				frameCanvas.stroke();
-				frameCanvas.restoreContext();
-			}
-			{
-				// draw zero line
-				frameCanvas.saveContext();
-				frameCanvas.beginPath();
-				frameCanvas.translate(0, getYPosition(0f));
-				frameCanvas.moveTo(0, 0);
-				frameCanvas.lineTo(viewWindow.getPixelWidth(), 0);
-				frameCanvas.stroke();
-				frameCanvas.restoreContext();
-			}
-
+			frameCanvas.beginPath();
+			frameCanvas.translate(0, getYPosition(value) + 0.5d);
+			frameCanvas.moveTo(0d, 0d);
+			frameCanvas.lineTo(viewWindow.getPixelWidth(), 0);
+			frameCanvas.stroke();
 			frameCanvas.restoreContext();
 		}
+		{
+			// draw zero line
+			frameCanvas.saveContext();
+			frameCanvas.beginPath();
+			frameCanvas.translate(0, getYPosition(0f));
+			frameCanvas.moveTo(0, 0);
+			frameCanvas.lineTo(viewWindow.getPixelWidth(), 0);
+			frameCanvas.stroke();
+			frameCanvas.restoreContext();
+		}
+
+		frameCanvas.restoreContext();
 
 	}
 
@@ -459,7 +462,7 @@ public class GWTGraphCanvas extends Composite {
 		if (!style.showScaleLabel)
 			return;
 
-		Indent indent = new Indent();
+		Indent indent = createIndent();
 		int fontHeight = 10;
 
 		for (int i = 0; i <= indent.nSteps; i++) {
@@ -484,7 +487,16 @@ public class GWTGraphCanvas extends Composite {
 		}
 	}
 
-	public class Indent {
+	private Indent createIndent() {
+		if (style.autoScale) {
+			return new Indent(autoScaledMinValue, autoScaledMaxValue, style);
+		}
+		else {
+			return new Indent(style.minValue, style.maxValue, style);
+		}
+	}
+
+	public static class Indent {
 		public int exponent = 0;
 		public long fraction = 0;
 
@@ -493,43 +505,48 @@ public class GWTGraphCanvas extends Composite {
 		public float min = 0.0f;
 		public float max = 0.0f;
 
-		public Indent() {
-			this(style.autoScale ? autoScaledMinValue : style.minValue, style.autoScale ? autoScaledMaxValue : style.maxValue);
-		}
+		private GraphStyle style;
 
-		public Indent(float minValue, float maxValue) {
-			if (indentHeight == 0)
-				indentHeight = 10;
+		public Indent(float minValue, float maxValue, GraphStyle style) {
+			this.style = style;
+
+			final int indentHeight = 10;
 
 			min = minValue < maxValue ? minValue : maxValue;
 			max = minValue > maxValue ? minValue : maxValue;
 
 			if (style.logScale) {
-				min = getLogValue(min);
-				max = getLogValue(max);
+				min = getLogValue(min, style.logBase);
+				max = getLogValue(max, style.logBase);
 			}
 
-			double tempIndentValue = (max - min) / style.windowHeight * indentHeight;
+			try {
+				double tempIndentValue = (max - min) / style.windowHeight * indentHeight;
 
-			if (style.logScale && tempIndentValue < 1.0)
-				tempIndentValue = 1.0;
+				if (style.logScale && tempIndentValue < 1.0)
+					tempIndentValue = 1.0;
 
-			fraction = (long) Math.floor(Math.log10(tempIndentValue));
-			exponent = (int) Math.ceil(Math.round(tempIndentValue / Math.pow(10, fraction - 3)) / 1000.0);
+				fraction = (long) Math.floor(Math.log10(tempIndentValue));
+				exponent = (int) Math.ceil(Math.round(tempIndentValue / Math.pow(10, fraction - 3)) / 1000.0);
 
-			if (exponent <= 5)
-				;
-			//			else if(exponent <= 7)
-			//				exponent = 5;
-			else {
-				exponent = 1;
-				fraction++;
+				if (exponent <= 5)
+					;
+				//			else if(exponent <= 7)
+				//				exponent = 5;
+				else {
+					exponent = 1;
+					fraction++;
+				}
+				double stepSize = exponent * Math.pow(10, fraction);
+				max = (float) (Math.floor(max / stepSize) * stepSize);
+				min = (float) (Math.ceil(min / stepSize) * stepSize);
+
+				nSteps = (int) Math.abs((max - min) / stepSize);
 			}
-			double stepSize = exponent * Math.pow(10, fraction);
-			max = (float) (Math.floor(max / stepSize) * stepSize);
-			min = (float) (Math.ceil(min / stepSize) * stepSize);
+			catch (JavaScriptException e) {
+				UTGBEntryPointBase.showErrorMessage(e.getMessage());
+			}
 
-			nSteps = (int) Math.abs((max - min) / stepSize);
 		}
 
 		public float getIndentValue(int step) {
@@ -579,9 +596,9 @@ public class GWTGraphCanvas extends Composite {
 		float tempMax = max > min ? max : min;
 
 		if (style.logScale) {
-			value = getLogValue(value);
-			tempMax = getLogValue(tempMax);
-			tempMin = getLogValue(tempMin);
+			value = getLogValue(value, style.logBase);
+			tempMax = getLogValue(tempMax, style.logBase);
+			tempMin = getLogValue(tempMin, style.logBase);
 		}
 		float valueHeight = (value - tempMin) / (tempMax - tempMin) * style.windowHeight;
 
@@ -591,17 +608,7 @@ public class GWTGraphCanvas extends Composite {
 			return style.windowHeight - valueHeight;
 	}
 
-	private float logBase = 2.0f;
-
-	public float getLogBase() {
-		return logBase;
-	}
-
-	public void setLogBase(float logBase) {
-		this.logBase = logBase;
-	}
-
-	public float getLogValue(float value) {
+	public static float getLogValue(float value, float logBase) {
 		if (Math.log(logBase) == 0.0)
 			return value;
 

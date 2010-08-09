@@ -35,11 +35,11 @@
   -class: RulerTrack
 -track
   -name: WIG Graph Track Demo
-#  -height:250
+  -height: 150
   -pack: true
   -class: WIGGraphCanvasTrack
   -property
-#    -auto scale: true  	
+    -auto scale: false
     -log scale: true
     -path: db/sample.wig.sqlite
 #    -trackHeight: 150
