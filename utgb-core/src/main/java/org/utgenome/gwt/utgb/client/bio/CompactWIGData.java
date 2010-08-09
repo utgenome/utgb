@@ -45,6 +45,10 @@ public class CompactWIGData implements GraphData {
 	int start;
 	int span = 1;
 
+	public int getPixelSize() {
+		return data.length;
+	}
+
 	public void setSpan(int span) {
 		this.span = span;
 	}

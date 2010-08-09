@@ -487,7 +487,10 @@ public class TrackFrame extends SimplePanel {
 	}
 
 	public int getContentHeight() {
-		return _scrollPanel.getOffsetHeight();
+		if (_frameState.isMinimized())
+			return _frameState.getPreviousFrameHeight();
+		else
+			return _scrollPanel.getOffsetHeight();
 	}
 
 	public void resize(int height) {

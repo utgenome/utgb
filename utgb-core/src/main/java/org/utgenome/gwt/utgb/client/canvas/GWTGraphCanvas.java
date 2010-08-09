@@ -70,6 +70,7 @@ public class GWTGraphCanvas extends Composite {
 		public GraphCanvas(TrackWindow window, List<CompactWIGData> graphData, int height) {
 			this.window = window;
 			this.graphData = graphData;
+
 			canvas.setCoordSize(window.getPixelWidth(), height);
 			setPixelSize(window.getPixelWidth(), height);
 		}
@@ -85,10 +86,6 @@ public class GWTGraphCanvas extends Composite {
 		private void setPixelSize(int width, int height) {
 			canvas.setPixelWidth(width);
 			canvas.setPixelHeight(height);
-		}
-
-		public void setPixelWidth(int width) {
-			canvas.setPixelWidth(width);
 		}
 
 		public void setPixelHeight(int height) {
@@ -281,11 +278,15 @@ public class GWTGraphCanvas extends Composite {
 	}
 
 	public void clear() {
+		clearCanvas();
+		clearScale();
+	}
+
+	public void clearCanvas() {
 		for (GraphCanvas each : canvasMap.values()) {
 			each.canvas.removeFromParent();
 		}
 		canvasMap.clear();
-		clearScale();
 	}
 
 	public void clearScale() {
@@ -687,7 +688,7 @@ public class GWTGraphCanvas extends Composite {
 			}
 			else {
 				// zoom in/out
-
+				clearCanvas();
 			}
 
 		}

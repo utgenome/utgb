@@ -62,6 +62,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.widgetideas.graphics.client.CanvasGradient;
 import com.google.gwt.widgetideas.graphics.client.Color;
 import com.google.gwt.widgetideas.graphics.client.GWTCanvas;
 import com.google.gwt.widgetideas.graphics.client.ImageLoader;
@@ -1138,10 +1139,18 @@ public class GWTGenomeCanvas extends Composite {
 
 		canvas.saveContext();
 		double drawX = drawPosition(reverse ? x2 : x1);
+		canvas.translate(drawX, y);
 		canvas.setFillStyle(Color.WHITE);
-		canvas.fillRect(drawX, y, boxWidth, geneHeight);
-		canvas.setFillStyle(c);
-		canvas.fillRect(drawX, y, boxWidth, geneHeight);
+		canvas.fillRect(0, 0, boxWidth, geneHeight);
+		if (boxWidth > 4 && geneHeight > 4) {
+			CanvasGradient grad = canvas.createLinearGradient(0, 0, boxWidth, geneHeight);
+			grad.addColorStop(0, c);
+			grad.addColorStop(1, Color.WHITE);
+			canvas.setFillStyle(grad);
+		}
+		else
+			canvas.setFillStyle(c);
+		canvas.fillRect(0, 0, boxWidth, geneHeight);
 		canvas.restoreContext();
 
 		if (drawShadow) {
