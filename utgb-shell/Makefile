@@ -39,6 +39,7 @@ install: $(ARCHIVE) $(SCRIPT_DIR)/bin/utgb
 	unzip -o $(ARCHIVE) -d target
 	cp -rp target/utgb/* "$(PREFIX)"
 	chmod 755 "$(PREFIX)"
+	chmod 755 "$(PREFIX)/bin"
 	rm -rf target/utgb
 
 test: 

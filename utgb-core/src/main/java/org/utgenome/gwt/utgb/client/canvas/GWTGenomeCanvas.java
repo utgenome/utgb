@@ -1158,7 +1158,7 @@ public class GWTGenomeCanvas extends Composite {
 		canvas.translate(drawX, y);
 		canvas.setFillStyle(Color.WHITE);
 		canvas.fillRect(0, 0, boxWidth, geneHeight);
-		if (!BrowserInfo.isIE() && (boxWidth > 10 && geneHeight > 4)) {
+		if (!BrowserInfo.isIE() && (boxWidth > 5 && geneHeight > 4)) {
 			CanvasGradient grad = canvas.createLinearGradient(0, 0, 0, geneHeight);
 			grad.addColorStop(0, c);
 			grad.addColorStop(0.1, Color.WHITE);
