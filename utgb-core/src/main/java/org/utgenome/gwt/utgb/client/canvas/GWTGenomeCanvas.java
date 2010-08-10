@@ -58,6 +58,7 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -123,21 +124,14 @@ public class GWTGenomeCanvas extends Composite {
 	static class PopupInfo extends PopupPanel {
 
 		OnGenome locus;
-		private VerticalPanel info = new VerticalPanel();
+		private FlexTable infoTable = new FlexTable();
 
 		public PopupInfo() {
 			super(true);
 
-			Style.padding(info, Style.LEFT | Style.RIGHT, 5);
-			Style.fontColor(info, "white");
-			Style.fontSize(info, 14);
-			Style.margin(info, 0);
-			Style.preserveWhiteSpace(info);
-
 			RoundCornerFrame infoFrame = new RoundCornerFrame("336699", 0.7f, 4);
-			infoFrame.setWidget(info);
+			infoFrame.setWidget(infoTable);
 			this.setWidget(infoFrame);
-
 		}
 
 		public void setLocus(OnGenome g) {
@@ -154,9 +148,25 @@ public class GWTGenomeCanvas extends Composite {
 
 			InfoSilkGenerator silk = new InfoSilkGenerator();
 			locus.accept(silk);
-			info.clear();
-			for (String line : silk.getLines()) {
-				info.add(new HTML(line));
+			infoTable.clear();
+			final int numRowsInCol = 10;
+			final int cols = silk.getLines().size() / numRowsInCol;
+			final List<String> lines = silk.getLines();
+			for (int col = 0; col < cols; col++) {
+				VerticalPanel p = new VerticalPanel();
+				Style.padding(p, Style.LEFT | Style.RIGHT, 5);
+				Style.fontColor(p, "white");
+				Style.fontSize(p, 14);
+				Style.margin(p, 0);
+				Style.preserveWhiteSpace(p);
+
+				for (int i = 0; i < numRowsInCol; i++) {
+					int index = numRowsInCol * col + i;
+					if (index > lines.size())
+						break;
+					p.add(new HTML(lines.get(index)));
+				}
+				infoTable.setWidget(0, col, p);
 			}
 		}
 
@@ -289,12 +299,17 @@ public class GWTGenomeCanvas extends Composite {
 
 					int x = clientX + 10;
 					int y = clientY + 3;
-					int w = Window.getClientWidth();
+					final int w = Window.getClientWidth();
+					final int h = Window.getClientHeight();
 					final int xMax = w - 300;
+					final int yMax = Math.max(h - 200, 0);
+
 					if (x > xMax)
 						x = xMax;
+					if (y > yMax)
+						y = yMax;
 
-					popupLabel.setPopupPosition(x, clientY + 3);
+					popupLabel.setPopupPosition(x, y);
 					popupLabel.update();
 					popupLabel.show();
 				}
@@ -622,7 +637,7 @@ public class GWTGenomeCanvas extends Composite {
 				y2 = getYPos(gl.getYOffset() + 1);
 			}
 			else {
-				drawPadding(pixelPositionOnWindow(first.unclippedEnd), pixelPositionOnWindow(second.unclippedStart), y1, Color.GREY, true);
+				drawPadding(pixelPositionOnWindow(first.unclippedEnd), pixelPositionOnWindow(second.unclippedStart), y1, getColor("#666666", 0.8f), true);
 			}
 
 			visitSAMRead(first, y1, true);
@@ -1143,9 +1158,10 @@ public class GWTGenomeCanvas extends Composite {
 		canvas.setFillStyle(Color.WHITE);
 		canvas.fillRect(0, 0, boxWidth, geneHeight);
 		if (boxWidth > 4 && geneHeight > 4) {
-			CanvasGradient grad = canvas.createLinearGradient(0, 0, boxWidth, geneHeight);
+			CanvasGradient grad = canvas.createLinearGradient(0, 0, 0, geneHeight);
 			grad.addColorStop(0, c);
-			grad.addColorStop(1, Color.WHITE);
+			grad.addColorStop(0.1, Color.WHITE);
+			grad.addColorStop(1, c);
 			canvas.setFillStyle(grad);
 		}
 		else

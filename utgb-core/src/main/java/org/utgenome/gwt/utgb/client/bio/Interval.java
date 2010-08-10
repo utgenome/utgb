@@ -139,6 +139,10 @@ public class Interval implements OnGenome, Comparable<Interval>, Serializable {
 			return start <= other.end;
 	}
 
+	public boolean contains(int pos) {
+		return (start <= pos) && (pos <= end);
+	}
+
 	public boolean contains(Interval other) {
 		return (start <= other.start) && (other.end <= end);
 	}

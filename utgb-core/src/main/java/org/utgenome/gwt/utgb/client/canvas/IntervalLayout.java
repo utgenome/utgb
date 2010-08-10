@@ -340,6 +340,51 @@ public class IntervalLayout {
 	}
 
 	/**
+	 * Resolving actual read contained in SAMReadPair block (x, y)
+	 * 
+	 * |--------------(SAMReadPair)-----------------|
+	 * 
+	 * ||--(first pair:SAMRead)----| | | |-----(second pair:SAMRead)-----||
+	 * 
+	 * @author leo
+	 * 
+	 */
+	private static class PairedEndTargetResolver extends OnGenomeDataVisitorBase {
+		private OnGenome target;
+		private final int start;
+		private final int yOffset;
+
+		public PairedEndTargetResolver(OnGenome g, int start, int yOffset) {
+			this.target = g;
+			this.start = start;
+			this.yOffset = yOffset;
+		}
+
+		@Override
+		public void visitSAMReadPair(SAMReadPair pair) {
+			boolean overlapWithFirst = pair.getFirst().unclippedSequenceContains(start);
+			boolean overlapWithSecond = pair.getSecond().unclippedSequenceContains(start);
+
+			if (overlapWithFirst) {
+				if (overlapWithSecond) {
+					this.target = yOffset == 0 ? pair.getFirst() : pair.getSecond();
+				}
+				else
+					this.target = pair.getFirst();
+			}
+			else if (overlapWithSecond)
+				this.target = pair.getSecond();
+
+		}
+
+		public static OnGenome resolve(OnGenome g, int start, int yOffset) {
+			PairedEndTargetResolver pe = new PairedEndTargetResolver(g, start, yOffset);
+			g.accept(pe);
+			return pe.target;
+		}
+	}
+
+	/**
 	 * compute the overlapped intervals for the mouse over event
 	 * 
 	 * @param event
@@ -365,8 +410,11 @@ public class IntervalLayout {
 						x2 += labelWidth;
 				}
 
-				if (x1 <= x && x <= x2)
+				if (x1 <= x && x <= x2) {
+					int start = w.convertToGenomePosition(x);
+					g = PairedEndTargetResolver.resolve(g, start, (y - y1) / geneHeight);
 					return g;
+				}
 			}
 		}
 		return null;

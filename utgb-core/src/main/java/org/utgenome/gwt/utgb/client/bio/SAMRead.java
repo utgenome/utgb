@@ -136,4 +136,8 @@ public class SAMRead extends Interval {
 
 	}
 
+	public boolean unclippedSequenceContains(int startOnGenome) {
+		return unclippedStart <= startOnGenome && startOnGenome <= unclippedEnd;
+	}
+
 }
