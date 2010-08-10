@@ -47,6 +47,7 @@ import org.utgenome.gwt.utgb.client.track.TrackGroup;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.ui.FixedWidthLabel;
 import org.utgenome.gwt.utgb.client.ui.RoundCornerFrame;
+import org.utgenome.gwt.utgb.client.util.BrowserInfo;
 import org.utgenome.gwt.utgb.client.util.Optional;
 import org.utgenome.gwt.widget.client.Style;
 
@@ -149,9 +150,9 @@ public class GWTGenomeCanvas extends Composite {
 			InfoSilkGenerator silk = new InfoSilkGenerator();
 			locus.accept(silk);
 			infoTable.clear();
-			final int numRowsInCol = 10;
-			final int cols = silk.getLines().size() / numRowsInCol;
+			final int numRowsInCol = 12;
 			final List<String> lines = silk.getLines();
+			final int cols = lines.size() / numRowsInCol + (lines.size() % numRowsInCol != 0 ? 1 : 0);
 			for (int col = 0; col < cols; col++) {
 				VerticalPanel p = new VerticalPanel();
 				Style.padding(p, Style.LEFT | Style.RIGHT, 5);
@@ -162,7 +163,7 @@ public class GWTGenomeCanvas extends Composite {
 
 				for (int i = 0; i < numRowsInCol; i++) {
 					int index = numRowsInCol * col + i;
-					if (index > lines.size())
+					if (index >= lines.size())
 						break;
 					p.add(new HTML(lines.get(index)));
 				}
@@ -573,7 +574,7 @@ public class GWTGenomeCanvas extends Composite {
 			if (n != null) {
 				int textWidth = IntervalLayout.estimiateLabelWidth(r, geneHeight);
 
-				FixedWidthLabel label = new FixedWidthLabel(n, textWidth);
+				Widget label = new FixedWidthLabel(n, textWidth);
 				Style.fontSize(label, geneHeight);
 				Style.fontColor(label, getExonColorText(r));
 
@@ -1157,10 +1158,11 @@ public class GWTGenomeCanvas extends Composite {
 		canvas.translate(drawX, y);
 		canvas.setFillStyle(Color.WHITE);
 		canvas.fillRect(0, 0, boxWidth, geneHeight);
-		if (boxWidth > 4 && geneHeight > 4) {
+		if (!BrowserInfo.isIE() || (boxWidth > 4 && geneHeight > 4)) {
 			CanvasGradient grad = canvas.createLinearGradient(0, 0, 0, geneHeight);
 			grad.addColorStop(0, c);
 			grad.addColorStop(0.1, Color.WHITE);
+			grad.addColorStop(0.5, c);
 			grad.addColorStop(1, c);
 			canvas.setFillStyle(grad);
 		}

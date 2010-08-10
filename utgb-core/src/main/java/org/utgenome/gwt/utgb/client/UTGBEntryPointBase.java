@@ -165,6 +165,10 @@ public class UTGBEntryPointBase implements EntryPoint {
 		// invoke main method
 		main();
 
+		if (BrowserInfo.isIE()) {
+			showErrorMessage("IE does not support canvas feature in HTML5 for drawing grpahics in the browser, so we strongly recommend you to use another browser supporting HTML5, e.g., Google Chrome, Firefox, Safari, Opera, etc.");
+		}
+
 	}
 
 	public static int computeTrackWidth() {

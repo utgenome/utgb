@@ -52,8 +52,6 @@ public class BrowserInfo {
 		return properties;
 	}
 
-	
-	
 	public native static String unescape(String s) /*-{
 	      return unescape(s);
 	   }-*/;
@@ -97,23 +95,56 @@ public class BrowserInfo {
 	public static native boolean isGoogleGearsInstalled() /*-{
 	       return ($wnd.google && google.gears);
 	   }-*/;
-	
+
 	public static native String getUserAgent() /*-{
 			return navigator.userAgent;
 	}-*/;
-	
-	
+
 	private static Boolean hasCanvasSupport = null;
-	
+
 	public static boolean isCanvasSupported() {
-		if(hasCanvasSupport == null) 
+		if (hasCanvasSupport == null)
 			hasCanvasSupport = isCanvasSupportedInternal();
 		return hasCanvasSupport.booleanValue();
 	}
-	
+
 	private static native boolean isCanvasSupportedInternal() /*-{
 		return !!document.createElement('canvas').getContext;
 	}-*/;
-	
-	
+
+	public static enum Agent {
+		Unknown, Firefox, Safari, Opera, Chrome, IE
+	}
+
+	/**
+	 * Retrieve a short name, suitable for use in a tab or filename, for a given user agent.
+	 * 
+	 * @param userAgent
+	 * @return short name of user agent
+	 */
+	public static Agent getBrowserType() {
+		String userAgent = getUserAgent();
+		String lcAgent = userAgent.toLowerCase();
+		if (lcAgent.contains("msie")) {
+			return Agent.IE;
+		}
+		else if (lcAgent.contains("chrome")) {
+			return Agent.Chrome;
+		}
+		else if (lcAgent.contains("opera")) {
+			return Agent.Opera;
+		}
+		else if (lcAgent.contains("webkit") || lcAgent.contains("safari")) {
+			return Agent.Safari;
+		}
+		else if (lcAgent.contains("firefox")) {
+			return Agent.Firefox;
+		}
+		return Agent.Unknown;
+	}
+
+	public static boolean isIE() {
+		return getBrowserType() == Agent.IE;
+	}
+
 }
