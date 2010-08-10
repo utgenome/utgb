@@ -66,12 +66,21 @@ public class GWTGraphCanvas extends Composite {
 		public final TrackWindow window;
 		public final List<CompactWIGData> graphData;
 		public final GWTCanvas canvas = new GWTCanvas();
+		public final int span;
 
 		public GraphCanvas(TrackWindow window, List<CompactWIGData> graphData, int height) {
 			this.window = window;
 			this.graphData = graphData;
 
-			canvas.setCoordSize(window.getPixelWidth(), height);
+			int maxSpan = 1;
+			for (CompactWIGData each : graphData) {
+				int span = each.getSpan();
+				if (span > maxSpan)
+					maxSpan = span;
+			}
+			this.span = maxSpan;
+
+			canvas.setCoordSize(window.getPixelWidth() + this.span - 1, height);
 			setPixelSize(window.getPixelWidth(), height);
 		}
 
@@ -80,11 +89,11 @@ public class GWTGraphCanvas extends Composite {
 		}
 
 		public void setCoordinateHeight(int height) {
-			canvas.setCoordSize(window.getPixelWidth(), height);
+			canvas.setCoordSize(window.getPixelWidth() + span - 1, height);
 		}
 
 		private void setPixelSize(int width, int height) {
-			canvas.setPixelWidth(width);
+			canvas.setPixelWidth(width + span - 1);
 			canvas.setPixelHeight(height);
 		}
 
@@ -373,7 +382,7 @@ public class GWTGraphCanvas extends Composite {
 
 			// draw data graph
 			final boolean isReverse = graphCanvas.window.isReverseStrand();
-			final int pixelWidth = graphCanvas.window.getPixelWidth();
+			final int pixelWidth = data.getData().length;
 
 			float min = style.autoScale ? autoScaledMinValue : style.minValue;
 			float max = style.autoScale ? autoScaledMaxValue : style.maxValue;
