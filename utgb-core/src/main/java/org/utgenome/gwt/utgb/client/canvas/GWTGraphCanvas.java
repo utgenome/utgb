@@ -478,6 +478,10 @@ public class GWTGraphCanvas extends Composite {
 			int labelX = 1;
 			int labelY = (int) (getYPosition(value) - (fontHeight / 2.0f) - 1);
 
+			if (labelY > style.windowHeight - fontHeight) {
+				labelY = style.windowHeight - fontHeight;
+			}
+
 			//			if (labelY > style.windowHeight) {
 			//				continue;
 			//			}

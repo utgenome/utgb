@@ -341,7 +341,8 @@ public class NavigatorTrack extends TrackBase {
 				}
 			}
 		});
-		hp2.add(strandSwitch);
+		// TODO reverse button
+		//hp2.add(strandSwitch);
 		hp2.add(new ScrollButtonSet());
 		// save view
 		final FormPanel saveViewForm = new FormPanel();

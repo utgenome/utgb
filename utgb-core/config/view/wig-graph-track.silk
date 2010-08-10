@@ -42,5 +42,4 @@
     -auto scale: false
     -log scale: true
     -path: db/sample.wig.sqlite
-#    -trackHeight: 150
     -maxValue: 1200

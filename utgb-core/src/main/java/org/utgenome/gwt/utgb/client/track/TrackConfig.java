@@ -303,28 +303,31 @@ public class TrackConfig extends PopupPanel {
 				_table.setWidth((form.getOffsetWidth() + 10) + "px");
 		}
 
-		private boolean isValidParameterName(String parameterName) {
-			if (_paramToEntryMap.containsKey(parameterName))
+		private boolean isValidParameterName(String cKey) {
+			if (_paramToEntryMap.containsKey(cKey))
 				return true;
 			else {
-				GWT.log("[WARN] no input form for the given parameter name " + parameterName + " is found", null);
+				GWT.log("[WARN] no input form for the given parameter name " + cKey + " is found", null);
 				return false;
 			}
 		}
 
 		public String getValue(String parameterName) {
-			if (!isValidParameterName(parameterName))
+			String cKey = CanonicalProperties.toCanonicalName(parameterName);
+			if (!isValidParameterName(cKey))
 				return "";
 
-			Entry entry = _paramToEntryMap.get(parameterName);
+			Entry entry = _paramToEntryMap.get(cKey);
 			return entry.getForm().getUserInput();
 		}
 
 		public void setValue(String parameterName, String value) {
-			if (!isValidParameterName(parameterName))
+			String cKey = CanonicalProperties.toCanonicalName(parameterName);
+
+			if (!isValidParameterName(cKey))
 				return;
 
-			Entry entry = _paramToEntryMap.get(parameterName);
+			Entry entry = _paramToEntryMap.get(cKey);
 			entry.getForm().setValue(value);
 		}
 

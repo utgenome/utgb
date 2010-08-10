@@ -107,6 +107,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 
 	@Override
 	public void onChangeTrackHeight(int newHeight) {
+		getConfig().setParameter(GraphStyle.CONFIG_TRACK_HEIGHT, Integer.toString(newHeight));
 		refresh();
 	}
 
