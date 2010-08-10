@@ -303,12 +303,12 @@ public class GWTGenomeCanvas extends Composite {
 					final int w = Window.getClientWidth();
 					final int h = Window.getClientHeight();
 					final int xMax = w - 300;
-					final int yMax = Math.max(h - 200, 0);
+					//final int yMax = Math.max(h - 200 + Window.getScrollTop(), Window.getScrollTop());
 
 					if (x > xMax)
 						x = xMax;
-					if (y > yMax)
-						y = yMax;
+					//					if (y > yMax)
+					//						y = yMax;
 
 					popupLabel.setPopupPosition(x, y);
 					popupLabel.update();
@@ -1158,7 +1158,7 @@ public class GWTGenomeCanvas extends Composite {
 		canvas.translate(drawX, y);
 		canvas.setFillStyle(Color.WHITE);
 		canvas.fillRect(0, 0, boxWidth, geneHeight);
-		if (!BrowserInfo.isIE() || (boxWidth > 4 && geneHeight > 4)) {
+		if (!BrowserInfo.isIE() && (boxWidth > 10 && geneHeight > 4)) {
 			CanvasGradient grad = canvas.createLinearGradient(0, 0, 0, geneHeight);
 			grad.addColorStop(0, c);
 			grad.addColorStop(0.1, Color.WHITE);
