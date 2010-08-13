@@ -464,7 +464,7 @@ public class GWTGraphCanvas extends Composite {
 		ArrayList<GraphCanvas> out = new ArrayList<GraphCanvas>();
 		for (GraphCanvas each : canvasMap.values()) {
 
-			if (!globalWindow.overlapWith(each.window)) {
+			if (!globalWindow.overlapWith(each.window) || each.isToDelete()) {
 				out.add(each);
 			}
 		}

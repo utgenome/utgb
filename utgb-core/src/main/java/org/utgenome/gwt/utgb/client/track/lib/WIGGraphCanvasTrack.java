@@ -154,6 +154,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 
 		// clear the remaining windows out of the global view
 		graphCanvas.clearOutSideOf(chain.getGlobalWindow());
+
 	}
 
 	public void loadGraph(final TrackWindow queryWindow) {

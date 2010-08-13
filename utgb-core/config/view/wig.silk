@@ -1,0 +1,38 @@
+%silk(version:1.0)
+-track group
+  -id: 1
+  -class: org.utgenome.gwt.utgb.client.track.TrackGroup
+  -coordinate
+    -species: ce6
+    -ref: ce6
+    -chr: chrI
+    -start: 1570213
+    -end: 1580212
+-track
+  -name: UTGB Navigator
+  -height: 41
+  -pack: true
+  -class: NavigatorTrack
+  -property
+    -sequenceList: [{"species":"c.elegans", "revision":["ce6"]}]
+-track
+  -name: Sequence Overview
+  -height: 14
+  -pack: true
+  -class: SequenceRulerTrack
+-track
+  -name: Ruler
+  -height: 14
+  -pack: true
+  -class: RulerTrack
+-track
+  -class: scale bar track
+-track
+  -name: WIG Data
+  -height: 80
+  -pack: true
+  -class: WIGGraphCanvasTrack
+  -property
+    -auto scale: true
+    -log scale: false
+    -path: db/tmp/sample.wig.sqlite
