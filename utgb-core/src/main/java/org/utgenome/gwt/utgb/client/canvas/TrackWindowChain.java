@@ -88,6 +88,10 @@ public class TrackWindowChain {
 		return windowList;
 	}
 
+	public TrackWindow getGlobalWindow() {
+		return globalWindow;
+	}
+
 	public WindowUpdateInfo setViewWindow(TrackWindow view) {
 
 		final int factor = PREFETCH_FACTOR * 2 + 1;
@@ -100,10 +104,11 @@ public class TrackWindowChain {
 		ArrayList<TrackWindow> windowToPreserve = new ArrayList<TrackWindow>();
 		ArrayList<TrackWindow> windowToDiscard = new ArrayList<TrackWindow>();
 
-		if (viewWindow != null && viewWindow.hasSameScaleWith(view)) {
+		if (viewWindow != null) {
 			// scroll
 			// update the window list
 			for (TrackWindow each : windowList) {
+				// discard the windows that do not overlap with the global window 
 				if (each.overlapWith(globalWindow)) {
 					windowToPreserve.add(each);
 				}

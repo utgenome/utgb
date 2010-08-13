@@ -100,6 +100,10 @@ public class TrackWindow implements Serializable, Comparable<TrackWindow> {
 		}
 	}
 
+	public int convertToPixelLength(int rangeOnGenome) {
+		return (int) ((pixelWidth * rangeOnGenome) / (double) (endIndexOnGenome - startIndexOnGenome));
+	}
+
 	/**
 	 * @return pixel length / (genome end - genome start);
 	 */
@@ -199,7 +203,7 @@ public class TrackWindow implements Serializable, Comparable<TrackWindow> {
 		int s2 = other.getStartOnGenome();
 		int e2 = other.getEndOnGenome();
 
-		return s1 <= e2 && s2 <= e1;
+		return s1 < e2 && s2 < e1;
 	}
 
 	public boolean hasSameScaleWith(TrackWindow other) {

@@ -111,16 +111,15 @@ public class WIGGraphCanvasTrack extends TrackBase {
 		refresh();
 	}
 
-	private void prepare() {
+	private boolean needToUpdateStyle = true;
 
+	private void updateStyle() {
 		// load style parameters from the configuration panel
 		style.load(getConfig());
 		// set the graph style
 		graphCanvas.setStyle(style);
 
-		graphCanvas.clearScale();
-		graphCanvas.drawFrame();
-		graphCanvas.drawScaleLabel();
+		needToUpdateStyle = false;
 	}
 
 	@Override
@@ -129,7 +128,9 @@ public class WIGGraphCanvasTrack extends TrackBase {
 		final TrackWindow newWindow = getTrackWindow();
 		graphCanvas.setViewWindow(newWindow);
 
-		prepare();
+		if (needToUpdateStyle) {
+			updateStyle();
+		}
 
 		WindowUpdateInfo updateInfo = chain.setViewWindow(newWindow);
 
@@ -152,15 +153,7 @@ public class WIGGraphCanvasTrack extends TrackBase {
 		}
 
 		// clear the remaining windows out of the global view
-		for (TrackWindow each : updateInfo.windowToDiscard) {
-			graphCanvas.clear(each);
-		}
-
-	}
-
-	@Override
-	public void beforeChangeTrackWindow(TrackWindow newWindow) {
-		graphCanvas.setViewWindow(newWindow);
+		graphCanvas.clearOutSideOf(chain.getGlobalWindow());
 	}
 
 	public void loadGraph(final TrackWindow queryWindow) {
@@ -180,7 +173,6 @@ public class WIGGraphCanvasTrack extends TrackBase {
 			public void onSuccess(List<CompactWIGData> dataList) {
 				graphCanvas.drawWigGraph(dataList, queryWindow);
 				getFrame().loadingDone();
-				refresh();
 			}
 		});
 
@@ -195,12 +187,12 @@ public class WIGGraphCanvasTrack extends TrackBase {
 	public void onChangeTrackConfig(TrackConfigChange change) {
 
 		if (change.contains(CONFIG_PATH)) {
+			needToUpdateStyle = true;
 			clearCanvas();
 			refresh();
 		}
 		else {
-			prepare();
-			graphCanvas.redrawWigGraph();
+			needToUpdateStyle = true;
 			refresh();
 		}
 	}

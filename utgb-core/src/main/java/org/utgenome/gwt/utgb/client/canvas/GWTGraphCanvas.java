@@ -62,11 +62,19 @@ public class GWTGraphCanvas extends Composite {
 	private TrackWindow viewWindow;
 	private final HashMap<TrackWindow, GraphCanvas> canvasMap = new HashMap<TrackWindow, GraphCanvas>();
 
+	/**
+	 * Holder of a canvas and its corresponding track window
+	 * 
+	 * @author leo
+	 * 
+	 */
 	private static class GraphCanvas {
-		public final TrackWindow window;
+		public TrackWindow window;
 		public final List<CompactWIGData> graphData;
 		public final GWTCanvas canvas = new GWTCanvas();
 		public final int span;
+		private int height;
+		private boolean toDelete = false;
 
 		public GraphCanvas(TrackWindow window, List<CompactWIGData> graphData, int height) {
 			this.window = window;
@@ -79,27 +87,42 @@ public class GWTGraphCanvas extends Composite {
 					maxSpan = span;
 			}
 			this.span = maxSpan;
+			this.height = height;
 
-			canvas.setCoordSize(window.getPixelWidth() + this.span - 1, height);
-			setPixelSize(window.getPixelWidth(), height);
+			setPixelHeight(height);
+		}
+
+		public void setToDelete() {
+			this.toDelete = true;
+		}
+
+		public boolean isToDelete() {
+			return toDelete;
+		}
+
+		public void updatePixelWidth(int newPixelWidth) {
+			window = window.newPixelWidthWindow(newPixelWidth);
+			setPixelHeight(height);
 		}
 
 		public void clearCanvas() {
 			canvas.clear();
 		}
 
-		public void setCoordinateHeight(int height) {
-			canvas.setCoordSize(window.getPixelWidth() + span - 1, height);
-		}
-
-		private void setPixelSize(int width, int height) {
-			canvas.setPixelWidth(width + span - 1);
-			canvas.setPixelHeight(height);
-		}
-
 		public void setPixelHeight(int height) {
-			setPixelSize(window.getPixelWidth(), height);
+			this.height = height;
+
+			int pixelWidthWithSpan = window.convertToPixelLength(window.getSequenceLength() + this.span - 1);
+
+			canvas.setCoordSize(pixelWidthWithSpan, height);
+			canvas.setPixelSize(pixelWidthWithSpan, height);
 		}
+
+		@Override
+		public String toString() {
+			return window.toString();
+		}
+
 	}
 
 	/**
@@ -329,7 +352,7 @@ public class GWTGraphCanvas extends Composite {
 			// create a new graph canvas
 			graphCanvas = new GraphCanvas(w, data, style.windowHeight);
 			canvasMap.put(w, graphCanvas);
-			int x = w.convertToPixelX(w.getStartOnGenome());
+			int x = viewWindow.convertToPixelX(w.getStartOnGenome());
 			panel.add(graphCanvas.canvas, 0, 0);
 			panel.setWidgetPosition(graphCanvas.canvas, x, 0);
 		}
@@ -342,7 +365,7 @@ public class GWTGraphCanvas extends Composite {
 	public void redrawWigGraph() {
 		for (GraphCanvas each : canvasMap.values()) {
 			each.clearCanvas();
-			each.setCoordinateHeight(style.windowHeight);
+			each.setPixelHeight(style.windowHeight);
 			drawWigGraph(each);
 		}
 	}
@@ -377,6 +400,8 @@ public class GWTGraphCanvas extends Composite {
 			canvas.saveContext();
 			canvas.setLineWidth(1.0f);
 			canvas.setStrokeStyle(graphColor);
+
+			//canvas.scale(viewWindow.convertToPixelLength(graphCanvas.window.getSequenceLength()) / (double) data.getPixelSize(), 1.0f);
 
 			float y2 = getYPosition(0.0f);
 
@@ -415,6 +440,38 @@ public class GWTGraphCanvas extends Composite {
 				canvas.restoreContext();
 			}
 			canvas.restoreContext();
+		}
+
+		// check & remove overlapping canvases
+		ArrayList<GraphCanvas> overlapped = new ArrayList<GraphCanvas>();
+		for (GraphCanvas each : canvasMap.values()) {
+			if (graphCanvas == each)
+				continue;
+
+			if (each.isToDelete() && graphCanvas.window.overlapWith(each.window)) {
+				overlapped.add(each);
+			}
+		}
+		for (GraphCanvas each : overlapped) {
+			each.canvas.clear();
+			each.canvas.removeFromParent();
+			canvasMap.remove(each);
+		}
+
+	}
+
+	public void clearOutSideOf(TrackWindow globalWindow) {
+		ArrayList<GraphCanvas> out = new ArrayList<GraphCanvas>();
+		for (GraphCanvas each : canvasMap.values()) {
+
+			if (!globalWindow.overlapWith(each.window)) {
+				out.add(each);
+			}
+		}
+		for (GraphCanvas each : out) {
+			each.canvas.clear();
+			each.canvas.removeFromParent();
+			canvasMap.remove(each);
 		}
 	}
 
@@ -662,7 +719,8 @@ public class GWTGraphCanvas extends Composite {
 				for (GraphCanvas each : canvasMap.values()) {
 					int start = each.window.getStartOnGenome();
 					int s = view.convertToPixelX(start);
-					panel.setWidgetPosition(each.canvas, s, 0);
+					panel.add(each.canvas, s, 0);
+					//panel.setWidgetPosition(each.canvas, s, 0);
 
 					// Auto Scale
 					if (style.autoScale) {
@@ -704,7 +762,17 @@ public class GWTGraphCanvas extends Composite {
 			}
 			else {
 				// zoom in/out
-				clearCanvas();
+				for (GraphCanvas each : canvasMap.values()) {
+					int newPixelWidth = view.convertToPixelLength(each.window.getSequenceLength());
+					//each.updatePixelWidth(newPixelWidth);
+					each.setToDelete();
+
+					//					int start = each.window.getStartOnGenome();
+					//					int s = view.convertToPixelX(start);
+					//					panel.add(each.canvas, s, 0);
+					//					//panel.setWidgetPosition(each.canvas, s, 0);
+				}
+				redrawWigGraph();
 			}
 
 		}
@@ -719,6 +787,12 @@ public class GWTGraphCanvas extends Composite {
 	public void setStyle(GraphStyle style) {
 		this.style = style;
 		setPixelSize(viewWindow.getPixelWidth(), style.windowHeight);
+
+		clearScale();
+		drawFrame();
+		drawScaleLabel();
+
+		redrawWigGraph();
 	}
 
 	public GraphStyle getStyle() {
