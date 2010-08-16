@@ -60,6 +60,8 @@ public class GWTGraphCanvas extends Composite {
 	private GWTCanvas frameCanvas = new GWTCanvas();
 	private AbsolutePanel panel = new AbsolutePanel();
 	private TrackWindow viewWindow;
+
+
 	private final HashMap<TrackWindow, GraphCanvas> canvasMap = new HashMap<TrackWindow, GraphCanvas>();
 
 	/**
@@ -330,15 +332,6 @@ public class GWTGraphCanvas extends Composite {
 		graphLabels.clear();
 	}
 
-	public void clear(TrackWindow each) {
-		GraphCanvas graphCanvas = canvasMap.get(each);
-		if (graphCanvas != null) {
-			graphCanvas.canvas.clear();
-			graphCanvas.canvas.removeFromParent();
-
-			canvasMap.remove(each);
-		}
-	}
 
 	/**
 	 * Get a canvas for a given TrackWindow
@@ -346,7 +339,7 @@ public class GWTGraphCanvas extends Composite {
 	 * @param w
 	 * @return
 	 */
-	public GraphCanvas getCanvas(TrackWindow w, List<CompactWIGData> data) {
+	private GraphCanvas getCanvas(TrackWindow w, List<CompactWIGData> data) {
 		GraphCanvas graphCanvas = canvasMap.get(w);
 		if (graphCanvas == null) {
 			// create a new graph canvas
@@ -440,22 +433,6 @@ public class GWTGraphCanvas extends Composite {
 				canvas.restoreContext();
 			}
 			canvas.restoreContext();
-		}
-
-		// check & remove overlapping canvases
-		ArrayList<GraphCanvas> overlapped = new ArrayList<GraphCanvas>();
-		for (GraphCanvas each : canvasMap.values()) {
-			if (graphCanvas == each)
-				continue;
-
-			if (each.isToDelete() && graphCanvas.window.overlapWith(each.window)) {
-				overlapped.add(each);
-			}
-		}
-		for (GraphCanvas each : overlapped) {
-			each.canvas.clear();
-			each.canvas.removeFromParent();
-			canvasMap.remove(each);
 		}
 
 	}

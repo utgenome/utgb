@@ -25,6 +25,16 @@ package org.utgenome.gwt.utgb.client.canvas;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.utgenome.gwt.ipad.client.TouchableComposite;
+import org.utgenome.gwt.ipad.event.Touch;
+import org.utgenome.gwt.ipad.event.TouchCancelEvent;
+import org.utgenome.gwt.ipad.event.TouchCancelHandler;
+import org.utgenome.gwt.ipad.event.TouchEndEvent;
+import org.utgenome.gwt.ipad.event.TouchEndHandler;
+import org.utgenome.gwt.ipad.event.TouchMoveEvent;
+import org.utgenome.gwt.ipad.event.TouchMoveHandler;
+import org.utgenome.gwt.ipad.event.TouchStartEvent;
+import org.utgenome.gwt.ipad.event.TouchStartHandler;
 import org.utgenome.gwt.utgb.client.UTGBClientException;
 import org.utgenome.gwt.utgb.client.bio.CDS;
 import org.utgenome.gwt.utgb.client.bio.CIGAR;
@@ -50,6 +60,7 @@ import org.utgenome.gwt.utgb.client.ui.RoundCornerFrame;
 import org.utgenome.gwt.utgb.client.util.BrowserInfo;
 import org.utgenome.gwt.utgb.client.util.Optional;
 import org.utgenome.gwt.widget.client.Style;
+import org.xerial.amoeba.query.impl.AmoebaQueryParser.newRelation_return;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.ImageElement;
@@ -64,6 +75,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.util.PreventSpuriousRebuilds;
 import com.google.gwt.widgetideas.graphics.client.CanvasGradient;
 import com.google.gwt.widgetideas.graphics.client.Color;
 import com.google.gwt.widgetideas.graphics.client.GWTCanvas;
@@ -76,7 +88,7 @@ import com.google.gwt.widgetideas.graphics.client.ImageLoader.CallBack;
  * @author leo
  * 
  */
-public class GWTGenomeCanvas extends Composite {
+public class GWTGenomeCanvas extends TouchableComposite {
 
 	private int defaultGeneHeight = 12;
 	private int defaultMinGeneHeight = 2;
@@ -188,35 +200,7 @@ public class GWTGenomeCanvas extends Composite {
 
 			break;
 		case Event.ONMOUSEMOVE: {
-			// show readLabels 
-			OnGenome g = overlappedInterval(event, 2);
-			if (g != null) {
-				if (popupLabel.locus != g) {
-
-					Style.cursor(canvas, Style.CURSOR_POINTER);
-
-					int clientX = DOM.eventGetClientX(event) + Window.getScrollLeft();
-					int clientY = DOM.eventGetClientY(event) + Window.getScrollTop();
-					displayInfo(clientX, clientY, g);
-				}
-			}
-			else {
-				if (dragStartPoint.isDefined()) {
-					// scroll the canvas
-					int clientX = DOM.eventGetClientX(event) + Window.getScrollLeft();
-					int clientY = DOM.eventGetClientY(event) + Window.getScrollTop();
-
-					DragPoint p = dragStartPoint.get();
-					int xDiff = clientX - p.x;
-					//int yDiff = clientY - p.y;
-					basePanel.setWidgetPosition(panel, xDiff, 0);
-				}
-				else {
-					Style.cursor(canvas, Style.CURSOR_AUTO);
-					popupLabel.setLocus(null);
-				}
-			}
-
+			moveDrag(event);
 			break;
 		}
 		case Event.ONMOUSEOUT: {
@@ -224,24 +208,11 @@ public class GWTGenomeCanvas extends Composite {
 			break;
 		}
 		case Event.ONMOUSEDOWN: {
-			// invoke a click event 
-			int clientX = DOM.eventGetClientX(event) + Window.getScrollLeft();
-			int clientY = DOM.eventGetClientY(event) + Window.getScrollTop();
-			OnGenome g = overlappedInterval(event, 2);
-			if (g != null) {
-				if (clickHandler != null)
-					clickHandler.onClick(clientX, clientY, g);
-				event.preventDefault();
-			}
-			else if (dragStartPoint.isUndefined()) {
-				dragStartPoint.set(new DragPoint(clientX, clientY));
-				Style.cursor(canvas, Style.CURSOR_RESIZE_E);
-			}
-
+			// invoke a click event
+			startDrag(event);
 			break;
 		}
 		case Event.ONMOUSEUP: {
-
 			resetDrag(event);
 			break;
 		}
@@ -249,11 +220,61 @@ public class GWTGenomeCanvas extends Composite {
 
 	}
 
+	private void startDrag(Event event) {
+		if (startDrag(getXOnCanvas(event), getYOnCanvas(event))) {
+			event.preventDefault();
+		}
+	}
+
+	private boolean startDrag(int clientX, int clientY) {
+		OnGenome g = overlappedInterval(clientX, clientY, 2);
+		if (g != null) {
+			if (clickHandler != null)
+				clickHandler.onClick(clientX, clientY, g);
+			return true;
+		}
+		else if (dragStartPoint.isUndefined()) {
+			dragStartPoint.set(new DragPoint(clientX, clientY));
+			Style.cursor(canvas, Style.CURSOR_RESIZE_E);
+		}
+		return false;
+	}
+
+	private void moveDrag(Event e) {
+		moveDrag(getXOnCanvas(e), getYOnCanvas(e));
+	}
+
+	private void moveDrag(int clientX, int clientY) {
+		// show readLabels 
+		OnGenome g = overlappedInterval(clientX, clientY, 2);
+		if (g != null) {
+			if (popupLabel.locus != g) {
+
+				Style.cursor(canvas, Style.CURSOR_POINTER);
+				displayInfo(clientX, clientY, g);
+			}
+		}
+		else {
+			if (dragStartPoint.isDefined()) {
+				// scroll the canvas
+				DragPoint p = dragStartPoint.get();
+				int xDiff = clientX - p.x;
+				//int yDiff = clientY - p.y;
+				basePanel.setWidgetPosition(panel, xDiff, 0);
+			}
+			else {
+				Style.cursor(canvas, Style.CURSOR_AUTO);
+				popupLabel.setLocus(null);
+			}
+		}
+	}
+
 	private void resetDrag(Event event) {
+		resetDrag(getXOnCanvas(event), getYOnCanvas(event));
+		event.preventDefault();
+	}
 
-		int clientX = DOM.eventGetClientX(event) + Window.getScrollLeft();
-		int clientY = DOM.eventGetClientY(event) + Window.getScrollTop();
-
+	private void resetDrag(int clientX, int clientY) {
 		if (dragStartPoint.isDefined() && trackWindow != null) {
 			DragPoint p = dragStartPoint.get();
 			int startDiff = trackWindow.convertToGenomePosition(clientX) - trackWindow.convertToGenomePosition(p.x);
@@ -267,10 +288,7 @@ public class GWTGenomeCanvas extends Composite {
 					trackGroup.setTrackWindow(newWindow);
 			}
 		}
-
 		dragStartPoint.reset();
-		event.preventDefault();
-
 		Style.cursor(canvas, Style.CURSOR_AUTO);
 	}
 
@@ -332,32 +350,74 @@ public class GWTGenomeCanvas extends Composite {
 	 * @return
 	 */
 	private OnGenome overlappedInterval(Event event, int xBorder) {
+		return overlappedInterval(getXOnCanvas(event), getYOnCanvas(event), xBorder);
+	}
 
+	private OnGenome overlappedInterval(int clientX, int clientY, int xBorder) {
 		int h = getReadHeight();
-		int x = drawPosition(getXOnCanvas(event));
-		int y = getYOnCanvas(event);
-
+		int x = drawPosition(clientX);
+		int y = clientY;
 		OnGenome g = intervalLayout.overlappedInterval(x, y, xBorder, h);
-
 		return g;
 	}
 
 	public int getXOnCanvas(Event event) {
-		int clientX = DOM.eventGetClientX(event);
+		return getXOnCanvas(DOM.eventGetClientX(event));
+	}
+
+	public int getXOnCanvas(int clientX) {
 		return clientX - canvas.getAbsoluteLeft() + Window.getScrollLeft();
 	}
 
-	public int getYOnCanvas(Event event) {
-		int clientY = DOM.eventGetClientY(event);
+	public int getYOnCanvas(int clientY) {
 		return clientY - canvas.getAbsoluteTop() + Window.getScrollTop();
 	}
 
+	public int getYOnCanvas(Event event) {
+		return getYOnCanvas(DOM.eventGetClientY(event));
+	}
+
 	private void initWidget() {
+		super.initWidget(basePanel);
+
 		panel.add(canvas, 0, 0);
 		basePanel.add(panel, 0, 0);
-		initWidget(basePanel);
-
 		sinkEvents(Event.ONMOUSEMOVE | Event.ONMOUSEOVER | Event.ONMOUSEDOWN | Event.ONMOUSEUP | Event.ONMOUSEOUT);
+
+		// add touch handler for iPad
+		if (BrowserInfo.isMobileSafari()) {
+			this.addTouchStartHandler(new TouchStartHandler() {
+				public void onTouchStart(TouchStartEvent event) {
+					Touch touch = event.touches().get(0);
+					if(startDrag(touch.getClientX(), touch.getClientY())) {
+						event.getNativeEvent().preventDefault();
+					}
+				}
+			});
+
+			this.addTouchMoveHandler(new TouchMoveHandler() {
+				public void onTouchMove(TouchMoveEvent event) {
+					Touch touch = event.touches().get(0);
+					moveDrag(touch.getClientX(), touch.getClientY());
+				}
+			});
+
+			this.addTouchEndHandler(new TouchEndHandler() {
+				public void onTouchEnd(TouchEndEvent event) {
+					Touch touch = event.touches().get(0);
+					resetDrag(touch.getClientX(), touch.getClientY());
+					event.preventDefault();
+				}
+			});
+			
+			this.addTouchCancelHandler(new TouchCancelHandler() {
+				public void onTouchCancel(TouchCancelEvent event) {
+					Touch touch = event.touches().get(0);
+					resetDrag(touch.getClientX(), touch.getClientY());
+					event.preventDefault();
+				}
+			});
+		}
 	}
 
 	private boolean hasCache = false;

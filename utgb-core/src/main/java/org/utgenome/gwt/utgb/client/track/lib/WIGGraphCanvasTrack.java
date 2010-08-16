@@ -50,7 +50,7 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * WIG Track
+ * WIG Track for displaying graph data, including bar chart, heat map, etc. 
  * 
  * @author yoshimura
  * @author leo

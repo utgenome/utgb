@@ -54,15 +54,13 @@ class DOMImplMobileSafari extends DOMImplSafari {
     case "DOMMouseScroll": return 0x20000;
     case "contextmenu": return 0x40000;
     case "paste": return 0x80000;
-
-    // Handle touch events.
     case "touchstart": return 0x100000;
     case "touchmove": return 0x200000;
     case "touchcancel": return 0x400000;
     case "touchend": return 0x800000;
     }
   }-*/;
-
+ 
   protected native void sinkEventsImpl(Element elem, int bits) /*-{
     var chMask = (elem.__eventBits || 0) ^ bits;
     elem.__eventBits = bits;

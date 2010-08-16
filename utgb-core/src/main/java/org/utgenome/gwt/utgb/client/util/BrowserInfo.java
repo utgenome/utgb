@@ -113,8 +113,16 @@ public class BrowserInfo {
 	}-*/;
 
 	public static enum Agent {
-		Unknown, Firefox, Safari, Opera, Chrome, IE
+		Unknown, Firefox, Safari, Opera, Chrome, IE, MobileSafari
 	}
+	
+	public static native boolean isMobileSafari() /*-{
+	      var ua = navigator.userAgent.toLowerCase();
+	      if (ua.indexOf("webkit") != -1 && ua.indexOf("mobile") != -1) {
+	        return true;
+	      }
+	      return false;
+	}-*/;
 
 	/**
 	 * Retrieve a short name, suitable for use in a tab or filename, for a given user agent.
@@ -125,7 +133,10 @@ public class BrowserInfo {
 	public static Agent getBrowserType() {
 		String userAgent = getUserAgent();
 		String lcAgent = userAgent.toLowerCase();
-		if (lcAgent.contains("msie")) {
+		if(isMobileSafari()) {
+			return Agent.MobileSafari; 
+		}
+		else if (lcAgent.contains("msie")) {
 			return Agent.IE;
 		}
 		else if (lcAgent.contains("chrome")) {
