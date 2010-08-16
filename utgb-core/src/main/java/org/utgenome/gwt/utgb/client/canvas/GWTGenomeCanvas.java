@@ -316,8 +316,8 @@ public class GWTGenomeCanvas extends TouchableComposite {
 				popupLabel.removeFromParent();
 				if (popupLabel.locus == g) {
 
-					int x = clientX + 10;
-					int y = clientY + 3;
+					int x = clientX + 10 + getAbsoluteLeft() ;
+					int y = clientY + 3 + getAbsoluteTop();
 					final int w = Window.getClientWidth();
 					final int h = Window.getClientHeight();
 					final int xMax = w - 300;
@@ -385,7 +385,6 @@ public class GWTGenomeCanvas extends TouchableComposite {
 		sinkEvents(Event.ONMOUSEMOVE | Event.ONMOUSEOVER | Event.ONMOUSEDOWN | Event.ONMOUSEUP | Event.ONMOUSEOUT);
 
 		// add touch handler for iPad
-		if (BrowserInfo.isMobileSafari()) {
 			this.addTouchStartHandler(new TouchStartHandler() {
 				public void onTouchStart(TouchStartEvent event) {
 					Touch touch = event.touches().get(0);
@@ -417,7 +416,6 @@ public class GWTGenomeCanvas extends TouchableComposite {
 					event.preventDefault();
 				}
 			});
-		}
 	}
 
 	private boolean hasCache = false;

@@ -31,6 +31,8 @@ import org.utgenome.gwt.ipad.event.TouchMoveEvent;
 import org.utgenome.gwt.ipad.event.TouchMoveHandler;
 import org.utgenome.gwt.ipad.event.TouchStartEvent;
 import org.utgenome.gwt.ipad.event.TouchStartHandler;
+import org.utgenome.gwt.utgb.client.BrowserService;
+import org.utgenome.gwt.utgb.client.util.BrowserInfo;
 
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -43,19 +45,72 @@ import com.google.gwt.user.client.ui.FocusPanel;
  */
 public class TouchableFocusPanel extends FocusPanel implements HasTouchHandlers {
 
+	private static interface Registrer {
+	    public HandlerRegistration addTouchStartHandler(TouchStartHandler handler);
+	    public HandlerRegistration addTouchMoveHandler(TouchMoveHandler handler);
+	    public HandlerRegistration addTouchEndHandler(TouchEndHandler handler);
+	    public HandlerRegistration addTouchCancelHandler(TouchCancelHandler handler);
+	}
+	
+	
+	private class DefaultRegistrerImpl implements Registrer {
+	    public HandlerRegistration addTouchStartHandler(TouchStartHandler handler) {
+	    	return addDomHandler(handler, TouchStartEvent.getType());
+	    }
+
+	    public HandlerRegistration addTouchMoveHandler(TouchMoveHandler handler) {
+	        return addDomHandler(handler, TouchMoveEvent.getType());
+	    }
+
+	    public HandlerRegistration addTouchEndHandler(TouchEndHandler handler) {
+	        return addDomHandler(handler, TouchEndEvent.getType());
+	    }
+
+	    public HandlerRegistration addTouchCancelHandler(TouchCancelHandler handler) {
+	        return addDomHandler(handler, TouchCancelEvent.getType());
+	    }
+	}
+
+	private class NonIPadRegistrerImpl implements Registrer {
+	    public HandlerRegistration addTouchStartHandler(TouchStartHandler handler) {
+	    	return null;
+	    }
+
+	    public HandlerRegistration addTouchMoveHandler(TouchMoveHandler handler) {
+	        return null;
+	    }
+
+	    public HandlerRegistration addTouchEndHandler(TouchEndHandler handler) {
+	        return null;
+	    }
+
+	    public HandlerRegistration addTouchCancelHandler(TouchCancelHandler handler) {
+	        return null;
+	    }
+	}
+
+	private Registrer impl;
+	
+	{
+		if(BrowserInfo.isMobileSafari()) 
+			impl = new DefaultRegistrerImpl();
+		else
+			impl = new NonIPadRegistrerImpl();
+	}
+	
     public HandlerRegistration addTouchStartHandler(TouchStartHandler handler) {
-        return addDomHandler(handler, TouchStartEvent.getType());
+    	return impl.addTouchStartHandler(handler);
     }
 
     public HandlerRegistration addTouchMoveHandler(TouchMoveHandler handler) {
-        return addDomHandler(handler, TouchMoveEvent.getType());
+        return impl.addTouchMoveHandler(handler);
     }
 
     public HandlerRegistration addTouchEndHandler(TouchEndHandler handler) {
-        return addDomHandler(handler, TouchEndEvent.getType());
+        return impl.addTouchEndHandler(handler);
     }
 
     public HandlerRegistration addTouchCancelHandler(TouchCancelHandler handler) {
-        return addDomHandler(handler, TouchCancelEvent.getType());
+        return impl.addTouchCancelHandler(handler);
     }
 }
