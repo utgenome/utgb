@@ -1,58 +1,41 @@
-UTGB Genome Browser
+UTGB Core Package
 
-
-== How to build
+== How to compile GWT codes
 
 1. Install Maven (http://maven.apache.org/) version 2.0.9 or higher
-2. type
-  > mvn compile
+2. type make
+  > make
 
+To confirm the result, first launch an UTGB server: 
+1. utgb server -g
+Then open http://localhost:8989/utgb-core/browser.html?view=read
+
+== Quick Compilation
+
+For increasing the compilation speed of GWT Compiler, use 
+
+$ make draft
+
+for building JavaScript codes only for Firefox and Google Chrome. If you need a full version, simply do "make".
 
 (the following information is now obsolete. by Taro L. Saito. 2009 May 28th.) 
 
 
-= Build & Debug (with Eclipse) =
-1. Install maven-eclipse (m2eclipse) plug-in from the following update site:
-  http://m2eclipse.codehaus.org/update/
-  
-2. Install GWT (Google Web Toolkit. version 1.4.60 or higher)
-3. In Window->Preference->Java->Classpath Variables, add a new variable as follows:
+
+= Building & Debugging with Eclips =
+1. type 
+$ mvn eclipse:eclipse   (or utgb eclipse)
+to download and setup necessary files.
+2. In Window->Preference->Java->Classpath Variables, add a new variable as follows:
 {{
-GWT_HOME=(your GWT installation folder)
+UTGB_HOME=(your UTGB installation folder, e.g., $HOME/.utgb)
 }}
 4. (debug) launch Debug -> utgb-core_gwt-shell, which displays GWT debug shell and 
 genome browser interface.
 
-= Build (from command line) = 
-
-1. Download the Google Web Toolkit from the web. Version 1.4.10 or higher is required.
-2. Copy 'build.properties.sample' to 'build.properties'
-3. Open the 'build.property' file, then change the gwt.home variable to the path of your GWT (Google Web Toolkit) folder, 
-and comment out appropriate 'gwt.dev' lines to select GWT develeopement library on your OS.
- - e.g.  (in Windows)
-{{
-gwt.home=C:/(somewhere in your PC)/gwt-windows-1.4.10
-gwt.dev=gwt-dev-windows.jar
-#gwt.dev=gwt-dev-mac.jar
-#gwt.dev=gwt-dev-linux.jar
-}}
-4. > ant compileJs
-5. Open www/org.utgenome.gwt.utgb.UTGB/UTGB.html in your web browser (IE, Firefox, etc.)
-
 = Deploy =
 
-1. Install Tomcat 5.0 (or higher) Java web server.
-2. Edit your build.properties file, and modify the following variables:
-{{
-TOMCAT_HOME=(Tomcat Installation folder)
-tomcat.base.url=http://localhost:8080
-tomcat.manager.username=(tomcat manager username)
-tomcat.manager.password=(tomcat manager password)
-}}
-
-3. Set up GWT as described above (the section on build from command line)
-4. > ant deploy
- * This generates a war file (web application archive), and deploy the war file in the tomcat server
+See the documentation on http://utgenome.org/toolkit/deploy.html
 
 = Trouble Shooting =
 

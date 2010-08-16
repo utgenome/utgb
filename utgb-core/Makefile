@@ -14,7 +14,7 @@ EGT2XML:
 
 draft: 
 	mvn dependency:build-classpath -Dmdep.outputFile="target/classpath"
-	ant -f build-gwt.xml draft-compile -Dgwt.module=org.utgenome.gwt.utgb.UTGBEntry
+	ant -f build-gwt.xml draft-compile -Dgwt.module=org.utgenome.gwt.utgb.UTGBEntryFirefox
 
 compile: 
 	mvn dependency:build-classpath -Dmdep.outputFile="target/classpath"
