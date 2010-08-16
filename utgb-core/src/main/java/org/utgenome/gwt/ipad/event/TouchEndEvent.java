@@ -20,26 +20,26 @@
  * THE SOFTWARE.
  */
 
-package org.utgenome.gwt.ipad.mobilesafari.event;
+package org.utgenome.gwt.ipad.event;
 
 /**
- * A cancel.
+ * Touch end event.
  *
  * @author amoffat Alex Moffat
  */
-public class TouchCancelEvent extends TouchEvent<TouchCancelHandler> {
+public class TouchEndEvent extends TouchEvent<TouchEndHandler> {
 
-    private static final Type<TouchCancelHandler> TYPE = new Type<TouchCancelHandler>("touchcancel", new TouchCancelEvent());
+    private static final Type<TouchEndHandler> TYPE = new Type<TouchEndHandler>("touchend", new TouchEndEvent());
 
-    public static Type<TouchCancelHandler> getType() {
+    public static Type<TouchEndHandler> getType() {
         return TYPE;
     }
 
-    protected TouchCancelEvent() {
+    protected TouchEndEvent() {
     }
 
     @Override
-    public Type<TouchCancelHandler> getAssociatedType() {
+    public Type<TouchEndHandler> getAssociatedType() {
         return TYPE;
     }
 
@@ -49,7 +49,7 @@ public class TouchCancelEvent extends TouchEvent<TouchCancelHandler> {
      * @param handler handler
      */
     @Override
-    protected void dispatch(TouchCancelHandler handler) {
-        handler.onTouchCancel(this);
+    protected void dispatch(TouchEndHandler handler) {
+        handler.onTouchEnd(this);
     }
 }

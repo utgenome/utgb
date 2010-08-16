@@ -20,36 +20,41 @@
  * THE SOFTWARE.
  */
 
-package org.utgenome.gwt.ipad.mobilesafari.event;
+package org.utgenome.gwt.ipad.event;
+
+import com.google.gwt.core.client.JsArray;
+import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.event.dom.client.DomEvent;
+import com.google.gwt.event.shared.EventHandler;
 
 /**
- * Touch end event.
+ * Common code for all touch events.
  *
  * @author amoffat Alex Moffat
  */
-public class TouchEndEvent extends TouchEvent<TouchEndHandler> {
+public abstract class TouchEvent<H extends EventHandler> extends DomEvent<H> {
 
-    private static final Type<TouchEndHandler> TYPE = new Type<TouchEndHandler>("touchend", new TouchEndEvent());
-
-    public static Type<TouchEndHandler> getType() {
-        return TYPE;
+    public JsArray<Touch> changedTouches() {
+        return changedTouches(getNativeEvent());
     }
 
-    protected TouchEndEvent() {
+    private native JsArray<Touch> changedTouches(NativeEvent nativeEvent) /*-{
+      return nativeEvent.changedTouches;
+    }-*/;
+
+    public JsArray<Touch> targetTouches() {
+        return targetTouches(getNativeEvent());
     }
 
-    @Override
-    public Type<TouchEndHandler> getAssociatedType() {
-        return TYPE;
+    private native JsArray<Touch> targetTouches(NativeEvent nativeEvent) /*-{
+      return nativeEvent.targetTouches;
+    }-*/;
+
+    public JsArray<Touch> touches() {
+        return touches(getNativeEvent());
     }
 
-    /**
-     * Should only be called by {@link com.google.gwt.event.shared.HandlerManager}. In other words, do not use or call.
-     *
-     * @param handler handler
-     */
-    @Override
-    protected void dispatch(TouchEndHandler handler) {
-        handler.onTouchEnd(this);
-    }
+    private native JsArray<Touch> touches(NativeEvent nativeEvent) /*-{
+      return nativeEvent.touches;
+    }-*/;
 }

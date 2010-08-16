@@ -20,16 +20,36 @@
  * THE SOFTWARE.
  */
 
-package org.utgenome.gwt.ipad.mobilesafari.event;
-
-import com.google.gwt.event.shared.EventHandler;
+package org.utgenome.gwt.ipad.event;
 
 /**
- * Handler for touch start events.
+ * A touch start event.
  *
  * @author amoffat Alex Moffat
  */
-public interface TouchStartHandler extends EventHandler {
+public class TouchStartEvent extends TouchEvent<TouchStartHandler> {
 
-    void onTouchStart(TouchStartEvent event);
+    private static final Type<TouchStartHandler> TYPE = new Type<TouchStartHandler>("touchstart", new TouchStartEvent());
+
+    public static Type<TouchStartHandler> getType() {
+        return TYPE;
+    }
+
+    protected TouchStartEvent() {
+    }
+
+    @Override
+    public Type<TouchStartHandler> getAssociatedType() {
+        return TYPE;
+    }
+
+    /**
+     * Should only be called by {@link com.google.gwt.event.shared.HandlerManager}. In other words, do not use or call.
+     *
+     * @param handler handler
+     */
+    @Override
+    protected void dispatch(TouchStartHandler handler) {
+        handler.onTouchStart(this);
+    }
 }

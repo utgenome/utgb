@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  */
 
-package org.utgenome.gwt.ipad.mobilesafari.event;
+package org.utgenome.gwt.ipad.event;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Element;

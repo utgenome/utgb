@@ -20,17 +20,17 @@
  * THE SOFTWARE.
  */
 
-package org.utgenome.gwt.ipad.mobilesafari.client;
+package org.utgenome.gwt.ipad.client;
 
-import org.utgenome.gwt.ipad.mobilesafari.event.HasTouchHandlers;
-import org.utgenome.gwt.ipad.mobilesafari.event.TouchCancelEvent;
-import org.utgenome.gwt.ipad.mobilesafari.event.TouchCancelHandler;
-import org.utgenome.gwt.ipad.mobilesafari.event.TouchEndEvent;
-import org.utgenome.gwt.ipad.mobilesafari.event.TouchEndHandler;
-import org.utgenome.gwt.ipad.mobilesafari.event.TouchMoveEvent;
-import org.utgenome.gwt.ipad.mobilesafari.event.TouchMoveHandler;
-import org.utgenome.gwt.ipad.mobilesafari.event.TouchStartEvent;
-import org.utgenome.gwt.ipad.mobilesafari.event.TouchStartHandler;
+import org.utgenome.gwt.ipad.event.HasTouchHandlers;
+import org.utgenome.gwt.ipad.event.TouchCancelEvent;
+import org.utgenome.gwt.ipad.event.TouchCancelHandler;
+import org.utgenome.gwt.ipad.event.TouchEndEvent;
+import org.utgenome.gwt.ipad.event.TouchEndHandler;
+import org.utgenome.gwt.ipad.event.TouchMoveEvent;
+import org.utgenome.gwt.ipad.event.TouchMoveHandler;
+import org.utgenome.gwt.ipad.event.TouchStartEvent;
+import org.utgenome.gwt.ipad.event.TouchStartHandler;
 
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;

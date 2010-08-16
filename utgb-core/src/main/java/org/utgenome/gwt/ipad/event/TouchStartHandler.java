@@ -20,16 +20,16 @@
  * THE SOFTWARE.
  */
 
-package org.utgenome.gwt.ipad.mobilesafari.event;
+package org.utgenome.gwt.ipad.event;
 
 import com.google.gwt.event.shared.EventHandler;
 
 /**
- * Handler for touch move events.
+ * Handler for touch start events.
  *
  * @author amoffat Alex Moffat
  */
-public interface TouchMoveHandler extends EventHandler {
+public interface TouchStartHandler extends EventHandler {
 
-    void onTouchMove(TouchMoveEvent event);
+    void onTouchStart(TouchStartEvent event);
 }

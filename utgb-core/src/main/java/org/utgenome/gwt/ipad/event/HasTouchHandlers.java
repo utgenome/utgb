@@ -20,16 +20,22 @@
  * THE SOFTWARE.
  */
 
-package org.utgenome.gwt.ipad.mobilesafari.event;
+package org.utgenome.gwt.ipad.event;
 
-import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 
 /**
- * Handler for touch cancel events.
+ * If something has all the touch handlers.
  *
  * @author amoffat Alex Moffat
  */
-public interface TouchCancelHandler extends EventHandler {
+public interface HasTouchHandlers {
 
-    void onTouchCancel(TouchCancelEvent event);
+    HandlerRegistration addTouchStartHandler(TouchStartHandler handler);
+
+    HandlerRegistration addTouchMoveHandler(TouchMoveHandler handler);
+
+    HandlerRegistration addTouchEndHandler(TouchEndHandler handler);
+
+    HandlerRegistration addTouchCancelHandler(TouchCancelHandler handler);
 }

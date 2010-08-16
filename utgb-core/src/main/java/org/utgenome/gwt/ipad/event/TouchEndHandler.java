@@ -20,41 +20,16 @@
  * THE SOFTWARE.
  */
 
-package org.utgenome.gwt.ipad.mobilesafari.event;
+package org.utgenome.gwt.ipad.event;
 
-import com.google.gwt.core.client.JsArray;
-import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.event.shared.EventHandler;
 
 /**
- * Common code for all touch events.
+ * Handler for touch end events.
  *
  * @author amoffat Alex Moffat
  */
-public abstract class TouchEvent<H extends EventHandler> extends DomEvent<H> {
+public interface TouchEndHandler extends EventHandler {
 
-    public JsArray<Touch> changedTouches() {
-        return changedTouches(getNativeEvent());
-    }
-
-    private native JsArray<Touch> changedTouches(NativeEvent nativeEvent) /*-{
-      return nativeEvent.changedTouches;
-    }-*/;
-
-    public JsArray<Touch> targetTouches() {
-        return targetTouches(getNativeEvent());
-    }
-
-    private native JsArray<Touch> targetTouches(NativeEvent nativeEvent) /*-{
-      return nativeEvent.targetTouches;
-    }-*/;
-
-    public JsArray<Touch> touches() {
-        return touches(getNativeEvent());
-    }
-
-    private native JsArray<Touch> touches(NativeEvent nativeEvent) /*-{
-      return nativeEvent.touches;
-    }-*/;
+    void onTouchEnd(TouchEndEvent event);
 }

@@ -20,16 +20,16 @@
  * THE SOFTWARE.
  */
 
-package org.utgenome.gwt.ipad.mobilesafari.event;
+package org.utgenome.gwt.ipad.event;
 
 import com.google.gwt.event.shared.EventHandler;
 
 /**
- * Handler for touch end events.
+ * Handler for touch cancel events.
  *
  * @author amoffat Alex Moffat
  */
-public interface TouchEndHandler extends EventHandler {
+public interface TouchCancelHandler extends EventHandler {
 
-    void onTouchEnd(TouchEndEvent event);
+    void onTouchCancel(TouchCancelEvent event);
 }

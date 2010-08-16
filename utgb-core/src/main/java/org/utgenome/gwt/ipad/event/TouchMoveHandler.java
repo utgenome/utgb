@@ -20,36 +20,16 @@
  * THE SOFTWARE.
  */
 
-package org.utgenome.gwt.ipad.mobilesafari.event;
+package org.utgenome.gwt.ipad.event;
+
+import com.google.gwt.event.shared.EventHandler;
 
 /**
- * Touch move event.
+ * Handler for touch move events.
  *
  * @author amoffat Alex Moffat
  */
-public class TouchMoveEvent extends TouchEvent<TouchMoveHandler> {
+public interface TouchMoveHandler extends EventHandler {
 
-    private static final Type<TouchMoveHandler> TYPE = new Type<TouchMoveHandler>("touchmove", new TouchMoveEvent());
-
-    public static Type<TouchMoveHandler> getType() {
-        return TYPE;
-    }
-
-    protected TouchMoveEvent() {
-    }
-
-    @Override
-    public Type<TouchMoveHandler> getAssociatedType() {
-        return TYPE;
-    }
-
-    /**
-     * Should only be called by {@link com.google.gwt.event.shared.HandlerManager}. In other words, do not use or call.
-     *
-     * @param handler handler
-     */
-    @Override
-    protected void dispatch(TouchMoveHandler handler) {
-        handler.onTouchMove(this);
-    }
+    void onTouchMove(TouchMoveEvent event);
 }

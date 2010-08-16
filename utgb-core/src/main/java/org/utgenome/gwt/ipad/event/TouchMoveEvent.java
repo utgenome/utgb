@@ -20,26 +20,26 @@
  * THE SOFTWARE.
  */
 
-package org.utgenome.gwt.ipad.mobilesafari.event;
+package org.utgenome.gwt.ipad.event;
 
 /**
- * A touch start event.
+ * Touch move event.
  *
  * @author amoffat Alex Moffat
  */
-public class TouchStartEvent extends TouchEvent<TouchStartHandler> {
+public class TouchMoveEvent extends TouchEvent<TouchMoveHandler> {
 
-    private static final Type<TouchStartHandler> TYPE = new Type<TouchStartHandler>("touchstart", new TouchStartEvent());
+    private static final Type<TouchMoveHandler> TYPE = new Type<TouchMoveHandler>("touchmove", new TouchMoveEvent());
 
-    public static Type<TouchStartHandler> getType() {
+    public static Type<TouchMoveHandler> getType() {
         return TYPE;
     }
 
-    protected TouchStartEvent() {
+    protected TouchMoveEvent() {
     }
 
     @Override
-    public Type<TouchStartHandler> getAssociatedType() {
+    public Type<TouchMoveHandler> getAssociatedType() {
         return TYPE;
     }
 
@@ -49,7 +49,7 @@ public class TouchStartEvent extends TouchEvent<TouchStartHandler> {
      * @param handler handler
      */
     @Override
-    protected void dispatch(TouchStartHandler handler) {
-        handler.onTouchStart(this);
+    protected void dispatch(TouchMoveHandler handler) {
+        handler.onTouchMove(this);
     }
 }
