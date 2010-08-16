@@ -224,6 +224,9 @@ public class GWTGenomeCanvas extends TouchableComposite {
 		if (startDrag(getXOnCanvas(event), getYOnCanvas(event))) {
 			event.preventDefault();
 		}
+		else {
+			Event.setCapture(this.getElement());
+		}
 	}
 
 	private boolean startDrag(int clientX, int clientY) {
@@ -271,13 +274,15 @@ public class GWTGenomeCanvas extends TouchableComposite {
 
 	private void resetDrag(Event event) {
 		resetDrag(getXOnCanvas(event), getYOnCanvas(event));
+		DOM.releaseCapture(this.getElement());
 		event.preventDefault();
 	}
 
 	private void resetDrag(int clientX, int clientY) {
 		if (dragStartPoint.isDefined() && trackWindow != null) {
 			DragPoint p = dragStartPoint.get();
-			int startDiff = trackWindow.convertToGenomePosition(clientX) - trackWindow.convertToGenomePosition(p.x);
+			final int x_origin = trackWindow.convertToGenomePosition(p.x);
+			int startDiff = trackWindow.convertToGenomePosition(clientX) - x_origin;
 			if (startDiff != 0) {
 				int newStart = trackWindow.getStartOnGenome() - startDiff;
 				if (newStart < 1)
@@ -366,11 +371,11 @@ public class GWTGenomeCanvas extends TouchableComposite {
 	}
 
 	public int getXOnCanvas(int clientX) {
-		return clientX - canvas.getAbsoluteLeft() + Window.getScrollLeft();
+		return clientX  + Window.getScrollLeft() - basePanel.getAbsoluteLeft();
 	}
 
 	public int getYOnCanvas(int clientY) {
-		return clientY - canvas.getAbsoluteTop() + Window.getScrollTop();
+		return clientY  + Window.getScrollTop() - basePanel.getAbsoluteTop();
 	}
 
 	public int getYOnCanvas(Event event) {
@@ -391,6 +396,9 @@ public class GWTGenomeCanvas extends TouchableComposite {
 					if(startDrag(touch.getClientX(), touch.getClientY())) {
 						event.getNativeEvent().preventDefault();
 					}
+					else {
+						DOM.setCapture(GWTGenomeCanvas.this.getElement());
+					}
 				}
 			});
 
@@ -405,6 +413,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 				public void onTouchEnd(TouchEndEvent event) {
 					Touch touch = event.touches().get(0);
 					resetDrag(touch.getClientX(), touch.getClientY());
+					DOM.releaseCapture(GWTGenomeCanvas.this.getElement());
 					event.preventDefault();
 				}
 			});
@@ -413,6 +422,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 				public void onTouchCancel(TouchCancelEvent event) {
 					Touch touch = event.touches().get(0);
 					resetDrag(touch.getClientX(), touch.getClientY());
+					DOM.releaseCapture(GWTGenomeCanvas.this.getElement());
 					event.preventDefault();
 				}
 			});
