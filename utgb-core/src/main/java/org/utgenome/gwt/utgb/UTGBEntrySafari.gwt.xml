@@ -1,0 +1,10 @@
+<module rename-to="utgb.safari">
+
+  <!-- Inherit the core Web Toolkit stuff.                  -->
+      <inherits name="org.utgenome.gwt.utgb.UTGB"/>
+
+  <entry-point class='org.utgenome.gwt.utgb.client.UTGBEntryPointBase'/>
+  <set-property name="user.agent" value="safari"/>
+  <set-property name="locale" value="default" />
+  <set-property name="gwt.suppressNonStaticFinalFieldWarnings" value="true" /> 
+</module>
