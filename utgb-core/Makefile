@@ -16,6 +16,13 @@ draft:
 	mvn dependency:build-classpath -Dmdep.outputFile="target/classpath"
 	ant -f build-gwt.xml draft-compile -Dgwt.module=org.utgenome.gwt.utgb.UTGBEntryFirefox
 
+draft-safari: 
+	mvn dependency:build-classpath -Dmdep.outputFile="target/classpath" 
+	ant -f build-gwt.xml draft-compile -Dgwt.module=org.utgenome.gwt.utgb.UTGBEntrySafari
+
+server-safari: draft-safari
+	utgb server -g --module=utgb.safari
+
 compile: 
 	mvn dependency:build-classpath -Dmdep.outputFile="target/classpath"
 	mvn compile

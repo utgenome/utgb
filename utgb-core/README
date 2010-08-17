@@ -2,7 +2,7 @@ UTGB Core Package
 
 == How to compile GWT codes
 
-1. Install Maven (http://maven.apache.org/) version 2.0.9 or higher
+1. Install Maven (http://maven.apache.org/) version 2.0.9 or higher, and ANT 
 2. type make
   > make
 

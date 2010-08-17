@@ -56,11 +56,11 @@ public class Server extends UTGBShellCommand {
 		if (!isInProjectRoot())
 			throw new UTGBShellException("not in the track project root");
 
-		// create war/utgb folder
-		FileUtil.mkdirs(new File(getProjectRoot(), "war/utgb"));
+		// create war/utgb (GWT module) folder
+		FileUtil.mkdirs(new File(getProjectRoot(), "war/" + option.gwtModule));
 
 		// copy resources
-		maven("war:exploded");
+		maven(String.format("war:exploded -Dgwt.module=\"%s\"", option.gwtModule));
 
 		UTGBConfig config = loadUTGBConfig();
 		String projectName = config.projectName;

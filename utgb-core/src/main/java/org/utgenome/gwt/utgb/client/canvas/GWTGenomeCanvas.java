@@ -236,7 +236,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 				clickHandler.onClick(clientX, clientY, g);
 			return true;
 		}
-		else if (dragStartPoint.isUndefined()) {
+		else {
 			dragStartPoint.set(new DragPoint(clientX, clientY));
 			Style.cursor(canvas, Style.CURSOR_RESIZE_E);
 		}
@@ -258,12 +258,20 @@ public class GWTGenomeCanvas extends TouchableComposite {
 			}
 		}
 		else {
-			if (dragStartPoint.isDefined()) {
-				// scroll the canvas
+			if (dragStartPoint.isDefined() && trackWindow != null) {
 				DragPoint p = dragStartPoint.get();
-				int xDiff = clientX - p.x;
-				//int yDiff = clientY - p.y;
-				basePanel.setWidgetPosition(panel, xDiff, 0);
+				final int x_origin = trackWindow.convertToGenomePosition(p.x);
+				int startDiff = trackWindow.convertToGenomePosition(clientX) - x_origin;
+				if (startDiff != 0) {
+					int newStart = trackWindow.getStartOnGenome() - startDiff;
+					if (newStart < 1)
+						newStart = 1;
+					int newEnd = newStart + trackWindow.getSequenceLength();
+					TrackWindow newWindow = trackWindow.newWindow(newStart, newEnd);
+					if (trackGroup != null) 
+						trackGroup.setTrackWindow(newWindow);
+					dragStartPoint.set(new DragPoint(clientX, p.y));
+				}
 			}
 			else {
 				Style.cursor(canvas, Style.CURSOR_AUTO);
@@ -321,7 +329,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 				popupLabel.removeFromParent();
 				if (popupLabel.locus == g) {
 
-					int x = clientX + 10 + getAbsoluteLeft() ;
+					int x = clientX + 10 + getAbsoluteLeft();
 					int y = clientY + 3 + getAbsoluteTop();
 					final int w = Window.getClientWidth();
 					final int h = Window.getClientHeight();
@@ -371,11 +379,11 @@ public class GWTGenomeCanvas extends TouchableComposite {
 	}
 
 	public int getXOnCanvas(int clientX) {
-		return clientX  + Window.getScrollLeft() - basePanel.getAbsoluteLeft();
+		return clientX + Window.getScrollLeft() - basePanel.getAbsoluteLeft();
 	}
 
 	public int getYOnCanvas(int clientY) {
-		return clientY  + Window.getScrollTop() - basePanel.getAbsoluteTop();
+		return clientY + Window.getScrollTop() - basePanel.getAbsoluteTop();
 	}
 
 	public int getYOnCanvas(Event event) {
@@ -390,42 +398,40 @@ public class GWTGenomeCanvas extends TouchableComposite {
 		sinkEvents(Event.ONMOUSEMOVE | Event.ONMOUSEOVER | Event.ONMOUSEDOWN | Event.ONMOUSEUP | Event.ONMOUSEOUT);
 
 		// add touch handler for iPad
-			this.addTouchStartHandler(new TouchStartHandler() {
-				public void onTouchStart(TouchStartEvent event) {
-					Touch touch = event.touches().get(0);
-					if(startDrag(touch.getClientX(), touch.getClientY())) {
-						event.getNativeEvent().preventDefault();
-					}
-					else {
-						DOM.setCapture(GWTGenomeCanvas.this.getElement());
-					}
-				}
-			});
+		this.addTouchStartHandler(new TouchStartHandler() {
+			public void onTouchStart(TouchStartEvent event) {
+				Touch touch = event.touches().get(0);
+				event.preventDefault();
+				startDrag(touch.getClientX(), touch.getClientY());
+				DOM.setCapture(GWTGenomeCanvas.this.getElement());
+			}
+		});
 
-			this.addTouchMoveHandler(new TouchMoveHandler() {
-				public void onTouchMove(TouchMoveEvent event) {
-					Touch touch = event.touches().get(0);
-					moveDrag(touch.getClientX(), touch.getClientY());
-				}
-			});
+		this.addTouchMoveHandler(new TouchMoveHandler() {
+			public void onTouchMove(TouchMoveEvent event) {
+				event.preventDefault();
+				Touch touch = event.touches().get(0);
+				moveDrag(touch.getClientX(), touch.getClientY());
+			}
+		});
 
-			this.addTouchEndHandler(new TouchEndHandler() {
-				public void onTouchEnd(TouchEndEvent event) {
-					Touch touch = event.touches().get(0);
-					resetDrag(touch.getClientX(), touch.getClientY());
-					DOM.releaseCapture(GWTGenomeCanvas.this.getElement());
-					event.preventDefault();
-				}
-			});
-			
-			this.addTouchCancelHandler(new TouchCancelHandler() {
-				public void onTouchCancel(TouchCancelEvent event) {
-					Touch touch = event.touches().get(0);
-					resetDrag(touch.getClientX(), touch.getClientY());
-					DOM.releaseCapture(GWTGenomeCanvas.this.getElement());
-					event.preventDefault();
-				}
-			});
+		this.addTouchEndHandler(new TouchEndHandler() {
+			public void onTouchEnd(TouchEndEvent event) {
+				Touch touch = event.touches().get(0);
+				resetDrag(touch.getClientX(), touch.getClientY());
+				DOM.releaseCapture(GWTGenomeCanvas.this.getElement());
+				//event.preventDefault();
+			}
+		});
+
+		this.addTouchCancelHandler(new TouchCancelHandler() {
+			public void onTouchCancel(TouchCancelEvent event) {
+				Touch touch = event.touches().get(0);
+				resetDrag(touch.getClientX(), touch.getClientY());
+				DOM.releaseCapture(GWTGenomeCanvas.this.getElement());
+				//event.preventDefault();
+			}
+		});
 	}
 
 	private boolean hasCache = false;

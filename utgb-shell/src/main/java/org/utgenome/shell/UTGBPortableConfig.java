@@ -61,6 +61,9 @@ public class UTGBPortableConfig {
 
 	@Option(symbol = "h", longName = "help", description = "display help message")
 	boolean displayHelp = false;
+	
+	@Option(longName="module", description = "GWT modules name. default = utgb")
+	String gwtModule = "utgb";
 
 	public UTGBPortableConfig() {
 	}
@@ -109,6 +112,10 @@ public class UTGBPortableConfig {
 
 	public String getWorkingDir() {
 		return workingDir;
+	}
+	
+	public String getGWTModuleName() {
+		return gwtModule;
 	}
 
 	public String getProjectConfigDir() {
