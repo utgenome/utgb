@@ -36,6 +36,8 @@ public interface OnGenomeDataVisitor {
 
 	public void visitRead(Read r);
 
+	public void visitGap(Gap p);
+
 	public void visitGene(Gene g);
 
 	public void visitSAMRead(SAMRead r);

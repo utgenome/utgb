@@ -64,6 +64,10 @@ public class InfoSilkGenerator implements OnGenomeDataVisitor {
 
 	}
 
+	public void visitGap(Gap g) {
+
+	}
+
 	public void visitInterval(Interval interval) {
 		addLine("-name: " + interval.getName());
 		addLine("-start: " + interval.getStart());

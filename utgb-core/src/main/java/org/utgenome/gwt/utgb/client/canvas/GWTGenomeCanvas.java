@@ -39,6 +39,7 @@ import org.utgenome.gwt.utgb.client.UTGBClientException;
 import org.utgenome.gwt.utgb.client.bio.CDS;
 import org.utgenome.gwt.utgb.client.bio.CIGAR;
 import org.utgenome.gwt.utgb.client.bio.Exon;
+import org.utgenome.gwt.utgb.client.bio.Gap;
 import org.utgenome.gwt.utgb.client.bio.Gene;
 import org.utgenome.gwt.utgb.client.bio.GraphData;
 import org.utgenome.gwt.utgb.client.bio.InfoSilkGenerator;
@@ -60,7 +61,6 @@ import org.utgenome.gwt.utgb.client.ui.RoundCornerFrame;
 import org.utgenome.gwt.utgb.client.util.BrowserInfo;
 import org.utgenome.gwt.utgb.client.util.Optional;
 import org.utgenome.gwt.widget.client.Style;
-import org.xerial.amoeba.query.impl.AmoebaQueryParser.newRelation_return;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.ImageElement;
@@ -69,13 +69,11 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.util.PreventSpuriousRebuilds;
 import com.google.gwt.widgetideas.graphics.client.CanvasGradient;
 import com.google.gwt.widgetideas.graphics.client.Color;
 import com.google.gwt.widgetideas.graphics.client.GWTCanvas;
@@ -268,7 +266,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 						newStart = 1;
 					int newEnd = newStart + trackWindow.getSequenceLength();
 					TrackWindow newWindow = trackWindow.newWindow(newStart, newEnd);
-					if (trackGroup != null) 
+					if (trackGroup != null)
 						trackGroup.setTrackWindow(newWindow);
 					dragStartPoint.set(new DragPoint(clientX, p.y));
 				}
@@ -680,6 +678,10 @@ public class GWTGenomeCanvas extends TouchableComposite {
 				readLabels.add(label);
 			}
 
+		}
+
+		public void visitGap(Gap p) {
+			drawPadding(pixelPositionOnWindow(p.getStart()), pixelPositionOnWindow(p.getEnd()), getYPos(), getColor("#666666", 1.0f), true);
 		}
 
 		private void drawLabel(OnGenome r) {
