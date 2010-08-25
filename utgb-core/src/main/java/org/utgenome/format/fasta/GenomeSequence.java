@@ -25,7 +25,7 @@
 package org.utgenome.format.fasta;
 
 /**
- * Common interface of genome sequences
+ * A common interface of genome sequences
  * 
  * @author leo
  * 
