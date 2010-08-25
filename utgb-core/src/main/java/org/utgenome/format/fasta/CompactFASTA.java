@@ -39,7 +39,7 @@ import org.utgenome.UTGBException;
 import org.xerial.core.XerialException;
 
 /**
- * CompactFASTA is a packed FASTA file
+ * CompactFASTA is a packed FASTA file, supporting random accesses to sub sequences of a specified chromosome.
  * 
  * @author leo
  * 
@@ -139,7 +139,7 @@ public class CompactFASTA {
 
 		int length = end - start;
 		if (length > index.length)
-			length = (int) (index.length - start);
+			length = (index.length - start);
 
 		long bStart = start + index.offset;
 		long bEnd = bStart + length;
@@ -163,7 +163,7 @@ public class CompactFASTA {
 		if (!indexTable.containsKey(chr))
 			return null;
 		CompactFASTAIndex index = indexTable.get(chr);
-		return getSequence(index, start, (int) index.length);
+		return getSequence(index, start, index.length);
 	}
 
 	public GenomeSequence getSequence(String chr) throws IOException, UTGBException {

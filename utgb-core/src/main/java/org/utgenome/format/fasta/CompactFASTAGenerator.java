@@ -103,7 +103,7 @@ public class CompactFASTAGenerator {
 		indexOut = new SilkWriter(new BufferedWriter(new FileWriter(new File(workDir, pacIndexFile))));
 
 		indexOut.preamble();
-		indexOut.preamble("schema sequence(name, description, length, offset)");
+		indexOut.schema("sequence").attribute("name").attribute("description").attribute("length").attribute("offset");
 
 		// load FASTA file (.fa, .fa.tar.gz, ...)
 		packFASTA(new FASTAPullParser(fileName, in, BUFFER_SIZE));

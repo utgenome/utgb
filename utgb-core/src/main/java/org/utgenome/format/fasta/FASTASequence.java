@@ -24,17 +24,14 @@
 //--------------------------------------
 package org.utgenome.format.fasta;
 
-import java.util.ArrayList;
-
 /**
- * A FASTASequence represente a single entry in a FASTA file
+ * A FASTASequence represents an entry in FASTA files
  * 
  * @author leo
  * 
  */
 public class FASTASequence {
 	private String sequence = "";
-	private ArrayList<String> description = new ArrayList<String>();
 	private String descriptionLine;
 
 	/**
@@ -43,29 +40,23 @@ public class FASTASequence {
 	 */
 	public FASTASequence(String rawDescription, String sequence) {
 		this.descriptionLine = rawDescription;
-		for (String d : rawDescription.trim().split("\\|"))
-			description.add(d);
-
 		this.sequence = sequence;
 	}
 
 	public FASTASequence() {
 	}
 
-	public ArrayList<String> getDescription() {
-		return description;
+	/**
+	 * Extract a sequence name from the description line
+	 * 
+	 * @return
+	 */
+	public String getSequenceName() {
+		return CompactFASTA.pickSequenceName(descriptionLine);
 	}
 
 	public String getDescriptionLine() {
 		return descriptionLine;
-	}
-
-	public int getDescriptionSize() {
-		return description.size();
-	}
-
-	public String getDescription(int index) {
-		return description.get(index);
 	}
 
 	public String getSequence() {
@@ -76,16 +67,8 @@ public class FASTASequence {
 		this.sequence = sequence;
 	}
 
-	public void addDescription(String desc) {
-		description.add(desc);
-	}
-
 	@Override
 	public String toString() {
-		return description.toString() + ":" + sequence;
-	}
-
-	public String getSequenceName() {
-		return CompactFASTA.pickSequenceName(descriptionLine);
+		return descriptionLine + ":" + sequence;
 	}
 }

@@ -61,11 +61,14 @@ public class FASTAPullParserTest {
 		assertEquals("ACGCTTACCC", s1.getSequence());
 		assertEquals("CCGGA", s2.getSequence());
 
-		assertEquals(2, s1.getDescriptionSize());
-		assertEquals("1", s1.getDescription(0));
-		assertEquals("mySeq", s1.getDescription(1));
-		assertEquals(1, s2.getDescriptionSize());
-		assertEquals("2", s2.getDescription(0));
+		String[] description1 = s1.getDescriptionLine().split("\\|");
+		String[] description2 = s2.getDescriptionLine().split("\\|");
+
+		assertEquals(2, description1.length);
+		assertEquals("1", description1[0]);
+		assertEquals("mySeq", description1[1]);
+		assertEquals(1, description2.length);
+		assertEquals("2", description2[0]);
 
 		FASTASequence s3 = parser.nextSequence();
 		assertNull(s3);
