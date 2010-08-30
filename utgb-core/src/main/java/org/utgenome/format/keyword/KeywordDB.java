@@ -27,11 +27,16 @@ package org.utgenome.format.keyword;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import net.sf.samtools.SAMFileReader;
+import net.sf.samtools.SAMRecord;
+import net.sf.samtools.SAMFileReader.ValidationStringency;
 
 import org.utgenome.UTGBErrorCode;
 import org.utgenome.UTGBException;
@@ -323,6 +328,41 @@ public class KeywordDB {
 		}
 		catch (DBException e) {
 			throw new UTGBException(UTGBErrorCode.DatabaseError, e);
+		}
+
+	}
+
+	public void importFromBAM(final String ref, InputStream samOrBamInput) throws UTGBException {
+
+		SAMFileReader samReader = new SAMFileReader(samOrBamInput);
+		int entryCount = 0;
+		try {
+			initDB();
+			samReader.setValidationStringency(ValidationStringency.SILENT);
+
+			db.update("pragma synchronous = off");
+			db.setAutoCommit(false);
+
+			for (SAMRecord each : samReader) {
+				try {
+					entryCount++;
+					GenomeKeywordEntry e = new GenomeKeywordEntry(ref, each.getReferenceName(), each.getReadName(), each.getUnclippedStart(), each
+							.getUnclippedStart());
+					if (entryCount > 0 && (entryCount % 10000 == 0))
+						_logger.info("num entries: " + entryCount);
+					KeywordDB.this.add(e);
+				}
+				catch (DBException e) {
+					_logger.error(e);
+				}
+			}
+			db.update("commit");
+		}
+		catch (DBException e) {
+			throw new UTGBException(UTGBErrorCode.DatabaseError, e);
+		}
+		finally {
+			samReader.close();
 		}
 
 	}

@@ -60,7 +60,7 @@ public class Import extends UTGBShellCommand {
 	private static Logger _logger = Logger.getLogger(Import.class);
 
 	public static enum FileType {
-		AUTO, READ, BED, SAM, FASTA, WIG, KTAB, UNKNOWN
+		AUTO, READ, BED, SAM, FASTA, WIG, KTAB, UNKNOWN, BAM
 	}
 
 	@Option(symbol = "t", longName = "type", description = "specify the input file type: (AUTO, FASTA, READ, BED, WIG)")
@@ -210,6 +210,8 @@ public class Import extends UTGBShellCommand {
 			return FileType.WIG;
 		else if (fileName.endsWith(".sam"))
 			return FileType.SAM;
+		else if (fileName.endsWith(".bam"))
+			return FileType.BAM;
 		else if (fileName.endsWith(".ktab"))
 			return FileType.KTAB;
 

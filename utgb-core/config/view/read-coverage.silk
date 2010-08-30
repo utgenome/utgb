@@ -1,0 +1,41 @@
+%silk(version:1.0)
+-track group
+  -id: 1
+  -class: org.utgenome.gwt.utgb.client.track.TrackGroup
+  -coordinate
+    -species: human
+    -ref: hg18
+    -chr: chr20
+    -start: 1
+    -end: 60000
+-track
+  -name: UTGB Navigator
+  -height: 41
+  -pack: true
+  -class: NavigatorTrack
+  -property
+    -sequenceList: [{"species":"human", "revision":["hg18","hg17"]},{"species":"mouse", "revision":["mm9"]},{"species":"drosophila", "revision":["dm3"]},{"species":"c.elegance", "revision":["ce6"]}]
+-track
+  -name: Sequence Overview
+  -pack: true
+  -class: SequenceRulerTrack
+-track
+  -name: Ruler
+  -pack: true
+  -class: RulerTrack
+-track
+  -name: Read
+  -pack: true
+  -height: 100
+  -class: ReadTrack
+  -property
+    -path: db/testdata/genomic_sorted_5_plus.bam
+-track
+  -name: Read Coverage
+  -pack: true
+  -height: 100
+  -class: ReadTrack
+  -property
+    -path: db/testdata/genomic_sorted_5_plus.bam
+    -layout: coverage
+    

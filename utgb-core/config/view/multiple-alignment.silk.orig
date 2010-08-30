@@ -24,8 +24,6 @@
   -pack: true
   -class: RulerTrack
 -track
-  -class: ScaleBarTrack
--track
   -name: Genome Sequence
   -pack: true
   -class: GenomeTrack
@@ -38,3 +36,18 @@
   -class: ReadTrack
   -property
     -path: db/test.bam
+-track
+  -name: Read1
+  -pack: true
+  -height: 100
+  -class: ReadTrack
+  -property
+    -path: db/test.bam
+-track
+  -name: Read2
+  -pack: true
+  -height: 100
+  -class: ReadTrack
+  -property
+    -path: db/test.bam
+    

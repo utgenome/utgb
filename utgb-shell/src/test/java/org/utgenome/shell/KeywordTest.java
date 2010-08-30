@@ -52,4 +52,33 @@ public class KeywordTest {
 		UTGBShell.runCommand(new String[] { "-d", tmpProject.projectRoot, "keyword", "search", "Y74C9" });
 
 	}
+
+	@Test
+	public void testSAMKeyword() throws Exception {
+
+		ProjectInfo tmpProject = ProjectGenerator.createTemporatyProject();
+
+		// import keywords in BED file
+		File sam = File.createTempFile("keyword", ".sam");
+		FileUtil.copy(FileResource.openByteStream(KeywordTest.class, "sample.sam"), sam);
+		UTGBShell.runCommand(new String[] { "-d", tmpProject.projectRoot, "keyword", "import", "-r", "HG18", sam.getAbsolutePath() });
+
+		// try keyword search
+		UTGBShell.runCommand(new String[] { "-d", tmpProject.projectRoot, "keyword", "search", "read_5_2" });
+	}
+
+	@Test
+	public void testBAMKeyword() throws Exception {
+
+		ProjectInfo tmpProject = ProjectGenerator.createTemporatyProject();
+
+		// import keywords in BED file
+		File bam = File.createTempFile("keyword", ".sam");
+		FileUtil.copy(FileResource.openByteStream(KeywordTest.class, "sample.bam"), bam);
+		UTGBShell.runCommand(new String[] { "-d", tmpProject.projectRoot, "keyword", "import", "-r", "HG18", bam.getAbsolutePath() });
+
+		// try keyword search
+		UTGBShell.runCommand(new String[] { "-d", tmpProject.projectRoot, "keyword", "search", "read_5_2" });
+	}
+
 }

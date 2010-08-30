@@ -26,14 +26,17 @@ package org.utgenome.shell;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
 import org.utgenome.format.keyword.KeywordDB;
 import org.utgenome.gwt.utgb.client.bio.KeywordSearchResult;
 import org.utgenome.shell.Import.FileType;
+import org.utgenome.util.StandardInputStream;
 import org.xerial.lens.Lens;
 import org.xerial.util.StopWatch;
 import org.xerial.util.log.Logger;
@@ -97,18 +100,42 @@ public class Keyword extends UTGBShellCommand {
 				if (ref == null)
 					throw new UTGBShellException("specify a reference sequence name with -r option");
 
-				Reader r = getInputFileReader();
-
 				if (inputFileType == FileType.AUTO)
 					inputFileType = Import.detectFileType(input);
 				switch (inputFileType) {
-				case BED:
-					db.importFromBED(ref, r);
-					_logger.info(String.format("done. %s sec.", timer.getElapsedTime()));
+				case BED: {
+					Reader r = getInputFileReader();
+					try {
+						db.importFromBED(ref, r);
+						_logger.info(String.format("done. %s sec.", timer.getElapsedTime()));
+					}
+					finally {
+						r.close();
+					}
+				}
 					break;
-				case KTAB:
-					db.importFromTAB(ref, r);
-					_logger.info(String.format("done. %s sec.", timer.getElapsedTime()));
+				case SAM:
+				case BAM: {
+					InputStream in = getInputFileStream();
+					try {
+						db.importFromBAM(ref, in);
+						_logger.info(String.format("done. %s sec.", timer.getElapsedTime()));
+					}
+					finally {
+						in.close();
+					}
+				}
+					break;
+				case KTAB: {
+					Reader r = getInputFileReader();
+					try {
+						db.importFromTAB(ref, r);
+						_logger.info(String.format("done. %s sec.", timer.getElapsedTime()));
+					}
+					finally {
+						r.close();
+					}
+				}
 					break;
 				default:
 					throw new UTGBShellException(String.format("Unsupported (or unknown) file type. Use -t option to explicitely specify the file type."));
@@ -141,7 +168,18 @@ public class Keyword extends UTGBShellCommand {
 		}
 		else {
 			_logger.info("use STDIN for input");
-			return new BufferedReader(new InputStreamReader(System.in));
+			return new BufferedReader(new InputStreamReader(new StandardInputStream()));
+		}
+	}
+
+	private InputStream getInputFileStream() throws FileNotFoundException {
+		if (input != null && !input.equals("-")) {
+			_logger.info("input file: " + input);
+			return new FileInputStream(input);
+		}
+		else {
+			_logger.info("use STDIN for input");
+			return new StandardInputStream();
 		}
 	}
 
