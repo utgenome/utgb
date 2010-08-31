@@ -547,6 +547,11 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 	public List<WigGraphData> getWigDataList(String fileName, int windowWidth, ChrLoc location) {
 		ArrayList<WigGraphData> wigDataList = null;
 
+		if (!ReadView.isDescendant(fileName)) {
+			_logger.error("path must be under the project root: " + fileName);
+			return new ArrayList<WigGraphData>();
+		}
+
 		try {
 			WIGDatabaseReader reader = new WIGDatabaseReader(WebTrackBase.getProjectRootPath() + "/" + fileName);
 			wigDataList = reader.getWigDataList(windowWidth, location.chr, location.start, location.end);
@@ -648,9 +653,8 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 			_logger.info(WebTrackBase.getProjectRootPath() + "/" + refSeqFileName);
 			final CompactFASTA cf = new CompactFASTA(WebTrackBase.getProjectRootPath() + "/" + refSeqFileName);
 
-			SAMFileReader reader = new SAMFileReader(new File(WebTrackBase.getProjectRootPath() + "/" + bamFileName), new File(WebTrackBase
-					.getProjectRootPath()
-					+ "/" + indexFileName));
+			SAMFileReader reader = new SAMFileReader(new File(WebTrackBase.getProjectRootPath() + "/" + bamFileName), new File(
+					WebTrackBase.getProjectRootPath() + "/" + indexFileName));
 
 			StopWatch st1 = new StopWatch();
 			Iterator<SAMRecord> iterator = reader.query(rname, start, end, true);

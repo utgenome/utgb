@@ -81,6 +81,8 @@ public class ReadView extends WebTrackBase {
 			else if (!".".equals(each)) {
 				level++;
 			}
+			if (level < 0)
+				return false;
 		}
 
 		return level > 0;
@@ -92,10 +94,6 @@ public class ReadView extends WebTrackBase {
 		// validating input
 		if (start == -1 || end == -1 || chr == null)
 			return;
-
-		if (path.contains("..")) {
-
-		}
 
 		List<OnGenome> result = overlapQuery(new GenomeDB(path, ref), new ChrLoc(chr, start, end), new ReadQueryConfig(width, useCanvas, layout));
 
@@ -116,6 +114,11 @@ public class ReadView extends WebTrackBase {
 		StopWatch sw = new StopWatch();
 		DBType dbType = db.resolveDBType();
 		loc = loc.getLocForPositiveStrand();
+
+		if (!isDescendant(db.path)) {
+			_logger.error("relative path must be used in the path parameter: " + db.path);
+			return result;
+		}
 
 		try {
 			if (dbType == null)
