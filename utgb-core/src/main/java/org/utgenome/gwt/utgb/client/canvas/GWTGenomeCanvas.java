@@ -58,7 +58,6 @@ import org.utgenome.gwt.utgb.client.track.TrackGroup;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.ui.FixedWidthLabel;
 import org.utgenome.gwt.utgb.client.ui.RoundCornerFrame;
-import org.utgenome.gwt.utgb.client.util.BrowserInfo;
 import org.utgenome.gwt.utgb.client.util.Optional;
 import org.utgenome.gwt.widget.client.Style;
 
@@ -74,7 +73,6 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.widgetideas.graphics.client.CanvasGradient;
 import com.google.gwt.widgetideas.graphics.client.Color;
 import com.google.gwt.widgetideas.graphics.client.GWTCanvas;
 import com.google.gwt.widgetideas.graphics.client.ImageLoader;
@@ -1233,17 +1231,17 @@ public class GWTGenomeCanvas extends TouchableComposite {
 		double drawX = drawPosition(reverse ? x2 : x1);
 		canvas.translate(drawX, y);
 		canvas.setFillStyle(Color.WHITE);
-		canvas.fillRect(0, 0, boxWidth, geneHeight);
-		if (!BrowserInfo.isIE() && (boxWidth > 5 && geneHeight > 4)) {
-			CanvasGradient grad = canvas.createLinearGradient(0, 0, 0, geneHeight);
-			grad.addColorStop(0, c);
-			grad.addColorStop(0.1, Color.WHITE);
-			grad.addColorStop(0.5, c);
-			grad.addColorStop(1, c);
-			canvas.setFillStyle(grad);
-		}
-		else
-			canvas.setFillStyle(c);
+		//		canvas.fillRect(0, 0, boxWidth, geneHeight);
+		//		if (!BrowserInfo.isIE() && (boxWidth > 5 && geneHeight > 4)) {
+		//			CanvasGradient grad = canvas.createLinearGradient(0, 0, 0, geneHeight);
+		//			grad.addColorStop(0, c);
+		//			grad.addColorStop(0.1, Color.WHITE);
+		//			grad.addColorStop(0.5, c);
+		//			grad.addColorStop(1, c);
+		//			canvas.setFillStyle(grad);
+		//		}
+		//		else
+		canvas.setFillStyle(c);
 		canvas.fillRect(0, 0, boxWidth, geneHeight);
 		canvas.restoreContext();
 

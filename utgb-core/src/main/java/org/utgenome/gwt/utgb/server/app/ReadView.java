@@ -27,14 +27,14 @@ import org.utgenome.graphics.GenomeWindow;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.DASLocation;
 import org.utgenome.gwt.utgb.client.bio.DASResult;
+import org.utgenome.gwt.utgb.client.bio.DASResult.DASFeature;
 import org.utgenome.gwt.utgb.client.bio.GenomeDB;
+import org.utgenome.gwt.utgb.client.bio.GenomeDB.DBType;
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
 import org.utgenome.gwt.utgb.client.bio.Read;
+import org.utgenome.gwt.utgb.client.bio.Read.ReadType;
 import org.utgenome.gwt.utgb.client.bio.ReadCoverage;
 import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig;
-import org.utgenome.gwt.utgb.client.bio.DASResult.DASFeature;
-import org.utgenome.gwt.utgb.client.bio.GenomeDB.DBType;
-import org.utgenome.gwt.utgb.client.bio.Read.ReadType;
 import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig.Layout;
 import org.utgenome.gwt.utgb.server.WebTrackBase;
 import org.utgenome.gwt.utgb.server.util.WebApplicationResource;
@@ -67,12 +67,35 @@ public class ReadView extends WebTrackBase {
 	public String path;
 	public Read.ReadType type = ReadType.SAM;
 
+	public static boolean isDescendant(String targetPath) {
+
+		String[] pathComponent = targetPath.split("(\\\\|/)");
+		if (pathComponent == null)
+			return false;
+
+		int level = 0;
+		for (String each : pathComponent) {
+			if ("..".equals(each)) {
+				level--;
+			}
+			else if (!".".equals(each)) {
+				level++;
+			}
+		}
+
+		return level > 0;
+	}
+
 	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		// validating input
 		if (start == -1 || end == -1 || chr == null)
 			return;
+
+		if (path.contains("..")) {
+
+		}
 
 		List<OnGenome> result = overlapQuery(new GenomeDB(path, ref), new ChrLoc(chr, start, end), new ReadQueryConfig(width, useCanvas, layout));
 
