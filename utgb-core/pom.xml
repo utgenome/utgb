@@ -200,13 +200,13 @@
     <dependency>
       <groupId>org.utgenome.thirdparty</groupId>
       <artifactId>sam</artifactId>
-      <version>1.26</version>
+      <version>1.29</version>
     </dependency>
 
     <dependency>
       <groupId>org.utgenome.thirdparty</groupId>
       <artifactId>picard</artifactId>
-      <version>1.26</version>
+      <version>1.29</version>
     </dependency>
 
     <dependency>
