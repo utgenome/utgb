@@ -33,14 +33,15 @@ import java.util.HashMap;
 import java.util.List;
 
 import net.sf.samtools.SAMFileReader;
-import net.sf.samtools.SAMRecord;
 import net.sf.samtools.SAMFileReader.ValidationStringency;
+import net.sf.samtools.SAMRecord;
 import net.sf.samtools.util.CloseableIterator;
 
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.bio.SAMReadPair;
+import org.xerial.util.log.Logger;
 
 /**
  * SAM File reader
@@ -49,6 +50,8 @@ import org.utgenome.gwt.utgb.client.bio.SAMReadPair;
  * 
  */
 public class SAMReader {
+
+	private static Logger _logger = Logger.getLogger(SAMReader.class);
 
 	public static Iterable<SAMRecord> getSAMRecordReader(InputStream samFile) {
 		return new SAMFileReader(samFile);
@@ -64,17 +67,26 @@ public class SAMReader {
 	public static List<OnGenome> overlapQuery(File bamFile, ChrLoc loc) {
 
 		File baiFile = new File(bamFile.getAbsolutePath() + ".bai");
-		SAMFileReader sam = new SAMFileReader(bamFile, baiFile);
+		SAMFileReader sam = new SAMFileReader(bamFile, baiFile, true);
 		sam.setValidationStringency(ValidationStringency.SILENT);
 
 		List<OnGenome> result = new ArrayList<OnGenome>();
 
 		HashMap<String, SAMRead> samReadTable = new HashMap<String, SAMRead>();
 
+		if (_logger.isDebugEnabled())
+			_logger.debug(String.format("query BAM (%s) %s", bamFile, loc));
+
 		CloseableIterator<SAMRecord> it = sam.queryOverlapping(loc.chr, loc.start, loc.end);
 		try {
+			int readCount = 0;
 			for (; it.hasNext();) {
 				SAMRead query = SAM2SilkReader.convertToSAMRead(it.next());
+
+				readCount++;
+				if (_logger.isDebugEnabled() && (readCount % 10000) == 0) {
+					_logger.debug(String.format("reading (%s) %s : %d reads", bamFile, loc, readCount));
+				}
 
 				if (query.isUnmapped()) {
 					// ignore unmapped sequence

@@ -72,4 +72,9 @@ public class ChrLoc implements IsSerializable {
 	public boolean isAntiSense() {
 		return !isSense();
 	}
+
+	@Override
+	public String toString() {
+		return chr + ":" + start + "-" + end;
+	}
 }
