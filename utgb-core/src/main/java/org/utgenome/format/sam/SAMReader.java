@@ -77,15 +77,16 @@ public class SAMReader {
 		if (_logger.isDebugEnabled())
 			_logger.debug(String.format("query BAM (%s) %s", bamFile, loc));
 
+		int readCount = 0;
 		CloseableIterator<SAMRecord> it = sam.queryOverlapping(loc.chr, loc.start, loc.end);
 		try {
-			int readCount = 0;
+
 			for (; it.hasNext();) {
 				SAMRead query = SAM2SilkReader.convertToSAMRead(it.next());
 
 				readCount++;
 				if (_logger.isDebugEnabled() && (readCount % 10000) == 0) {
-					_logger.debug(String.format("reading (%s) %s : %d reads", bamFile, loc, readCount));
+					_logger.debug(String.format("reading (%s) %s : %d reads", bamFile.getName(), loc, readCount));
 				}
 
 				if (query.isUnmapped()) {
@@ -134,18 +135,30 @@ public class SAMReader {
 		finally {
 			if (it != null)
 				it.close();
+
+			if (_logger.isDebugEnabled()) {
+				_logger.debug(String.format("finished reading (%s) %s : %d reads", bamFile.getName(), loc, readCount));
+			}
+
 		}
 
 		for (SAMRead each : samReadTable.values()) {
 			result.add(each);
 		}
 
+		if (_logger.isDebugEnabled()) {
+			_logger.debug(String.format("sorting (%s) %s : %d reads", bamFile.getName(), loc, readCount));
+		}
+
 		Collections.sort(result, new Comparator<OnGenome>() {
 			public int compare(OnGenome o1, OnGenome o2) {
-
 				return o1.getStart() - o2.getStart();
 			}
 		});
+
+		if (_logger.isDebugEnabled()) {
+			_logger.debug(String.format("sorting (%s) %s : %d reads. done.", bamFile.getName(), loc, readCount));
+		}
 
 		return result;
 	}
