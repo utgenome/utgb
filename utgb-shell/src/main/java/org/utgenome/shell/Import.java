@@ -31,13 +31,13 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Iterator;
 
-import net.sf.samtools.BAMFileWriter;
-import net.sf.samtools.BAMIndexer;
 import net.sf.samtools.SAMFileHeader;
-import net.sf.samtools.SAMFileReader;
-import net.sf.samtools.SAMRecord;
 import net.sf.samtools.SAMFileHeader.SortOrder;
+import net.sf.samtools.SAMFileReader;
 import net.sf.samtools.SAMFileReader.ValidationStringency;
+import net.sf.samtools.SAMFileWriter;
+import net.sf.samtools.SAMFileWriterFactory;
+import net.sf.samtools.SAMRecord;
 
 import org.apache.tools.ant.util.ReaderInputStream;
 import org.utgenome.format.bed.BEDDatabase;
@@ -148,13 +148,14 @@ public class Import extends UTGBShellCommand {
 			break;
 		case SAM: {
 			_logger.info("creating a BAM file from the input SAM.");
-			SAMFileReader.setDefaultValidationStringency(ValidationStringency.LENIENT);
+			SAMFileReader.setDefaultValidationStringency(ValidationStringency.SILENT);
 			SAMFileReader reader = new SAMFileReader(new ReaderInputStream(in));
+
 			String bamOut = outputFileName;
 			if (!bamOut.endsWith(".bam"))
 				bamOut += ".bam";
 			_logger.info("output BAM: " + bamOut);
-			final BAMFileWriter writer = new BAMFileWriter(new File(bamOut));
+
 			SAMFileHeader header = reader.getFileHeader();
 			int nRefs = header.getSequenceDictionary().size();
 			SortOrder sortOrder = header.getSortOrder();
@@ -168,10 +169,11 @@ public class Import extends UTGBShellCommand {
 				break;
 			}
 
-			writer.setSortOrder(SortOrder.coordinate, sorted);
-			// writer.enableBamIndexConstruction(true);
-			writer.setHeader(header);
-
+			SAMFileWriterFactory fac = new SAMFileWriterFactory();
+			// create .bai (BAM index) file
+			fac.setCreateIndex(true);
+			header.setSortOrder(SortOrder.coordinate);
+			final SAMFileWriter writer = fac.makeBAMWriter(header, sorted, new File(bamOut));
 			final Iterator<SAMRecord> iterator = reader.iterator();
 			while (iterator.hasNext()) {
 				writer.addAlignment(iterator.next());
@@ -179,12 +181,7 @@ public class Import extends UTGBShellCommand {
 			reader.close();
 			writer.close();
 
-			// create BAM Index (.bai)
-			_logger.info("creating BAM indexes...");
-			SAMFileReader.setDefaultValidationStringency(ValidationStringency.SILENT);
-			BAMIndexer indexer = new BAMIndexer(new File(bamOut), new File(bamOut + ".bai"), nRefs, false);
-			indexer.createIndex();
-
+			// SAMFileReader.setDefaultValidationStringency(ValidationStringency.SILENT);
 			_logger.info("done.");
 
 		}

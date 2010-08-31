@@ -67,12 +67,17 @@ public class ImportTest {
 
 		File tmpSAM = FileUtil.createTempFile(new File("target"), "sample", ".sam");
 		tmpSAM.deleteOnExit();
-		new File(tmpSAM, ".bam").deleteOnExit();
-		new File(tmpSAM, ".bam.bai").deleteOnExit();
+		File bam = new File(tmpSAM.getPath().replace(".sam", ".bam"));
+		File bai = new File(bam.getPath() + ".bai");
+		bam.deleteOnExit();
+		bai.deleteOnExit();
 
 		FileUtil.copy(FileResource.openByteStream(ImportTest.class, "sample.sam"), tmpSAM);
 		// File tmpBAM = FileUtil.createTempFile(new File("target"), "sample", ".bam");
 		UTGBShell.runCommand(new String[] { "import", "-w", tmpSAM.getAbsolutePath() });
+
+		assertTrue(bam.exists());
+		assertTrue(bai.exists());
 
 	}
 
@@ -81,12 +86,17 @@ public class ImportTest {
 
 		File tmpSAM = FileUtil.createTempFile(new File("target"), "test", ".sam");
 		tmpSAM.deleteOnExit();
-		new File(tmpSAM, ".bam").deleteOnExit();
-		new File(tmpSAM, ".bam.bai").deleteOnExit();
+		File bam = new File(tmpSAM.getPath().replace(".sam", ".bam"));
+		File bai = new File(bam.getPath() + ".bai");
+		bam.deleteOnExit();
+		bai.deleteOnExit();
 
 		FileUtil.copy(FileResource.openByteStream(ImportTest.class, "test.sam"), tmpSAM);
 		// File tmpBAM = FileUtil.createTempFile(new File("target"), "sample", ".bam");
 		UTGBShell.runCommand(new String[] { "import", "-w", tmpSAM.getAbsolutePath() });
+
+		assertTrue(bam.exists());
+		assertTrue(bai.exists());
 
 	}
 
