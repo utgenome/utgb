@@ -148,8 +148,8 @@ public class Import extends UTGBShellCommand {
 			break;
 		case SAM: {
 			_logger.info("creating a BAM file from the input SAM.");
-			SAMFileReader.setDefaultValidationStringency(ValidationStringency.SILENT);
 			SAMFileReader reader = new SAMFileReader(new ReaderInputStream(in));
+			reader.setValidationStringency(ValidationStringency.SILENT);
 
 			String bamOut = outputFileName;
 			if (!bamOut.endsWith(".bam"))
@@ -181,7 +181,6 @@ public class Import extends UTGBShellCommand {
 			reader.close();
 			writer.close();
 
-			// SAMFileReader.setDefaultValidationStringency(ValidationStringency.SILENT);
 			_logger.info("done.");
 
 		}
