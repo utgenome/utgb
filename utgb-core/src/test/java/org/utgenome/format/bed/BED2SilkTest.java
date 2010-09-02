@@ -60,7 +60,7 @@ public class BED2SilkTest {
 
 		});
 
-		Lens.findFromSilk(new StringReader(s), "gene", BEDGene.class, new ObjectHandler<BEDGene>() {
+		Lens.findFromSilk(new StringReader(s), "gene", BEDEntry.class, new ObjectHandler<BEDEntry>() {
 
 			int geneCount = 0;
 
@@ -68,7 +68,7 @@ public class BED2SilkTest {
 				geneCount = 0;
 			}
 
-			public void handle(BEDGene g) throws Exception {
+			public void handle(BEDEntry g) throws Exception {
 				if (g.getName().equals("Pos1")) {
 					assertEquals("chr7", g.coordinate);
 					assertEquals(127471197, g.getStart());
@@ -124,14 +124,14 @@ public class BED2SilkTest {
 
 		});
 
-		Lens.findFromSilk(new StringReader(s), "gene", BEDGene.class, new ObjectHandler<BEDGene>() {
+		Lens.findFromSilk(new StringReader(s), "gene", BEDEntry.class, new ObjectHandler<BEDEntry>() {
 			int geneCount = 0;
 
 			public void init() throws Exception {
 
 			}
 
-			public void handle(BEDGene input) throws Exception {
+			public void handle(BEDEntry input) throws Exception {
 				geneCount++;
 			}
 
@@ -165,7 +165,7 @@ public class BED2SilkTest {
 
 		});
 
-		Lens.findFromSilk(new StringReader(s), "gene", BEDGene.class, new ObjectHandler<BEDGene>() {
+		Lens.findFromSilk(new StringReader(s), "gene", BEDEntry.class, new ObjectHandler<BEDEntry>() {
 
 			int geneCount = 0;
 
@@ -173,7 +173,7 @@ public class BED2SilkTest {
 
 			}
 
-			public void handle(BEDGene g) throws Exception {
+			public void handle(BEDEntry g) throws Exception {
 				if (g.getName().equals("AF071353.1")) {
 					assertEquals("chrIV", g.coordinate);
 					assertEquals(17339775, g.getStart());

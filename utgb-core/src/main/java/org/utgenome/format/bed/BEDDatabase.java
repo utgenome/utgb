@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.utgenome.UTGBException;
+import org.utgenome.gwt.utgb.client.bio.BEDGene;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.Gene;
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
@@ -137,7 +138,7 @@ public class BEDDatabase {
 			}
 		}
 
-		public void addGene(BEDGene gene) {
+		public void addGene(BEDEntry gene) {
 			// store gene data to db
 			try {
 				p2.setString(1, gene.coordinate);
@@ -185,7 +186,7 @@ public class BEDDatabase {
 				dbAccess.query(sql, new ResultSetHandler() {
 					@Override
 					public Object handle(ResultSet rs) throws SQLException {
-						geneList.add(new Gene(BEDGene.createFromResultSet(location.chr, rs)));
+						geneList.add(new BEDGene(BEDEntry.createFromResultSet(location.chr, rs)));
 						return null;
 					}
 				});
@@ -226,7 +227,7 @@ public class BEDDatabase {
 
 		public BEDTrack track;
 
-		public void addGene(BEDGene gene) {
+		public void addGene(BEDEntry gene) {
 			if (coordinate.equals(gene.coordinate) && (start <= gene.getEnd()) && (end >= gene.getStart())) {
 				geneList.add(new Gene(gene));
 			}

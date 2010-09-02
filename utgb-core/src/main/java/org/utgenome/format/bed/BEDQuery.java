@@ -48,7 +48,7 @@ public interface BEDQuery {
 
 	public void addTrack(BEDTrack track);
 
-	public void addGene(BEDGene gene);
+	public void addGene(BEDEntry gene);
 
 	public void reportError(Exception e);
 }

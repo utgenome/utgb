@@ -54,7 +54,7 @@ public class BED2SilkReader extends FormatConversionReader {
 	}
 
 	/**
-	 * Read an input BED data, and retrieves {@link BEDTrack} and {@link BEDGene} information through the
+	 * Read an input BED data, and retrieves {@link BEDTrack} and {@link BEDEntry} information through the
 	 * {@link BEDQuery} interface.
 	 * 
 	 * @param input

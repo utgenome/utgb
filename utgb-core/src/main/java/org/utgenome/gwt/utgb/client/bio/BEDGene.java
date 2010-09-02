@@ -16,39 +16,40 @@
 //--------------------------------------
 // utgb-core Project
 //
-// OnGenomeDataVisitor.java
-// Since: May 16, 2010
+// BEDGene.java
+// Since: 2010/09/02
 //
 // $URL$ 
 // $Author$
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.bio;
 
+import java.io.Serializable;
+
 /**
- * Visitor interface for traversing data mapped onto a genome sequence
+ * Representing each gene line of BED format
  * 
- * @author leo
+ * @author yoshimura
  * 
  */
-public interface OnGenomeDataVisitor {
+public class BEDGene extends Gene implements Serializable{
 
-	public void visitInterval(Interval interval);
+	private static final long serialVersionUID = 1L;
 
-	public void visitRead(Read r);
+	public String coordinate;
+	public int score = 0;
 
-	public void visitGap(Gap p);
+	public BEDGene() {
+	}
+	
+	public BEDGene(BEDGene other) {
+		super(other);
+		this.coordinate = other.coordinate;
+		this.score = other.score;
+	}
 
-	public void visitGene(Gene g);
-
-	public void visitBEDGene(BEDGene g);
-
-	public void visitSAMRead(SAMRead r);
-
-	public void visitSAMReadPair(SAMReadPair pair);
-
-	public void visitSequence(ReferenceSequence referenceSequence);
-
-	public void visitReadCoverage(ReadCoverage readCoverage);
-
-	public void visitGraph(GraphData graph);
+	@Override
+	public void accept(OnGenomeDataVisitor visitor) {
+		visitor.visitBEDGene(this);
+	}
 }
