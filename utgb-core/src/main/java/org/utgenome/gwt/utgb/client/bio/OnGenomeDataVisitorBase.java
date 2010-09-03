@@ -40,6 +40,10 @@ public class OnGenomeDataVisitorBase implements OnGenomeDataVisitor {
 
 	}
 
+	public void visitBEDGene(BEDGene g) {
+		
+	}
+
 	public void visitInterval(Interval interval) {
 
 	}

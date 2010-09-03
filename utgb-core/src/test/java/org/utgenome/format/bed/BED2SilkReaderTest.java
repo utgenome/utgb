@@ -51,7 +51,7 @@ public class BED2SilkReaderTest {
 	public void testGen() throws Exception {
 		BED2SilkReader r = new BED2SilkReader(FileResource.open(BED2SilkReaderTest.class, "sample.bed"));
 		Lens.loadSilk(new BEDQuery() {
-			public void addGene(BEDGene gene) {
+			public void addGene(BEDEntry gene) {
 				_logger.info(Lens.toSilk(gene));
 			}
 
@@ -75,7 +75,7 @@ public class BED2SilkReaderTest {
 		BED2SilkReader r = new BED2SilkReader(FileResource.open(BED2SilkReaderTest.class, "exon.bed"));
 
 		Lens.loadSilk(new BEDQuery() {
-			public void addGene(BEDGene gene) {
+			public void addGene(BEDEntry gene) {
 				_logger.info(Lens.toSilk(gene));
 
 				for (Exon each : gene.getExon()) {

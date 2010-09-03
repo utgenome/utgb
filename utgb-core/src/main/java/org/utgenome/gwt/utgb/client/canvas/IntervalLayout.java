@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import org.utgenome.gwt.utgb.client.bio.BEDGene;
 import org.utgenome.gwt.utgb.client.bio.Gene;
 import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
@@ -132,6 +133,11 @@ public class IntervalLayout {
 		@Override
 		public void visitGene(Gene g) {
 			visitInterval(g);
+		}
+
+		@Override
+		public void visitBEDGene(BEDGene g) {
+			visitGene(g);
 		}
 
 		@Override

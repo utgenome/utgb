@@ -36,6 +36,7 @@ import org.utgenome.gwt.ipad.event.TouchMoveHandler;
 import org.utgenome.gwt.ipad.event.TouchStartEvent;
 import org.utgenome.gwt.ipad.event.TouchStartHandler;
 import org.utgenome.gwt.utgb.client.UTGBClientException;
+import org.utgenome.gwt.utgb.client.bio.BEDGene;
 import org.utgenome.gwt.utgb.client.bio.CDS;
 import org.utgenome.gwt.utgb.client.bio.CIGAR;
 import org.utgenome.gwt.utgb.client.bio.Exon;
@@ -576,7 +577,11 @@ public class GWTGenomeCanvas extends TouchableComposite {
 
 			drawLabel(g);
 		}
-
+		
+		public void visitBEDGene(BEDGene g) {
+			visitGene(g);
+		}
+		
 		public void drawBases(int startOnGenome, int y, String seq) {
 
 			int pixelWidthOfBase = (int) (trackWindow.getPixelLengthPerBase() + 0.1d);

@@ -41,7 +41,7 @@ import net.sf.samtools.SAMFileReader.ValidationStringency;
 import org.utgenome.UTGBErrorCode;
 import org.utgenome.UTGBException;
 import org.utgenome.format.bed.BED2SilkReader;
-import org.utgenome.format.bed.BEDGene;
+import org.utgenome.format.bed.BEDEntry;
 import org.utgenome.format.bed.BEDQuery;
 import org.utgenome.format.bed.BEDTrack;
 import org.utgenome.format.fasta.CompactFASTAIndex;
@@ -301,7 +301,7 @@ public class KeywordDB {
 
 				private int entryCount = 0;
 
-				public void addGene(BEDGene gene) {
+				public void addGene(BEDEntry gene) {
 					entryCount++;
 					GenomeKeywordEntry e = new GenomeKeywordEntry(ref, gene.coordinate, gene.getName(), gene.getStart(), gene.getEnd());
 					try {

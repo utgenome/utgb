@@ -29,9 +29,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
+import org.utgenome.gwt.utgb.client.bio.BEDGene;
 import org.utgenome.gwt.utgb.client.bio.CDS;
 import org.utgenome.gwt.utgb.client.bio.Exon;
 import org.utgenome.gwt.utgb.client.bio.Gene;
+import org.utgenome.gwt.utgb.client.bio.OnGenome;
 
 /**
  * Representing each gene line of BED format
@@ -39,16 +41,13 @@ import org.utgenome.gwt.utgb.client.bio.Gene;
  * @author leo
  * 
  */
-public class BEDGene extends Gene {
+public class BEDEntry extends BEDGene {
 
 	private static final long serialVersionUID = 1L;
 
-	public String coordinate;
-	public int score = 0;
+	public static BEDEntry createFromResultSet(String chr, ResultSet rs) throws SQLException {
 
-	public static BEDGene createFromResultSet(String chr, ResultSet rs) throws SQLException {
-
-		BEDGene gene = new BEDGene();
+		BEDEntry gene = new BEDEntry();
 		gene.coordinate = chr;
 		gene.setStart(rs.getInt(1));
 		gene.setEnd(rs.getInt(2));

@@ -63,6 +63,12 @@ public class InfoSilkGenerator implements OnGenomeDataVisitor {
 		visitRead(g);
 
 	}
+	
+	public void visitBEDGene(BEDGene g) {
+		visitGene(g);
+		addLine("-score:" + g.score);
+		
+	}
 
 	public void visitGap(Gap g) {
 
