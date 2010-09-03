@@ -69,6 +69,7 @@ public class Read extends Interval {
 		this.name = name;
 	}
 
+	@Override
 	public String getColor() {
 		return color;
 	}
@@ -81,10 +82,12 @@ public class Read extends Interval {
 		return (char) strand;
 	}
 
+	@Override
 	public boolean isSense() {
 		return '+' == strand;
 	}
 
+	@Override
 	public boolean isAntiSense() {
 		return '-' == strand;
 	}

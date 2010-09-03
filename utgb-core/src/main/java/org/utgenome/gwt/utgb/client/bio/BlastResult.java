@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------------------
- *  Copyright 2009 utgenome.org
+ *  Copyright 2010 utgenome.org
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,39 +16,36 @@
 //--------------------------------------
 // utgb-core Project
 //
-// OnGenomeDataVisitor.java
-// Since: May 16, 2010
+// ReadFragment.java
+// Since: 2010/09/02
 //
-// $URL$ 
-// $Author$
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.bio;
 
+import org.utgenome.gwt.utgb.client.util.Properties;
+
 /**
- * Visitor interface for traversing data mapped onto a genome sequence
+ * Read with cigar and sequence information
  * 
  * @author leo
  * 
  */
-public interface OnGenomeDataVisitor {
+public class BlastResult extends Read {
 
-	public void visitInterval(Interval interval);
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	public String seq;
+	public String cigar;
+	public int bitScore;
+	public String eValue;
+	public int identity;
+	public int matchLength;
+	public Properties tag = new Properties();
 
-	public void visitRead(Read r);
+	public BlastResult() {
 
-	public void visitGap(Gap p);
+	}
 
-	public void visitGene(Gene g);
-
-	public void visitSAMRead(SAMRead r);
-
-	public void visitSAMReadPair(SAMReadPair pair);
-
-	public void visitSequence(ReferenceSequence referenceSequence);
-
-	public void visitReadCoverage(ReadCoverage readCoverage);
-
-	public void visitGraph(GraphData graph);
-
-	public void visitReadList(ReadList readList);
 }

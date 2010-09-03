@@ -1,0 +1,2149 @@
+BLASTN 2.2.11 [blat]
+
+Reference:  Kent, WJ. (2002) BLAT - The BLAST-like alignment tool
+
+Query= 731
+         (153 letters)
+
+Database: target/sample.fa 
+           19759 sequences; 1,513,925,492 total letters
+
+Searching.done
+                                                                 Score    E
+Sequences producing significant alignments:                      (bits) Value
+
+scaffold_784                                                           65   7e-11
+scaffold_836                                                           61   1e-09
+scaffold_836                                                           49   6e-06
+scaffold_195                                                           60   2e-09
+scaffold_195                                                           37   2e-02
+scaffold_650                                                           59   5e-09
+scaffold_650                                                           46   3e-05
+scaffold_823                                                           57   2e-08
+scaffold_823                                                           28   8e+00
+scaffold_773                                                           45   8e-05
+scaffold_773                                                           36   4e-02
+scaffold_773                                                           33   4e-01
+
+
+
+>scaffold_784 
+          Length = 421785
+
+ Score = 65 bits (168), Expect = 7e-11
+ Identities = 41/51 (80%)
+ Strand = Plus / Plus
+
+Query: 103    tctctccatttttctctttctctctcagtacccctctctgtccctgtctcc 153
+              ||||||| | | ||||| |||||||| ||  | |||||| |||||||||| 
+Sbjct: 261333 tctctccgtctctctctgtctctctccgtctctctctctctccctgtctca 261383
+
+
+
+>scaffold_836 
+          Length = 378242
+
+ Score = 61 bits (158), Expect = 1e-09
+ Identities = 41/54 (76%)
+ Strand = Minus / Plus
+
+Query: 54     gagagagacagggagggacaaagtgagcacagagaaagagagggggagagagag 1
+              ||||||||||| ||| |||| || ||    | ||| |||||| |  ||||||||
+Sbjct: 265141 gagagagacagagagagacagagagatttgatagagagagagagacagagagag 265194
+
+
+ Score = 49 bits (126), Expect = 6e-06
+ Identities = 29/36 (81%)
+ Strand = Minus / Plus
+
+Query: 149    acagggacagagaggggtactgagagagaaagagaa 114
+              |||| ||||||||| |  || |||||||| ||||| 
+Sbjct: 265020 acagagacagagagagagacagagagagagagagag 265055
+
+
+
+>scaffold_195 
+          Length = 1938851
+
+ Score = 60 bits (155), Expect = 2e-09
+ Identities = 39/51 (76%)
+ Strand = Plus / Plus
+
+Query: 5       ctctccccctctctttctctgtgctcactttgtccctccctgtctctctcc 55
+               ||||| | |||||| ||||| ||| |  | | |||||  || |||||||||
+Sbjct: 1870824 ctctctctctctctctctctttgcaccttctctccctttctttctctctcc 1870874
+
+
+ Score = 37 bits (95), Expect = 2e-02
+ Identities = 26/36 (72%)
+ Strand = Plus / Plus
+
+Query: 106     ctccatttttctctttctctctcagtacccctctct 141
+               ||   ||| ||||| ||||||||  |  | ||||||
+Sbjct: 1871007 ctttctttctctctctctctctctctctctctctct 1871042
+
+
+
+>scaffold_650 
+          Length = 620250
+
+ Score = 59 bits (152), Expect = 5e-09
+ Identities = 39/51 (76%)
+ Strand = Plus / Plus
+
+Query: 2      tctctctccccctctctttctctgtgctcactttgtccctccctgtctctc 52
+              |||||||| | |||||||||| | |      ||| ||||||||| ||||||
+Sbjct: 178750 tctctctctctctctctttctttctttcttttttctccctccctctctctc 178800
+
+
+ Score = 46 bits (120), Expect = 3e-05
+ Identities = 31/39 (79%)
+ Strand = Plus / Plus
+
+Query: 113    tttctctttctctctcagtacccctctctgtccctgtct 151
+              |||||||  | |||||  | ||||||||| ||||| |||
+Sbjct: 292300 tttctctccccctctctctccccctctctctccctctct 292338
+
+
+
+>scaffold_823 
+          Length = 423268
+
+ Score = 57 bits (148), Expect = 2e-08
+ Identities = 59/90 (66%)
+ Strand = Plus / Plus
+
+Query: 2     tctctctccccctctctttctctgtgctcactttgtccctccctgtctctctcccccatc 61
+             |||||||  |||  ||| ||||| |   | || | || | ||| |||| |||| |||  |
+Sbjct: 98978 tctctcttgcccagtctgtctctctcacctctctctctcacccagtctgtctctccctcc 99037
+
+Query: 62    cctctttctgttgatatttctctgtccccg 91
+              |||| ||| |||     ||| | || || 
+Sbjct: 99038 tctctctctcttgcccagtctgtctctccc 99067
+
+
+ Score = 28 bits (74), Expect = 8e+00
+ Identities = 24/33 (73%)
+ Strand = Plus / Plus
+
+Query: 116   ctctttctctctcagtacccctctctgtccctg 148
+             |||| ||||||||  |  |||  |||||| || 
+Sbjct: 99074 ctctctctctctctctcacccagtctgtctctc 99106
+
+
+
+>scaffold_773 
+          Length = 436458
+
+ Score = 45 bits (117), Expect = 8e-05
+ Identities = 29/36 (81%)
+ Strand = Plus / Plus
+
+Query: 116    ctctttctctctcagtacccctctctgtccctgtct 151
+              ||||  |||||||  |  |||||||| |||||||||
+Sbjct: 157709 ctctccctctctctctctccctctctctccctgtct 157744
+
+
+ Score = 36 bits (93), Expect = 4e-02
+ Identities = 19/21 (90%)
+ Strand = Plus / Plus
+
+Query: 2      tctctctccccctctctttct 22
+              |||||||| |||||||| |||
+Sbjct: 157620 tctctctctccctctctctct 157640
+
+
+ Score = 33 bits (85), Expect = 4e-01
+ Identities = 20/24 (83%)
+ Strand = Plus / Plus
+
+Query: 32     ctttgtccctccctgtctctctcc 55
+              || | |||||| || |||||||||
+Sbjct: 157677 ctctctccctctctctctctctcc 157700
+
+  Database: target/sample.fa
+BLASTN 2.2.11 [blat]
+
+Reference:  Kent, WJ. (2002) BLAT - The BLAST-like alignment tool
+
+Query= 1996
+         (610 letters)
+
+Database: target/sample.fa 
+           19759 sequences; 1,513,925,492 total letters
+
+Searching.done
+                                                                 Score    E
+Sequences producing significant alignments:                      (bits) Value
+
+scaffold_72                                                           147   2e-35
+scaffold_1                                                             60   2e-09
+
+
+
+>scaffold_72 
+          Length = 3231961
+
+ Score = 147 bits (378), Expect = 2e-35
+ Identities = 134/204 (66%)
+ Strand = Minus / Plus
+
+Query: 375     ttggcatctgactgatctgaagacagtctctgttcctggtcattaccattttccttgcca 316
+               |||| ||||     ||||| |     ||||  ||| |  ||| | |||||||| |||   
+Sbjct: 1408303 ttggaatctacagtatctggaccttctctcatttcattatcagtgccattttctttgttt 1408362
+
+Query: 315     ccatccaggttttctttgctgttggagagtttgttcctgttccctagctgcggcagtcga 256
+                 |||||| |||||||||||  | ||       ||  ||   || | ||| ||||  |||
+Sbjct: 1408363 tgatccagattttctttgctacttgaa---agttttttgactccgatctgaggcaaacga 1408419
+
+Query: 255     agtcggcctttgctcctccctagggttctcggactattacttgggctgttatttttgctg 196
+               || || ||||| | ||| ||||| ||||| || ||||   ||||||| ||||||||||| 
+Sbjct: 1408420 agacgacctttaccccttcctagagttctggggctatggtttgggctattatttttgctt 1408479
+
+Query: 195     gatgaattgttgctgtttttcctt 172
+               |   | ||| |  |   ||| |||
+Sbjct: 1408480 gtgcagttgatattcccttttctt 1408503
+
+
+
+>scaffold_1 
+          Length = 7817814
+
+ Score = 60 bits (155), Expect = 2e-09
+ Identities = 37/44 (84%)
+ Strand = Minus / Plus
+
+Query: 44     gatcattttacagcagagaattcaaaaaaccttttttttttttt 1
+              |||||||||| || | |  |||  ||||||||||||||||||||
+Sbjct: 153245 gatcattttaaagaaaaatatttgaaaaaccttttttttttttt 153288
+
+  Database: target/sample.fa
+BLASTN 2.2.11 [blat]
+
+Reference:  Kent, WJ. (2002) BLAT - The BLAST-like alignment tool
+
+Query= 2050
+         (526 letters)
+
+Database: target/sample.fa 
+           19759 sequences; 1,513,925,492 total letters
+
+Searching.done
+                                                                 Score    E
+Sequences producing significant alignments:                      (bits) Value
+
+scaffold_334                                                          127   1e-29
+scaffold_334                                                          102   4e-22
+
+
+
+>scaffold_334 
+          Length = 1293543
+
+ Score = 127 bits (329), Expect = 1e-29
+ Identities = 76/84 (90%)
+ Strand = Minus / Plus
+
+Query: 524    ttgccactgatggaggagggtcaacctgttttc-ggggattcctcctgccctacaacctt 466
+               ||||| ||||||||||||||||||||| |||| |||||||||| |||||||||||||||
+Sbjct: 489039 ctgccagtgatggaggagggtcaacctgctttcgggggattccttctgccctacaacctt 489098
+
+Query: 465    taggtagtatgtcaaaactgtaaa 442
+              |||||| |||||||||  ||||||
+Sbjct: 489099 taggtactatgtcaaatgtgtaaa 489122
+
+
+ Score = 102 bits (264), Expect = 4e-22
+ Identities = 55/59 (93%)
+ Strand = Minus / Plus
+
+Query: 311    tgacatttgcatgacaaagggatttcaatcaaaccctgcccatcaatctgataacaaca 253
+              ||||||||||||||||||| || ||||||||||||| |||||||||||||||||| |||
+Sbjct: 489254 tgacatttgcatgacaaagagacttcaatcaaacccggcccatcaatctgataacgaca 489312
+
+  Database: target/sample.fa
+BLASTN 2.2.11 [blat]
+
+Reference:  Kent, WJ. (2002) BLAT - The BLAST-like alignment tool
+
+Query= 2772
+         (87 letters)
+
+Database: target/sample.fa 
+           19759 sequences; 1,513,925,492 total letters
+
+Searching.done
+                                                                 Score    E
+Sequences producing significant alignments:                      (bits) Value
+
+scaffold_381                                                           72   6e-13
+scaffold_907                                                           71   1e-12
+
+
+
+>scaffold_381 
+          Length = 1149560
+
+ Score = 72 bits (186), Expect = 6e-13
+ Identities = 50/66 (76%)
+ Strand = Minus / Plus
+
+Query: 83     caggctgtgttcaaatgtgaagtctctgacgaaaatgtgaaaggtatctggcttaagaat 24
+              || ||||| || ||||| || || ||||| ||||| ||||  || |  |||  |||||||
+Sbjct: 852414 caagctgtatttaaatgcgaggtgtctgatgaaaaagtgactggcaagtggtataagaat 852473
+
+Query: 23     ggcgtg 18
+              || |||
+Sbjct: 852474 ggagtg 852479
+
+
+
+>scaffold_907 
+          Length = 295944
+
+ Score = 71 bits (184), Expect = 1e-12
+ Identities = 60/87 (69%)
+ Strand = Plus / Plus
+
+Query: 1      ttgttgggtaccacaggcacgccattcttaagccagatacctttcacattttcgtcagag 60
+              ||||| || |  ||   |   || ||||| | ||| |||||  ||||  | || || |||
+Sbjct: 110876 ttgttaggaatgacttcctttccgttcttcacccatataccggtcaccgtctcatcggag 110935
+
+Query: 61     acttcacatttgaacacagcctgctcc 87
+              || ||||| ||||| || || || |||
+Sbjct: 110936 acctcacacttgaagaccgcttgttcc 110962
+
+  Database: target/sample.fa
+BLASTN 2.2.11 [blat]
+
+Reference:  Kent, WJ. (2002) BLAT - The BLAST-like alignment tool
+
+Query= 3003
+         (108 letters)
+
+Database: target/sample.fa 
+           19759 sequences; 1,513,925,492 total letters
+
+Searching.done
+                                                                 Score    E
+Sequences producing significant alignments:                      (bits) Value
+
+scaffold_1528                                                          89   5e-18
+scaffold_1287                                                          87   3e-17
+
+
+
+>scaffold_1528 
+          Length = 55915
+
+ Score = 89 bits (230), Expect = 5e-18
+ Identities = 55/69 (80%)
+ Strand = Minus / Plus
+
+Query: 107   ggacaccggccgcagctggagagcctgctgtgtaaggtcaacgaggctgctcccgagaaa 48
+             || ||||| || ||||||||||   ||||||| || || || |||||||| || ||||| 
+Sbjct: 29441 ggccaccgaccccagctggagaatttgctgtgcaaagtgaatgaggctgcgccggagaag 29500
+
+Query: 47    ccacaggta 39
+             || ||||||
+Sbjct: 29501 ccccaggta 29509
+
+
+
+>scaffold_1287 
+          Length = 107759
+
+ Score = 87 bits (223), Expect = 3e-17
+ Identities = 54/69 (78%)
+ Strand = Minus / Plus
+
+Query: 107   ggacaccggccgcagctggagagcctgctgtgtaaggtcaacgaggctgctcccgagaaa 48
+             || ||||| || ||||||||||   ||||||| || || || ||||| || || ||||| 
+Sbjct: 90630 ggccaccgaccccagctggagaatttgctgtgcaaagtgaatgaggccgcgccggagaag 90689
+
+Query: 47    ccacaggta 39
+             || ||||||
+Sbjct: 90690 ccccaggta 90698
+
+  Database: target/sample.fa
+BLASTN 2.2.11 [blat]
+
+Reference:  Kent, WJ. (2002) BLAT - The BLAST-like alignment tool
+
+Query= 5408
+         (100 letters)
+
+Database: target/sample.fa 
+           19759 sequences; 1,513,925,492 total letters
+
+Searching.done
+                                                                 Score    E
+Sequences producing significant alignments:                      (bits) Value
+
+scaffold_194                                                           89   4e-18
+scaffold_194                                                           80   2e-15
+
+
+
+>scaffold_194 
+          Length = 1889690
+
+ Score = 89 bits (230), Expect = 4e-18
+ Identities = 49/54 (91%)
+ Strand = Minus / Plus
+
+Query: 99    ctgcctacaggttggccaggagcaaaaacacacttacctgcctctagaagtaag 46
+             ||| ||||| ||||| |||||||| |||||||| ||||||||||||||||||||
+Sbjct: 92140 ctgtctacaagttggacaggagcagaaacacacgtacctgcctctagaagtaag 92193
+
+
+ Score = 80 bits (207), Expect = 2e-15
+ Identities = 47/57 (82%)
+ Strand = Minus / Plus
+
+Query: 98    tgcctacaggttggccaggagcaaaaacacacttacctgcctctagaagtaagaaaa 42
+             || || ||||| ||||| ||||| |||||||| ||||| ||||| || ||||| |||
+Sbjct: 41808 tgtctccaggtgggccaagagcagaaacacacatacctacctctggaggtaaggaaa 41864
+
+  Database: target/sample.fa
+BLASTN 2.2.11 [blat]
+
+Reference:  Kent, WJ. (2002) BLAT - The BLAST-like alignment tool
+
+Query= 5430
+         (286 letters)
+
+Database: target/sample.fa 
+           19759 sequences; 1,513,925,492 total letters
+
+Searching.done
+                                                                 Score    E
+Sequences producing significant alignments:                      (bits) Value
+
+scaffold_1072                                                         107   2e-23
+
+
+
+>scaffold_1072 
+          Length = 189772
+
+ Score = 107 bits (276), Expect = 2e-23
+ Identities = 82/117 (70%)
+ Strand = Plus / Plus
+
+Query: 169    ttatgtaggccaggttgcagtatgccggaaatctgggatgttgaagatcctaaaaatgct 228
+               | |  || || || |||||  |||| |||||||||||  ||||||||||  | ||||||
+Sbjct: 171547 cttttcagacctgggtgcagcctgccagaaatctgggacattgaagatccagagaatgct 171606
+
+Query: 229    ggcaaaacccctttatgtatcctgatggctaaggatccgaggcctcactttattaca 285
+              || |||   ||  |||||  | ||||||  |||||  | || || |||||  | || 
+Sbjct: 171607 gggaaagttccgctatgttccatgatgggaaaggaatccagaccccacttcctaact 171663
+
+  Database: target/sample.fa
+BLASTN 2.2.11 [blat]
+
+Reference:  Kent, WJ. (2002) BLAT - The BLAST-like alignment tool
+
+Query= 6152
+         (450 letters)
+
+Database: target/sample.fa 
+           19759 sequences; 1,513,925,492 total letters
+
+Searching.done
+                                                                 Score    E
+Sequences producing significant alignments:                      (bits) Value
+
+scaffold_870                                                           93   3e-19
+
+
+
+>scaffold_870 
+          Length = 336877
+
+ Score = 93 bits (240), Expect = 3e-19
+ Identities = 82/123 (67%)
+ Strand = Plus / Plus
+
+Query: 167    tttgaagagatgaactcagagctggaagagaacaaggagctcgcagagaatcgtctctct 226
+              |||||||| ||||  || ||  | ||   ||| || ||||| || |  ||||| ||    
+Sbjct: 158235 tttgaagaaatgacttctgaagttgatttgaataaagagctggctgtaaatcgactgcaa 158294
+
+Query: 227    gagctggagaagctgcggcaggatctacaacaggtcacctcggagaacgagaagctggcg 286
+              ||||| || || ||| |||||||| ||||| | || || || || ||  || |  |   |
+Sbjct: 158295 gagcttgaaaaactgaggcaggatttacaagaagtgacttcagaaaatcaggatttacag 158354
+
+Query: 287    gta 289
+              || 
+Sbjct: 158355 gtg 158357
+
+  Database: target/sample.fa
+BLASTN 2.2.11 [blat]
+
+Reference:  Kent, WJ. (2002) BLAT - The BLAST-like alignment tool
+
+Query= 6254
+         (271 letters)
+
+Database: target/sample.fa 
+           19759 sequences; 1,513,925,492 total letters
+
+Searching.done
+                                                                 Score    E
+Sequences producing significant alignments:                      (bits) Value
+
+scaffold_70                                                            66   3e-11
+scaffold_87                                                            62   8e-10
+scaffold_874                                                           58   8e-09
+
+
+
+>scaffold_70 
+          Length = 3284577
+
+ Score = 66 bits (171), Expect = 3e-11
+ Identities = 56/81 (69%)
+ Strand = Plus / Plus
+
+Query: 14     atgtcccaaatgtaagatctcctcaggaactaccatgcatgtctgttgggactgtccaaa 73
+              |||||||||||| ||  |      ||| ||   |||||||||||  ||||||||| |  |
+Sbjct: 551123 atgtcccaaatgcaactttgaacaaggtacctacatgcatgtcttctgggactgtactga 551182
+
+Query: 74     tatccaaatcttttggtctag 94
+               |||||||  || ||| ||  
+Sbjct: 551183 gatccaaacattctggactga 551203
+
+
+
+>scaffold_87 
+          Length = 3027008
+
+ Score = 62 bits (159), Expect = 8e-10
+ Identities = 53/75 (71%)
+ Strand = Minus / Plus
+
+Query: 82      atttggatatttggacagtcccaacagacatgcatggtagttcctgaggagatcttacat 23
+               |||   ||||  ||||| |||||| ||| ||||||    || |||  |   |  ||||||
+Sbjct: 2530434 attgccatatagggacaatcccaaaagatatgcatataggtaccttggtctaaattacat 2530493
+
+Query: 22      ttgggacatagatca 8
+               ||||| |||| ||||
+Sbjct: 2530494 ttggggcataaatca 2530508
+
+
+
+>scaffold_874 
+          Length = 333090
+
+ Score = 58 bits (151), Expect = 8e-09
+ Identities = 60/90 (67%)
+ Strand = Plus / Plus
+
+Query: 9      gatctatgtcccaaatgtaagatctcctcaggaactaccatgcatgtctgttgggactgt 68
+              || ||||||||||| ||||| ||  |   |||  |   | | ||||| | |||||| |||
+Sbjct: 212980 gacctatgtcccaagtgtaaaatagcagtaggctcgttcctccatgtattttgggaatgt 213039
+
+Query: 69     ccaaatatccaaatcttttggtctagtatc 98
+              |||   ||||||   || |||||    || 
+Sbjct: 213040 ccagccatccaacagttatggtcagcgata 213069
+
+  Database: target/sample.fa
+BLASTN 2.2.11 [blat]
+
+Reference:  Kent, WJ. (2002) BLAT - The BLAST-like alignment tool
+
+Query= 6979
+         (233 letters)
+
+Database: target/sample.fa 
+           19759 sequences; 1,513,925,492 total letters
+
+Searching.done
+                                                                 Score    E
+Sequences producing significant alignments:                      (bits) Value
+
+scaffold_53                                                            87   2e-17
+scaffold_53                                                            53   4e-07
+
+
+
+>scaffold_53 
+          Length = 3690695
+
+ Score = 87 bits (225), Expect = 2e-17
+ Identities = 58/76 (76%)
+ Strand = Minus / Plus
+
+Query: 233    ttttttttttttctattcatagaagatagattcatcattccaatttgtcaagctgctggt 174
+              |||||    | |||  |||    ||||||||||||||| ||||||||||||||||  |  
+Sbjct: 331582 tttttcccctatctcctcaccccagatagattcatcatcccaatttgtcaagctggcgag 331641
+
+Query: 173    gtttcaattaattaca 158
+               || ||||||||||||
+Sbjct: 331642 attccaattaattaca 331657
+
+
+ Score = 53 bits (136), Expect = 4e-07
+ Identities = 35/45 (78%)
+ Strand = Minus / Plus
+
+Query: 50     aattaatttgatgaatgctccagtgatggggttggtggcagcggt 6
+              ||||||||||||||||||||  ||  ||   | |||||||| || 
+Sbjct: 331751 aattaatttgatgaatgctcttgtagtgcaatgggtggcagagga 331795
+
+  Database: target/sample.fa
+BLASTN 2.2.11 [blat]
+
+Reference:  Kent, WJ. (2002) BLAT - The BLAST-like alignment tool
+
+Query= 7739
+         (446 letters)
+
+Database: target/sample.fa 
+           19759 sequences; 1,513,925,492 total letters
+
+Searching.done
+                                                                 Score    E
+Sequences producing significant alignments:                      (bits) Value
+
+scaffold_774                                                          199   4e-51
+scaffold_774                                                          191   7e-49
+
+
+
+>scaffold_774 
+          Length = 444903
+
+ Score = 199 bits (514), Expect = 4e-51
+ Identities = 117/141 (83%)
+ Strand = Plus / Plus
+
+Query: 213    cttaccttccagaagttatcaactttgccatagacaagtgactgattctgtcttttgatg 272
+              |||||||||||||||||||| || ||||||||||| ||||| || ||||| |  ||||||
+Sbjct: 267560 cttaccttccagaagttatccaccttgccatagaccagtgattggttctgccgcttgatg 267619
+
+Query: 273    tcatcaatgtgactaatatcactagagttaagatgctgctccaccacaaatcccaagaaa 332
+              ||||  ||||| || || ||||| | ||| || |||||||||||||| || |||| ||| 
+Sbjct: 267620 tcattcatgtgtctgatgtcactggcgttcaggtgctgctccaccacgaagcccaggaag 267679
+
+Query: 333    ctgttatctggagtgtgagct 353
+              ||||| ||||| || ||||||
+Sbjct: 267680 ctgttgtctggggtatgagct 267700
+
+
+ Score = 191 bits (494), Expect = 7e-49
+ Identities = 115/142 (81%)
+ Strand = Plus / Plus
+
+Query: 213    cttaccttccagaagttatcaactttgccatagacaagtgactgattctgtcttttgatg 272
+              |||||||||||||||||||| || ||||| ||||| ||||| || ||||| |  ||||||
+Sbjct: 418262 cttaccttccagaagttatccaccttgccgtagaccagtgattggttctgccgcttgatg 418321
+
+Query: 273    tcatcaatgtgactaatatcactagagttaagatgctgctccaccacaaatcccaagaaa 332
+              ||||  ||||| || || ||||| | ||| || |||||||||||||| ||  ||| ||| 
+Sbjct: 418322 tcattcatgtgtctgatgtcactggcgttcaggtgctgctccaccacgaagaccaggaag 418381
+
+Query: 333    ctgttatctggagtgtgagcta 354
+              ||||| ||||| || |||||| 
+Sbjct: 418382 ctgttgtctggggtatgagctg 418403
+
+  Database: target/sample.fa
+BLASTN 2.2.11 [blat]
+
+Reference:  Kent, WJ. (2002) BLAT - The BLAST-like alignment tool
+
+Query= 8851
+         (124 letters)
+
+Database: target/sample.fa 
+           19759 sequences; 1,513,925,492 total letters
+
+Searching.done
+                                                                 Score    E
+Sequences producing significant alignments:                      (bits) Value
+
+scaffold_153                                                           98   7e-21
+scaffold_1595                                                          95   1e-19
+scaffold_120                                                           86   3e-17
+scaffold_128                                                           84   1e-16
+scaffold_228                                                           83   3e-16
+scaffold_228                                                           67   2e-11
+scaffold_228                                                           67   2e-11
+scaffold_242                                                           82   5e-16
+scaffold_482                                                           82   6e-16
+scaffold_891                                                           80   3e-15
+scaffold_891                                                           27   2e+01
+scaffold_891                                                           27   2e+01
+scaffold_610                                                           77   2e-14
+scaffold_610                                                           51   1e-06
+scaffold_421                                                           74   2e-13
+scaffold_421                                                           30   3e+00
+scaffold_25                                                            74   2e-13
+scaffold_25                                                            68   1e-11
+scaffold_25                                                            43   3e-04
+scaffold_650                                                           71   1e-12
+scaffold_650                                                           34   2e-01
+scaffold_726                                                           70   3e-12
+scaffold_726                                                           26   4e+01
+scaffold_230                                                           68   1e-11
+scaffold_88                                                            65   9e-11
+scaffold_221                                                           64   1e-10
+scaffold_16367                                                         64   1e-10
+scaffold_180                                                           59   6e-09
+scaffold_180                                                           32   5e-01
+scaffold_432                                                           58   9e-09
+scaffold_432                                                           32   9e-01
+scaffold_496                                                           56   4e-08
+scaffold_496                                                           30   3e+00
+scaffold_496                                                           27   2e+01
+scaffold_372                                                           56   4e-08
+scaffold_372                                                           53   3e-07
+scaffold_304                                                           55   7e-08
+scaffold_304                                                           42   5e-04
+scaffold_304                                                           30   3e+00
+scaffold_1654                                                          54   2e-07
+scaffold_1654                                                          49   6e-06
+scaffold_232                                                           53   4e-07
+scaffold_232                                                           32   5e-01
+scaffold_150                                                           51   1e-06
+scaffold_150                                                           46   6e-05
+scaffold_150                                                           26   3e+01
+scaffold_1111                                                          50   2e-06
+scaffold_1111                                                          43   3e-04
+scaffold_570                                                           50   3e-06
+scaffold_570                                                           37   2e-02
+scaffold_570                                                           36   6e-02
+scaffold_195                                                           36   3e-02
+scaffold_195                                                           35   1e-01
+scaffold_195                                                           31   1e+00
+scaffold_195                                                           27   2e+01
+scaffold_195                                                           25   1e+02
+
+
+
+>scaffold_153 
+          Length = 2248983
+
+ Score = 98 bits (254), Expect = 7e-21
+ Identities = 72/111 (65%)
+ Strand = Minus / Plus
+
+Query: 118     tctcctttctttctctctctctaccctctttctttctccatctctttctaccccctcttt 59
+               || |||  || ||||||||||||  |||  ||| ||||  |||||     | | ||   |
+Sbjct: 1702020 tcacctccctctctctctctctagtctcactctctctctctctctcgtctcactcttcct 1702079
+
+Query: 58      cgttctctctccctctcccctctttctttttctctacccctttctctctct 8
+               |  |||||||| ||||| |    |   | |   || || || |||||||||
+Sbjct: 1702080 ctctctctctctctctctctctctctctctcacctccctctctctctctct 1702130
+
+
+
+>scaffold_1595 
+          Length = 47883
+
+ Score = 95 bits (244), Expect = 1e-19
+ Identities = 69/108 (64%)
+ Strand = Minus / Plus
+
+Query: 116   tcctttctttctctctctctaccctctttctttctccatctctttctaccccctctttcg 57
+             || |||| |||  |||  || || || ||||||| |   ||   |     || |||||| 
+Sbjct: 37701 tcttttccttccttcttccttccttccttctttccctcccttccttctttccttctttcc 37760
+
+Query: 56    ttctctctccctctcccctctttctttttctctacccctttctctctc 9
+             |||  |||  | || || || |||||| |||||  || |  |||| | 
+Sbjct: 37761 ttccttctttccctgccttccttctttgtctctttccttccctctttg 37808
+
+
+
+>scaffold_120 
+          Length = 2590565
+
+ Score = 86 bits (222), Expect = 3e-17
+ Identities = 50/63 (79%)
+ Strand = Plus / Plus
+
+Query: 3      gagagagagagagaaaggggtagagaaaaagaaagaggggagagggagagagaacgaaag 62
+              |||||||||||||| || |  ||||| | ||| ||||| ||||| ||||||||  || ||
+Sbjct: 623910 gagagagagagagagagagagagagagagagagagaggagagagagagagagagagagag 623969
+
+Query: 63     agg 65
+              || 
+Sbjct: 623970 aga 623972
+
+
+
+>scaffold_128 
+          Length = 2496680
+
+ Score = 84 bits (217), Expect = 1e-16
+ Identities = 53/66 (80%)
+ Strand = Plus / Plus
+
+Query: 3      gagagagagagagaaaggggtagagaaaaagaaagaggg---gagagggagagagaacga 59
+              |||||||||||||| ||||| ||||| | ||| ||||||   ||||| ||||||||  ||
+Sbjct: 906997 gagagagagagagagagggggagagagagagagagagggggagagagagagagagagaga 907056
+
+Query: 60     aagagg 65
+               |||| 
+Sbjct: 907057 gagaga 907062
+
+
+
+>scaffold_228 
+          Length = 1724290
+
+ Score = 83 bits (214), Expect = 3e-16
+ Identities = 52/69 (75%)
+ Strand = Minus / Plus
+
+Query: 122    tccctctcctttctttctctctctctaccctctttctttctccatctctttctaccccct 63
+              || ||||||||||||||||||||||| |  ||||||| ||||  ||  ||  | | | ||
+Sbjct: 510113 tctctctcctttctttctctctctctcctttctttctctctctctcctttctttctctct 510172
+
+Query: 62     ctttcgttc 54
+              || || || 
+Sbjct: 510173 ctctccttt 510181
+
+
+ Score = 67 bits (174), Expect = 2e-11
+ Identities = 39/47 (83%)
+ Strand = Minus / Plus
+
+Query: 122    tccctctcctttctttctctctctctaccctctttctttctccatct 76
+              || ||||||||||||||||||||||| |  ||||||| ||||  || 
+Sbjct: 510132 tctctctcctttctttctctctctctcctttctttctctctctctcc 510178
+
+
+ Score = 67 bits (173), Expect = 2e-11
+ Identities = 37/42 (88%)
+ Strand = Minus / Plus
+
+Query: 122    tccctctcctttctttctctctctctaccctctttctttctc 81
+              || ||||||||||||||||||||||| |  ||||||| ||||
+Sbjct: 510151 tctctctcctttctttctctctctctcctttctttctctctc 510192
+
+
+
+>scaffold_242 
+          Length = 1679585
+
+ Score = 82 bits (212), Expect = 5e-16
+ Identities = 49/63 (78%)
+ Strand = Plus / Plus
+
+Query: 6      agagagagagaaaggggtagagaaaaagaaagaggggagagggagagagaacgaaagagg 65
+              |||||||||||  | |  ||||| | ||| || |||||||| ||||||||  || |||| 
+Sbjct: 348306 agagagagagagggagagagagagatagagaggggggagagagagagagagagagagaga 348365
+
+Query: 66     ggg 68
+              |||
+Sbjct: 348366 ggg 348368
+
+
+
+>scaffold_482 
+          Length = 905659
+
+ Score = 82 bits (212), Expect = 6e-16
+ Identities = 49/63 (78%)
+ Strand = Plus / Plus
+
+Query: 3      gagagagagagagaaaggggtagagaaaaagaaagaggggagagggagagagaacgaaag 62
+              ||||| |||||||| || |  ||||| | ||| ||||| ||||| ||||||||  || ||
+Sbjct: 802015 gagagcgagagagagagagagagagagagagagagaggagagagagagagagagagagag 802074
+
+Query: 63     agg 65
+              || 
+Sbjct: 802075 aga 802077
+
+
+
+>scaffold_891 
+          Length = 328823
+
+ Score = 80 bits (206), Expect = 3e-15
+ Identities = 49/66 (74%)
+ Strand = Minus / Plus
+
+Query: 67     cccctctttcgttctctctccctctcccctctttctttttctctacccctttctctctct 8
+              || |||| || ||||||| | |||||   || |   ||  |||| || || |||||||||
+Sbjct: 306500 cctctctctctttctctccctctctcttttcctatcttccctctccctctctctctctct 306559
+
+Query: 7      ctctct 2
+              ||||||
+Sbjct: 306560 ctctct 306565
+
+
+ Score = 27 bits (70), Expect = 2e+01
+ Identities = 17/21 (81%)
+ Strand = Minus / Plus
+
+Query: 100    ctctaccctctttctttctcc 80
+              || | |||||| |||||||| 
+Sbjct: 306296 ctattccctctctctttctct 306316
+
+
+ Score = 27 bits (70), Expect = 2e+01
+ Identities = 14/14 (100%)
+ Strand = Minus / Plus
+
+Query: 114    ctttctttctctct 101
+              ||||||||||||||
+Sbjct: 306227 ctttctttctctct 306240
+
+
+
+>scaffold_610 
+          Length = 685749
+
+ Score = 77 bits (199), Expect = 2e-14
+ Identities = 48/63 (76%)
+ Strand = Plus / Plus
+
+Query: 3      gagagagagagagaaaggggtagagaaaaagaaagaggggagagggagagagaacgaaag 62
+              |||||||||||||| || |  ||||| | ||  |||| |  ||| ||||||||  |||||
+Sbjct: 408374 gagagagagagagagagagaaagagagagagtgagagagatgagagagagagagagaaag 408433
+
+Query: 63     agg 65
+              || 
+Sbjct: 408434 aga 408436
+
+
+ Score = 51 bits (131), Expect = 1e-06
+ Identities = 33/45 (73%)
+ Strand = Plus / Plus
+
+Query: 71     gaaagagatggagaaagaaagagggtagagagagagaaagaaagg 115
+              || |||||   ||| ||| |||| |  |||||||| ||||| || 
+Sbjct: 408511 gagagagaaaaagagagagagagagatgagagagaaaaagagaga 408555
+
+
+
+>scaffold_421 
+          Length = 1087478
+
+ Score = 74 bits (191), Expect = 2e-13
+ Identities = 43/51 (84%)
+ Strand = Plus / Plus
+
+Query: 3      gagagagagagagaaaggggtagagaaaaagaaagaggggagagggagaga 53
+              ||||| ||||||||||||||  |||| |||||| ||||| | ||||| |||
+Sbjct: 826489 gagagggagagagaaaggggacgagagaaagaaggagggaaaagggataga 826539
+
+
+ Score = 30 bits (77), Expect = 3e+00
+ Identities = 16/18 (89%)
+ Strand = Plus / Plus
+
+Query: 98     gagagagagaaagaaagg 115
+              |||||||| ||||| |||
+Sbjct: 826545 gagagagaaaaagagagg 826562
+
+
+
+>scaffold_25 
+          Length = 4509317
+
+ Score = 74 bits (191), Expect = 2e-13
+ Identities = 43/54 (80%)
+ Strand = Minus / Plus
+
+Query: 55     tctctctccctctcccctctttctttttctctacccctttctctctctctctct 2
+              |||||||||||||| ||||| ||| | |||||  | || || | ||||||||| 
+Sbjct: 229283 tctctctccctctctcctctctctctctctctctctctctcaccctctctctcc 229336
+
+
+ Score = 68 bits (175), Expect = 1e-11
+ Identities = 42/54 (78%)
+ Strand = Minus / Plus
+
+Query: 55     tctctctccctctcccctctttctttttctctacccctttctctctctctctct 2
+              |||||||||||||| ||||| |||   |||||  |||| ||  ||  |||||||
+Sbjct: 229328 tctctctccctctctcctctctctccctctctcaccctctcattccatctctct 229381
+
+
+ Score = 43 bits (111), Expect = 3e-04
+ Identities = 29/42 (69%)
+ Strand = Minus / Plus
+
+Query: 114    ctttctttctctctctctaccctctttctttctccatctctt 73
+              || ||  || |||||||| ||    | || ||||| ||||| 
+Sbjct: 229116 ctctcactccctctctcttcctctctcctctctccctctctc 229157
+
+
+
+>scaffold_650 
+          Length = 620250
+
+ Score = 71 bits (184), Expect = 1e-12
+ Identities = 46/58 (79%)
+ Strand = Minus / Plus
+
+Query: 96     accctctttctttctccatctctttctaccccctctttcgttctctctccctctcccc 39
+              || |||||||| || || ||||| ||  ||| |||| ||  |||||||||||||||| 
+Sbjct: 292294 actctctttctctccccctctctctcc-ccctctctctccctctctctccctctccct 292350
+
+
+ Score = 34 bits (87), Expect = 2e-01
+ Identities = 20/26 (77%)
+ Strand = Minus / Plus
+
+Query: 122    tccctctcctttctttctctctctct 97
+              || ||| ||| ||  ||||| |||||
+Sbjct: 292233 tctctcccctctcgctctctttctct 292258
+
+
+
+>scaffold_726 
+          Length = 517360
+
+ Score = 70 bits (180), Expect = 3e-12
+ Identities = 44/60 (73%)
+ Strand = Plus / Plus
+
+Query: 3      gagagagagagagaaaggggtagagaaaaagaaagaggggagagggagagagaacgaaag 62
+              |||| ||| ||||| |  |  ||| ||| ||| |||    |||| ||||||||| |||||
+Sbjct: 116086 gagaaagaaagagagaaagaaagaaaaagagagagaaaatagagagagagagaaagaaag 116145
+
+
+ Score = 26 bits (68), Expect = 4e+01
+ Identities = 14/15 (93%)
+ Strand = Plus / Plus
+
+Query: 99     agagagagaaagaaa 113
+              ||||| |||||||||
+Sbjct: 116192 agagaaagaaagaaa 116206
+
+
+
+>scaffold_230 
+          Length = 1712421
+
+ Score = 68 bits (175), Expect = 1e-11
+ Identities = 42/54 (78%)
+ Strand = Plus / Plus
+
+Query: 1       gagagagagagagagaaaggggtagagaaaaagaaagaggggagagggagagag 54
+               |||||||||||||||| || |  |||| | ||  |  ||||||| |||||||| 
+Sbjct: 1416534 gagagagagagagagagagagagagagcagaaatacaaggggagggggagagaa 1416587
+
+
+
+>scaffold_88 
+          Length = 3020139
+
+ Score = 65 bits (167), Expect = 9e-11
+ Identities = 36/42 (86%)
+ Strand = Minus / Plus
+
+Query: 43      tcccctctttctttttctctacccctttctctctctctctct 2
+               |||||||| ||||| |||||  | || |||||||||||||||
+Sbjct: 1233254 tcccctctctctttctctctctctctctctctctctctctct 1233295
+
+
+
+>scaffold_221 
+          Length = 1741304
+
+ Score = 64 bits (166), Expect = 1e-10
+ Identities = 38/45 (84%)
+ Strand = Minus / Plus
+
+Query: 55     tctctctccctctcccctctttctttttctctacccctttctctc 11
+              |||| ||||||||| ||||||||||| |||||  |  ||||||||
+Sbjct: 584821 tctcactccctctctcctctttctttctctctctcattttctctc 584865
+
+
+
+>scaffold_16367 
+          Length = 4059
+
+ Score = 64 bits (166), Expect = 1e-10
+ Identities = 38/45 (84%)
+ Strand = Minus / Plus
+
+Query: 55  tctctctccctctcccctctttctttttctctacccctttctctc 11
+           |||| ||||||||| ||||||||||| |||||  |  ||||||||
+Sbjct: 817 tctcactccctctctcctctttctttctctctctcattttctctc 861
+
+
+
+>scaffold_180 
+          Length = 2057970
+
+ Score = 59 bits (152), Expect = 6e-09
+ Identities = 33/39 (85%)
+ Strand = Minus / Plus
+
+Query: 39    ctctttctttttctctacccctttctctctctctctctc 1
+             |||| ||| | |||||  | |||||||||||||||||||
+Sbjct: 58765 ctctctctctctctctctctctttctctctctctctctc 58803
+
+
+ Score = 32 bits (84), Expect = 5e-01
+ Identities = 17/18 (94%)
+ Strand = Minus / Plus
+
+Query: 114   ctttctttctctctctct 97
+             || |||||||||||||||
+Sbjct: 58383 ctctctttctctctctct 58400
+
+
+
+>scaffold_432 
+          Length = 1022855
+
+ Score = 58 bits (150), Expect = 9e-09
+ Identities = 33/40 (83%)
+ Strand = Plus / Plus
+
+Query: 1      gagagagagagagagaaaggggtagagaaaaagaaagagg 40
+              ||||||||||||||||||| |  ||||| | ||| |||| 
+Sbjct: 367289 gagagagagagagagaaagagagagagagagagagagaga 367328
+
+
+ Score = 32 bits (82), Expect = 9e-01
+ Identities = 18/21 (86%)
+ Strand = Plus / Plus
+
+Query: 42     gagagggagagagaacgaaag 62
+              ||| | ||||||||| |||||
+Sbjct: 367331 gagggagagagagaaagaaag 367351
+
+
+
+>scaffold_496 
+          Length = 877728
+
+ Score = 56 bits (144), Expect = 4e-08
+ Identities = 32/39 (82%)
+ Strand = Minus / Plus
+
+Query: 39    ctctttctttttctctacccctttctctctctctctctc 1
+             || | ||| ||||| |  | |||||||||||||||||||
+Sbjct: 99460 ctttctctctttctttctctctttctctctctctctctc 99498
+
+
+ Score = 30 bits (77), Expect = 3e+00
+ Identities = 16/18 (89%)
+ Strand = Minus / Plus
+
+Query: 114   ctttctttctctctctct 97
+             || ||||||||||| |||
+Sbjct: 99392 ctctctttctctctttct 99409
+
+
+ Score = 27 bits (70), Expect = 2e+01
+ Identities = 17/21 (81%)
+ Strand = Minus / Plus
+
+Query: 62    ctttcgttctctctccctctc 42
+             ||||| ||||||||   ||||
+Sbjct: 99436 ctttctttctctctttatctc 99456
+
+
+
+>scaffold_372 
+          Length = 1166677
+
+ Score = 56 bits (144), Expect = 4e-08
+ Identities = 32/39 (82%)
+ Strand = Minus / Plus
+
+Query: 39      ctctttctttttctctacccctttctctctctctctctc 1
+               |||| ||| ||||| |    |||||||||||||||||||
+Sbjct: 1010890 ctctctctctttctttctttctttctctctctctctctc 1010928
+
+
+ Score = 53 bits (137), Expect = 3e-07
+ Identities = 42/66 (64%)
+ Strand = Minus / Plus
+
+Query: 113     tttctttctctctctctaccctctttctttctccatctctttctaccccctctttcgttc 54
+               ||||| ||||| ||| |      ||  ||  | | | | |||   | |  |||||| |||
+Sbjct: 1010771 tttctctctctttctttcttaatttctttctttcttttattttctctctttctttctttc 1010830
+
+Query: 53      tctctc 48
+               ||||||
+Sbjct: 1010831 tctctc 1010836
+
+
+
+>scaffold_304 
+          Length = 1409469
+
+ Score = 55 bits (143), Expect = 7e-08
+ Identities = 36/51 (71%)
+ Strand = Plus / Plus
+
+Query: 42     gagagggagagagaacgaaagagggggtagaaagagatggagaaagaaaga 92
+              ||||| ||||||||  ||||||| |||    |    |  |||| |||||||
+Sbjct: 736959 gagagagagagagagagaaagagagggagagagagaaaagagagagaaaga 737009
+
+
+ Score = 42 bits (109), Expect = 5e-04
+ Identities = 26/33 (79%)
+ Strand = Plus / Plus
+
+Query: 6      agagagagagaaaggggtagagaaaaagaaaga 38
+              ||||| ||||| ||    ||||||||||| |||
+Sbjct: 736904 agagaaagagagagatagagagaaaaagagaga 736936
+
+
+ Score = 30 bits (77), Expect = 3e+00
+ Identities = 16/18 (89%)
+ Strand = Plus / Plus
+
+Query: 98     gagagagagaaagaaagg 115
+              |||||||||||||| || 
+Sbjct: 737251 gagagagagaaagagaga 737268
+
+
+
+>scaffold_1654 
+          Length = 40492
+
+ Score = 54 bits (138), Expect = 2e-07
+ Identities = 33/39 (85%)
+ Strand = Minus / Plus
+
+Query: 39    ctctttctttttctctacccctttctctctctctctctc 1
+             |||||||| | ||||   | |||||||||||||||||||
+Sbjct: 28572 ctctttctctctctcacacactttctctctctctctctc 28610
+
+
+ Score = 49 bits (126), Expect = 6e-06
+ Identities = 33/39 (85%)
+ Strand = Minus / Plus
+
+Query: 111   tctttctctctctctaccctctttctttctccatctctt 73
+             |||||||||||||| || |||||||| ||||  ||||| 
+Sbjct: 28443 tctttctctctctc-acactctttctctctctctctctc 28480
+
+
+
+>scaffold_232 
+          Length = 1701933
+
+ Score = 53 bits (136), Expect = 4e-07
+ Identities = 30/36 (83%)
+ Strand = Minus / Plus
+
+Query: 37     ctttctttttctctacccctttctctctctctctct 2
+              || ||||| |||||  | || |||||||||||||||
+Sbjct: 614867 ctctctttctctctttctctctctctctctctctct 614902
+
+
+ Score = 32 bits (84), Expect = 5e-01
+ Identities = 17/18 (94%)
+ Strand = Minus / Plus
+
+Query: 114    ctttctttctctctctct 97
+              || |||||||||||||||
+Sbjct: 614789 ctctctttctctctctct 614806
+
+
+
+>scaffold_150 
+          Length = 2279945
+
+ Score = 51 bits (131), Expect = 1e-06
+ Identities = 33/42 (79%)
+ Strand = Minus / Plus
+
+Query: 114    ctttctttctctctctctaccctctttctttctccatctctt 73
+              |||||||||| ||| |||  |   ||||||||||| ||||| 
+Sbjct: 348488 ctttctttctttctttctttctcatttctttctccctctcta 348529
+
+
+ Score = 46 bits (118), Expect = 6e-05
+ Identities = 28/36 (78%)
+ Strand = Minus / Plus
+
+Query: 38     tctttctttttctctacccctttctctctctctctc 3
+              ||| | ||||||| |   |||||||| || ||||||
+Sbjct: 348763 tctctatttttctttcttcctttctccctttctctc 348798
+
+
+ Score = 26 bits (68), Expect = 3e+01
+ Identities = 16/21 (76%)
+ Strand = Minus / Plus
+
+Query: 68     ccccctctttcgttctctctc 48
+              |||  ||| || |||||||| 
+Sbjct: 348581 ccctttctctctttctctctt 348601
+
+
+
+>scaffold_1111 
+          Length = 218073
+
+ Score = 50 bits (129), Expect = 2e-06
+ Identities = 29/36 (81%)
+ Strand = Minus / Plus
+
+Query: 37     ctttctttttctctacccctttctctctctctctct 2
+              || ||||| |||||  | || | |||||||||||||
+Sbjct: 215058 ctctctttctctctctctctctttctctctctctct 215093
+
+
+ Score = 43 bits (111), Expect = 3e-04
+ Identities = 24/27 (89%)
+ Strand = Minus / Plus
+
+Query: 122    tccctctcctttctttctctctctcta 96
+              |||||||| ||||| ||||||||||| 
+Sbjct: 215020 tccctctcttttctctctctctctctc 215046
+
+
+
+>scaffold_570 
+          Length = 733845
+
+ Score = 50 bits (129), Expect = 3e-06
+ Identities = 29/36 (81%)
+ Strand = Plus / Plus
+
+Query: 3      gagagagagagagaaaggggtagagaaaaagaaaga 38
+              |||| |||||||  ||| || ||||| |||||||| 
+Sbjct: 509433 gagaaagagagaagaagaggaagagagaaagaaagg 509468
+
+
+ Score = 37 bits (97), Expect = 2e-02
+ Identities = 22/27 (81%)
+ Strand = Plus / Plus
+
+Query: 92     agggtagagagagagaaagaaaggaga 118
+              ||   ||| |||||||||||||| |||
+Sbjct: 509857 agaaaagaaagagagaaagaaagaaga 509883
+
+
+ Score = 36 bits (92), Expect = 6e-02
+ Identities = 21/27 (78%)
+ Strand = Plus / Plus
+
+Query: 42     gagagggagagagaacgaaagaggggg 68
+              ||||| ||||||||| ||||||  |  
+Sbjct: 509830 gagagagagagagaaagaaagaaagaa 509856
+
+
+
+>scaffold_195 
+          Length = 1938851
+
+ Score = 36 bits (94), Expect = 3e-02
+ Identities = 19/20 (95%)
+ Strand = Minus / Plus
+
+Query: 20      cctttctctctctctctctc 1
+                |||||||||||||||||||
+Sbjct: 1871010 tctttctctctctctctctc 1871029
+
+
+ Score = 35 bits (90), Expect = 1e-01
+ Identities = 18/18 (100%)
+ Strand = Minus / Plus
+
+Query: 114     ctttctttctctctctct 97
+               ||||||||||||||||||
+Sbjct: 1870724 ctttctttctctctctct 1870741
+
+
+ Score = 31 bits (80), Expect = 1e+00
+ Identities = 19/26 (73%)
+ Strand = Minus / Plus
+
+Query: 46      ctctcccctctttctttttctctacc 21
+               ||   | | |||||||| ||||| ||
+Sbjct: 1870850 cttctctccctttctttctctctccc 1870875
+
+
+ Score = 27 bits (70), Expect = 2e+01
+ Identities = 15/16 (94%)
+ Strand = Minus / Plus
+
+Query: 62      ctttcgttctctctcc 47
+               ||||| ||||||||||
+Sbjct: 1870772 ctttctttctctctcc 1870787
+
+
+ Score = 25 bits (64), Expect = 1e+02
+ Identities = 13/14 (93%)
+ Strand = Minus / Plus
+
+Query: 93      ctctttctttctcc 80
+               |||||||| |||||
+Sbjct: 1870758 ctctttctctctcc 1870771
+
+  Database: target/sample.fa
+BLASTN 2.2.11 [blat]
+
+Reference:  Kent, WJ. (2002) BLAT - The BLAST-like alignment tool
+
+Query= 8858
+         (563 letters)
+
+Database: target/sample.fa 
+           19759 sequences; 1,513,925,492 total letters
+
+Searching.done
+                                                                 Score    E
+Sequences producing significant alignments:                      (bits) Value
+
+scaffold_26                                                           336   2e-92
+
+
+
+>scaffold_26 
+          Length = 4426282
+
+ Score = 336 bits (868), Expect = 2e-92
+ Identities = 201/230 (87%)
+ Strand = Plus / Plus
+
+Query: 195     cacaaagttattagcactgaattgatgtttaaaagtgtcattaatacatttactacaaat 254
+               ||||||||||||||  ||||||  ||||||||||||| ||||||| |||||||  |||||
+Sbjct: 4036659 cacaaagttattaggtctgaatctatgtttaaaagtgccattaattcatttaccccaaat 4036718
+
+Query: 255     gttcattaaccatgtaaatgtatgctgatgttctttgagacaaggaagtgactaatgact 314
+               |||||||||| ||||||||||||||| ||||||  |||||||||||||||||||||||||
+Sbjct: 4036719 gttcattaacaatgtaaatgtatgctaatgttccatgagacaaggaagtgactaatgact 4036778
+
+Query: 315     gtaaacactaacaacacttaaaatgaatagaaactttagatagctaatctagaagtaatc 374
+                    ||||||||||||||||||||||||||||||| ||||||||||||| |||||||||
+Sbjct: 4036779 cctcgcactaacaacacttaaaatgaatagaaacttaagatagctaatcttgaagtaatc 4036838
+
+Query: 375     aagcccagcattcaacttggcatctctgtctgttttaaaacagctggcaa 424
+               ||| ||  |||||| | ||||||| |||| || | ||||||||||| |||
+Sbjct: 4036839 aagaccctcattcagcctggcatcgctgtatgctctaaaacagctgtcaa 4036888
+
+  Database: target/sample.fa
+BLASTN 2.2.11 [blat]
+
+Reference:  Kent, WJ. (2002) BLAT - The BLAST-like alignment tool
+
+Query= 9153
+         (264 letters)
+
+Database: target/sample.fa 
+           19759 sequences; 1,513,925,492 total letters
+
+Searching.done
+                                                                 Score    E
+Sequences producing significant alignments:                      (bits) Value
+
+scaffold_164                                                           73   3e-13
+scaffold_1173                                                          72   5e-13
+scaffold_1096                                                          72   5e-13
+scaffold_1096                                                          67   3e-11
+scaffold_337                                                           72   5e-13
+scaffold_605                                                           71   1e-12
+scaffold_505                                                           71   1e-12
+scaffold_498                                                           71   1e-12
+scaffold_161                                                           71   1e-12
+scaffold_3262                                                          71   1e-12
+scaffold_280                                                           71   1e-12
+scaffold_280                                                           68   7e-12
+scaffold_113                                                           71   1e-12
+scaffold_217                                                           70   2e-12
+scaffold_1332                                                          68   7e-12
+scaffold_469                                                           68   8e-12
+scaffold_141                                                           68   8e-12
+scaffold_773                                                           68   8e-12
+scaffold_735                                                           68   8e-12
+scaffold_68                                                            68   8e-12
+scaffold_3165                                                          68   8e-12
+scaffold_234                                                           68   8e-12
+scaffold_16467                                                         68   8e-12
+scaffold_121                                                           68   8e-12
+scaffold_11                                                            68   8e-12
+scaffold_380                                                           68   9e-12
+scaffold_589                                                           68   1e-11
+scaffold_9                                                             68   1e-11
+scaffold_111                                                           68   1e-11
+scaffold_295                                                           68   1e-11
+scaffold_119                                                           67   2e-11
+scaffold_604                                                           65   7e-11
+scaffold_13                                                            65   8e-11
+scaffold_1020                                                          64   2e-10
+
+
+
+>scaffold_164 
+          Length = 2148441
+
+ Score = 73 bits (189), Expect = 3e-13
+ Identities = 41/48 (85%)
+ Strand = Minus / Plus
+
+Query: 49      gtgtgtgtgtacacgtgtgtgcgcatgtgtatgtgtatgtatgtttgt 2
+               ||||||||||  | ||||||| |  ||||||||||||||||||| |||
+Sbjct: 1459666 gtgtgtgtgtgtatgtgtgtgtgtgtgtgtatgtgtatgtatgtatgt 1459713
+
+
+
+>scaffold_1173 
+          Length = 141691
+
+ Score = 72 bits (187), Expect = 5e-13
+ Identities = 40/48 (83%)
+ Strand = Minus / Plus
+
+Query: 48   tgtgtgtgtacacgtgtgtgcgcatgtgtatgtgtatgtatgtttgtg 1
+            ||||||||||   ||||||| | || ||| ||||| ||||||||||||
+Sbjct: 6302 tgtgtgtgtatgtgtgtgtgtgtatatgtgtgtgtgtgtatgtttgtg 6349
+
+
+
+>scaffold_1096 
+          Length = 180138
+
+ Score = 72 bits (187), Expect = 5e-13
+ Identities = 40/48 (83%)
+ Strand = Minus / Plus
+
+Query: 48     tgtgtgtgtacacgtgtgtgcgcatgtgtatgtgtatgtatgtttgtg 1
+              ||||||||||   ||||||| | || ||| ||||| ||||||||||||
+Sbjct: 166279 tgtgtgtgtatgtgtgtgtgtgtatatgtgtgtgtgtgtatgtttgtg 166326
+
+
+ Score = 67 bits (172), Expect = 3e-11
+ Identities = 39/48 (81%)
+ Strand = Minus / Plus
+
+Query: 49     gtgtgtgtgtacacgtgtgtgcgcatgtgtatgtgtatgtatgtttgt 2
+              ||||||||||  | ||||||| |  | ||| ||||||||||||| |||
+Sbjct: 166048 gtgtgtgtgtgtatgtgtgtgtgagtatgtgtgtgtatgtatgtgtgt 166095
+
+
+
+>scaffold_337 
+          Length = 1286505
+
+ Score = 72 bits (186), Expect = 5e-13
+ Identities = 40/46 (87%)
+ Strand = Plus / Plus
+
+Query: 1      cacaaacatacatacacatacacatgcgcacacacgtgtacacaca 46
+              |||| ||| ||||||||| |||||||| ||||||| || |||||||
+Sbjct: 141002 cacatacacacatacacacacacatgcacacacacatgcacacaca 141047
+
+
+
+>scaffold_605 
+          Length = 685670
+
+ Score = 71 bits (184), Expect = 1e-12
+ Identities = 40/48 (83%)
+ Strand = Plus / Plus
+
+Query: 1      cacaaacatacatacacatacacatgcgcacacacgtgtacacacaca 48
+              |||| ||| || |||||| |||||  | |||||||||| |||||||||
+Sbjct: 545070 cacacacacacgtacacacacacacacacacacacgtgcacacacaca 545117
+
+
+
+>scaffold_505 
+          Length = 862435
+
+ Score = 71 bits (183), Expect = 1e-12
+ Identities = 40/48 (83%)
+ Strand = Plus / Plus
+
+Query: 2     acaaacatacatacacatacacatgcgcacacacgtgtacacacacac 49
+             ||| ||||||||||||| |||||| | |||||||    ||||||||||
+Sbjct: 99550 acacacatacatacacacacacatacacacacacacacacacacacac 99597
+
+
+
+>scaffold_498 
+          Length = 875342
+
+ Score = 71 bits (183), Expect = 1e-12
+ Identities = 44/57 (77%)
+ Strand = Plus / Plus
+
+Query: 1      cacaaacatacatacacatacacatgcgcacacacgtgtacacacacaccctgtact 57
+              |||| ||| ||| |||| | | ||  | ||||||||||||||||||||||  | || 
+Sbjct: 691690 cacacacacacacacacgtgcgcacacacacacacgtgtacacacacaccgggcaca 691746
+
+
+
+>scaffold_161 
+          Length = 2164698
+
+ Score = 71 bits (183), Expect = 1e-12
+ Identities = 40/48 (83%)
+ Strand = Plus / Plus
+
+Query: 2       acaaacatacatacacatacacatgcgcacacacgtgtacacacacac 49
+               ||| ||||||||||||| |||||  | ||||||| |  ||||||||||
+Sbjct: 1275882 acatacatacatacacacacacacacacacacacatacacacacacac 1275929
+
+
+
+>scaffold_3262 
+          Length = 12852
+
+ Score = 71 bits (183), Expect = 1e-12
+ Identities = 40/48 (83%)
+ Strand = Minus / Plus
+
+Query: 49    gtgtgtgtgtacacgtgtgtgcgcatgtgtatgtgtatgtatgtttgt 2
+             ||||||||||  | ||||||  | |||||| ||||||||||||| |||
+Sbjct: 12764 gtgtgtgtgtgtatgtgtgtatgtatgtgtgtgtgtatgtatgtgtgt 12811
+
+
+
+>scaffold_280 
+          Length = 1501416
+
+ Score = 71 bits (183), Expect = 1e-12
+ Identities = 40/48 (83%)
+ Strand = Minus / Plus
+
+Query: 48     tgtgtgtgtacacgtgtgtgcgcatgtgtatgtgtatgtatgtttgtg 1
+              |||||||||    ||||||| | |||||| ||||||||||||| ||||
+Sbjct: 912231 tgtgtgtgtgtgtgtgtgtgtgtatgtgtgtgtgtatgtatgtatgtg 912278
+
+
+ Score = 68 bits (177), Expect = 7e-12
+ Identities = 39/48 (81%)
+ Strand = Minus / Plus
+
+Query: 48     tgtgtgtgtacacgtgtgtgcgcatgtgtatgtgtatgtatgtttgtg 1
+              |||||||||  | ||||||| |  ||||| ||||| ||||||| ||||
+Sbjct: 912215 tgtgtgtgtgtatgtgtgtgtgtgtgtgtgtgtgtgtgtatgtgtgtg 912262
+
+
+
+>scaffold_113 
+          Length = 2632728
+
+ Score = 71 bits (183), Expect = 1e-12
+ Identities = 40/48 (83%)
+ Strand = Minus / Plus
+
+Query: 48      tgtgtgtgtacacgtgtgtgcgcatgtgtatgtgtatgtatgtttgtg 1
+               |||||||||| | ||||||| |  ||||| ||||||||||||| ||| 
+Sbjct: 1463226 tgtgtgtgtatatgtgtgtgtgtgtgtgtgtgtgtatgtatgtgtgta 1463273
+
+
+
+>scaffold_217 
+          Length = 1785127
+
+ Score = 70 bits (181), Expect = 2e-12
+ Identities = 59/87 (68%)
+ Strand = Plus / Plus
+
+Query: 77     cttctgactttgctgtgtgcctgcttgtcactgcaggaggatatcttcactctcaaagcg 136
+              ||||||||| | ||   |  || | | |   | ||||||||||| |||||| | ||||| 
+Sbjct: 227551 cttctgactcttctccttaactccatcttcttacaggaggatatattcactattaaagct 227610
+
+Query: 137    atcgacctgggaacgctgaggaagctt 163
+               | ||  | |||  ||| | |||||| 
+Sbjct: 227611 gtagatttaggagagcttaagaagctg 227637
+
+
+
+>scaffold_1332 
+          Length = 93794
+
+ Score = 68 bits (177), Expect = 7e-12
+ Identities = 39/48 (81%)
+ Strand = Plus / Plus
+
+Query: 1     cacaaacatacatacacatacacatgcgcacacacgtgtacacacaca 48
+             |||| ||| ||| |||  ||||||  | ||||||| ||||||||||||
+Sbjct: 66598 cacacacacacacacatgtacacacacacacacacatgtacacacaca 66645
+
+
+
+>scaffold_469 
+          Length = 935966
+
+ Score = 68 bits (176), Expect = 8e-12
+ Identities = 39/48 (81%)
+ Strand = Plus / Plus
+
+Query: 2      acaaacatacatacacatacacatgcgcacacacgtgtacacacacac 49
+              ||| ||||||||||||| |||||  | |||||||    ||||||||||
+Sbjct: 675356 acatacatacatacacacacacacacacacacacacacacacacacac 675403
+
+
+
+>scaffold_141 
+          Length = 2355943
+
+ Score = 68 bits (176), Expect = 8e-12
+ Identities = 39/48 (81%)
+ Strand = Plus / Plus
+
+Query: 1      cacaaacatacatacacatacacatgcgcacacacgtgtacacacaca 48
+              |||| ||| ||||||||||||| |  | |||||||   ||||||||||
+Sbjct: 508842 cacacacacacatacacatacatacacacacacacacatacacacaca 508889
+
+
+
+>scaffold_773 
+          Length = 436458
+
+ Score = 68 bits (176), Expect = 8e-12
+ Identities = 39/48 (81%)
+ Strand = Minus / Plus
+
+Query: 49     gtgtgtgtgtacacgtgtgtgcgcatgtgtatgtgtatgtatgtttgt 2
+              ||||||||||    ||||||| |  ||||| ||||||||||||| |||
+Sbjct: 131128 gtgtgtgtgtgtgtgtgtgtgtgtgtgtgtgtgtgtatgtatgtatgt 131175
+
+
+
+>scaffold_735 
+          Length = 529025
+
+ Score = 68 bits (176), Expect = 8e-12
+ Identities = 39/48 (81%)
+ Strand = Minus / Plus
+
+Query: 48     tgtgtgtgtacacgtgtgtgcgcatgtgtatgtgtatgtatgtttgtg 1
+              ||||||||||    |||||| |  ||||| ||||||||||||| ||||
+Sbjct: 160326 tgtgtgtgtatgtatgtgtgtgtgtgtgtgtgtgtatgtatgtgtgtg 160373
+
+
+
+>scaffold_68 
+          Length = 3329710
+
+ Score = 68 bits (176), Expect = 8e-12
+ Identities = 39/48 (81%)
+ Strand = Minus / Plus
+
+Query: 49      gtgtgtgtgtacacgtgtgtgcgcatgtgtatgtgtatgtatgtttgt 2
+               ||||||||||    ||||||| |  ||||||| ||||||||||| |||
+Sbjct: 1722464 gtgtgtgtgtgtgtgtgtgtgtgtgtgtgtatatgtatgtatgtgtgt 1722511
+
+
+
+>scaffold_3165 
+          Length = 13655
+
+ Score = 68 bits (176), Expect = 8e-12
+ Identities = 39/48 (81%)
+ Strand = Minus / Plus
+
+Query: 48 tgtgtgtgtacacgtgtgtgcgcatgtgtatgtgtatgtatgtttgtg 1
+          |||||||||    ||||||  | |||||| ||||||||||||| ||||
+Sbjct: 6  tgtgtgtgtgtgtgtgtgtatgtatgtgtgtgtgtatgtatgtgtgtg 53
+
+
+
+>scaffold_234 
+          Length = 1694337
+
+ Score = 68 bits (176), Expect = 8e-12
+ Identities = 39/48 (81%)
+ Strand = Minus / Plus
+
+Query: 49    gtgtgtgtgtacacgtgtgtgcgcatgtgtatgtgtatgtatgtttgt 2
+             ||||||||||    ||||||| |  ||||| ||||||||||||| |||
+Sbjct: 14443 gtgtgtgtgtgtgtgtgtgtgtgtgtgtgtgtgtgtatgtatgtatgt 14490
+
+
+
+>scaffold_16467 
+          Length = 3533
+
+ Score = 68 bits (176), Expect = 8e-12
+ Identities = 39/48 (81%)
+ Strand = Minus / Plus
+
+Query: 48  tgtgtgtgtacacgtgtgtgcgcatgtgtatgtgtatgtatgtttgtg 1
+           ||||| |||  | ||||||| |  ||||| ||||||||||||| ||||
+Sbjct: 109 tgtgtatgtgtatgtgtgtgtgtgtgtgtgtgtgtatgtatgtgtgtg 156
+
+
+
+>scaffold_121 
+          Length = 2580351
+
+ Score = 68 bits (176), Expect = 8e-12
+ Identities = 39/48 (81%)
+ Strand = Minus / Plus
+
+Query: 48      tgtgtgtgtacacgtgtgtgcgcatgtgtatgtgtatgtatgtttgtg 1
+               ||||||||||   ||||||  |  ||||||||||| ||||||| ||||
+Sbjct: 2450346 tgtgtgtgtatgtgtgtgtatgtgtgtgtatgtgtgtgtatgtgtgtg 2450393
+
+
+
+>scaffold_11 
+          Length = 5583528
+
+ Score = 68 bits (176), Expect = 8e-12
+ Identities = 39/48 (81%)
+ Strand = Minus / Plus
+
+Query: 48      tgtgtgtgtacacgtgtgtgcgcatgtgtatgtgtatgtatgtttgtg 1
+               |||||||||    ||||||| |  ||||||||||| ||||||| ||||
+Sbjct: 2404640 tgtgtgtgtgtgtgtgtgtgtgtgtgtgtatgtgtgtgtatgtatgtg 2404687
+
+
+
+>scaffold_380 
+          Length = 1147895
+
+ Score = 68 bits (176), Expect = 9e-12
+ Identities = 39/48 (81%)
+ Strand = Plus / Plus
+
+Query: 2      acaaacatacatacacatacacatgcgcacacacgtgtacacacacac 49
+              ||| ||||||||||||| |||||  | |||| || |  ||||||||||
+Sbjct: 678565 acatacatacatacacacacacacacacacatacatacacacacacac 678612
+
+
+
+>scaffold_589 
+          Length = 696823
+
+ Score = 68 bits (175), Expect = 1e-11
+ Identities = 39/48 (81%)
+ Strand = Plus / Plus
+
+Query: 1      cacaaacatacatacacatacacatgcgcacacacgtgtacacacaca 48
+              |||||||||||||| ||| |||||  |  ||| || | ||||||||||
+Sbjct: 364232 cacaaacatacatatacacacacacacaaacatacatatacacacaca 364279
+
+
+
+>scaffold_9 
+          Length = 5717149
+
+ Score = 68 bits (175), Expect = 1e-11
+ Identities = 39/48 (81%)
+ Strand = Minus / Plus
+
+Query: 49      gtgtgtgtgtacacgtgtgtgcgcatgtgtatgtgtatgtatgtttgt 2
+               |||||||||||    ||| || | |||||| ||||||||||||| |||
+Sbjct: 1629253 gtgtgtgtgtatgtatgtatgtgtatgtgtgtgtgtatgtatgtatgt 1629300
+
+
+
+>scaffold_111 
+          Length = 2701038
+
+ Score = 68 bits (175), Expect = 1e-11
+ Identities = 39/48 (81%)
+ Strand = Minus / Plus
+
+Query: 49     gtgtgtgtgtacacgtgtgtgcgcatgtgtatgtgtatgtatgtttgt 2
+              |||||| ||||   ||||||  | |||||| ||||||||||||| |||
+Sbjct: 522958 gtgtgtatgtatgtgtgtgtatgtatgtgtgtgtgtatgtatgtatgt 523005
+
+
+
+>scaffold_295 
+          Length = 1436235
+
+ Score = 68 bits (175), Expect = 1e-11
+ Identities = 40/50 (80%)
+ Strand = Plus / Plus
+
+Query: 1     cacaaacatacatacacatacacatgcgcacacacgtgtacacacacacc 50
+             |||| |||||||||||||||||||  |  ||||||   |||| |||||| 
+Sbjct: 10060 cacacacatacatacacatacacacacatacacacacatacatacacaca 10109
+
+
+
+>scaffold_119 
+          Length = 2635665
+
+ Score = 67 bits (173), Expect = 2e-11
+ Identities = 39/48 (81%)
+ Strand = Plus / Plus
+
+Query: 2       acaaacatacatacacatacacatgcgcacacacgtgtacacacacac 49
+               ||| ||||||| ||||| || ||||| |||||||    ||||||||||
+Sbjct: 1164410 acacacatacacacacacacgcatgcacacacactcacacacacacac 1164457
+
+
+
+>scaffold_604 
+          Length = 682130
+
+ Score = 65 bits (168), Expect = 7e-11
+ Identities = 39/48 (81%)
+ Strand = Plus / Plus
+
+Query: 2      acaaacatacatacacatacacatgcgcacacacgtgtacacacacac 49
+              ||| |||| |||||||| |||||||| | ||||||  | || ||||||
+Sbjct: 106519 acacacatccatacacacacacatgcacgcacacgcatccatacacac 106566
+
+
+
+>scaffold_13 
+          Length = 5500462
+
+ Score = 65 bits (168), Expect = 8e-11
+ Identities = 39/48 (81%)
+ Strand = Plus / Plus
+
+Query: 1       cacaaacatacatacacatacacatgcgcacacacgtgtacacacaca 48
+               |||| ||| |||||| || ||| |  | |||||||||| |||||||||
+Sbjct: 1336082 cacacacacacatacccacacatacccacacacacgtgcacacacaca 1336129
+
+
+
+>scaffold_1020 
+          Length = 216113
+
+ Score = 64 bits (165), Expect = 2e-10
+ Identities = 39/48 (81%)
+ Strand = Plus / Plus
+
+Query: 2      acaaacatacatacacatacacatgcgcacacacgtgtacacacacac 49
+              ||||||||||| ||||||||| |||| |||| ||    ||| ||||||
+Sbjct: 173324 acaaacatacacacacatacagatgcacacagacacaaacatacacac 173371
+
+  Database: target/sample.fa
+BLASTN 2.2.11 [blat]
+
+Reference:  Kent, WJ. (2002) BLAT - The BLAST-like alignment tool
+
+Query= 9427
+         (105 letters)
+
+Database: target/sample.fa 
+           19759 sequences; 1,513,925,492 total letters
+
+Searching.done
+                                                                 Score    E
+Sequences producing significant alignments:                      (bits) Value
+
+scaffold_112                                                           62   7e-10
+
+
+
+>scaffold_112 
+          Length = 2625438
+
+ Score = 62 bits (160), Expect = 7e-10
+ Identities = 50/69 (72%)
+ Strand = Plus / Plus
+
+Query: 30      tttatctttttctgttttctgtttttctgtttctttttctgttatctttatctttttctt 89
+               ||| |||||||   || ||| |||||||| |||| | | | || ||| | |||||||| |
+Sbjct: 1383450 tttctcttttttatttgtctttttttctgcttctctctatcttctctatctctttttcct 1383509
+
+Query: 90      tttctgttc 98
+               ||    |||
+Sbjct: 1383510 ttcactttc 1383518
+
+  Database: target/sample.fa
+BLASTN 2.2.11 [blat]
+
+Reference:  Kent, WJ. (2002) BLAT - The BLAST-like alignment tool
+
+Query= 9613
+         (215 letters)
+
+Database: target/sample.fa 
+           19759 sequences; 1,513,925,492 total letters
+
+Searching.done
+                                                                 Score    E
+Sequences producing significant alignments:                      (bits) Value
+
+scaffold_356                                                          181   1e-45
+scaffold_27                                                           162   6e-40
+
+
+
+>scaffold_356 
+          Length = 1215356
+
+ Score = 181 bits (467), Expect = 1e-45
+ Identities = 105/123 (85%)
+ Strand = Minus / Plus
+
+Query: 123    accttgtatacatgtctccagttcttgccatggtcgttgagtctcttccagatcatgctc 64
+              || ||||| ||||||| ||||||||| ||||| || ||||||| |||||| |||||||||
+Sbjct: 944142 actttgtagacatgtcgccagttctttccatgatcattgagtcgcttccatatcatgctc 944201
+
+Query: 63     atgatttcagagaaggccaccacattgtaagtgaggtcggcaatttccgacatcagtgag 4
+              |||||||| ||||| ||||||||||| || |||||||| ||||| || ||||| |  |||
+Sbjct: 944202 atgatttctgagaaagccaccacattataggtgaggtcagcaatctctgacattaaggag 944261
+
+Query: 3      ctg 1
+              |||
+Sbjct: 944262 ctg 944264
+
+
+
+>scaffold_27 
+          Length = 4425020
+
+ Score = 162 bits (418), Expect = 6e-40
+ Identities = 100/120 (83%)
+ Strand = Plus / Plus
+
+Query: 2       agctcactgatgtcggaaattgccgacctcacttacaatgtggtggccttctctgaaatc 61
+               || || || ||| |||| || || || || |||||||| || ||||| || || ||||| 
+Sbjct: 3819043 agttccctcatgacggagatagcagatctgacttacaacgtagtggcattttcagaaata 3819102
+
+Query: 62      atgagcatgatctggaagagactcaacgaccatggcaagaactggagacatgtatacaag 121
+               ||||||||||| |||||||||||||| |||||||| ||||||||||||||||| ||||| 
+Sbjct: 3819103 atgagcatgatttggaagagactcaatgaccatggaaagaactggagacatgtttacaaa 3819162
+
+  Database: target/sample.fa
+BLASTN 2.2.11 [blat]
+
+Reference:  Kent, WJ. (2002) BLAT - The BLAST-like alignment tool
+
+Query= 9692
+         (452 letters)
+
+Database: target/sample.fa 
+           19759 sequences; 1,513,925,492 total letters
+
+Searching.done
+                                                                 Score    E
+Sequences producing significant alignments:                      (bits) Value
+
+scaffold_1508                                                          53   3e-07
+scaffold_1508                                                          42   7e-04
+scaffold_28                                                            48   1e-05
+scaffold_28                                                            41   2e-03
+
+
+
+>scaffold_1508 
+          Length = 59023
+
+ Score = 53 bits (137), Expect = 3e-07
+ Identities = 32/38 (84%)
+ Strand = Plus / Plus
+
+Query: 415   atgtgcgtgcgtgcgatagttatgtgtgtgtgtgtgtg 452
+             ||||| ||| |||  |||  ||||||||||||||||||
+Sbjct: 30161 atgtgtgtgtgtggtatatctatgtgtgtgtgtgtgtg 30198
+
+
+ Score = 42 bits (108), Expect = 7e-04
+ Identities = 28/35 (80%)
+ Strand = Plus / Plus
+
+Query: 380   gtgtgtgtgatatatatttatatctgtgtgtgcac 414
+             |||| |||| ||||| | ||||| |||||||| | 
+Sbjct: 29865 gtgtctgtggtatatctatatatatgtgtgtgtat 29899
+
+
+
+>scaffold_28 
+          Length = 4420564
+
+ Score = 48 bits (123), Expect = 1e-05
+ Identities = 29/33 (88%)
+ Strand = Minus / Plus
+
+Query: 411     cacacacagatataaatatatatcacacacaca 379
+               |||||| | ||||| |||||||| |||||||||
+Sbjct: 3854969 cacacatatatatatatatatataacacacaca 3855001
+
+
+ Score = 41 bits (105), Expect = 2e-03
+ Identities = 26/33 (79%)
+ Strand = Minus / Plus
+
+Query: 449     acacacacacacataactatcgcacgcacgcac 417
+               ||||||||||| |||  |||  ||| ||| |||
+Sbjct: 3854821 acacacacacatatatatataacacacacacac 3854853
+
+  Database: target/sample.fa
+BLASTN 2.2.11 [blat]
+
+Reference:  Kent, WJ. (2002) BLAT - The BLAST-like alignment tool
+
+Query= 9802
+         (494 letters)
+
+Database: target/sample.fa 
+           19759 sequences; 1,513,925,492 total letters
+
+Searching.done
+                                                                 Score    E
+Sequences producing significant alignments:                      (bits) Value
+
+scaffold_253                                                          109   4e-24
+scaffold_50                                                           104   1e-22
+
+
+
+>scaffold_253 
+          Length = 1652810
+
+ Score = 109 bits (282), Expect = 4e-24
+ Identities = 63/74 (85%)
+ Strand = Plus / Plus
+
+Query: 245    cctacctttatgcatttggttttcttgttttcgacatttagcccttctgttttgaaacca 304
+              || |||||| ||||||||||||||||||||||  ||||| || || || || || |||||
+Sbjct: 491176 cccacctttgtgcatttggttttcttgttttctgcattttgctctcctattctggaacca 491235
+
+Query: 305    aacctgaaaataga 318
+              |||||||||| |||
+Sbjct: 491236 aacctgaaaaaaga 491249
+
+
+
+>scaffold_50 
+          Length = 3733725
+
+ Score = 104 bits (269), Expect = 1e-22
+ Identities = 66/82 (80%)
+ Strand = Minus / Plus
+
+Query: 327     tgcaatttttctattttcaggtttggtttcaaaacagaagggctaaatgtcgaaaacaag 268
+               ||||||||   |   || |||| |||||||||||||||||||| |||||  |||||||||
+Sbjct: 1912074 tgcaatttccattcatttaggtctggtttcaaaacagaagggcaaaatgcagaaaacaag 1912133
+
+Query: 267     aaaaccaaatgcataaaggtag 246
+               |||| ||  | |||||||||| 
+Sbjct: 1912134 aaaatcagctccataaaggtaa 1912155
+
+  Database: target/sample.fa
+BLASTN 2.2.11 [blat]
+
+Reference:  Kent, WJ. (2002) BLAT - The BLAST-like alignment tool
+
+Query= 11010
+         (475 letters)
+
+Database: target/sample.fa 
+           19759 sequences; 1,513,925,492 total letters
+
+Searching.done
+                                                                 Score    E
+Sequences producing significant alignments:                      (bits) Value
+
+scaffold_950                                                          158   7e-39
+
+
+
+>scaffold_950 
+          Length = 301358
+
+ Score = 158 bits (408), Expect = 7e-39
+ Identities = 93/114 (82%)
+ Strand = Plus / Plus
+
+Query: 339    ctcacctgtacatgaaaagacctggctagctgatagcagctttccgcttgcatggcctca 398
+              |||||||| |||||||| |||| ||| ||||| |||||||| || || |||||||| || 
+Sbjct: 173954 ctcacctgcacatgaaacgaccgggccagctggtagcagctctctgcctgcatggcttct 174013
+
+Query: 399    acttcagtattatggaaagcatggagagccaaatgctgaactttactataatcc 452
+              || || ||||| || || || || |||||||| ||||| ||||| || ||||||
+Sbjct: 174014 acctctgtattgtgaaacgcgtgaagagccaagtgctgcactttgctgtaatcc 174067
+
+  Database: target/sample.fa
+

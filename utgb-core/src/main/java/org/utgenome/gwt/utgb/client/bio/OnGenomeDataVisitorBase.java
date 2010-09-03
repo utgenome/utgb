@@ -68,4 +68,8 @@ public class OnGenomeDataVisitorBase implements OnGenomeDataVisitor {
 
 	}
 
+	public void visitReadList(ReadList readList) {
+
+	}
+
 }

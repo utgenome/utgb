@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------------------
- *  Copyright 2009 utgenome.org
+ *  Copyright 2010 utgenome.org
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,39 +16,54 @@
 //--------------------------------------
 // utgb-core Project
 //
-// OnGenomeDataVisitor.java
-// Since: May 16, 2010
+// ReadList.java
+// Since: 2010/09/02
 //
-// $URL$ 
-// $Author$
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.bio;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Visitor interface for traversing data mapped onto a genome sequence
+ * ReadList is a list of read objects, and used to draw a sequence of blocks on genome.
  * 
  * @author leo
  * 
  */
-public interface OnGenomeDataVisitor {
+public class ReadList extends Interval {
 
-	public void visitInterval(Interval interval);
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
-	public void visitRead(Read r);
+	private ArrayList<OnGenome> read = new ArrayList<OnGenome>();
 
-	public void visitGap(Gap p);
+	private String name;
 
-	public void visitGene(Gene g);
+	public ReadList() {
+	}
 
-	public void visitSAMRead(SAMRead r);
+	@Override
+	public String getName() {
+		return name;
+	}
 
-	public void visitSAMReadPair(SAMReadPair pair);
+	public void setName(String name) {
+		this.name = name;
+	}
 
-	public void visitSequence(ReferenceSequence referenceSequence);
+	public void addRead(OnGenome read) {
+		this.read.add(read);
+	}
 
-	public void visitReadCoverage(ReadCoverage readCoverage);
+	public List<OnGenome> getRead() {
+		return this.read;
+	}
 
-	public void visitGraph(GraphData graph);
-
-	public void visitReadList(ReadList readList);
+	@Override
+	public void accept(OnGenomeDataVisitor visitor) {
+		visitor.visitReadList(this);
+	}
 }

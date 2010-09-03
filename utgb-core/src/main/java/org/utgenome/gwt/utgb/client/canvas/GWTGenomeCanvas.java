@@ -49,6 +49,7 @@ import org.utgenome.gwt.utgb.client.bio.OnGenomeDataVisitor;
 import org.utgenome.gwt.utgb.client.bio.OnGenomeDataVisitorBase;
 import org.utgenome.gwt.utgb.client.bio.Read;
 import org.utgenome.gwt.utgb.client.bio.ReadCoverage;
+import org.utgenome.gwt.utgb.client.bio.ReadList;
 import org.utgenome.gwt.utgb.client.bio.ReferenceSequence;
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.bio.SAMReadPair;
@@ -537,6 +538,12 @@ public class GWTGenomeCanvas extends TouchableComposite {
 		return geneHeight + geneMargin;
 	}
 
+	/**
+	 * A class for drawing OnGenome objects on a canvas
+	 * 
+	 * @author leo
+	 * 
+	 */
 	class ReadPainter implements OnGenomeDataVisitor {
 
 		private LocusLayout gl;
@@ -835,6 +842,11 @@ public class GWTGenomeCanvas extends TouchableComposite {
 		}
 
 		public void visitGraph(GraphData graph) {
+			// TODO Auto-generated method stub
+
+		}
+
+		public void visitReadList(ReadList readList) {
 			// TODO Auto-generated method stub
 
 		}

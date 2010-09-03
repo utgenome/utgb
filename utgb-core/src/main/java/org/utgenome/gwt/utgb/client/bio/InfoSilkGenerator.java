@@ -121,4 +121,8 @@ public class InfoSilkGenerator implements OnGenomeDataVisitor {
 		addLine("graph data");
 	}
 
+	public void visitReadList(ReadList readList) {
+		visitInterval(readList);
+	}
+
 }

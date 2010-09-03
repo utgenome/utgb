@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------------------
- *  Copyright 2009 utgenome.org
+ *  Copyright 2010 utgenome.org
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,39 +16,29 @@
 //--------------------------------------
 // utgb-core Project
 //
-// OnGenomeDataVisitor.java
-// Since: May 16, 2010
+// Blast2SilkTest.java
+// Since: 2010/09/02
 //
-// $URL$ 
-// $Author$
 //--------------------------------------
-package org.utgenome.gwt.utgb.client.bio;
+package org.utgenome.format.blast;
 
-/**
- * Visitor interface for traversing data mapped onto a genome sequence
- * 
- * @author leo
- * 
- */
-public interface OnGenomeDataVisitor {
+import java.io.BufferedReader;
 
-	public void visitInterval(Interval interval);
+import org.junit.Test;
+import org.xerial.util.FileResource;
+import org.xerial.util.log.Logger;
 
-	public void visitRead(Read r);
+public class Blast2SilkTest {
 
-	public void visitGap(Gap p);
+	private static Logger _logger = Logger.getLogger(Blast2SilkTest.class);
 
-	public void visitGene(Gene g);
+	@Test
+	public void testReading() throws Exception {
+		Blast2Silk b2s = new Blast2Silk(FileResource.open(Blast2SilkTest.class, "sample.blast"));
+		BufferedReader reader = new BufferedReader(b2s);
+		for (String line; (line = reader.readLine()) != null;) {
+			_logger.info(line);
+		}
+	}
 
-	public void visitSAMRead(SAMRead r);
-
-	public void visitSAMReadPair(SAMReadPair pair);
-
-	public void visitSequence(ReferenceSequence referenceSequence);
-
-	public void visitReadCoverage(ReadCoverage readCoverage);
-
-	public void visitGraph(GraphData graph);
-
-	public void visitReadList(ReadList readList);
 }
