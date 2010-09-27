@@ -24,6 +24,8 @@
 //--------------------------------------
 package org.utgenome.gwt.widget.client;
 
+import org.utgenome.gwt.utgb.client.util.BrowserInfo;
+
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -335,10 +337,90 @@ public class Style {
 		set(w, CSS_FONT_COLOR, color);
 	}
 
-	public static void scale(Widget w, double scale) {
-		String scaleStr = "scale(" + scale + ")";
-
-		set(w, "MozTransform", scaleStr);
-		set(w, "WebkitTransform", scaleStr);
+	public static void transform(Widget w, String transformCommand) {
+		setExt(w, "Transform", transformCommand);
 	}
+
+	public static void scale(Widget w, double scale) {
+		transform(w, "scale(" + scale + ")");
+	}
+
+	public static void scale(Widget w, double scaleX, double scaleY) {
+		transform(w, "scale(" + scaleX + "," + scaleY + ")");
+	}
+
+	public static void scaleX(Widget w, double scaleX) {
+		transform(w, "scaleX(" + scaleX + ")");
+	}
+
+	public static void scaleY(Widget w, double scaleY) {
+		transform(w, "scaleY(" + scaleY + ")");
+	}
+
+	public static void translate(Widget w, String translateCommand) {
+		setExt(w, "Translate", translateCommand);
+	}
+
+	public static void translateX(Widget w, int x) {
+		translate(w, "translateX(" + x + ")");
+	}
+
+	public static void translateY(Widget w, int y) {
+		translate(w, "translateY(" + y + ")");
+	}
+
+	private static String css3_prefix;
+
+	public static String getCSS3prefix() {
+
+		if (css3_prefix != null)
+			return css3_prefix;
+
+		switch (BrowserInfo.getBrowserType()) {
+		case Chrome:
+		case Safari:
+		case MobileSafari:
+			css3_prefix = "Webkit";
+			break;
+		case Firefox:
+			css3_prefix = "Moz";
+			break;
+		case Opera:
+			css3_prefix = "O";
+			break;
+		default:
+			css3_prefix = "";
+			break;
+		}
+
+		return css3_prefix;
+	}
+
+	/**
+	 * Set a CSS3 property by automatically appending a browser-specific prefix to the property name.
+	 * 
+	 * @param w
+	 * @param property
+	 * @param value
+	 */
+	public static void setExt(Widget w, String property, String value) {
+		set(w, getCSS3prefix() + property, value);
+	}
+
+	public static void scrollX(Widget w, int destX, double sec) {
+		// animation
+		setExt(w, "TransitionProperty", "left");
+		setExt(w, "TransitionDuration", sec + "s");
+		setExt(w, "TransitionTimingFunction", "ease-out");
+		set(w, "left", destX + "px");
+	}
+
+	public static void scrollY(Widget w, int destY, double sec) {
+		// animation
+		setExt(w, "TransitionProperty", "top");
+		setExt(w, "TransitionDuration", sec + "s");
+		setExt(w, "TransitionTimingFunction", "ease-out");
+		set(w, "top", destY + "px");
+	}
+
 }
