@@ -334,4 +334,11 @@ public class Style {
 	public static void fontColor(Widget w, String color) {
 		set(w, CSS_FONT_COLOR, color);
 	}
+
+	public static void scale(Widget w, double scale) {
+		String scaleStr = "scale(" + scale + ")";
+
+		set(w, "MozTransform", scaleStr);
+		set(w, "WebkitTransform", scaleStr);
+	}
 }
