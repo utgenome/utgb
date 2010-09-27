@@ -276,8 +276,10 @@ public abstract class TrackBase implements Track {
 	}
 
 	public void toXML(XMLWriter xmlWriter) {
-		xmlWriter.start("track", new XMLAttribute().add("className", getClassName()).add("name", getName()).add("height", getWidget().getOffsetHeight()).add(
-				"pack", _frame.isPacked()));
+		xmlWriter.start(
+				"track",
+				new XMLAttribute().add("className", getClassName()).add("name", getName()).add("height", getWidget().getOffsetHeight())
+						.add("pack", _frame.isPacked()));
 
 		CanonicalProperties trackProperties = new CanonicalProperties();
 		saveProperties(trackProperties);

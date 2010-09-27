@@ -353,6 +353,14 @@ public class Style {
 		transform(w, "scaleX(" + scaleX + ")");
 	}
 
+	public static void scaleXwithAnimation(Widget w, double scaleX, double durationInSec) {
+		// animation
+		setExt(w, "TransitionProperty", getCSS3prefix() + "transform");
+		setExt(w, "TransitionDuration", durationInSec + "s");
+		setExt(w, "TransitionTimingFunction", "ease-out");
+		transform(w, "scaleX(" + scaleX + ")");
+	}
+
 	public static void scaleY(Widget w, double scaleY) {
 		transform(w, "scaleY(" + scaleY + ")");
 	}
@@ -370,6 +378,7 @@ public class Style {
 	}
 
 	private static String css3_prefix;
+	private static String css3_dom_prefix;
 
 	public static String getCSS3prefix() {
 
@@ -380,13 +389,13 @@ public class Style {
 		case Chrome:
 		case Safari:
 		case MobileSafari:
-			css3_prefix = "Webkit";
+			css3_prefix = "-webkit-";
 			break;
 		case Firefox:
-			css3_prefix = "Moz";
+			css3_prefix = "-moz-";
 			break;
 		case Opera:
-			css3_prefix = "O";
+			css3_prefix = "-o-";
 			break;
 		default:
 			css3_prefix = "";
@@ -394,6 +403,31 @@ public class Style {
 		}
 
 		return css3_prefix;
+	}
+
+	public static String getCSS3DOMprefix() {
+
+		if (css3_dom_prefix != null)
+			return css3_dom_prefix;
+
+		switch (BrowserInfo.getBrowserType()) {
+		case Chrome:
+		case Safari:
+		case MobileSafari:
+			css3_dom_prefix = "Webkit";
+			break;
+		case Firefox:
+			css3_dom_prefix = "Moz";
+			break;
+		case Opera:
+			css3_dom_prefix = "O";
+			break;
+		default:
+			css3_dom_prefix = "";
+			break;
+		}
+
+		return css3_dom_prefix;
 	}
 
 	/**
@@ -404,7 +438,7 @@ public class Style {
 	 * @param value
 	 */
 	public static void setExt(Widget w, String property, String value) {
-		set(w, getCSS3prefix() + property, value);
+		set(w, getCSS3DOMprefix() + property, value);
 	}
 
 	public static void scrollX(Widget w, int destX, double sec) {

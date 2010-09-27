@@ -37,7 +37,7 @@
   -name: WIG Graph Track Demo
   -height: 150
   -pack: true
-  -class: WIGGraphCanvasTrack
+  -class: WIGTrack
   -property
     -auto scale: false
     -log scale: true

@@ -92,6 +92,10 @@ public class TrackWindowChain {
 		return globalWindow;
 	}
 
+	public TrackWindow getViewWindow() {
+		return viewWindow;
+	}
+
 	public WindowUpdateInfo setViewWindow(TrackWindow view) {
 
 		final int factor = PREFETCH_FACTOR * 2 + 1;

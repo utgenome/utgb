@@ -61,7 +61,6 @@ public class GWTGraphCanvas extends Composite {
 	private AbsolutePanel panel = new AbsolutePanel();
 	private TrackWindow viewWindow;
 
-
 	private final HashMap<TrackWindow, GraphCanvas> canvasMap = new HashMap<TrackWindow, GraphCanvas>();
 
 	/**
@@ -135,8 +134,8 @@ public class GWTGraphCanvas extends Composite {
 	 */
 	public static class GraphStyle {
 		public int windowHeight = 100;
-		private float maxValue = 20.0f;
-		private float minValue = 0.0f;
+		public float maxValue = 20.0f;
+		public float minValue = 0.0f;
 
 		public boolean autoScale = false;
 		public boolean logScale = false;
@@ -207,7 +206,6 @@ public class GWTGraphCanvas extends Composite {
 			config.addConfigBoolean("Show Zero Value", CONFIG_SHOW_ZERO_VALUE, drawZeroValue);
 			config.addConfigBoolean("Draw Scale", CONFIG_DRAW_SCALE, drawScale);
 			config.addConfigBoolean("Show Scale Label", CONFIG_SHOW_SCALE_LABEL, showScaleLabel);
-			config.addConfigInteger("Pixel Height", CONFIG_TRACK_HEIGHT, windowHeight);
 			config.addConfigString("Graph Color", CONFIG_COLOR, "");
 		}
 
@@ -331,7 +329,6 @@ public class GWTGraphCanvas extends Composite {
 		}
 		graphLabels.clear();
 	}
-
 
 	/**
 	 * Get a canvas for a given TrackWindow

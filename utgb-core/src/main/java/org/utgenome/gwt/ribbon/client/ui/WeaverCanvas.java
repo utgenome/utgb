@@ -28,7 +28,10 @@ import org.utgenome.gwt.utgb.client.ui.FixedWidthLabel;
 import org.utgenome.gwt.utgb.client.ui.RoundCornerFrame;
 import org.utgenome.gwt.widget.client.Style;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.AbsolutePanel;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -95,8 +98,8 @@ public class WeaverCanvas extends Composite {
 
 		mainPanel.add(tabPanel, 100, 100);
 
-		RoundCornerFrame f = new RoundCornerFrame("3E5A77", 0.8f, 4);
-		FixedWidthLabel l = new FixedWidthLabel("Hello World. Nice to meet you. Welcome to UTGB Toolkit", 200);
+		final RoundCornerFrame f = new RoundCornerFrame("3E5A77", 0.8f, 4);
+		final FixedWidthLabel l = new FixedWidthLabel("Hello World. Nice to meet you. Welcome to UTGB Toolkit", 200);
 		Style.fontSize(l, 12);
 		Style.fontColor(l, "white");
 		//Style.semiTransparentBackground(l, "3E5A77", 0.8f);
@@ -112,6 +115,25 @@ public class WeaverCanvas extends Composite {
 		//DOM.setStyleAttribute(l.getElement(), "color", "white");
 
 		mainPanel.add(f, 10, 10);
+
+		final GWTCanvas canvas = new GWTCanvas(100, 100);
+		canvas.setFillStyle(new Color("rgba(100, 100, 255, 0.5)"));
+		canvas.fillRect(10, 20, 50, 30);
+
+		mainPanel.add(canvas, 40, 40);
+
+		Button scale = new Button("scale");
+		scale.addClickHandler(new ClickHandler() {
+
+			boolean on = false;
+
+			public void onClick(ClickEvent event) {
+				Style.scaleXwithAnimation(canvas, on ? 5 : 1.5, 0.5);
+				on = !on;
+			}
+		});
+
+		mainPanel.add(scale, 100, 300);
 
 		initWidget(mainPanel);
 	}
