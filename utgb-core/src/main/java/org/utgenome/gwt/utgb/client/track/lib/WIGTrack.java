@@ -111,6 +111,7 @@ public class WIGTrack extends TrackBase {
 	@Override
 	public void onChangeTrackHeight(int newHeight) {
 		style.windowHeight = newHeight;
+		needToUpdateStyle = true;
 		refresh();
 	}
 
