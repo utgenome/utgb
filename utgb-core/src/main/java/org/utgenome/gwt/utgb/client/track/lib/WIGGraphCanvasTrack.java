@@ -24,39 +24,18 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.track.lib;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import org.utgenome.gwt.utgb.client.bio.ChrLoc;
-import org.utgenome.gwt.utgb.client.bio.CompactWIGData;
-import org.utgenome.gwt.utgb.client.canvas.GWTGraphCanvas;
-import org.utgenome.gwt.utgb.client.canvas.TrackWindowChain;
-import org.utgenome.gwt.utgb.client.canvas.GWTGraphCanvas.GraphStyle;
-import org.utgenome.gwt.utgb.client.canvas.TrackWindowChain.WindowUpdateInfo;
 import org.utgenome.gwt.utgb.client.track.Track;
-import org.utgenome.gwt.utgb.client.track.TrackBase;
-import org.utgenome.gwt.utgb.client.track.TrackConfig;
-import org.utgenome.gwt.utgb.client.track.TrackConfigChange;
-import org.utgenome.gwt.utgb.client.track.TrackFrame;
-import org.utgenome.gwt.utgb.client.track.TrackGroup;
-import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChange;
-import org.utgenome.gwt.utgb.client.track.TrackWindow;
-import org.utgenome.gwt.utgb.client.track.UTGBProperty;
-import org.utgenome.gwt.widget.client.Style;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
- * WIG Track for displaying graph data, including bar chart, heat map, etc. 
+ * WIG Track for displaying graph data, including bar chart, heat map, etc. Note: the implementation of
+ * WIGGraphCanvasTrack was moved to {@link WIGTrack}.
+ * 
  * 
  * @author yoshimura
  * @author leo
  * 
  */
-public class WIGGraphCanvasTrack extends TrackBase {
+public class WIGGraphCanvasTrack extends WIGTrack {
 
 	public static TrackFactory factory() {
 		return new TrackFactory() {
@@ -67,149 +46,8 @@ public class WIGGraphCanvasTrack extends TrackBase {
 		};
 	}
 
-	private final FlexTable layoutTable = new FlexTable();
-	private final GWTGraphCanvas graphCanvas = new GWTGraphCanvas();
-
-	private TrackWindowChain chain = new TrackWindowChain();
-
 	public WIGGraphCanvasTrack() {
-		super("WIG Graph Canvas");
-
-		layoutTable.setBorderWidth(0);
-		layoutTable.setCellPadding(0);
-		layoutTable.setCellSpacing(0);
-		Style.margin(layoutTable, 0);
-		Style.padding(layoutTable, 0);
-
-		Style.fullSize(layoutTable);
-
-		layoutTable.setWidget(0, 1, graphCanvas);
-
-	}
-
-	public Widget getWidget() {
-		return layoutTable;
-	}
-
-	private GraphStyle style = new GraphStyle();
-
-	/**
-	 * Configuration parameter names
-	 */
-	private final static String CONFIG_PATH = "path";
-
-	@Override
-	public void setUp(TrackFrame trackFrame, TrackGroup group) {
-		TrackConfig config = getConfig();
-		config.addConfigString("Path", CONFIG_PATH, "");
-		style.setup(config);
-	}
-
-	@Override
-	public void onChangeTrackHeight(int newHeight) {
-		getConfig().setParameter(GraphStyle.CONFIG_TRACK_HEIGHT, Integer.toString(newHeight));
-		refresh();
-	}
-
-	private boolean needToUpdateStyle = true;
-
-	private void updateStyle() {
-		// load style parameters from the configuration panel
-		style.load(getConfig());
-		// set the graph style
-		graphCanvas.setStyle(style);
-
-		needToUpdateStyle = false;
-	}
-
-	@Override
-	public void draw() {
-
-		final TrackWindow newWindow = getTrackWindow();
-		graphCanvas.setViewWindow(newWindow);
-
-		if (needToUpdateStyle) {
-			updateStyle();
-		}
-
-		WindowUpdateInfo updateInfo = chain.setViewWindow(newWindow);
-
-		List<TrackWindow> windowToCreate = updateInfo.windowToCreate;
-		// sort the windows in the nearest neighbor order from the view window 
-		Collections.sort(windowToCreate, new Comparator<TrackWindow>() {
-			public int compare(TrackWindow o1, TrackWindow o2) {
-				int d1 = Math.abs(o1.center() - newWindow.center());
-				int d2 = Math.abs(o2.center() - newWindow.center());
-				return d1 - d2;
-			}
-		});
-
-		// load graph 
-		for (TrackWindow each : windowToCreate) {
-			loadGraph(each);
-		}
-		if (windowToCreate.isEmpty()) {
-			getFrame().loadingDone();
-		}
-
-		// clear the remaining windows out of the global view
-		graphCanvas.clearOutSideOf(chain.getGlobalWindow());
-
-	}
-
-	public void loadGraph(final TrackWindow queryWindow) {
-
-		getFrame().setNowLoading();
-		String fileName = resolvePropertyValues(getConfig().getString(CONFIG_PATH, ""));
-
-		int s = queryWindow.getStartOnGenome();
-		int e = queryWindow.getEndOnGenome();
-		ChrLoc l = new ChrLoc(getTrackGroupProperty(UTGBProperty.TARGET), s, e);
-		getBrowserService().getCompactWigDataList(fileName, queryWindow.getPixelWidth(), l, new AsyncCallback<List<CompactWIGData>>() {
-			public void onFailure(Throwable e) {
-				error("failed to retrieve wig data: " + e.getMessage());
-				getFrame().loadingDone();
-			}
-
-			public void onSuccess(List<CompactWIGData> dataList) {
-				graphCanvas.drawWigGraph(dataList, queryWindow);
-				getFrame().loadingDone();
-			}
-		});
-
-	}
-
-	public void clearCanvas() {
-		graphCanvas.clear();
-		chain.clear();
-	}
-
-	@Override
-	public void onChangeTrackConfig(TrackConfigChange change) {
-
-		if (change.contains(CONFIG_PATH)) {
-			needToUpdateStyle = true;
-			clearCanvas();
-			refresh();
-		}
-		else {
-			needToUpdateStyle = true;
-			refresh();
-		}
-	}
-
-	@Override
-	public void onChangeTrackWindow(TrackWindow newWindow) {
-		refresh();
-	}
-
-	@Override
-	public void onChangeTrackGroupProperty(TrackGroupPropertyChange change) {
-
-		if (change.containsOneOf(new String[] { UTGBProperty.TARGET })) {
-			clearCanvas();
-			refresh();
-		}
+		super();
 	}
 
 }
