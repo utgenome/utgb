@@ -22,6 +22,8 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.canvas;
 
+import java.util.List;
+
 import org.utgenome.gwt.utgb.client.bio.CompactWIGData;
 import org.utgenome.gwt.utgb.client.canvas.GWTGraphCanvas.GraphStyle;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
@@ -38,11 +40,11 @@ public class BarGraphCanvas extends Composite {
 	private TrackWindow window = new TrackWindow();
 
 	public BarGraphCanvas(TrackWindow window, int windowHeight) {
-		canvas.setPixelSize(window.getPixelWidth(), windowHeight);
-		canvas.setCoordSize(window.getPixelWidth(), windowHeight);
 		this.window = window;
 		Style.border(canvas, 1, "solid", "gray");
 		initWidget(canvas);
+
+		setPixelSize(window.getPixelWidth(), windowHeight);
 	}
 
 	public void clear() {
@@ -58,7 +60,7 @@ public class BarGraphCanvas extends Composite {
 		this.window = window;
 
 		if (!prev.hasSameScaleWith(window)) {
-			Style.scaleXwithAnimation(canvas, window.getPixelWidth() / prev.getPixelWidth(), 0.5);
+			Style.scaleXwithAnimation(canvas, (double) window.getPixelWidth() / prev.getPixelWidth(), 0.5);
 		}
 		else {
 			Style.scaleX(canvas, 1);
@@ -70,62 +72,91 @@ public class BarGraphCanvas extends Composite {
 	private float autoScaledMinValue = 0.0f;
 	private float autoScaledMaxValue = 0.0f;
 
-	public void draw(CompactWIGData data, GraphStyle style) {
+	private List<CompactWIGData> graphData;
+	private int span = 1;
 
-		// get graph color
-		Color graphColor = new Color(DEFAULT_COLOR);
-		if (style.color.isDefined()) {
-			graphColor = new Color(style.color.get());
+	public void redraw(GraphStyle style) {
+		if (this.graphData == null)
+			return;
+
+		canvas.clear();
+		draw(this.graphData, style);
+	}
+
+	private void setPixelWidth(int width, int height) {
+		int pixelWidthWithSpan = window.convertToPixelLength(window.getSequenceLength() + this.span - 1);
+		canvas.setPixelSize(pixelWidthWithSpan, height);
+		canvas.setCoordSize(pixelWidthWithSpan, height);
+	}
+
+	public void draw(List<CompactWIGData> graphData, GraphStyle style) {
+
+		this.graphData = graphData;
+
+		for (CompactWIGData each : graphData) {
+			if (each.getSpan() > span) {
+				this.span = each.getSpan();
+			}
 		}
-		else if (data.getTrack().containsKey("color")) {
-			String colorStr = data.getTrack().get("color");
-			String c[] = colorStr.split(",");
-			if (c.length == 3)
-				graphColor = new Color(Integer.valueOf(c[0]), Integer.valueOf(c[1]), Integer.valueOf(c[2]));
-		}
+		setPixelWidth(window.getPixelWidth(), style.windowHeight);
 
-		// draw graph
-		canvas.saveContext();
-		canvas.setLineWidth(1.0f);
-		canvas.setStrokeStyle(graphColor);
-
-		min = style.autoScale ? autoScaledMinValue : style.minValue;
-		max = style.autoScale ? autoScaledMaxValue : style.maxValue;
-
-		float y2 = getYPosition(0.0f, style);
-
-		// draw data graph
-		final boolean isReverse = window.isReverseStrand();
-		final int pixelWidth = data.getData().length;
-
-		for (int i = 0; i < pixelWidth; ++i) {
-			float value = data.getData()[i];
-			float y1;
-			if (value == 0.0f) {
-				if (!style.drawZeroValue)
-					continue;
-				else {
-					y1 = y2 + ((min < max) ? -0.5f : 0.5f);
-				}
+		for (CompactWIGData data : graphData) {
+			// get graph color
+			Color graphColor = new Color(DEFAULT_COLOR);
+			if (style.color.isDefined()) {
+				graphColor = new Color(style.color.get());
 			}
-			else {
-				y1 = getYPosition(value, style);
+			else if (data.getTrack().containsKey("color")) {
+				String colorStr = data.getTrack().get("color");
+				String c[] = colorStr.split(",");
+				if (c.length == 3)
+					graphColor = new Color(Integer.valueOf(c[0]), Integer.valueOf(c[1]), Integer.valueOf(c[2]));
 			}
 
-			int x = i;
-			if (isReverse) {
-				x = pixelWidth - x - 1;
-			}
-
+			// draw graph
 			canvas.saveContext();
-			canvas.beginPath();
-			canvas.translate(x + 0.5f, 0);
-			canvas.moveTo(0, y1);
-			canvas.lineTo(0, y2);
-			canvas.stroke();
+			canvas.setLineWidth(1.0f);
+			canvas.setStrokeStyle(graphColor);
+
+			min = style.autoScale ? autoScaledMinValue : style.minValue;
+			max = style.autoScale ? autoScaledMaxValue : style.maxValue;
+
+			float y2 = getYPosition(0.0f, style);
+
+			// draw data graph
+			final boolean isReverse = window.isReverseStrand();
+			final int pixelWidth = data.getData().length;
+
+			for (int i = 0; i < pixelWidth; ++i) {
+				float value = data.getData()[i];
+				float y1;
+				if (value == 0.0f) {
+					if (!style.drawZeroValue)
+						continue;
+					else {
+						y1 = y2 + ((min < max) ? -0.5f : 0.5f);
+					}
+				}
+				else {
+					y1 = getYPosition(value, style);
+				}
+
+				int x = i;
+				if (isReverse) {
+					x = pixelWidth - x - 1;
+				}
+
+				canvas.saveContext();
+				canvas.beginPath();
+				canvas.translate(x + 0.5f, 0);
+				canvas.moveTo(0, y1);
+				canvas.lineTo(0, y2);
+				canvas.stroke();
+				canvas.restoreContext();
+			}
 			canvas.restoreContext();
 		}
-		canvas.restoreContext();
+
 	}
 
 	/**

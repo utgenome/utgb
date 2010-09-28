@@ -108,7 +108,7 @@ public class TrackWindowChain {
 		ArrayList<TrackWindow> windowToPreserve = new ArrayList<TrackWindow>();
 		ArrayList<TrackWindow> windowToDiscard = new ArrayList<TrackWindow>();
 
-		if (viewWindow != null) {
+		if (viewWindow != null && viewWindow.hasSameScaleWith(view)) {
 			// scroll
 			// update the window list
 			for (TrackWindow each : windowList) {

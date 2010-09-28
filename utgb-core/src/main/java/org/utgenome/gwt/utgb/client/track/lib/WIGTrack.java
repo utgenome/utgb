@@ -44,6 +44,7 @@ import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.track.UTGBProperty;
 import org.utgenome.gwt.widget.client.Style;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -71,7 +72,7 @@ public class WIGTrack extends TrackBase {
 
 	private TrackWindowChain chain = new TrackWindowChain();
 	private final List<List<BarGraphCanvas>> buffer = new ArrayList<List<BarGraphCanvas>>(2);
-	private int frontBuffer = 0; // 0 or 1
+	private int frontBufferID = 0; // 0 or 1
 
 	private GraphStyle style = new GraphStyle();
 
@@ -116,12 +117,25 @@ public class WIGTrack extends TrackBase {
 	private boolean needToUpdateStyle = true;
 
 	private void updateStyle() {
-		// load style parameters from the configuration panel
-
-		// set the graph style
-		//graphCanvas.setStyle(style);
+		// load the style parameter values from the configuration panel, then set the style
+		style.load(getConfig());
 
 		needToUpdateStyle = false;
+	}
+
+	private List<BarGraphCanvas> getFrontBuffer() {
+		return buffer.get(frontBufferID);
+	}
+
+	private List<BarGraphCanvas> getBackgroundBuffer() {
+		return buffer.get((frontBufferID + 1) % 2);
+	}
+
+	private void clearBuffer(List<BarGraphCanvas> buffer) {
+		for (Widget each : buffer) {
+			each.removeFromParent();
+		}
+		buffer.clear();
 	}
 
 	@Override
@@ -129,6 +143,10 @@ public class WIGTrack extends TrackBase {
 
 		if (needToUpdateStyle) {
 			updateStyle();
+			for (BarGraphCanvas each : getFrontBuffer()) {
+				each.redraw(style);
+			}
+
 		}
 
 		final TrackWindow newWindow = getTrackWindow();
@@ -136,24 +154,27 @@ public class WIGTrack extends TrackBase {
 
 		// swap the graph buffer when we have to scale the graphs
 		if (chain.getViewWindow() != null && !chain.getViewWindow().hasSameScaleWith(newWindow)) {
-
-			// scale the currently displayed bar graph
-			for (BarGraphCanvas each : buffer.get(frontBuffer)) {
-				each.setTrackWindow(newWindow);
-			}
-
 			// switch the front buffer
-			frontBuffer = (frontBuffer + 1) % 2;
-			for (Widget each : buffer.get(frontBuffer)) {
-				each.removeFromParent();
-			}
-			buffer.get(frontBuffer).clear();
+			frontBufferID = (frontBufferID + 1) % 2;
+			clearBuffer(getFrontBuffer());
 		}
 
+		// update the view window
 		WindowUpdateInfo updateInfo = chain.setViewWindow(newWindow);
-		List<TrackWindow> windowToCreate = updateInfo.windowToCreate;
+		GWT.log(chain.getTrackWindowList().toString());
+
+		// scale the old canvases
+		for (TrackWindow toDiscard : updateInfo.windowToDiscard) {
+			for (BarGraphCanvas each : getBackgroundBuffer()) {
+				TrackWindow old = each.getTrackWindow();
+				if (old.equals(toDiscard)) {
+					each.setTrackWindow(old.newPixelWidthWindow(newWindow.convertToPixelLength(old.getSequenceLength())));
+				}
+			}
+		}
+
 		// sort the windows in the nearest neighbor order from the view window 
-		Collections.sort(windowToCreate, new Comparator<TrackWindow>() {
+		Collections.sort(updateInfo.windowToCreate, new Comparator<TrackWindow>() {
 			public int compare(TrackWindow o1, TrackWindow o2) {
 				int d1 = Math.abs(o1.center() - newWindow.center());
 				int d2 = Math.abs(o2.center() - newWindow.center());
@@ -162,15 +183,15 @@ public class WIGTrack extends TrackBase {
 		});
 
 		// move the graph canvases
-		for (BarGraphCanvas each : buffer.get(frontBuffer)) {
+		for (BarGraphCanvas each : getFrontBuffer()) {
 			int x = newWindow.convertToPixelX(each.getTrackWindow().getStartOnGenome());
 			panel.setWidgetPosition(each, x, 0);
 		}
 
 		// load graph
 		String filePath = resolvePropertyValues(getConfig().getString(CONFIG_PATH, ""));
-		List<BarGraphCanvas> front = buffer.get(frontBuffer);
-		for (final TrackWindow queryWindow : windowToCreate) {
+		List<BarGraphCanvas> front = getFrontBuffer();
+		for (final TrackWindow queryWindow : updateInfo.windowToCreate) {
 			final BarGraphCanvas graph = new BarGraphCanvas(queryWindow, style.windowHeight);
 			int x = newWindow.convertToPixelX(queryWindow.getStartOnGenome());
 			panel.add(graph, x, 0);
@@ -186,9 +207,7 @@ public class WIGTrack extends TrackBase {
 				}
 
 				public void onSuccess(List<CompactWIGData> dataList) {
-					for (CompactWIGData each : dataList) {
-						graph.draw(each, style);
-					}
+					graph.draw(dataList, style);
 					clearBackgroundGraph(queryWindow);
 				}
 			});
@@ -198,8 +217,7 @@ public class WIGTrack extends TrackBase {
 	}
 
 	void clearBackgroundGraph(TrackWindow window) {
-		List<BarGraphCanvas> background = buffer.get((frontBuffer + 1) % 2);
-		for (BarGraphCanvas each : background) {
+		for (BarGraphCanvas each : getBackgroundBuffer()) {
 			if (each.getTrackWindow().overlapWith(window)) {
 				each.removeFromParent();
 				each.clear();
