@@ -75,8 +75,6 @@ public class BarGraphCanvas extends Composite {
 
 	private float min = 0;
 	private float max = 0;
-	private float autoScaledMinValue = 0.0f;
-	private float autoScaledMaxValue = 0.0f;
 
 	private List<CompactWIGData> graphData;
 	private int span = 1;
@@ -93,12 +91,6 @@ public class BarGraphCanvas extends Composite {
 		int pixelWidthWithSpan = window.convertToPixelLength(window.getSequenceLength() + this.span - 1);
 		canvas.setPixelSize(pixelWidthWithSpan, height);
 		canvas.setCoordSize(pixelWidthWithSpan, height);
-	}
-
-	public void setAutoScaleValue(float min, float max) {
-		this.autoScaledMinValue = min;
-		this.autoScaledMaxValue = max;
-		scale.setMinMax(min, max);
 	}
 
 	public List<CompactWIGData> getGraphData() {
@@ -138,8 +130,8 @@ public class BarGraphCanvas extends Composite {
 			canvas.setLineWidth(1.0f);
 			canvas.setStrokeStyle(graphColor);
 
-			min = style.autoScale ? autoScaledMinValue : style.minValue;
-			max = style.autoScale ? autoScaledMaxValue : style.maxValue;
+			min = scale.getMin();
+			max = scale.getMax();
 
 			float y2 = scale.getYPosition(0.0f);
 

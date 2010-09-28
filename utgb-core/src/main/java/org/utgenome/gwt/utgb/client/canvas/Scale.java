@@ -48,12 +48,6 @@ public class Scale {
 		updateStyle(style);
 	}
 
-	public Scale(GraphStyle style, float autoScaledMin, float autoScaledMax) {
-		updateStyle(style);
-		if (style.autoScale)
-			setMinMax(autoScaledMin, autoScaledMax);
-	}
-
 	public float getMin() {
 		return min;
 	}
@@ -62,7 +56,7 @@ public class Scale {
 		return max;
 	}
 
-	public void setMinMax(float min, float max) {
+	private void setMinMax(float min, float max) {
 		this.min = min;
 		this.max = max;
 		isReverseYAxis = min > max;
@@ -72,9 +66,10 @@ public class Scale {
 		this.height = style.windowHeight;
 		this.logScale = style.logScale;
 		this.logBase = style.logBase;
-		if (!style.autoScale) {
+		if (!style.autoScale)
 			setMinMax(style.minValue, style.maxValue);
-		}
+		else
+			setMinMax(style.autoScaledMin, style.maxValue);
 	}
 
 	/**

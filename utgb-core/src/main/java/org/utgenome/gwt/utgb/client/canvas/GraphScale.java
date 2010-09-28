@@ -71,7 +71,7 @@ public class GraphScale extends Composite {
 		clearScaleLabel();
 	}
 
-	public void draw(GraphStyle style, TrackWindow viewWindow, float min, float max) {
+	public void draw(GraphStyle style, TrackWindow viewWindow) {
 
 		// set pixel width & size
 		int width = viewWindow.getPixelWidth();
@@ -80,7 +80,7 @@ public class GraphScale extends Composite {
 		frameCanvas.setPixelSize(width, height);
 		frameCanvas.setCoordSize(width, height);
 
-		ScalePainter scalePainter = new ScalePainter(style, viewWindow, min, max);
+		ScalePainter scalePainter = new ScalePainter(style, viewWindow);
 		scalePainter.draw();
 
 	}
@@ -91,10 +91,10 @@ public class GraphScale extends Composite {
 		private final Scale scale;
 		private final Indent indent;
 
-		public ScalePainter(GraphStyle style, TrackWindow window, float autoScaledMin, float autoScaledMax) {
+		public ScalePainter(GraphStyle style, TrackWindow window) {
 			this.style = style;
 			this.viewWindow = window;
-			scale = new Scale(style, autoScaledMin, autoScaledMax);
+			scale = new Scale(style);
 			indent = createIndent();
 		}
 

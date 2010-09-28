@@ -136,6 +136,8 @@ public class GWTGraphCanvas extends Composite {
 		public int windowHeight = 100;
 		public float maxValue = 20.0f;
 		public float minValue = 0.0f;
+		public float autoScaledMax = 20.0f;
+		public float autoScaledMin = 0.0f;
 
 		public boolean autoScale = false;
 		public boolean logScale = false;

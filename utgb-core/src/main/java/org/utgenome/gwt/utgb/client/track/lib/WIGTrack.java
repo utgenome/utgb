@@ -76,7 +76,7 @@ public class WIGTrack extends TrackBase {
 	private final List<List<BarGraphCanvas>> buffer = new ArrayList<List<BarGraphCanvas>>(2);
 	private int frontBufferID = 0; // 0 or 1
 
-	private GraphStyle style = new GraphStyle();
+	private final GraphStyle style = new GraphStyle();
 
 	{
 		buffer.add(new ArrayList<BarGraphCanvas>());
@@ -218,7 +218,7 @@ public class WIGTrack extends TrackBase {
 						calculateScale();
 
 					// redraw scale
-					scale.draw(style, newWindow, autoScaledMinValue, autoScaledMaxValue);
+					scale.draw(style, newWindow);
 
 					// draw new graph
 					graph.draw(graphData, style);
@@ -228,21 +228,17 @@ public class WIGTrack extends TrackBase {
 
 		}
 
+		// scale 
+		boolean scaleHasChanged = style.autoScale && calculateScale();
+
+		// redraw scale
+		scale.draw(style, newWindow);
+
 		// redraw the already displayed graphs
-		if (style.autoScale)
-			needRedrawing = calculateScale();
-
-		// redraw graphs
-		if (needRedrawing) {
-			if (!chain.getTrackWindowList().isEmpty()) {
-				for (BarGraphCanvas each : getFrontBuffer()) {
-					each.redraw(style);
-				}
-			}
-
-			if (updateInfo.windowToCreate.isEmpty()) {
-				// redraw scale
-				scale.draw(style, newWindow, autoScaledMinValue, autoScaledMaxValue);
+		if (needRedrawing || scaleHasChanged) {
+			// redraw graphs
+			for (BarGraphCanvas each : getFrontBuffer()) {
+				each.redraw(style);
 			}
 		}
 
@@ -258,9 +254,6 @@ public class WIGTrack extends TrackBase {
 
 	}
 
-	private float autoScaledMinValue = 0.0f;
-	private float autoScaledMaxValue = 0.0f;
-
 	/**
 	 * 
 	 * @return true if needs redrawing the graphs
@@ -270,11 +263,8 @@ public class WIGTrack extends TrackBase {
 		if (!style.autoScale)
 			return false;
 
-		float prevMinValue = autoScaledMinValue;
-		float prevMaxValue = autoScaledMaxValue;
-
-		autoScaledMinValue = 0.0f;
-		autoScaledMaxValue = 0.0f;
+		float autoScaledMinValue = 0.0f;
+		float autoScaledMaxValue = 0.0f;
 
 		final TrackWindow view = getTrackWindow();
 		for (BarGraphCanvas each : getFrontBuffer()) {
@@ -318,10 +308,12 @@ public class WIGTrack extends TrackBase {
 			autoScaledMaxValue = style.maxValue;
 		}
 
-		for (BarGraphCanvas each : getFrontBuffer())
-			each.setAutoScaleValue(autoScaledMinValue, autoScaledMaxValue);
 		// whether to need to update the graph?
-		return (autoScaledMinValue != prevMinValue || autoScaledMaxValue != prevMaxValue);
+		boolean hasChanged = (autoScaledMinValue != style.autoScaledMin || autoScaledMaxValue != style.autoScaledMax);
+		style.autoScaledMin = autoScaledMinValue;
+		style.autoScaledMax = autoScaledMaxValue;
+
+		return hasChanged;
 	}
 
 	@Override
