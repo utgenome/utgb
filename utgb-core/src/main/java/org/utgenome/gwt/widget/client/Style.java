@@ -359,16 +359,16 @@ public class Style {
 		setExt(w, "TransitionDuration", durationInSec + "s");
 		setExt(w, "TransitionTimingFunction", "ease-out");
 		transform(w, "scaleX(" + scaleX + ")");
-		setExt(w, "TransformOrigin", "0");
 	}
 
-	public static void scaleXwithAnimation(Widget w, double scaleX, int scaleXOrigin, double durationInSec) {
+	public static void scaleXwithAnimation(Widget w, double scaleX, int newPixelX, double durationInSec) {
 		// animation
-		setExt(w, "TransitionProperty", getCSS3prefix() + "transform");
+		setExt(w, "TransitionProperty", getCSS3prefix() + "transform, left");
 		setExt(w, "TransitionDuration", durationInSec + "s");
 		setExt(w, "TransitionTimingFunction", "ease-out");
+		set(w, "left", newPixelX + "px");
 		transform(w, "scaleX(" + scaleX + ")");
-		setExt(w, "TransformOrigin", Integer.toString(scaleXOrigin));
+		setExt(w, "TransformOrigin", "0");
 	}
 
 	public static void scaleY(Widget w, double scaleY) {

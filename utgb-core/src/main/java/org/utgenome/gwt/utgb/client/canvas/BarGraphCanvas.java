@@ -61,12 +61,12 @@ public class BarGraphCanvas extends Composite {
 		return window;
 	}
 
-	public void setTrackWindow(TrackWindow window) {
+	public void setTrackWindow(TrackWindow window, int newPixelX) {
 		TrackWindow prev = this.window;
 		this.window = window;
 
 		if (!prev.hasSameScaleWith(window)) {
-			Style.scaleXwithAnimation(canvas, (double) window.getPixelWidth() / prev.getPixelWidth(), 0.5);
+			Style.scaleXwithAnimation(canvas, (double) window.getPixelWidth() / prev.getPixelWidth(), newPixelX, 0.5);
 		}
 		else {
 			Style.scaleX(canvas, 1);
