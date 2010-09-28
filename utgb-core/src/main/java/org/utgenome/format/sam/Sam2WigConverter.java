@@ -49,7 +49,7 @@ public class Sam2WigConverter {
 	private String currentChr = null;
 	private int sweepLine = 1;
 	private Writer out;
-	private int blockSize = 100000;
+	private int blockSize = 10000;
 	private Interval block = new Interval(1, blockSize);
 
 	static class ReadQueue {
@@ -123,6 +123,11 @@ public class Sam2WigConverter {
 				for (Interval each : readsInBlock) {
 					if (block.contains(each))
 						readsInNextBlock.add(each);
+				}
+
+				if (block.contains(readInterval)) {
+					readsInNextBlock.add(readInterval);
+					queue.next();
 				}
 
 				readsInBlock = readsInNextBlock;
