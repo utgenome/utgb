@@ -34,8 +34,6 @@ import net.sf.samtools.SAMRecord;
 import net.sf.samtools.SAMRecordIterator;
 
 import org.utgenome.gwt.utgb.client.bio.Interval;
-import org.xerial.util.ArrayDeque;
-import org.xerial.util.Deque;
 
 /**
  * Converting SAM into WIG (coverage depth)
@@ -45,43 +43,29 @@ import org.xerial.util.Deque;
  */
 public class Sam2WigConverter {
 
-	private List<Interval> readsInBlock = new ArrayList<Interval>();
+	private List<Interval> readCache = new ArrayList<Interval>();
 	private String currentChr = null;
 	private int sweepLine = 1;
 	private Writer out;
-	private int blockSize = 10000;
-	private Interval block = new Interval(1, blockSize);
 
-	static class ReadQueue {
-
-		final SAMRecordIterator it;
-		Deque<SAMRecord> queue = new ArrayDeque<SAMRecord>();
-
-		public ReadQueue(SAMFileReader reader) {
-			it = reader.iterator();
+	int maxReadEnd() {
+		int maxEnd = -1;
+		for (Interval each : readCache) {
+			if (maxEnd < each.getEnd())
+				maxEnd = each.getEnd();
 		}
+		return maxEnd;
+	}
 
-		public SAMRecord peekNext() {
-			if (!queue.isEmpty())
-				return queue.peekFirst();
-			else {
-				queue.addLast(it.next());
-				return peekNext();
-			}
+	void sweep(int start, int end, Writer out) throws IOException {
+		if (start >= end)
+			return;
+
+		int[] coverage = getReadDepth(new Interval(start, end), readCache);
+		for (int i = 0; i < coverage.length; ++i) {
+			out.write(Integer.toString(coverage[i]));
+			out.write("\n");
 		}
-
-		public boolean hasNext() {
-			return !queue.isEmpty() || it.hasNext();
-		}
-
-		public SAMRecord next() {
-			if (!queue.isEmpty())
-				return queue.pollFirst();
-			else {
-				return it.next();
-			}
-		}
-
 	}
 
 	public void convert(File samOrBam, Writer out) throws IOException {
@@ -89,82 +73,58 @@ public class Sam2WigConverter {
 		SAMFileReader.setDefaultValidationStringency(ValidationStringency.SILENT);
 		SAMFileReader samReader = new SAMFileReader(samOrBam);
 
+		// map
+		//   r: SAMRecord -> ((r.chr, x), 1)  (x = r.start, ..., r.end) 
+		// reduce
+		//   (chr, x), {1, 1, ...}  ->  output ((chr, x), sum of 1s)
+
+		int sweepLine = 1;
+
 		// assume that SAM reads are sorted in the start order
-		for (ReadQueue queue = new ReadQueue(samReader); queue.hasNext();) {
-			SAMRecord read = queue.peekNext();
+		for (SAMRecordIterator it = samReader.iterator(); it.hasNext();) {
+			SAMRecord read = it.next();
 
 			String ref = read.getReferenceName();
 
-			if (currentChr != null && !currentChr.equals(ref)) {
-				// flush the block
-				outputReadDepth();
+			if (currentChr == null || (currentChr != null && !currentChr.equals(ref))) { // moved to the next chromosome
+				// flush the cached reads
+				if (!readCache.isEmpty()) {
+					int sweepEnd = maxReadEnd();
+					sweep(sweepLine, sweepEnd, out);
+				}
+
+				readCache.clear();
+				sweepLine = 1;
 				currentChr = ref;
 
-				readsInBlock.clear();
-				block = new Interval(1, blockSize);
+				out.write(String.format("fixedStep chrom=%s start=%d step=1 span=1\n", currentChr, 1));
 			}
-			else
-				currentChr = ref;
 
 			Interval readInterval = new Interval(read.getAlignmentStart(), read.getAlignmentEnd() + 1);
-			if (block.contains(readInterval)) {
-				readsInBlock.add(readInterval);
-				queue.next();
-			}
-			else { // obtained a read out of the current block
-					// output 
-				outputReadDepth();
+			if (sweepLine < readInterval.getStart()) {
+				// we can sweep reads up to sweepEnd
+				int sweepEnd = readInterval.getStart();
+				sweep(sweepLine, sweepEnd, out);
+				sweepLine = sweepEnd;
 
-				// move to the next block
-				block = new Interval(block.getEnd() + 1, block.getEnd() + blockSize);
-
-				// preserve the reads contained in the next block
-				List<Interval> readsInNextBlock = new ArrayList<Interval>();
-				for (Interval each : readsInBlock) {
-					if (block.contains(each))
-						readsInNextBlock.add(each);
+				List<Interval> remainingReads = new ArrayList<Interval>();
+				for (Interval each : readCache) {
+					if (each.getEnd() > sweepLine)
+						remainingReads.add(each);
 				}
 
-				if (block.contains(readInterval)) {
-					readsInNextBlock.add(readInterval);
-					queue.next();
-				}
-
-				readsInBlock = readsInNextBlock;
+				readCache = remainingReads;
 			}
+			readCache.add(readInterval);
 		}
 
-		if (!readsInBlock.isEmpty()) {
-			outputReadDepth();
+		if (!readCache.isEmpty()) {
+			sweep(sweepLine, maxReadEnd(), out);
 		}
 
 		out.flush();
 
 		samReader.close();
-	}
-
-	public void outputReadDepth() throws IOException {
-
-		int[] coverage = getReadDepth(block, readsInBlock);
-
-		int head = 0;
-		int tail = coverage.length - 1;
-		for (; head < coverage.length; ++head) {
-			if (coverage[head] != 0)
-				break;
-		}
-		for (; tail >= head; tail--) {
-			if (coverage[tail] != 0)
-				break;
-		}
-
-		if (tail > head) {
-			out.write(String.format("fixedStep chrom=%s start=%d step=1 span=1\n", currentChr, block.getStart() + head));
-			for (int i = head; i <= tail; ++i) {
-				out.write(Integer.toString(coverage[i]));
-				out.write("\n");
-			}
-		}
 	}
 
 	public static int[] getReadDepth(Interval block, List<Interval> readsInBlock) {
@@ -184,7 +144,7 @@ public class Sam2WigConverter {
 			if (posStart < 0)
 				posStart = 0;
 			if (posEnd >= width)
-				posEnd = width - 1;
+				posEnd = width;
 
 			for (int i = posStart; i < posEnd; i++) {
 				coverage[i]++;
