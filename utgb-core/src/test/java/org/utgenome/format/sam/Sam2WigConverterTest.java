@@ -42,4 +42,17 @@ public class Sam2WigConverterTest {
 		converter.convert(input, new OutputStreamWriter(System.err));
 
 	}
+
+	@Test
+	public void convert2() throws Exception {
+
+		File input = FileUtil.createTempFile(new File("target"), "input-sorted", ".sam");
+		input.deleteOnExit();
+		FileUtil.copy(FileResource.openByteStream(Sam2WigConverterTest.class, "sorted.sam"), input);
+
+		Sam2WigConverter converter = new Sam2WigConverter();
+		converter.convert(input, new OutputStreamWriter(System.err));
+
+	}
+
 }
