@@ -141,12 +141,11 @@ public class WIGTrack extends TrackBase {
 	@Override
 	public void draw() {
 
+		boolean needRedrawing = false;
+
 		if (needToUpdateStyle) {
 			updateStyle();
-			for (BarGraphCanvas each : getFrontBuffer()) {
-				each.redraw(style);
-			}
-
+			needRedrawing = true;
 		}
 
 		final TrackWindow newWindow = getTrackWindow();
@@ -170,7 +169,6 @@ public class WIGTrack extends TrackBase {
 				if (old.equals(toDiscard)) {
 					each.setTrackWindow(old.newPixelWidthWindow(newWindow.convertToPixelLength(old.getSequenceLength())),
 							newWindow.convertToPixelX(old.getStartOnGenome()));
-					//panel.setWidgetPosition(each, newWindow.convertToPixelX(old.getStartOnGenome()), 0);
 				}
 			}
 		}
@@ -185,6 +183,7 @@ public class WIGTrack extends TrackBase {
 		});
 
 		// move the graph canvases
+
 		for (BarGraphCanvas each : getFrontBuffer()) {
 			int x = newWindow.convertToPixelX(each.getTrackWindow().getStartOnGenome());
 			panel.setWidgetPosition(each, x, 0);
@@ -208,12 +207,26 @@ public class WIGTrack extends TrackBase {
 					clearBackgroundGraph(queryWindow);
 				}
 
-				public void onSuccess(List<CompactWIGData> dataList) {
-					graph.draw(dataList, style);
+				public void onSuccess(List<CompactWIGData> graphData) {
+					graph.setGraphData(graphData);
+					if (style.autoScale)
+						calculateScale();
+
+					graph.draw(graphData, style);
 					clearBackgroundGraph(queryWindow);
 				}
 			});
 
+		}
+
+		// redraw the already displayed graphs
+		if (style.autoScale)
+			needRedrawing = calculateScale();
+
+		if (needRedrawing && !chain.getTrackWindowList().isEmpty()) {
+			for (BarGraphCanvas each : getFrontBuffer()) {
+				each.redraw(style);
+			}
 		}
 
 	}
@@ -226,6 +239,72 @@ public class WIGTrack extends TrackBase {
 			}
 		}
 
+	}
+
+	private float autoScaledMinValue = 0.0f;
+	private float autoScaledMaxValue = 0.0f;
+
+	/**
+	 * 
+	 * @return true if needs redrawing the graphs
+	 */
+	boolean calculateScale() {
+
+		if (!style.autoScale)
+			return false;
+
+		float prevMinValue = autoScaledMinValue;
+		float prevMaxValue = autoScaledMaxValue;
+
+		autoScaledMinValue = 0.0f;
+		autoScaledMaxValue = 0.0f;
+
+		final TrackWindow view = getTrackWindow();
+		for (BarGraphCanvas each : getFrontBuffer()) {
+			List<CompactWIGData> graphData = each.getGraphData();
+			if (graphData == null)
+				continue;
+
+			TrackWindow graphWindow = each.getTrackWindow();
+
+			int start = graphWindow.getStartOnGenome();
+			int s = view.convertToPixelX(start);
+
+			int pw = view.getPixelWidth();
+			int pw_e = graphWindow.getPixelWidth();
+
+			for (CompactWIGData wigData : graphData) {
+
+				int loopStart, loopEnd;
+				if (!view.isReverseStrand()) {
+					loopStart = Math.max(-s, 0);
+					loopEnd = Math.min(pw - s, pw_e);
+				}
+				else {
+					loopStart = Math.max(s - pw, 0);
+					loopEnd = Math.min(s, pw_e);
+				}
+
+				float data[] = wigData.getData();
+				for (int pos = loopStart; pos < loopEnd; pos++) {
+					autoScaledMinValue = Math.min(autoScaledMinValue, data[pos]);
+					autoScaledMaxValue = Math.max(autoScaledMaxValue, data[pos]);
+				}
+			}
+
+		}
+		GWT.log("scale: " + autoScaledMinValue + " - " + autoScaledMaxValue);
+
+		// when the graph contains no data, use the default min/max values for the scale
+		if (autoScaledMinValue == autoScaledMaxValue) {
+			autoScaledMinValue = style.minValue;
+			autoScaledMaxValue = style.maxValue;
+		}
+
+		for (BarGraphCanvas each : getFrontBuffer())
+			each.setAutoScaleValue(autoScaledMinValue, autoScaledMaxValue);
+		// whether to need to update the graph?
+		return (autoScaledMinValue != prevMinValue || autoScaledMaxValue != prevMaxValue);
 	}
 
 	@Override

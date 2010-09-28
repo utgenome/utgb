@@ -95,9 +95,20 @@ public class BarGraphCanvas extends Composite {
 		canvas.setCoordSize(pixelWidthWithSpan, height);
 	}
 
-	public void draw(List<CompactWIGData> graphData, GraphStyle style) {
+	public void setAutoScaleValue(float min, float max) {
+		this.autoScaledMinValue = min;
+		this.autoScaledMaxValue = max;
+	}
 
+	public List<CompactWIGData> getGraphData() {
+		return graphData;
+	}
+
+	public void setGraphData(List<CompactWIGData> graphData) {
 		this.graphData = graphData;
+	}
+
+	public void draw(List<CompactWIGData> graphData, GraphStyle style) {
 
 		for (CompactWIGData each : graphData) {
 			if (each.getSpan() > span) {
