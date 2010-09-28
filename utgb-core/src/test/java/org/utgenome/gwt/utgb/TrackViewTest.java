@@ -76,7 +76,7 @@ public class TrackViewTest {
 		assertEquals(41, t.height);
 		assertEquals(true, t.pack);
 		assertEquals("org.utgenome.gwt.utgb.client.track.lib.NavigatorTrack", t.class_);
-		assertEquals(true, t.property.containsKey("sequence list"));
+		assertEquals(true, t.property.containsKey("sequencelist"));
 
 		_logger.info("\n" + Lens.toSilk(v));
 

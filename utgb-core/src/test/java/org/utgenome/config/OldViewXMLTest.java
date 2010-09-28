@@ -55,7 +55,7 @@ public class OldViewXMLTest {
 		TrackView tv = ov.toTrackView();
 		String silk = Lens.toSilk(tv);
 
-		assertTrue(tv.trackGroup.property.containsKey("dbGroup"));
+		assertTrue(tv.trackGroup.property.containsKey("dbgroup"));
 
 		TrackView tv2 = Lens.loadSilk(TrackView.class, new StringReader(silk));
 		_logger.info(Lens.toSilk(tv2));
