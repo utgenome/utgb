@@ -25,8 +25,7 @@ package org.utgenome.format.sam;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 import net.sf.samtools.SAMFileReader;
 import net.sf.samtools.SAMFileReader.ValidationStringency;
@@ -34,6 +33,8 @@ import net.sf.samtools.SAMRecord;
 import net.sf.samtools.SAMRecordIterator;
 
 import org.utgenome.gwt.utgb.client.bio.Interval;
+import org.xerial.util.ArrayDeque;
+import org.xerial.util.Deque;
 
 /**
  * Converting SAM into WIG (coverage depth)
@@ -43,43 +44,23 @@ import org.utgenome.gwt.utgb.client.bio.Interval;
  */
 public class Sam2WigConverter {
 
-	private List<Interval> readCache = new ArrayList<Interval>();
+	private Deque<Interval> readSetInStartOrder = new ArrayDeque<Interval>();
 	private String currentChr = null;
 	private int sweepLine = 1;
 	private Writer out;
-
-	int maxReadEnd() {
-		int maxEnd = -1;
-		for (Interval each : readCache) {
-			if (maxEnd < each.getEnd())
-				maxEnd = each.getEnd();
-		}
-		return maxEnd;
-	}
-
-	void sweep(int start, int end, Writer out) throws IOException {
-		if (start >= end)
-			return;
-
-		int[] coverage = getReadDepth(new Interval(start, end), readCache);
-		for (int i = 0; i < coverage.length; ++i) {
-			out.write(Integer.toString(coverage[i]));
-			out.write("\n");
-		}
-	}
 
 	public void convert(File samOrBam, Writer out) throws IOException {
 		this.out = out;
 		SAMFileReader.setDefaultValidationStringency(ValidationStringency.SILENT);
 		SAMFileReader samReader = new SAMFileReader(samOrBam);
 
+		// map-reduce style code 
 		// map
 		//   r: SAMRecord -> ((r.chr, x), 1)  (x = r.start, ..., r.end) 
 		// reduce
 		//   (chr, x), {1, 1, ...}  ->  output ((chr, x), sum of 1s)
 
 		int sweepLine = 1;
-
 		// assume that SAM reads are sorted in the start order
 		for (SAMRecordIterator it = samReader.iterator(); it.hasNext();) {
 			SAMRecord read = it.next();
@@ -88,12 +69,12 @@ public class Sam2WigConverter {
 
 			if (currentChr == null || (currentChr != null && !currentChr.equals(ref))) { // moved to the next chromosome
 				// flush the cached reads
-				if (!readCache.isEmpty()) {
-					int sweepEnd = maxReadEnd();
-					sweep(sweepLine, sweepEnd, out);
+				if (!readSetInStartOrder.isEmpty()) {
+					int sweepEnd = maxReadEnd(readSetInStartOrder);
+					sweep(readSetInStartOrder, sweepLine, sweepEnd, out);
 				}
 
-				readCache.clear();
+				readSetInStartOrder.clear();
 				sweepLine = 1;
 				currentChr = ref;
 
@@ -104,22 +85,22 @@ public class Sam2WigConverter {
 			if (sweepLine < readInterval.getStart()) {
 				// we can sweep reads up to sweepEnd
 				int sweepEnd = readInterval.getStart();
-				sweep(sweepLine, sweepEnd, out);
+				sweep(readSetInStartOrder, sweepLine, sweepEnd, out);
 				sweepLine = sweepEnd;
 
-				List<Interval> remainingReads = new ArrayList<Interval>();
-				for (Interval each : readCache) {
-					if (each.getEnd() > sweepLine)
-						remainingReads.add(each);
+				// remove the reads before the sweep line   
+				for (Interval each : readSetInStartOrder) {
+					if (each.getStart() >= sweepLine)
+						break; // sweep finished
+					if (each.getEnd() <= sweepLine)
+						readSetInStartOrder.removeFirst();
 				}
-
-				readCache = remainingReads;
 			}
-			readCache.add(readInterval);
+			readSetInStartOrder.add(readInterval);
 		}
 
-		if (!readCache.isEmpty()) {
-			sweep(sweepLine, maxReadEnd(), out);
+		if (!readSetInStartOrder.isEmpty()) {
+			sweep(readSetInStartOrder, sweepLine, maxReadEnd(readSetInStartOrder), out);
 		}
 
 		out.flush();
@@ -127,7 +108,27 @@ public class Sam2WigConverter {
 		samReader.close();
 	}
 
-	public static int[] getReadDepth(Interval block, List<Interval> readsInBlock) {
+	public static final int maxReadEnd(Collection<Interval> readSet) {
+		int maxEnd = -1;
+		for (Interval each : readSet) {
+			if (maxEnd < each.getEnd())
+				maxEnd = each.getEnd();
+		}
+		return maxEnd;
+	}
+
+	public static void sweep(Collection<Interval> readSet, int start, int end, Writer out) throws IOException {
+		if (start >= end)
+			return;
+
+		int[] coverage = getReadDepth(new Interval(start, end), readSet);
+		for (int i = 0; i < coverage.length; ++i) {
+			out.write(Integer.toString(coverage[i]));
+			out.write("\n");
+		}
+	}
+
+	public static int[] getReadDepth(Interval block, Collection<Interval> readsInBlock) {
 
 		int offset = block.getStart();
 		final int width = block.length();
