@@ -24,22 +24,19 @@
 //--------------------------------------
 package org.utgenome.shell;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
-import java.io.FileInputStream;
+import java.io.File;
 import java.io.FileWriter;
-import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 
 import org.utgenome.format.sam.Sam2WigConverter;
-import org.utgenome.util.StandardInputStream;
 import org.xerial.util.opt.Argument;
 
 public class Sam2Wig extends UTGBShellCommand {
 
 	@Argument(index = 0, name = "input", required = false)
-	String input = "-";
+	File input = null;
 	@Argument(index = 1, name = "output", required = false)
 	String output = "-";
 
@@ -48,14 +45,12 @@ public class Sam2Wig extends UTGBShellCommand {
 
 		Sam2WigConverter converter = new Sam2WigConverter();
 
-		InputStream in = "-".equals(input) ? new StandardInputStream() : new BufferedInputStream(new FileInputStream(input));
 		Writer out = "-".equals(output) ? new OutputStreamWriter(System.out) : new BufferedWriter(new FileWriter(output));
 
 		try {
-			converter.convert(in, out);
+			converter.convert(input, out);
 		}
 		finally {
-			in.close();
 			out.close();
 		}
 	}

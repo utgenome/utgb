@@ -22,8 +22,8 @@
 //--------------------------------------
 package org.utgenome.format.sam;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,10 +50,10 @@ public class Sam2WigConverter {
 	private int blockSize = 10000;
 	private Interval block = new Interval(1, blockSize);
 
-	public void convert(InputStream in, Writer out) throws IOException {
+	public void convert(File samOrBam, Writer out) throws IOException {
 		this.out = out;
 		SAMFileReader.setDefaultValidationStringency(ValidationStringency.SILENT);
-		SAMFileReader samReader = new SAMFileReader(in);
+		SAMFileReader samReader = new SAMFileReader(samOrBam);
 
 		// assume that SAM reads are sorted in the start order
 		for (SAMRecordIterator it = samReader.iterator(); it.hasNext();) {
@@ -100,6 +100,8 @@ public class Sam2WigConverter {
 		}
 
 		out.flush();
+
+		samReader.close();
 	}
 
 	public void outputReadDepth() throws IOException {

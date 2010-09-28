@@ -22,18 +22,24 @@
 //--------------------------------------
 package org.utgenome.format.sam;
 
+import java.io.File;
 import java.io.OutputStreamWriter;
 
 import org.junit.Test;
 import org.xerial.util.FileResource;
+import org.xerial.util.FileUtil;
 
 public class Sam2WigConverterTest {
 
 	@Test
 	public void convert() throws Exception {
 
+		File input = FileUtil.createTempFile(new File("target"), "input", ".sam");
+		input.deleteOnExit();
+		FileUtil.copy(FileResource.openByteStream(Sam2WigConverterTest.class, "coverage.sam"), input);
+
 		Sam2WigConverter converter = new Sam2WigConverter();
-		converter.convert(FileResource.openByteStream(Sam2WigConverterTest.class, "coverage.sam"), new OutputStreamWriter(System.err));
+		converter.convert(input, new OutputStreamWriter(System.err));
 
 	}
 }
