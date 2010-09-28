@@ -47,14 +47,75 @@ public class Sam2WigConverter {
 	private Deque<Interval> readSetInStartOrder = new ArrayDeque<Interval>();
 	private String currentChr = null;
 	private int sweepLine = 1;
-	private Writer out;
+	private CoverageWriter reporter;
 
+	public static class CoverageWriter {
+		private int skipLength = 0;
+		private boolean needToOutputHeader = true;
+		private final Writer out;
+
+		public CoverageWriter(Writer out) {
+			this.out = out;
+		}
+
+		public void switchChr() {
+			skipLength = 0;
+			needToOutputHeader = true;
+		}
+
+		public void outputHeader(String chr, int start) throws IOException {
+			out.write(String.format("fixedStep chrom=%s start=%d step=1 span=1\n", chr, start));
+		}
+
+		public void flush() throws IOException {
+			this.out.flush();
+		}
+
+		public void report(String chr, int start, int value) throws IOException {
+			if (value == 0)
+				skipLength++;
+			else {
+				if (skipLength > 0) {
+					outputHeader(chr, start);
+					skipLength = 0;
+					needToOutputHeader = false;
+				}
+
+				if (needToOutputHeader) {
+					outputHeader(chr, start);
+					needToOutputHeader = false;
+				}
+
+				out.write(Integer.toString(value));
+				out.write("\n");
+			}
+		}
+
+	}
+
+	/**
+	 * Convert the input SAM file records into WIG format of read depth
+	 * 
+	 * @param samOrBam
+	 * @param out
+	 * @throws IOException
+	 */
 	public void convert(File samOrBam, Writer out) throws IOException {
-		this.out = out;
+		this.reporter = new CoverageWriter(out);
 		SAMFileReader.setDefaultValidationStringency(ValidationStringency.SILENT);
 		SAMFileReader samReader = new SAMFileReader(samOrBam);
+		try {
+			convert(samReader.iterator());
+		}
+		finally {
+			samReader.close();
+			this.reporter.flush();
+		}
+	}
 
-		// map-reduce style code 
+	public void convert(SAMRecordIterator cursor) throws IOException {
+
+		// map-reduce style code (much simpler if we have a framework to execute MapReduce) 
 		// map
 		//   r: SAMRecord -> ((r.chr, x), 1)  (x = r.start, ..., r.end) 
 		// reduce
@@ -62,30 +123,28 @@ public class Sam2WigConverter {
 
 		int sweepLine = 1;
 		// assume that SAM reads are sorted in the start order
-		for (SAMRecordIterator it = samReader.iterator(); it.hasNext();) {
-			SAMRecord read = it.next();
+		for (; cursor.hasNext();) {
+			SAMRecord read = cursor.next();
 
 			String ref = read.getReferenceName();
 
 			if (currentChr == null || (currentChr != null && !currentChr.equals(ref))) { // moved to the next chromosome
 				// flush the cached reads
 				if (!readSetInStartOrder.isEmpty()) {
-					int sweepEnd = maxReadEnd(readSetInStartOrder);
-					sweep(readSetInStartOrder, sweepLine, sweepEnd, out);
+					sweep(readSetInStartOrder, sweepLine, maxReadEnd(readSetInStartOrder));
 				}
 
 				readSetInStartOrder.clear();
 				sweepLine = 1;
 				currentChr = ref;
-
-				out.write(String.format("fixedStep chrom=%s start=%d step=1 span=1\n", currentChr, 1));
+				reporter.switchChr();
 			}
 
 			Interval readInterval = new Interval(read.getAlignmentStart(), read.getAlignmentEnd() + 1);
 			if (sweepLine < readInterval.getStart()) {
 				// we can sweep reads up to sweepEnd
 				int sweepEnd = readInterval.getStart();
-				sweep(readSetInStartOrder, sweepLine, sweepEnd, out);
+				sweep(readSetInStartOrder, sweepLine, sweepEnd);
 				sweepLine = sweepEnd;
 
 				// remove the reads before the sweep line   
@@ -100,12 +159,9 @@ public class Sam2WigConverter {
 		}
 
 		if (!readSetInStartOrder.isEmpty()) {
-			sweep(readSetInStartOrder, sweepLine, maxReadEnd(readSetInStartOrder), out);
+			sweep(readSetInStartOrder, sweepLine, maxReadEnd(readSetInStartOrder));
 		}
 
-		out.flush();
-
-		samReader.close();
 	}
 
 	public static final int maxReadEnd(Collection<Interval> readSet) {
@@ -117,17 +173,23 @@ public class Sam2WigConverter {
 		return maxEnd;
 	}
 
-	public static void sweep(Collection<Interval> readSet, int start, int end, Writer out) throws IOException {
+	void sweep(Collection<Interval> readSet, int start, int end) throws IOException {
 		if (start >= end)
 			return;
 
 		int[] coverage = getReadDepth(new Interval(start, end), readSet);
 		for (int i = 0; i < coverage.length; ++i) {
-			out.write(Integer.toString(coverage[i]));
-			out.write("\n");
+			reporter.report(currentChr, start + i, coverage[i]);
 		}
 	}
 
+	/**
+	 * Compute the read depth in the specified block
+	 * 
+	 * @param block
+	 * @param readsInBlock
+	 * @return
+	 */
 	public static int[] getReadDepth(Interval block, Collection<Interval> readsInBlock) {
 
 		int offset = block.getStart();
