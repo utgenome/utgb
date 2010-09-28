@@ -280,6 +280,8 @@ public class UTGBShell {
 		try {
 			BufferedReader reader = FileResource.open(Create.class, helpFileName);
 			String line;
+			if (reader == null)
+				return "";
 			while ((line = reader.readLine()) != null) {
 				out.append(line);
 				out.append(StringUtil.NEW_LINE);
