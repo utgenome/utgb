@@ -48,9 +48,8 @@ public class BarGraphCanvas extends Composite {
 
 	public BarGraphCanvas(TrackWindow window, int windowHeight) {
 		this.window = window;
-		Style.border(canvas, 1, "solid", "gray");
+		//Style.border(canvas, 1, "solid", "gray");
 		initWidget(canvas);
-
 		setPixelSize(window.getPixelWidth(), windowHeight);
 	}
 

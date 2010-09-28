@@ -51,9 +51,24 @@ public class GraphScale extends Composite {
 	private List<Widget> graphLabels = new ArrayList<Widget>();
 
 	public GraphScale() {
-
 		panel.add(frameCanvas, 0, 0);
 		initWidget(panel);
+	}
+
+	public void clearScaleBar() {
+		frameCanvas.clear();
+	}
+
+	public void clearScaleLabel() {
+		for (Widget each : graphLabels) {
+			each.removeFromParent();
+		}
+		graphLabels.clear();
+	}
+
+	public void clear() {
+		clearScaleBar();
+		clearScaleLabel();
 	}
 
 	public void draw(GraphStyle style, TrackWindow viewWindow, float min, float max) {
@@ -66,8 +81,7 @@ public class GraphScale extends Composite {
 		frameCanvas.setCoordSize(width, height);
 
 		ScalePainter scalePainter = new ScalePainter(style, viewWindow, min, max);
-		scalePainter.drawFrame();
-		scalePainter.drawScaleLabel();
+		scalePainter.draw();
 
 	}
 
@@ -84,12 +98,16 @@ public class GraphScale extends Composite {
 			indent = createIndent();
 		}
 
-		public void drawFrame() {
-			frameCanvas.clear();
+		public void draw() {
+			clear();
+			if (style.drawScale)
+				drawScale();
 
-			if (!style.drawScale) {
-				return;
-			}
+			if (style.showScaleLabel)
+				drawScaleLabel();
+		}
+
+		public void drawScale() {
 
 			// draw frame
 			frameCanvas.saveContext();
@@ -136,9 +154,6 @@ public class GraphScale extends Composite {
 
 		public void drawScaleLabel() {
 
-			if (!style.showScaleLabel)
-				return;
-
 			int fontHeight = 10;
 
 			for (int i = 0; i <= indent.nSteps; i++) {
@@ -160,13 +175,8 @@ public class GraphScale extends Composite {
 					labelY = style.windowHeight - fontHeight;
 				}
 
-				//			if (labelY > style.windowHeight) {
-				//				continue;
-				//			}
-
 				graphLabels.add(label);
 				panel.add(label, labelX, labelY);
-
 			}
 		}
 

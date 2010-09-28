@@ -31,6 +31,7 @@ import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.CompactWIGData;
 import org.utgenome.gwt.utgb.client.canvas.BarGraphCanvas;
 import org.utgenome.gwt.utgb.client.canvas.GWTGraphCanvas.GraphStyle;
+import org.utgenome.gwt.utgb.client.canvas.GraphScale;
 import org.utgenome.gwt.utgb.client.canvas.TrackWindowChain;
 import org.utgenome.gwt.utgb.client.canvas.TrackWindowChain.WindowUpdateInfo;
 import org.utgenome.gwt.utgb.client.track.Track;
@@ -69,6 +70,7 @@ public class WIGTrack extends TrackBase {
 
 	private final AbsolutePanel panel = new AbsolutePanel();
 	private final FlexTable layoutTable = new FlexTable();
+	private final GraphScale scale = new GraphScale();
 
 	private TrackWindowChain chain = new TrackWindowChain();
 	private final List<List<BarGraphCanvas>> buffer = new ArrayList<List<BarGraphCanvas>>(2);
@@ -89,6 +91,8 @@ public class WIGTrack extends TrackBase {
 		Style.margin(layoutTable, 0);
 		Style.padding(layoutTable, 0);
 		Style.fullSize(layoutTable);
+
+		panel.add(scale, 0, 0);
 		layoutTable.setWidget(0, 0, panel);
 	}
 
@@ -213,6 +217,10 @@ public class WIGTrack extends TrackBase {
 					if (style.autoScale)
 						calculateScale();
 
+					// redraw scale
+					scale.draw(style, newWindow, autoScaledMinValue, autoScaledMaxValue);
+
+					// draw new graph
 					graph.draw(graphData, style);
 					clearBackgroundGraph(queryWindow);
 				}
@@ -224,9 +232,17 @@ public class WIGTrack extends TrackBase {
 		if (style.autoScale)
 			needRedrawing = calculateScale();
 
-		if (needRedrawing && !chain.getTrackWindowList().isEmpty()) {
-			for (BarGraphCanvas each : getFrontBuffer()) {
-				each.redraw(style);
+		// redraw graphs
+		if (needRedrawing) {
+			if (!chain.getTrackWindowList().isEmpty()) {
+				for (BarGraphCanvas each : getFrontBuffer()) {
+					each.redraw(style);
+				}
+			}
+
+			if (updateInfo.windowToCreate.isEmpty()) {
+				// redraw scale
+				scale.draw(style, newWindow, autoScaledMinValue, autoScaledMaxValue);
 			}
 		}
 
