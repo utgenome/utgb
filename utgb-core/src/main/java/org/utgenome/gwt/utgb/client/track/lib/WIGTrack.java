@@ -188,7 +188,6 @@ public class WIGTrack extends TrackBase {
 		});
 
 		// move the graph canvases
-
 		for (BarGraphCanvas each : getFrontBuffer()) {
 			int x = newWindow.convertToPixelX(each.getTrackWindow().getStartOnGenome());
 			panel.setWidgetPosition(each, x, 0);
@@ -230,13 +229,12 @@ public class WIGTrack extends TrackBase {
 
 		// scale 
 		boolean scaleHasChanged = style.autoScale && calculateScale();
-
-		// redraw scale
-		scale.draw(style, newWindow);
-
-		// redraw the already displayed graphs
 		if (needRedrawing || scaleHasChanged) {
-			// redraw graphs
+			// redraw scale
+			if (updateInfo.windowToCreate.isEmpty())
+				scale.draw(style, newWindow);
+
+			// redraw the already displayed graphs
 			for (BarGraphCanvas each : getFrontBuffer()) {
 				each.redraw(style);
 			}

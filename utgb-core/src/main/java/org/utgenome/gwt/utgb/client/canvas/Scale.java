@@ -69,7 +69,7 @@ public class Scale {
 		if (!style.autoScale)
 			setMinMax(style.minValue, style.maxValue);
 		else
-			setMinMax(style.autoScaledMin, style.maxValue);
+			setMinMax(style.autoScaledMin, style.autoScaledMax);
 	}
 
 	/**
