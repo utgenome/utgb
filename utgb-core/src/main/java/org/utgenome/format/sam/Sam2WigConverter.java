@@ -123,6 +123,8 @@ public class Sam2WigConverter {
 			if (endMax < each.getEnd())
 				endMax = each.getEnd();
 		}
+		if (endMax > block.getEnd())
+			endMax = block.getEnd();
 
 		final int width = endMax - block.getStart();
 		int[] coverage = new int[width];
