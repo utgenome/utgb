@@ -44,6 +44,7 @@ public class BarGraphCanvas extends Composite {
 	private final String DEFAULT_COLOR = "rgba(12,106,193,0.7)";
 	private GWTCanvas canvas = new GWTCanvas();
 	private TrackWindow window = new TrackWindow();
+	private final Scale scale = new Scale();
 
 	public BarGraphCanvas(TrackWindow window, int windowHeight) {
 		this.window = window;
@@ -98,6 +99,7 @@ public class BarGraphCanvas extends Composite {
 	public void setAutoScaleValue(float min, float max) {
 		this.autoScaledMinValue = min;
 		this.autoScaledMaxValue = max;
+		scale.setMinMax(min, max);
 	}
 
 	public List<CompactWIGData> getGraphData() {
@@ -116,6 +118,8 @@ public class BarGraphCanvas extends Composite {
 			}
 		}
 		setPixelWidth(window.getPixelWidth(), style.windowHeight);
+
+		scale.updateStyle(style);
 
 		for (CompactWIGData data : graphData) {
 			// get graph color
@@ -138,7 +142,7 @@ public class BarGraphCanvas extends Composite {
 			min = style.autoScale ? autoScaledMinValue : style.minValue;
 			max = style.autoScale ? autoScaledMaxValue : style.maxValue;
 
-			float y2 = getYPosition(0.0f, style);
+			float y2 = scale.getYPosition(0.0f);
 
 			// draw data graph
 			final boolean isReverse = window.isReverseStrand();
@@ -155,7 +159,7 @@ public class BarGraphCanvas extends Composite {
 					}
 				}
 				else {
-					y1 = getYPosition(value, style);
+					y1 = scale.getYPosition(value);
 				}
 
 				int x = i;
@@ -174,52 +178,6 @@ public class BarGraphCanvas extends Composite {
 			canvas.restoreContext();
 		}
 
-	}
-
-	/**
-	 * Return pixel Y position of the given graph value
-	 * 
-	 * @param value
-	 * @return
-	 */
-	float getYPosition(float value, GraphStyle style) {
-
-		if (min == max)
-			return 0.0f;
-
-		float tempMin = max < min ? max : min;
-		float tempMax = max > min ? max : min;
-
-		if (style.logScale) {
-			value = getLogValue(value, style.logBase);
-			tempMax = getLogValue(tempMax, style.logBase);
-			tempMin = getLogValue(tempMin, style.logBase);
-		}
-		float valueHeight = (value - tempMin) / (tempMax - tempMin) * style.windowHeight;
-
-		if (style.isReverseYAxis())
-			return valueHeight;
-		else
-			return style.windowHeight - valueHeight;
-	}
-
-	public static float getLogValue(float value, float logBase) {
-		if (Math.log(logBase) == 0.0)
-			return value;
-
-		float temp = 0.0f;
-		if (value > 0.0f) {
-			temp = (float) (Math.log(value) / Math.log(logBase) + 1.0);
-			if (temp < 0.0f)
-				temp = 0.0f;
-		}
-		else if (value < 0.0f) {
-			temp = (float) (Math.log(-value) / Math.log(logBase) + 1.0);
-			if (temp < 0.0f)
-				temp = 0.0f;
-			temp *= -1.0f;
-		}
-		return temp;
 	}
 
 }
