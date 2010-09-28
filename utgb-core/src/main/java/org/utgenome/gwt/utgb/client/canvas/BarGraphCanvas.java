@@ -33,6 +33,12 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.widgetideas.graphics.client.Color;
 import com.google.gwt.widgetideas.graphics.client.GWTCanvas;
 
+/**
+ * Canvas for drawing {@link CompactWIGData}
+ * 
+ * @author leo
+ * 
+ */
 public class BarGraphCanvas extends Composite {
 
 	private final String DEFAULT_COLOR = "rgba(12,106,193,0.7)";

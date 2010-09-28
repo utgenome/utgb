@@ -168,8 +168,8 @@ public class WIGTrack extends TrackBase {
 			for (BarGraphCanvas each : getBackgroundBuffer()) {
 				TrackWindow old = each.getTrackWindow();
 				if (old.equals(toDiscard)) {
-					panel.setWidgetPosition(each, newWindow.convertToPixelX(old.getStartOnGenome()), 0);
 					each.setTrackWindow(old.newPixelWidthWindow(newWindow.convertToPixelLength(old.getSequenceLength())));
+					panel.setWidgetPosition(each, newWindow.convertToPixelX(old.getStartOnGenome()), 0);
 				}
 			}
 		}
