@@ -28,7 +28,7 @@ import org.utgenome.gwt.utgb.client.track.Track;
 
 /**
  * WIG Track for displaying graph data, including bar chart, heat map, etc. Note: the implementation of
- * WIGGraphCanvasTrack was moved to {@link WIGTrack}.
+ * WIGGraphCanvasTrack was moved to {@link WIGTrack}. This track is preserved for the backward compatibility.
  * 
  * 
  * @author yoshimura

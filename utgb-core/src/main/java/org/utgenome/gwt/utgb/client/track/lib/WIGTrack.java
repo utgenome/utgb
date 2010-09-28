@@ -190,7 +190,7 @@ public class WIGTrack extends TrackBase {
 		// move the graph canvases
 		for (BarGraphCanvas each : getFrontBuffer()) {
 			int x = newWindow.convertToPixelX(each.getTrackWindow().getStartOnGenome());
-			panel.setWidgetPosition(each, x, 0);
+			Style.scrollX(each, x, 0.5);
 		}
 
 		// load graph
