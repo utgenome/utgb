@@ -175,7 +175,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 					int index = numRowsInCol * col + i;
 					if (index >= lines.size())
 						break;
-					p.add(new FixedWidthLabel(lines.get(index), 100));
+					p.add(new FixedWidthLabel(lines.get(index), 150));
 				}
 				infoTable.setWidget(0, col, p);
 			}
@@ -342,6 +342,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 					popupLabel.setPopupPosition(x, y);
 					popupLabel.update();
 					popupLabel.show();
+
 				}
 			}
 		};
@@ -505,7 +506,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 			popupLabel.removeFromParent();
 
 		scale.removeFromParent();
-		
+
 		for (Widget w : readLabels) {
 			w.removeFromParent();
 		}
@@ -729,15 +730,37 @@ public class GWTGenomeCanvas extends TouchableComposite {
 				drawPadding(pixelPositionOnWindow(first.unclippedEnd), pixelPositionOnWindow(second.unclippedStart), y1, getColor("#666666", 0.8f), true);
 			}
 
-			visitSAMRead(first, y1, true);
-			visitSAMRead(second, y2, true);
+			drawSAMRead(first, y1, true);
+			drawSAMRead(second, y2, true);
 		}
 
 		public void visitSAMRead(SAMRead r) {
-			visitSAMRead(r, getYPos(), true);
+			drawSAMRead(r, getYPos(), true);
+
+			if (r.isMappedInProperPair()) {
+				// draw gap
+
+				if (r.mStart < r.unclippedStart) {
+					drawPadding(pixelPositionOnWindow(r.mStart), pixelPositionOnWindow(r.unclippedStart), getYPos(), getColor("#666666", 0.8f), true);
+				}
+				else {
+					drawPadding(pixelPositionOnWindow(r.unclippedEnd), pixelPositionOnWindow(r.mStart), getYPos(), getColor("#666666", 0.8f), true);
+				}
+
+			}
+
 		}
 
-		public void visitSAMRead(SAMRead r, int y, boolean drawLabel) {
+		class PostponedInsertion {
+			final int pixelX;
+
+			public PostponedInsertion(int pixelX) {
+				this.pixelX = pixelX;
+			}
+
+		}
+
+		public void drawSAMRead(SAMRead r, int y, boolean drawLabel) {
 
 			try {
 				int cx1 = pixelPositionOnWindow(r.unclippedStart);
@@ -760,6 +783,9 @@ public class GWTGenomeCanvas extends TouchableComposite {
 					int readStart = r.getStart();
 					int seqIndex = 0;
 
+					// Drawing insertions should be postponed after all of he read bases are painted.
+					List<PostponedInsertion> postponed = new ArrayList<PostponedInsertion>();
+
 					for (int cigarIndex = 0; cigarIndex < cigar.size(); cigarIndex++) {
 						CIGAR.Element e = cigar.get(cigarIndex);
 
@@ -776,9 +802,9 @@ public class GWTGenomeCanvas extends TouchableComposite {
 							// ref : ---AAA
 							// read: AAAAAA
 							// cigar: 3I3M
+							postponed.add(new PostponedInsertion(x1));
 							readEnd = readStart;
 							seqIndex += e.length;
-							drawGeneRect(x1, pixelPositionOnWindow(readStart) + 1, y, getColor("#FFAAFF", 0.8f), false);
 							break;
 						case Padding:
 							// ref : AAAAAA
@@ -826,6 +852,10 @@ public class GWTGenomeCanvas extends TouchableComposite {
 							break;
 						}
 						readStart = readEnd;
+					}
+
+					for (PostponedInsertion each : postponed) {
+						drawGeneRect(each.pixelX, each.pixelX + 1, y, getColor("#111111", 1.0f), true);
 					}
 				}
 
