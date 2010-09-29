@@ -30,7 +30,8 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * {@link Style} is a helper class to edit CSS (Cascading Style Sheet) design
+ * {@link Style} is a helper class to edit CSS (Cascading Style Sheet) design of widgets by setting their DOM
+ * properties.
  * 
  * @author leo
  * 
@@ -467,4 +468,14 @@ public class Style {
 		set(w, "top", destY + "px");
 	}
 
+	public static void opacity(Widget w, double alpha) {
+		switch (BrowserInfo.getBrowserType()) {
+		case IE:
+			set(w, "filter", "alpha(opacity=" + alpha + ")");
+			break;
+		default:
+			set(w, "opacity", Double.toString(alpha));
+			break;
+		}
+	}
 }
