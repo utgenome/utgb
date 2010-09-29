@@ -42,7 +42,6 @@ import java.util.List;
 import org.utgenome.UTGBException;
 import org.utgenome.gwt.utgb.client.bio.BEDGene;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
-import org.utgenome.gwt.utgb.client.bio.Gene;
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
 import org.xerial.core.XerialException;
 import org.xerial.db.sql.ResultSetHandler;
@@ -229,7 +228,7 @@ public class BEDDatabase {
 
 		public void addGene(BEDEntry gene) {
 			if (coordinate.equals(gene.coordinate) && (start <= gene.getEnd()) && (end >= gene.getStart())) {
-				geneList.add(new Gene(gene));
+				geneList.add(new BEDGene(gene));
 			}
 		}
 
