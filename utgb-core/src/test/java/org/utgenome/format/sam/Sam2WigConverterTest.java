@@ -28,6 +28,7 @@ import java.io.OutputStreamWriter;
 import org.junit.Test;
 import org.xerial.util.FileResource;
 import org.xerial.util.FileUtil;
+import org.xerial.util.io.NullOutputStream;
 
 public class Sam2WigConverterTest {
 
@@ -51,7 +52,7 @@ public class Sam2WigConverterTest {
 		FileUtil.copy(FileResource.openByteStream(Sam2WigConverterTest.class, "sorted.sam"), input);
 
 		Sam2WigConverter converter = new Sam2WigConverter();
-		converter.convert(input, new OutputStreamWriter(System.err));
+		converter.convert(input, new OutputStreamWriter(new NullOutputStream()));
 
 	}
 
