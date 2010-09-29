@@ -54,8 +54,10 @@ public class Sam2WigConverter {
 		private boolean needToOutputHeader = true;
 		private final Writer out;
 
-		public CoverageWriter(Writer out) {
+		public CoverageWriter(Writer out) throws IOException {
 			this.out = out;
+
+			out.write(String.format("track type=wiggle_0\n"));
 		}
 
 		public void switchChr() {

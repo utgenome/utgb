@@ -54,6 +54,7 @@ import org.utgenome.gwt.utgb.client.bio.ReadList;
 import org.utgenome.gwt.utgb.client.bio.ReferenceSequence;
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.bio.SAMReadPair;
+import org.utgenome.gwt.utgb.client.canvas.GWTGraphCanvas.GraphStyle;
 import org.utgenome.gwt.utgb.client.canvas.IntervalLayout.IntervalRetriever;
 import org.utgenome.gwt.utgb.client.canvas.IntervalLayout.LocusLayout;
 import org.utgenome.gwt.utgb.client.track.TrackGroup;
@@ -71,7 +72,6 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -175,7 +175,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 					int index = numRowsInCol * col + i;
 					if (index >= lines.size())
 						break;
-					p.add(new HTML(lines.get(index)));
+					p.add(new FixedWidthLabel(lines.get(index), 100));
 				}
 				infoTable.setWidget(0, col, p);
 			}
@@ -504,6 +504,8 @@ public class GWTGenomeCanvas extends TouchableComposite {
 		if (popupLabel != null)
 			popupLabel.removeFromParent();
 
+		scale.removeFromParent();
+
 		for (Widget w : readLabels) {
 			w.removeFromParent();
 		}
@@ -577,11 +579,11 @@ public class GWTGenomeCanvas extends TouchableComposite {
 
 			drawLabel(g);
 		}
-		
+
 		public void visitBEDGene(BEDGene g) {
 			visitGene(g);
 		}
-		
+
 		public void drawBases(int startOnGenome, int y, String seq) {
 
 			int pixelWidthOfBase = (int) (trackWindow.getPixelLengthPerBase() + 0.1d);
@@ -985,6 +987,8 @@ public class GWTGenomeCanvas extends TouchableComposite {
 
 	private final int TRACK_COLLAPSE_COVERAGE_THRESHOLD = 40;
 
+	private GraphScale scale = new GraphScale();
+
 	public <T extends OnGenome> void drawBlock(ReadCoverage block) {
 
 		// compute max height
@@ -1018,6 +1022,15 @@ public class GWTGenomeCanvas extends TouchableComposite {
 		}
 
 		block.accept(cPainter);
+
+		GraphStyle scaleStyle = new GraphStyle();
+		scaleStyle.autoScale = false;
+		scaleStyle.minValue = hFinder.maxHeight;
+		scaleStyle.maxValue = 0;
+		scaleStyle.windowHeight = canvasHeight;
+		scaleStyle.drawScale = false;
+		scale.draw(scaleStyle, this.trackWindow);
+		panel.add(scale, 0, 0);
 	}
 
 	public void resetData(List<OnGenome> readSet) {
