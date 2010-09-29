@@ -51,7 +51,12 @@ public class Sam2WigConverter {
 
 	public static class CoverageWriter {
 		private int skipLength = 0;
-		private boolean needToOutputHeader = true;
+
+		private enum State {
+			LEADING_ZEROs, AFTER_HEADER
+		}
+
+		private State state = State.LEADING_ZEROs;
 		private final Writer out;
 
 		public CoverageWriter(Writer out) throws IOException {
@@ -62,11 +67,12 @@ public class Sam2WigConverter {
 
 		public void switchChr() {
 			skipLength = 0;
-			needToOutputHeader = true;
+			state = State.LEADING_ZEROs;
 		}
 
 		public void outputHeader(String chr, int start) throws IOException {
 			out.write(String.format("fixedStep chrom=%s start=%d step=1 span=1\n", chr, start));
+			state = State.AFTER_HEADER;
 		}
 
 		public void flush() throws IOException {
@@ -74,23 +80,18 @@ public class Sam2WigConverter {
 		}
 
 		public void report(String chr, int start, int value) throws IOException {
-			if (value == 0)
-				skipLength++;
-			else {
-				if (skipLength > 0) {
+			if (state == State.LEADING_ZEROs) {
+				if (value == 0)
+					skipLength++;
+				else {
 					outputHeader(chr, start);
 					skipLength = 0;
-					needToOutputHeader = false;
 				}
-
-				if (needToOutputHeader) {
-					outputHeader(chr, start);
-					needToOutputHeader = false;
-				}
-
-				out.write(Integer.toString(value));
-				out.write("\n");
 			}
+
+			// output data entry
+			out.write(Integer.toString(value));
+			out.write("\n");
 		}
 
 	}

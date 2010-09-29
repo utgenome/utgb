@@ -68,7 +68,7 @@ public class WIGDatabaseGenerator {
 
 	private static boolean isVariableStep = true;
 	private static boolean isAddTrackId = true;
-	private static boolean isBufferEnpty = true;
+	private static boolean isBufferEmpty = true;
 
 	private static int buffer_count = 0;
 	private static long buffer_start = -1;
@@ -114,9 +114,9 @@ public class WIGDatabaseGenerator {
 			stat.executeUpdate("create table data (track_id integer, start integer, end integer, min_value real, "
 					+ "max_value real, data_num integer, chrom_starts blob, " + "data_values blob)");
 
-			PreparedStatement p1 = conn.prepareStatement("insert into browser values(?)");
-			PreparedStatement p2 = conn.prepareStatement("insert into track values(?, ?, ?)");
-			PreparedStatement p3 = conn.prepareStatement("insert into data values(?, ?, ?, ?, ?, ?, ?, ?)");
+			PreparedStatement browserInfoInsertQuery = conn.prepareStatement("insert into browser values(?)");
+			PreparedStatement trackInsertQuery = conn.prepareStatement("insert into track values(?, ?, ?)");
+			PreparedStatement dataBlockInsertQuery = conn.prepareStatement("insert into data values(?, ?, ?, ?, ?, ?, ?, ?)");
 
 			stopWatch.reset();
 
@@ -126,18 +126,18 @@ public class WIGDatabaseGenerator {
 				}
 				else if (line.startsWith("browser")) {
 					// flush buffer
-					if (!isBufferEnpty) {
-						insertData(track_id, p3);
+					if (!isBufferEmpty) {
+						insertData(track_id, dataBlockInsertQuery);
 						nPoints = 0;
 					}
 
 					// insert browser line
-					readBrowserLine(p1, line);
+					readBrowserLine(browserInfoInsertQuery, line);
 				}
 				else if (line.startsWith("track") || line.startsWith("variableStep") || line.startsWith("fixedStep")) {
 					// flush buffer
-					if (!isBufferEnpty) {
-						insertData(track_id, p3);
+					if (!isBufferEmpty) {
+						insertData(track_id, dataBlockInsertQuery);
 						nPoints = 0;
 					}
 
@@ -147,11 +147,11 @@ public class WIGDatabaseGenerator {
 					}
 
 					// insert track line
-					readHeaderLine(track_id, p2, line);
+					readHeaderLine(track_id, trackInsertQuery, line);
 				}
 				else {
 					// insert data lines					
-					isBufferEnpty = false;
+					isBufferEmpty = false;
 
 					if (isVariableStep) {
 						String[] lineValues = readDataLine(line, lineNum);
@@ -184,14 +184,14 @@ public class WIGDatabaseGenerator {
 					buffer_count++;
 
 					if (buffer_count >= dataSplitUnit) {
-						insertData(track_id, p3);
+						insertData(track_id, dataBlockInsertQuery);
 					}
 				}
 				lineNum++;
 			}
 
-			if (!isBufferEnpty) {
-				insertData(track_id, p3);
+			if (!isBufferEmpty) {
+				insertData(track_id, dataBlockInsertQuery);
 			}
 
 			stat.executeUpdate("create index track_index on track (name, value)");
@@ -199,9 +199,9 @@ public class WIGDatabaseGenerator {
 
 			conn.commit();
 
-			p1.close();
-			p2.close();
-			p3.close();
+			browserInfoInsertQuery.close();
+			trackInsertQuery.close();
+			dataBlockInsertQuery.close();
 			stat.close();
 			conn.close();
 
@@ -218,7 +218,6 @@ public class WIGDatabaseGenerator {
 
 		System.arraycopy(chromStarts, 0, tempChromStarts, 0, buffer_count);
 		System.arraycopy(dataValues, 0, tempDataValues, 0, buffer_count);
-
 		ByteArrayOutputStream buf = new ByteArrayOutputStream();
 		ObjectOutputStream out = new ObjectOutputStream(buf);
 		if (isVariableStep) {
@@ -249,7 +248,7 @@ public class WIGDatabaseGenerator {
 		chromStarts = new int[dataSplitUnit];
 		dataValues = new float[dataSplitUnit];
 		isAddTrackId = true;
-		isBufferEnpty = true;
+		isBufferEmpty = true;
 		chromStartBuffer.reset();
 		dataValueBuffer.reset();
 		buffer_count = 0;

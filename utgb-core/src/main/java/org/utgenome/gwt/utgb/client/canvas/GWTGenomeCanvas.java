@@ -505,7 +505,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 			popupLabel.removeFromParent();
 
 		scale.removeFromParent();
-
+		
 		for (Widget w : readLabels) {
 			w.removeFromParent();
 		}
