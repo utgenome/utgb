@@ -89,10 +89,11 @@ import com.google.gwt.widgetideas.graphics.client.ImageLoader.CallBack;
  */
 public class GWTGenomeCanvas extends TouchableComposite {
 
-	private int defaultGeneHeight = 12;
-	private int defaultMinGeneHeight = 2;
+	private ReadDisplayStyle style = new ReadDisplayStyle();
+	//	private int defaultGeneHeight = 12;
+	//	private int defaultMinGeneHeight = 2;
 
-	private int geneHeight = defaultGeneHeight;
+	private int geneHeight = style.readHeight;
 	private int geneMargin = 2;
 
 	private boolean reverse = false;
@@ -120,17 +121,6 @@ public class GWTGenomeCanvas extends TouchableComposite {
 	public GWTGenomeCanvas() {
 
 		initWidget();
-	}
-
-	public void setCoverageStyle(String style) {
-		if (style == null)
-			return;
-
-		CoverageStyle s = CoverageStyle.valueOf(CoverageStyle.class, style.toUpperCase());
-		if (s != null) {
-			coverageStyle = s;
-		}
-
 	}
 
 	static class PopupInfo extends PopupPanel {
@@ -352,15 +342,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 		timer.schedule(100);
 	}
 
-	public void setShowLabels(boolean show) {
-		intervalLayout.setKeepSpaceForLabels(show);
-	}
-
-	private boolean allowPEOverap = false;
-
 	public void setAllowOverlapPairedReads(boolean allow) {
-		this.allowPEOverap = allow;
-		intervalLayout.setAllowOverlapPairedReads(allow);
 	}
 
 	/**
@@ -659,7 +641,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 				return;
 
 			IntervalRetriever ir = new IntervalRetriever();
-			ir.allowPEOverlap = allowPEOverap;
+			ir.allowPEOverlap = style.overlapPairedReads;
 			r.accept(ir);
 
 			int gx1 = pixelPositionOnWindow(ir.start);
@@ -728,7 +710,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 			int y1 = getYPos();
 			int y2 = y1;
 
-			if (!allowPEOverap && first.unclippedSequenceHasOverlapWith(second)) {
+			if (!style.overlapPairedReads && first.unclippedSequenceHasOverlapWith(second)) {
 				if (first.unclippedStart > second.unclippedStart) {
 					SAMRead tmp = first;
 					first = second;
@@ -1043,7 +1025,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 		block.accept(hFinder);
 
 		//int heightOfRead = hFinder.maxHeight > TRACK_COLLAPSE_COVERAGE_THRESHOLD ? 2 : defaultGeneHeight;
-		int heightOfRead = defaultMinGeneHeight;
+		int heightOfRead = style.minReadHeight;
 
 		int canvasHeight = hFinder.maxHeight * heightOfRead;
 		float scalingFactor = 1.0f;
@@ -1092,7 +1074,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 		boolean drawBase = trackWindow.getSequenceLength() <= (trackWindow.getPixelWidth() / FONT_WIDTH);
 		if (drawBase && imageACGT == null) {
 			int pixelWidthOfBase = (int) (trackWindow.getPixelLengthPerBase() + 0.1d);
-			ImageLoader.loadImages(new String[] { "utgb-core/ACGT.png?fontWidth=" + pixelWidthOfBase + "&height=" + defaultGeneHeight }, new CallBack() {
+			ImageLoader.loadImages(new String[] { "utgb-core/ACGT.png?fontWidth=" + pixelWidthOfBase + "&height=" + style.readHeight }, new CallBack() {
 				public void onImagesLoaded(ImageElement[] imageElements) {
 					imageACGT = imageElements[0];
 					layout();
@@ -1109,9 +1091,9 @@ public class GWTGenomeCanvas extends TouchableComposite {
 		int maxOffset = intervalLayout.createLocalLayout(geneHeight);
 
 		if (maxOffset > TRACK_COLLAPSE_COVERAGE_THRESHOLD)
-			geneHeight = defaultMinGeneHeight;
+			geneHeight = style.minReadHeight;
 		else
-			geneHeight = defaultGeneHeight;
+			geneHeight = style.readHeight;
 
 		int h = geneHeight + geneMargin;
 		int height = (maxOffset + 1) * h;
@@ -1337,14 +1319,19 @@ public class GWTGenomeCanvas extends TouchableComposite {
 
 	}
 
-	public void setReadHeight(int height) {
-		this.defaultGeneHeight = height;
+	public void setReadStyle(ReadDisplayStyle style) {
+		this.style = style;
+		intervalLayout.setKeepSpaceForLabels(style.showLabels);
 		imageACGT = null;
-	}
 
-	public void setReadHeightMin(int height) {
-		this.defaultMinGeneHeight = height;
-		imageACGT = null;
+		if (style.coverageStyle != null) {
+			CoverageStyle s = CoverageStyle.valueOf(CoverageStyle.class, style.coverageStyle.toUpperCase());
+			if (s != null) {
+				coverageStyle = s;
+			}
+		}
+
+		intervalLayout.setAllowOverlapPairedReads(style.overlapPairedReads);
 	}
 
 }

@@ -37,6 +37,7 @@ import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig;
 import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig.Layout;
 import org.utgenome.gwt.utgb.client.canvas.GWTGenomeCanvas;
 import org.utgenome.gwt.utgb.client.canvas.LocusClickHandler;
+import org.utgenome.gwt.utgb.client.canvas.ReadDisplayStyle;
 import org.utgenome.gwt.utgb.client.db.ValueDomain;
 import org.utgenome.gwt.utgb.client.db.datatype.StringType;
 import org.utgenome.gwt.utgb.client.track.Track;
@@ -168,19 +169,14 @@ import com.google.gwt.user.client.ui.Widget;
 public class ReadTrack extends TrackBase {
 
 	// track configuration parameters
-	private final String CONFIG_LEFT_MARGIN = "leftMargin";
 	private final String CONFIG_DB_TYPE = "dbType";
 	private final String CONFIG_PATH = "path";
 	private final String CONFIG_LAYOUT = "layout";
-	private final String CONFIG_SHOW_LABELS = "showLabels";
-	private final String CONFIG_READ_HEIGHT = "read height";
-	private final String CONFIG_MIN_READ_HEIGHT = "min read height";
-	private final String CONFIG_NUM_READ_MAX = "num reads to display";
-	private final String CONFIG_PE_OVERLAP = "overlap paired reads";
-	private final String CONFIG_COVERAGE_STYLE = "coverage.style";
 	private final String CONFIG_ONCLICK_ACTION = "onclick.action";
 	private final String CONFIG_ONCLICK_URL = "onclick.url";
 	private final String CONFIG_ONCLICK_P_KEY = "onclick.set";
+
+	private ReadDisplayStyle style = new ReadDisplayStyle();
 
 	// widgets
 	private FlexTable layoutTable = new FlexTable();
@@ -302,11 +298,13 @@ public class ReadTrack extends TrackBase {
 	public void draw() {
 
 		// set up drawing options
-		geneCanvas.setShowLabels(getConfig().getBoolean(CONFIG_SHOW_LABELS, true));
-		geneCanvas.setReadHeight(getConfig().getInt(CONFIG_READ_HEIGHT, 12));
-		geneCanvas.setReadHeightMin(getConfig().getInt(CONFIG_MIN_READ_HEIGHT, 2));
-		geneCanvas.setCoverageStyle(getConfig().getString(CONFIG_COVERAGE_STYLE, "default"));
-		geneCanvas.setAllowOverlapPairedReads(getConfig().getBoolean(CONFIG_PE_OVERLAP, false));
+		//		geneCanvas.setShowLabels(getConfig().getBoolean(CONFIG_SHOW_LABELS, true));
+		//		geneCanvas.setReadHeight(getConfig().getInt(CONFIG_READ_HEIGHT, 12));
+		//		geneCanvas.setReadHeightMin(getConfig().getInt(CONFIG_MIN_READ_HEIGHT, 2));
+		//		geneCanvas.setCoverageStyle(getConfig().getString(CONFIG_COVERAGE_STYLE, "default"));
+		//		geneCanvas.setAllowOverlapPairedReads(getConfig().getBoolean(CONFIG_PE_OVERLAP, false));
+
+		geneCanvas.setReadStyle(style);
 
 		geneCanvas.draw();
 		getFrame().loadingDone();
@@ -341,23 +339,11 @@ public class ReadTrack extends TrackBase {
 
 		update(group.getTrackWindow(), true);
 		TrackConfig config = getConfig();
-		config.addHiddenConfig(CONFIG_LEFT_MARGIN, "0");
 		config.addConfig("DB Path", new StringType(CONFIG_PATH), "");
-
 		config.addHiddenConfig(CONFIG_DB_TYPE, "AUTO");
-		//ValueDomain dbTypes = ValueDomain.createNewValueDomain(DBType.getDBTypeList());
-		//config.addConfigParameter("DB Type", new StringType(CONFIG_DB_TYPE, dbTypes), "AUTO");
 
-		ValueDomain layoutTypes = ValueDomain.createNewValueDomain(new String[] { "pileup", "coverage" });
-		config.addConfig("Layout", new StringType(CONFIG_LAYOUT, layoutTypes), "pileup");
-		config.addConfigBoolean("Show Labels", CONFIG_SHOW_LABELS, true);
-		config.addConfigInteger("Read Height", CONFIG_READ_HEIGHT, 12);
-		config.addConfigInteger("Read Height (min)", CONFIG_MIN_READ_HEIGHT, 2);
-		config.addConfigInteger("# of Reads to Cache", CONFIG_NUM_READ_MAX, 500);
-		config.addConfigBoolean("Overlap Paired-End Reads", CONFIG_PE_OVERLAP, false);
+		style.setup(config);
 
-		config.addConfig("Coverage Display Style",
-				new StringType(CONFIG_COVERAGE_STYLE, ValueDomain.createNewValueDomain(new String[] { "default", "smooth" })), "default");
 		ValueDomain actionTypes = ValueDomain.createNewValueDomain(new String[] { "none", "link", "info", "set" });
 		config.addConfig("On Click Action", new StringType(CONFIG_ONCLICK_ACTION, actionTypes), "link");
 		config.addConfig("On Click URL", new StringType(CONFIG_ONCLICK_URL), "http://www.google.com/search?q=%q");
@@ -371,8 +357,7 @@ public class ReadTrack extends TrackBase {
 	@Override
 	public void beforeChangeTrackWindow(TrackWindow newWindow) {
 
-		final String layout = getConfig().getString(CONFIG_LAYOUT, "pileup");
-		if ("coverage".equals(layout) && current != null && !current.hasSameScaleWith(newWindow)) {
+		if ("coverage".equals(style.layout) && current != null && !current.hasSameScaleWith(newWindow)) {
 			needUpdateForGraphicRefinement = true;
 		}
 
@@ -398,10 +383,8 @@ public class ReadTrack extends TrackBase {
 		TrackWindow prefetchWindow = geneCanvas.getPrefetchWindow();
 		String chr = getTrackGroupProperty(UTGBProperty.TARGET);
 
-		final String layout = getConfig().getString(CONFIG_LAYOUT, "pileup");
-		final int numReadsMax = getConfig().getInt(CONFIG_NUM_READ_MAX, 500);
 		ReadQueryConfig queryConfig = new ReadQueryConfig(prefetchWindow.getPixelWidth(), BrowserInfo.isCanvasSupported(), Layout.valueOf(Layout.class,
-				layout.toUpperCase()), numReadsMax);
+				style.layout.toUpperCase()), style.numReadsMax);
 
 		getFrame().setNowLoading();
 		getBrowserService().getOnGenomeData(getGenomeDB(), new ChrLoc(chr, prefetchWindow.getStartOnGenome(), prefetchWindow.getEndOnGenome()), queryConfig,
@@ -416,7 +399,7 @@ public class ReadTrack extends TrackBase {
 
 					public void onSuccess(List<OnGenome> dataSet) {
 
-						if ("pileup".equals(layout) && dataSet.size() > 0 && DataChecker.isReadCoverage(dataSet.get(0))) {
+						if ("pileup".equals(style.layout) && dataSet.size() > 0 && DataChecker.isReadCoverage(dataSet.get(0))) {
 							needUpdateForGraphicRefinement = true;
 							// narrow down the prefetch range
 							float prefetchFactor = geneCanvas.getPrefetchFactor();
@@ -474,15 +457,19 @@ public class ReadTrack extends TrackBase {
 	@Override
 	public void onChangeTrackConfig(TrackConfigChange change) {
 
+		style.loadConfig(getConfig());
+
 		if (change.containsOneOf(new String[] { CONFIG_ONCLICK_ACTION, CONFIG_ONCLICK_URL })) {
 			updateClickAction();
 		}
 
-		if (change.containsOneOf(new String[] { CONFIG_SHOW_LABELS, CONFIG_LEFT_MARGIN, CONFIG_PATH, CONFIG_DB_TYPE, CONFIG_PE_OVERLAP })) {
+		if (change.containsOneOf(new String[] { ReadDisplayStyle.CONFIG_SHOW_LABELS, CONFIG_PATH, CONFIG_DB_TYPE, ReadDisplayStyle.CONFIG_PE_OVERLAP,
+				ReadDisplayStyle.CONFIG_SHOW_BASE_QUALITY, ReadDisplayStyle.CONFIG_READ_HEIGHT, ReadDisplayStyle.CONFIG_MIN_READ_HEIGHT,
+				ReadDisplayStyle.CONFIG_COVERAGE_STYLE, })) {
 			refresh();
 		}
 
-		if (change.containsOneOf(new String[] { CONFIG_LAYOUT, CONFIG_READ_HEIGHT, CONFIG_MIN_READ_HEIGHT, CONFIG_COVERAGE_STYLE, CONFIG_NUM_READ_MAX })) {
+		if (change.containsOneOf(new String[] { CONFIG_LAYOUT, ReadDisplayStyle.CONFIG_NUM_READ_MAX })) {
 			update(getTrackWindow(), true);
 		}
 	}
