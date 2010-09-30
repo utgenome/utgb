@@ -124,6 +124,8 @@ public class BrowserInfo {
 	      return false;
 	}-*/;
 
+	private static Agent agent = null;
+	
 	/**
 	 * Retrieve a short name, suitable for use in a tab or filename, for a given user agent.
 	 * 
@@ -131,27 +133,34 @@ public class BrowserInfo {
 	 * @return short name of user agent
 	 */
 	public static Agent getBrowserType() {
+		if(agent != null)
+			return agent;
+
+		
 		String userAgent = getUserAgent();
 		String lcAgent = userAgent.toLowerCase();
 		if(isMobileSafari()) {
-			return Agent.MobileSafari; 
+			agent = Agent.MobileSafari; 
 		}
 		else if (lcAgent.contains("msie")) {
-			return Agent.IE;
+			agent = Agent.IE;
 		}
 		else if (lcAgent.contains("chrome")) {
-			return Agent.Chrome;
+			agent = Agent.Chrome;
 		}
 		else if (lcAgent.contains("opera")) {
-			return Agent.Opera;
+			agent = Agent.Opera;
 		}
 		else if (lcAgent.contains("webkit") || lcAgent.contains("safari")) {
-			return Agent.Safari;
+			agent = Agent.Safari;
 		}
 		else if (lcAgent.contains("firefox")) {
-			return Agent.Firefox;
+			agent = Agent.Firefox;
 		}
-		return Agent.Unknown;
+		else 
+			agent = Agent.Unknown;
+		
+		return agent;
 	}
 
 	public static boolean isIE() {

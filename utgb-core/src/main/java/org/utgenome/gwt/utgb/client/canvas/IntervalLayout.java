@@ -49,6 +49,7 @@ public class IntervalLayout {
 
 	private boolean keepSpaceForLabels = true;
 	private boolean hasEnoughHeightForLabels = false;
+	private boolean allowPairedReadsOverlaop = true;
 	private PrioritySearchTree<OnGenome> globalLayout = new PrioritySearchTree<OnGenome>();
 	private PrioritySearchTree<LocusLayout> localLayoutInView = new PrioritySearchTree<LocusLayout>();
 
@@ -120,6 +121,7 @@ public class IntervalLayout {
 
 	public static class IntervalRetriever extends OnGenomeDataVisitorBase {
 
+		public boolean allowPEOverlap = false;
 		public int start = -1;
 		public int end = -1;
 		public int height = 1;
@@ -183,7 +185,7 @@ public class IntervalLayout {
 			end = pair.getEnd();
 			isDefined = true;
 
-			if (pair.getFirst().unclippedSequenceHasOverlapWith(pair.getSecond())) {
+			if (!allowPEOverlap && pair.getFirst().unclippedSequenceHasOverlapWith(pair.getSecond())) {
 				height = 2;
 			}
 		}
@@ -249,6 +251,7 @@ public class IntervalLayout {
 
 		public LayoutGenerator(int geneHeight) {
 			this.geneHeight = geneHeight;
+			ir.allowPEOverlap = allowPairedReadsOverlaop;
 			reset();
 		}
 
@@ -446,6 +449,10 @@ public class IntervalLayout {
 	public void clear() {
 		localLayoutInView.clear();
 		globalLayout.clear();
+	}
+
+	public void setAllowOverlapPairedReads(boolean allow) {
+		this.allowPairedReadsOverlaop = allow;
 	}
 
 }

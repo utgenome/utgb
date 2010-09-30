@@ -442,7 +442,7 @@ public class Style {
 	}
 
 	/**
-	 * Set a CSS3 property by automatically appending a browser-specific prefix to the property name.
+	 * Set a CSS3 property with a browser-specific prefix.
 	 * 
 	 * @param w
 	 * @param property
@@ -468,6 +468,12 @@ public class Style {
 		set(w, "top", destY + "px");
 	}
 
+	/**
+	 * Set the opacity of the Widget
+	 * 
+	 * @param w
+	 * @param alpha
+	 */
 	public static void opacity(Widget w, double alpha) {
 		switch (BrowserInfo.getBrowserType()) {
 		case IE:

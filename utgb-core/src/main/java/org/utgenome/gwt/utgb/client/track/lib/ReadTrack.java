@@ -29,11 +29,11 @@ import java.util.List;
 import org.utgenome.gwt.utgb.client.UTGBEntryPointBase;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.GenomeDB;
+import org.utgenome.gwt.utgb.client.bio.GenomeDB.DBType;
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
 import org.utgenome.gwt.utgb.client.bio.OnGenomeDataVisitorBase;
 import org.utgenome.gwt.utgb.client.bio.ReadCoverage;
 import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig;
-import org.utgenome.gwt.utgb.client.bio.GenomeDB.DBType;
 import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig.Layout;
 import org.utgenome.gwt.utgb.client.canvas.GWTGenomeCanvas;
 import org.utgenome.gwt.utgb.client.canvas.LocusClickHandler;
@@ -176,6 +176,7 @@ public class ReadTrack extends TrackBase {
 	private final String CONFIG_READ_HEIGHT = "read height";
 	private final String CONFIG_MIN_READ_HEIGHT = "min read height";
 	private final String CONFIG_NUM_READ_MAX = "num reads to display";
+	private final String CONFIG_PE_OVERLAP = "overlap paired reads";
 	private final String CONFIG_COVERAGE_STYLE = "coverage.style";
 	private final String CONFIG_ONCLICK_ACTION = "onclick.action";
 	private final String CONFIG_ONCLICK_URL = "onclick.url";
@@ -305,6 +306,7 @@ public class ReadTrack extends TrackBase {
 		geneCanvas.setReadHeight(getConfig().getInt(CONFIG_READ_HEIGHT, 12));
 		geneCanvas.setReadHeightMin(getConfig().getInt(CONFIG_MIN_READ_HEIGHT, 2));
 		geneCanvas.setCoverageStyle(getConfig().getString(CONFIG_COVERAGE_STYLE, "default"));
+		geneCanvas.setAllowOverlapPairedReads(getConfig().getBoolean(CONFIG_PE_OVERLAP, false));
 
 		geneCanvas.draw();
 		getFrame().loadingDone();
@@ -352,6 +354,7 @@ public class ReadTrack extends TrackBase {
 		config.addConfigInteger("Read Height", CONFIG_READ_HEIGHT, 12);
 		config.addConfigInteger("Read Height (min)", CONFIG_MIN_READ_HEIGHT, 2);
 		config.addConfigInteger("# of Reads to Cache", CONFIG_NUM_READ_MAX, 500);
+		config.addConfigBoolean("Overlap Paired-End Reads", CONFIG_PE_OVERLAP, false);
 
 		config.addConfig("Coverage Display Style",
 				new StringType(CONFIG_COVERAGE_STYLE, ValueDomain.createNewValueDomain(new String[] { "default", "smooth" })), "default");
@@ -397,8 +400,8 @@ public class ReadTrack extends TrackBase {
 
 		final String layout = getConfig().getString(CONFIG_LAYOUT, "pileup");
 		final int numReadsMax = getConfig().getInt(CONFIG_NUM_READ_MAX, 500);
-		ReadQueryConfig queryConfig = new ReadQueryConfig(prefetchWindow.getPixelWidth(), BrowserInfo.isCanvasSupported(), Layout.valueOf(Layout.class, layout
-				.toUpperCase()), numReadsMax);
+		ReadQueryConfig queryConfig = new ReadQueryConfig(prefetchWindow.getPixelWidth(), BrowserInfo.isCanvasSupported(), Layout.valueOf(Layout.class,
+				layout.toUpperCase()), numReadsMax);
 
 		getFrame().setNowLoading();
 		getBrowserService().getOnGenomeData(getGenomeDB(), new ChrLoc(chr, prefetchWindow.getStartOnGenome(), prefetchWindow.getEndOnGenome()), queryConfig,
@@ -475,7 +478,7 @@ public class ReadTrack extends TrackBase {
 			updateClickAction();
 		}
 
-		if (change.containsOneOf(new String[] { CONFIG_SHOW_LABELS, CONFIG_LEFT_MARGIN, CONFIG_PATH, CONFIG_DB_TYPE })) {
+		if (change.containsOneOf(new String[] { CONFIG_SHOW_LABELS, CONFIG_LEFT_MARGIN, CONFIG_PATH, CONFIG_DB_TYPE, CONFIG_PE_OVERLAP })) {
 			refresh();
 		}
 

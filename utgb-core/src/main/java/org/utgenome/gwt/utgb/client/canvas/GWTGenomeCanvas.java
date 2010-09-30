@@ -72,6 +72,7 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -160,7 +161,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 			InfoSilkGenerator silk = new InfoSilkGenerator();
 			locus.accept(silk);
 			infoTable.clear();
-			final int numRowsInCol = 12;
+			final int numRowsInCol = 15;
 			final List<String> lines = silk.getLines();
 			final int cols = lines.size() / numRowsInCol + (lines.size() % numRowsInCol != 0 ? 1 : 0);
 			for (int col = 0; col < cols; col++) {
@@ -175,9 +176,10 @@ public class GWTGenomeCanvas extends TouchableComposite {
 					int index = numRowsInCol * col + i;
 					if (index >= lines.size())
 						break;
-					p.add(new FixedWidthLabel(lines.get(index), 150));
+					p.add(new Label(lines.get(index)));
 				}
 				infoTable.setWidget(0, col, p);
+
 			}
 		}
 
@@ -352,6 +354,13 @@ public class GWTGenomeCanvas extends TouchableComposite {
 
 	public void setShowLabels(boolean show) {
 		intervalLayout.setKeepSpaceForLabels(show);
+	}
+
+	private boolean allowPEOverap = false;
+
+	public void setAllowOverlapPairedReads(boolean allow) {
+		this.allowPEOverap = allow;
+		intervalLayout.setAllowOverlapPairedReads(allow);
 	}
 
 	/**
@@ -650,6 +659,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 				return;
 
 			IntervalRetriever ir = new IntervalRetriever();
+			ir.allowPEOverlap = allowPEOverap;
 			r.accept(ir);
 
 			int gx1 = pixelPositionOnWindow(ir.start);
@@ -718,7 +728,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 			int y1 = getYPos();
 			int y2 = y1;
 
-			if (first.unclippedSequenceHasOverlapWith(second)) {
+			if (!allowPEOverap && first.unclippedSequenceHasOverlapWith(second)) {
 				if (first.unclippedStart > second.unclippedStart) {
 					SAMRead tmp = first;
 					first = second;
@@ -727,7 +737,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 				y2 = getYPos(gl.getYOffset() + 1);
 			}
 			else {
-				drawPadding(pixelPositionOnWindow(first.unclippedEnd), pixelPositionOnWindow(second.unclippedStart), y1, getColor("#666666", 0.8f), true);
+				drawPadding(pixelPositionOnWindow(first.getEnd()), pixelPositionOnWindow(second.getStart()), y1, getColor("#666666", 0.8f), true);
 			}
 
 			drawSAMRead(first, y1, true);
@@ -741,10 +751,10 @@ public class GWTGenomeCanvas extends TouchableComposite {
 				// draw gap
 
 				if (r.mStart < r.unclippedStart) {
-					drawPadding(pixelPositionOnWindow(r.mStart), pixelPositionOnWindow(r.unclippedStart), getYPos(), getColor("#666666", 0.8f), true);
+					drawPadding(pixelPositionOnWindow(r.mStart), pixelPositionOnWindow(r.getStart()), getYPos(), getColor("#666666", 0.8f), true);
 				}
 				else {
-					drawPadding(pixelPositionOnWindow(r.unclippedEnd), pixelPositionOnWindow(r.mStart), getYPos(), getColor("#666666", 0.8f), true);
+					drawPadding(pixelPositionOnWindow(r.getEnd()), pixelPositionOnWindow(r.mStart), getYPos(), getColor("#666666", 0.8f), true);
 				}
 
 			}
@@ -753,9 +763,11 @@ public class GWTGenomeCanvas extends TouchableComposite {
 
 		class PostponedInsertion {
 			final int pixelX;
+			final String subseq;
 
-			public PostponedInsertion(int pixelX) {
+			public PostponedInsertion(int pixelX, String subseq) {
 				this.pixelX = pixelX;
+				this.subseq = subseq;
 			}
 
 		}
@@ -802,7 +814,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 							// ref : ---AAA
 							// read: AAAAAA
 							// cigar: 3I3M
-							postponed.add(new PostponedInsertion(x1));
+							postponed.add(new PostponedInsertion(x1, r.seq.substring(seqIndex, seqIndex + e.length)));
 							readEnd = readStart;
 							seqIndex += e.length;
 							break;
@@ -856,6 +868,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 
 					for (PostponedInsertion each : postponed) {
 						drawGeneRect(each.pixelX, each.pixelX + 1, y, getColor("#111111", 1.0f), true);
+
 					}
 				}
 
