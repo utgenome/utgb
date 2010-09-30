@@ -72,31 +72,38 @@ public class ACGT extends WebTrackBase {
 		colorTable.put('G', colorG);
 		colorTable.put('T', colorT);
 		colorTable.put('N', colorN);
-		GenomeCanvas canvas = new GenomeCanvas(fontWidth * letterSize, height, new GenomeWindow(1, letterSize));
+		GenomeCanvas canvas = new GenomeCanvas(fontWidth * letterSize, height * 2, new GenomeWindow(1, letterSize));
 
-		long offset = 1;
 		final String letters = "ACGTacgtN";
 
 		final int repeatColorAlpha = 70;
 		final Color defaultTextColor = new Color(255, 255, 255);
 		final Color repeatTextColor = new Color(140, 140, 140);
 
-		int baseYPos = height - 2;
+		for (int y = 0; y < 2; y++) {
+			int baseYPos = height * (y + 1) - 2;
+			long offset = 1;
+			for (int i = 0; i < letters.length(); ++i) {
+				char ch = letters.charAt(i);
+				boolean isRepeatChar = Character.isLowerCase(ch);
+				if (isRepeatChar)
+					ch = Character.toUpperCase(ch);
 
-		for (int i = 0; i < letters.length(); ++i) {
-			char ch = letters.charAt(i);
-			boolean isRepeatChar = Character.isLowerCase(ch);
-			if (isRepeatChar)
-				ch = Character.toUpperCase(ch);
-			String colorStr = colorTable.containsKey(ch) ? colorTable.get(ch) : "E0E0E0";
-			Color color = isRepeatChar ? GraphicUtil.parseColor(colorStr, repeatColorAlpha) : GraphicUtil.parseColor(colorStr);
-			canvas.drawGeneRect(offset, offset + 1L, 0, height, color);
+				Color textColor = isRepeatChar ? repeatTextColor : defaultTextColor;
+				if (y == 0) {
+					String colorStr = colorTable.containsKey(ch) ? colorTable.get(ch) : "E0E0E0";
+					Color color = isRepeatChar ? GraphicUtil.parseColor(colorStr, repeatColorAlpha) : GraphicUtil.parseColor(colorStr);
+					canvas.drawGeneRect(offset, offset + 1L, 0, height, color);
+				}
+				//				else {
+				//					textColor = defaultTextColor;
+				//				}
 
-			Color textColor = isRepeatChar ? repeatTextColor : defaultTextColor;
-			if (drawLetter)
-				canvas.drawBase(letters.substring(i, i + 1), offset, offset + 1L, baseYPos, fontSize, textColor);
+				if (drawLetter)
+					canvas.drawBase(letters.substring(i, i + 1), offset, offset + 1L, baseYPos, fontSize, textColor);
 
-			offset++;
+				offset++;
+			}
 		}
 		canvas.outputImage(response, "png");
 	}

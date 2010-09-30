@@ -26,7 +26,7 @@
 -track
   -name: Read
   -pack: true
-  -height: 100
   -class: ReadTrack
   -property
     -path: db/paired.bam
+    -show base quality: true

@@ -482,6 +482,7 @@ public class ReadTrack extends TrackBase {
 	public void restoreProperties(CanonicalProperties properties) {
 		super.restoreProperties(properties);
 		updateClickAction();
+		style.loadConfig(getConfig());
 	}
 
 }
