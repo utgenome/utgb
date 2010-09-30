@@ -774,6 +774,9 @@ public class GWTGenomeCanvas extends TouchableComposite {
 
 		public void drawSAMRead(SAMRead r, int y, boolean drawLabel) {
 
+			boolean mateIsMappedToADiffrentChromosome = (r.rname != null && !r.rname.equals(r.mrnm));
+			float readColorAlpha = r.isMappedInProperPair() && !mateIsMappedToADiffrentChromosome ? 0.5f : 1.0f;
+
 			try {
 				int cx1 = pixelPositionOnWindow(r.unclippedStart);
 				int cx2 = pixelPositionOnWindow(r.unclippedEnd);
@@ -833,7 +836,8 @@ public class GWTGenomeCanvas extends TouchableComposite {
 								drawBases(readStart, y, r.seq.substring(seqIndex, seqIndex + e.length));
 							}
 							else {
-								drawGeneRect(x1, x2, y, getCDSColor(r), true);
+								Color c = getCDSColor(r, readColorAlpha);
+								drawGeneRect(x1, x2, y, c, true);
 							}
 
 							seqIndex += e.length;

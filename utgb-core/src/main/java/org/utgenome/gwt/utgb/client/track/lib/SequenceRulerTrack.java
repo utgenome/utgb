@@ -24,8 +24,6 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.track.lib;
 
-import java.util.ArrayList;
-
 import org.utgenome.gwt.utgb.client.db.Value;
 import org.utgenome.gwt.utgb.client.db.ValueDomain;
 import org.utgenome.gwt.utgb.client.db.datatype.IntegerType;
@@ -35,21 +33,14 @@ import org.utgenome.gwt.utgb.client.track.TrackBase;
 import org.utgenome.gwt.utgb.client.track.TrackConfigChange;
 import org.utgenome.gwt.utgb.client.track.TrackFrame;
 import org.utgenome.gwt.utgb.client.track.TrackGroup;
-import org.utgenome.gwt.utgb.client.track.TrackGroupProperty;
 import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChange;
 import org.utgenome.gwt.utgb.client.track.TrackRangeSelector;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.track.UTGBProperty;
 import org.utgenome.gwt.utgb.client.ui.AbsoluteFocusPanel;
-import org.utgenome.gwt.utgb.client.util.CanonicalProperties;
-import org.utgenome.gwt.utgb.client.util.StringUtil;
 import org.utgenome.gwt.widget.client.Style;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.DeferredCommand;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -66,9 +57,7 @@ public class SequenceRulerTrack extends TrackBase implements RangeSelectable {
 	private final Grid _layoutPanel = new Grid(1, 2);
 	private final AbsoluteFocusPanel _basePanel = new AbsoluteFocusPanel();
 	private final Ruler _ruler;
-	private int _sequenceSize = 10000000;
 	private final Label range = new Label();
-	private int _windowLeftMargin = 0;
 
 	public static TrackFactory factory() {
 		return new TrackFactory() {
@@ -115,24 +104,7 @@ public class SequenceRulerTrack extends TrackBase implements RangeSelectable {
 		}
 
 		if (change.contains(UTGBProperty.SEQUENCE_SIZE))
-			updateSequenceSize(change.getProperty(UTGBProperty.SEQUENCE_SIZE));
-
-	}
-
-	public void setSequenceSize(int newSequenceSize) {
-		if (newSequenceSize != _sequenceSize && newSequenceSize > 0) {
-			_sequenceSize = newSequenceSize;
-			TrackWindow currentWindow = getTrackGroup().getTrackWindow();
-			//int newEndOnGenome = (currentWindow.getEndOnGenome() > _sequenceSize) ? _sequenceSize : currentWindow.getEndOnGenome();
-			//TrackWindow newWindow = currentWindow.newWindow(currentWindow.getStartOnGenome(), newEndOnGenome);
-			_ruler.updateTickUnit(currentWindow.getPixelWidth(), 0, _sequenceSize);
-
 			refresh();
-		}
-	}
-
-	private void updateSequenceSize(String newSequenceSize) {
-		setSequenceSize(StringUtil.toInt(newSequenceSize));
 	}
 
 	@Override
@@ -141,13 +113,17 @@ public class SequenceRulerTrack extends TrackBase implements RangeSelectable {
 		refresh();
 	}
 
+	private int getSequenceSize() {
+		return getConfig().getInt(UTGBProperty.SEQUENCE_SIZE, 1000000);
+	}
+
 	private void drawTrackSelectionRange(TrackWindow newWindow) {
 		long startOnGenome = newWindow.getStartOnGenome();
 		long endOnGenome = newWindow.getEndOnGenome();
 
-		int windowWidth = newWindow.getPixelWidth() - _windowLeftMargin;
+		int windowWidth = newWindow.getPixelWidth();
 
-		double pixelPerCode = (double) windowWidth / (double) _sequenceSize;
+		double pixelPerCode = windowWidth / (double) getSequenceSize();
 		int x1 = (int) (startOnGenome * pixelPerCode);
 		int x2 = (int) (endOnGenome * pixelPerCode);
 
@@ -170,13 +146,15 @@ public class SequenceRulerTrack extends TrackBase implements RangeSelectable {
 	@Override
 	public void draw() {
 		_basePanel.clear();
-		if (_windowLeftMargin > 0)
-			_layoutPanel.getCellFormatter().setWidth(0, 0, _windowLeftMargin + "px");
+		//		if (_windowLeftMargin > 0)
+		//			_layoutPanel.getCellFormatter().setWidth(0, 0, _windowLeftMargin + "px");
 		_layoutPanel.setWidget(0, 1, _basePanel);
+
 		TrackWindow w = getTrackGroup().getTrackWindow();
-		int windowWidth = w.getPixelWidth() - _windowLeftMargin;
-		_ruler.updateTickUnit(windowWidth, 1, _sequenceSize);
-		_ruler.draw(_basePanel, windowWidth, 1, _sequenceSize, w.getStartOnGenome() > w.getEndOnGenome());
+		int windowWidth = w.getPixelWidth();
+		int sequenceSize = getSequenceSize();
+		_ruler.updateTickUnit(windowWidth, 1, sequenceSize);
+		_ruler.draw(_basePanel, windowWidth, 1, sequenceSize, w.getStartOnGenome() > w.getEndOnGenome());
 		drawTrackSelectionRange(w);
 	}
 
@@ -186,8 +164,9 @@ public class SequenceRulerTrack extends TrackBase implements RangeSelectable {
 
 	public void onRangeSelect(int x1OnTrackWindow, int x2OnTrackWindow) {
 		TrackWindow window = getTrackGroup().getTrackWindow();
-		int width = window.getPixelWidth() - _windowLeftMargin;
-		double genomeLengthPerPixel = (double) _sequenceSize / (double) width;
+		int width = window.getPixelWidth();
+		int sequenceSize = getSequenceSize();
+		double genomeLengthPerPixel = (double) sequenceSize / width;
 
 		if (!window.isReverseStrand()) {
 			int startOnGenome = (int) (x1OnTrackWindow * genomeLengthPerPixel);
@@ -216,7 +195,7 @@ public class SequenceRulerTrack extends TrackBase implements RangeSelectable {
 		windowSizeDomain.addValueList(new Value("10M", "10000000"));
 		windowSizeDomain.addValueList(new Value("100M", "100000000"));
 		windowSizeDomain.addValueList(new Value("1G", "1000000000"));
-		getConfig().addConfig("Sequence Ruler Size", new IntegerType(UTGBProperty.SEQUENCE_SIZE, windowSizeDomain), Integer.toString(_sequenceSize));
+		getConfig().addConfig("Sequence Ruler Size", new IntegerType(UTGBProperty.SEQUENCE_SIZE, windowSizeDomain), "1000000");
 
 		// set icons 
 		trackFrame.pack();
@@ -228,51 +207,44 @@ public class SequenceRulerTrack extends TrackBase implements RangeSelectable {
 	@Override
 	public void onChangeTrackConfig(TrackConfigChange change) {
 		if (change.contains(UTGBProperty.SEQUENCE_SIZE))
-			updateSequenceSize(change.getValue(UTGBProperty.SEQUENCE_SIZE));
+			refresh();
 	}
 
-	@Override
-	public void restoreProperties(CanonicalProperties properties) {
-		super.restoreProperties(properties);
-		_windowLeftMargin = properties.getInt("leftMargin", _windowLeftMargin);
-		_sequenceSize = properties.getInt("ruler.length", _sequenceSize);
-	}
-
-	private class SequenceLengthUpdator implements Command {
-		private int len;
-
-		public SequenceLengthUpdator(int sequenceLength) {
-			this.len = sequenceLength;
-		}
-
-		public void execute() {
-			setSequenceSize(len);
-		}
-	};
-
-	private void retrieveSequenceLength() {
-		TrackGroupProperty property = getTrackGroup().getPropertyReader();
-		ArrayList<String> queryArg = new ArrayList<String>();
-		queryArg.add(UTGBProperty.SPECIES + "=" + property.getProperty(UTGBProperty.SPECIES, ""));
-		queryArg.add(UTGBProperty.REVISION + "=" + property.getProperty(UTGBProperty.REVISION, ""));
-		queryArg.add(UTGBProperty.TARGET + "=" + property.getProperty(UTGBProperty.TARGET, ""));
-		String apiURL = "http://utgenome.org/api/sequencelength?" + StringUtil.join(queryArg, "&");
-		getBrowserService().getHTTPContent(apiURL, new AsyncCallback<String>() {
-			public void onFailure(Throwable caught) {
-				GWT.log("sequence size retrieval failed: ", caught);
-			}
-
-			public void onSuccess(String length) {
-				try {
-					int sequenceLength = Integer.parseInt(length.trim());
-					if (sequenceLength != -1) {
-						DeferredCommand.addCommand(new SequenceLengthUpdator(sequenceLength));
-					}
-				}
-				catch (NumberFormatException e) {
-					GWT.log(length + " is not a number", null);
-				}
-			}
-		});
-	}
+	//	private class SequenceLengthUpdator implements Command {
+	//		private int len;
+	//
+	//		public SequenceLengthUpdator(int sequenceLength) {
+	//			this.len = sequenceLength;
+	//		}
+	//
+	//		public void execute() {
+	//			setSequenceSize(len);
+	//		}
+	//	};
+	//
+	//	private void retrieveSequenceLength() {
+	//		TrackGroupProperty property = getTrackGroup().getPropertyReader();
+	//		ArrayList<String> queryArg = new ArrayList<String>();
+	//		queryArg.add(UTGBProperty.SPECIES + "=" + property.getProperty(UTGBProperty.SPECIES, ""));
+	//		queryArg.add(UTGBProperty.REVISION + "=" + property.getProperty(UTGBProperty.REVISION, ""));
+	//		queryArg.add(UTGBProperty.TARGET + "=" + property.getProperty(UTGBProperty.TARGET, ""));
+	//		String apiURL = "http://utgenome.org/api/sequencelength?" + StringUtil.join(queryArg, "&");
+	//		getBrowserService().getHTTPContent(apiURL, new AsyncCallback<String>() {
+	//			public void onFailure(Throwable caught) {
+	//				GWT.log("sequence size retrieval failed: ", caught);
+	//			}
+	//
+	//			public void onSuccess(String length) {
+	//				try {
+	//					int sequenceLength = Integer.parseInt(length.trim());
+	//					if (sequenceLength != -1) {
+	//						DeferredCommand.addCommand(new SequenceLengthUpdator(sequenceLength));
+	//					}
+	//				}
+	//				catch (NumberFormatException e) {
+	//					GWT.log(length + " is not a number", null);
+	//				}
+	//			}
+	//		});
+	//	}
 }
