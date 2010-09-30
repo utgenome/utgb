@@ -719,7 +719,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 				y2 = getYPos(gl.getYOffset() + 1);
 			}
 			else {
-				drawPadding(pixelPositionOnWindow(first.getEnd()), pixelPositionOnWindow(second.getStart()), y1, getColor("#666666", 0.8f), true);
+				drawPadding(pixelPositionOnWindow(first.getEnd()), pixelPositionOnWindow(second.getStart()), y1, style.getPaddingColor(), true);
 			}
 
 			drawSAMRead(first, y1, true);
@@ -729,14 +729,13 @@ public class GWTGenomeCanvas extends TouchableComposite {
 		public void visitSAMRead(SAMRead r) {
 			drawSAMRead(r, getYPos(), true);
 
-			if (r.isMappedInProperPair()) {
+			if (r.isMappedInProperPair() && r.mateIsMappedToTheSameChr()) {
 				// draw gap
-
 				if (r.mStart < r.unclippedStart) {
-					drawPadding(pixelPositionOnWindow(r.mStart), pixelPositionOnWindow(r.getStart()), getYPos(), getColor("#666666", 0.8f), true);
+					drawPadding(pixelPositionOnWindow(r.mStart), pixelPositionOnWindow(r.getStart()), getYPos(), style.getPaddingColor(), true);
 				}
 				else {
-					drawPadding(pixelPositionOnWindow(r.getEnd()), pixelPositionOnWindow(r.mStart), getYPos(), getColor("#666666", 0.8f), true);
+					drawPadding(pixelPositionOnWindow(r.getEnd()), pixelPositionOnWindow(r.mStart), getYPos(), style.getPaddingColor(), true);
 				}
 
 			}
@@ -755,9 +754,6 @@ public class GWTGenomeCanvas extends TouchableComposite {
 		}
 
 		public void drawSAMRead(SAMRead r, int y, boolean drawLabel) {
-
-			boolean mateIsMappedToADiffrentChromosome = (r.rname != null && !r.rname.equals(r.mrnm));
-			float readColorAlpha = r.isMappedInProperPair() && !mateIsMappedToADiffrentChromosome ? 0.5f : 1.0f;
 
 			try {
 				int cx1 = pixelPositionOnWindow(r.unclippedStart);
@@ -793,7 +789,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 							// ref : AAAAAA
 							// read: ---AAA
 							// cigar: 3D3M
-							drawPadding(x1, pixelPositionOnWindow(readEnd), y, getCDSColor(r), true);
+							drawPadding(x1, pixelPositionOnWindow(readEnd), y, style.getSAMReadColor(r), true);
 							break;
 						case Insertions:
 							// ref : ---AAA
@@ -808,7 +804,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 							// read: ---AAA
 							// cigar: 3P3M
 							readEnd = readStart;
-							drawPadding(x1, pixelPositionOnWindow(readStart) + 1, y, getColor("#CCCCCC", 0.8f), false);
+							drawPadding(x1, pixelPositionOnWindow(readStart) + 1, y, style.getPaddingColor(), false);
 							break;
 						case Matches: {
 							int x2 = pixelPositionOnWindow(readEnd);
@@ -818,15 +814,14 @@ public class GWTGenomeCanvas extends TouchableComposite {
 								drawBases(readStart, y, r.seq.substring(seqIndex, seqIndex + e.length));
 							}
 							else {
-								Color c = getCDSColor(r, readColorAlpha);
-								drawGeneRect(x1, x2, y, c, true);
+								drawGeneRect(x1, x2, y, style.getSAMReadColor(r), style.drawShadow);
 							}
 
 							seqIndex += e.length;
 						}
 							break;
 						case SkippedRegion:
-							drawPadding(x1, pixelPositionOnWindow(readEnd), y, getCDSColor(r), true);
+							drawPadding(x1, pixelPositionOnWindow(readEnd), y, style.getReadColor(r), true);
 							break;
 						case SoftClip: {
 							int softclipStart = cigarIndex == 0 ? readStart - e.length : readStart;
@@ -840,7 +835,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 								drawBases(softclipStart, y, r.seq.substring(seqIndex, seqIndex + e.length).toLowerCase());
 							}
 							else {
-								drawGeneRect(x0, x1, y, getCDSColor(r, 0.2f), true);
+								drawGeneRect(x0, x1, y, style.getClippedReadColor(r), style.drawShadow);
 							}
 
 							seqIndex += e.length;
@@ -1120,12 +1115,12 @@ public class GWTGenomeCanvas extends TouchableComposite {
 		basePanel.setPixelSize(width, height);
 	}
 
-	public static Color getGeneColor(Interval l) {
+	public Color getGeneColor(Interval l) {
 		return getGeneColor(l, 1f);
 	}
 
-	public static Color getGeneColor(Interval l, float alpha) {
-		return getColor(getExonColorText(l), alpha);
+	public Color getGeneColor(Interval l, float alpha) {
+		return style.getReadColor(l, alpha);
 	}
 
 	public static Color getColor(String hex, float alpha) {
@@ -1152,15 +1147,15 @@ public class GWTGenomeCanvas extends TouchableComposite {
 			return senseColor;
 	}
 
-	public static Color getExonColor(Gene g) {
+	public Color getExonColor(Gene g) {
 		return getGeneColor(g, 0.5f);
 	}
 
-	public static Color getCDSColor(Interval g, float alpha) {
+	public Color getCDSColor(Interval g, float alpha) {
 		return getGeneColor(g, alpha);
 	}
 
-	public static Color getCDSColor(Interval g) {
+	public Color getCDSColor(Interval g) {
 		return getGeneColor(g);
 	}
 
@@ -1246,21 +1241,21 @@ public class GWTGenomeCanvas extends TouchableComposite {
 		int gx = pixelPositionOnWindow(gene.getStart());
 		int gx2 = pixelPositionOnWindow(gene.getEnd());
 
-		drawGeneRect(gx, gx2, yPosition, getCDSColor(gene), true);
+		drawGeneRect(gx, gx2, yPosition, getCDSColor(gene), style.drawShadow);
 	}
 
 	public void draw(Gene gene, int yPosition) {
 		int gx = pixelPositionOnWindow(gene.getStart());
 		int gx2 = pixelPositionOnWindow(gene.getEnd());
 
-		drawGeneRect(gx, gx2, yPosition, getGeneColor(gene), true);
+		drawGeneRect(gx, gx2, yPosition, getGeneColor(gene), style.drawShadow);
 	}
 
 	public void drawExon(Gene gene, Exon exon, CDS cds, int yPosition) {
 		int ex = pixelPositionOnWindow(exon.getStart());
 		int ex2 = pixelPositionOnWindow(exon.getEnd());
 
-		drawGeneRect(ex, ex2, yPosition, getExonColor(gene), true);
+		drawGeneRect(ex, ex2, yPosition, getExonColor(gene), style.drawShadow);
 
 		// draw CDS
 		if (cds != null) {

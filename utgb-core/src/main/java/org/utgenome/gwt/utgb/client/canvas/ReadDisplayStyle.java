@@ -24,6 +24,7 @@ package org.utgenome.gwt.utgb.client.canvas;
 
 import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
+import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.db.ValueDomain;
 import org.utgenome.gwt.utgb.client.db.datatype.StringType;
 import org.utgenome.gwt.utgb.client.track.TrackConfig;
@@ -38,19 +39,23 @@ import com.google.gwt.widgetideas.graphics.client.Color;
  */
 public class ReadDisplayStyle {
 
-	String DEFAULT_READ_COLOR = "#666666";
+	String DEFAULT_READ_COLOR = "#CCCCCC";
 	String FORWARD_READ_COLOR = "#d80067";
 	String REVERSE_READ_COLOR = "#0067d8";
 	String PADDING_COLOR = "#333333";
 
-	String ORPHANED_READ_COLOR = "#333333";
-	String WEIRED_READ_COLOR = "#993333";
+	String WEIRED_READ_COLOR_F = "#FF9966";
+	String WEIRED_READ_COLOR_R = "#6699FF";
+
+	String ORPHAN_READ_COLOR_F = "#FF6699";
+	String ORPHAN_READ_COLOR_R = "#6699FF";
 
 	public boolean showLabels = true;
-	public boolean useDifferentColorForForwardAndReverse = true;
 	public boolean drawShadow = true;
 	public boolean showBaseQuality = false;
 	public boolean overlapPairedReads = false;
+	public boolean showStrand = true;
+
 	public int numReadsMax = 500;
 	public float clippedRegionAlpha = 0.2f;
 
@@ -67,6 +72,8 @@ public class ReadDisplayStyle {
 	public final static String CONFIG_SHOW_BASE_QUALITY = "show base quality";
 	public final static String CONFIG_PE_OVERLAP = "overlap paired reads";
 	public final static String CONFIG_COVERAGE_STYLE = "coverage.style";
+	public final static String CONFIG_DRAW_SHADOW = "draw shadow";
+	public final static String CONFIG_SHOW_STRAND = "show strand";
 
 	public void setup(TrackConfig config) {
 		ValueDomain layoutTypes = ValueDomain.createNewValueDomain(new String[] { "pileup", "coverage" });
@@ -77,6 +84,8 @@ public class ReadDisplayStyle {
 		config.addConfigInteger("# of Reads to Cache", CONFIG_NUM_READ_MAX, numReadsMax);
 		config.addConfigBoolean("Overlap Paired-End Reads", CONFIG_PE_OVERLAP, overlapPairedReads);
 		config.addConfigBoolean("Show Base Quality", CONFIG_SHOW_BASE_QUALITY, showBaseQuality);
+		config.addConfigBoolean("Draw Read Shadow", CONFIG_DRAW_SHADOW, drawShadow);
+		config.addConfigBoolean("Show Strand", CONFIG_SHOW_STRAND, showStrand);
 
 		config.addConfig("Coverage Display Style",
 				new StringType(CONFIG_COVERAGE_STYLE, ValueDomain.createNewValueDomain(new String[] { "default", "smooth" })), coverageStyle);
@@ -92,7 +101,21 @@ public class ReadDisplayStyle {
 		coverageStyle = config.getString(CONFIG_COVERAGE_STYLE, coverageStyle);
 		overlapPairedReads = config.getBoolean(CONFIG_PE_OVERLAP, overlapPairedReads);
 		showBaseQuality = config.getBoolean(CONFIG_SHOW_BASE_QUALITY, showBaseQuality);
+		drawShadow = config.getBoolean(CONFIG_DRAW_SHADOW, drawShadow);
+		showStrand = config.getBoolean(CONFIG_SHOW_STRAND, showStrand);
 
+	}
+
+	public Color getSAMReadColor(SAMRead r) {
+		if (r.isMappedInProperPair()) {
+			if (r.mateIsMappedToTheSameChr())
+				return getReadColor(r);
+			else
+				return r.isSense() ? toColor(WEIRED_READ_COLOR_F) : toColor(WEIRED_READ_COLOR_R);
+		}
+		else {
+			return r.isSense() ? toColor(ORPHAN_READ_COLOR_F) : toColor(ORPHAN_READ_COLOR_R);
+		}
 	}
 
 	public Color getClippedReadColor(OnGenome g) {
@@ -104,7 +127,7 @@ public class ReadDisplayStyle {
 	}
 
 	private String getReadColorHex(OnGenome g) {
-		if (useDifferentColorForForwardAndReverse) {
+		if (showStrand) {
 			if (g instanceof Interval) {
 				Interval r = (Interval) g;
 				if (r.getColor() != null)
@@ -144,7 +167,7 @@ public class ReadDisplayStyle {
 
 	public static ReadDisplayStyle highlightImproperMate() {
 		ReadDisplayStyle s = new ReadDisplayStyle();
-		s.useDifferentColorForForwardAndReverse = true;
+		s.showStrand = true;
 		return s;
 	}
 

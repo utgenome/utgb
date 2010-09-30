@@ -463,9 +463,13 @@ public class ReadTrack extends TrackBase {
 			updateClickAction();
 		}
 
-		if (change.containsOneOf(new String[] { ReadDisplayStyle.CONFIG_SHOW_LABELS, CONFIG_PATH, CONFIG_DB_TYPE, ReadDisplayStyle.CONFIG_PE_OVERLAP,
+		if (change.containsOneOf(new String[] { CONFIG_PATH, CONFIG_DB_TYPE })) {
+			refresh();
+		}
+
+		if (change.containsOneOf(new String[] { ReadDisplayStyle.CONFIG_SHOW_LABELS, ReadDisplayStyle.CONFIG_PE_OVERLAP,
 				ReadDisplayStyle.CONFIG_SHOW_BASE_QUALITY, ReadDisplayStyle.CONFIG_READ_HEIGHT, ReadDisplayStyle.CONFIG_MIN_READ_HEIGHT,
-				ReadDisplayStyle.CONFIG_COVERAGE_STYLE, })) {
+				ReadDisplayStyle.CONFIG_COVERAGE_STYLE, ReadDisplayStyle.CONFIG_DRAW_SHADOW, ReadDisplayStyle.CONFIG_SHOW_STRAND })) {
 			refresh();
 		}
 

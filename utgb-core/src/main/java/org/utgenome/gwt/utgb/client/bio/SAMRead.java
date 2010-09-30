@@ -136,6 +136,10 @@ public class SAMRead extends Interval {
 
 	}
 
+	public boolean mateIsMappedToTheSameChr() {
+		return rname != null && rname.equals(mrnm);
+	}
+
 	public boolean unclippedSequenceContains(int startOnGenome) {
 		return unclippedStart <= startOnGenome && startOnGenome <= unclippedEnd;
 	}
