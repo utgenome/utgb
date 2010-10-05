@@ -16,36 +16,32 @@
 //--------------------------------------
 // utgb-core Project
 //
-// StandardOutputStream.java
+// OverlappingKmerIterator.java
 // Since: 2010/10/05
 //
 //--------------------------------------
-package org.utgenome.util;
-
-import java.io.IOException;
-import java.io.OutputStream;
+package org.utgenome.util.kmer;
 
 /**
- * A wrapper of STDOUT for avoiding accidental close of STDOUT
+ * For walking overlapping k-mer integers
  * 
  * @author leo
  * 
  */
-public class StandardOutputStream extends OutputStream {
+public class OverlappingKmerIterator {
 
-	@Override
-	public void write(int b) throws IOException {
-		System.out.write(b);
+	private final String seq;
+	private final KmerIntegerFactory kmerGen;
+	private int pos = 0;
+
+	public OverlappingKmerIterator(String seq, int K) {
+		this.seq = seq;
+		this.kmerGen = new KmerIntegerFactory(K);
 	}
 
-	@Override
-	public void write(byte[] b, int off, int len) throws IOException {
-		System.out.write(b, off, len);
-	}
-
-	@Override
-	public void close() throws IOException {
-		// do nothing
+	public int nextKMer() {
+		// TODO
+		return -1;
 	}
 
 }

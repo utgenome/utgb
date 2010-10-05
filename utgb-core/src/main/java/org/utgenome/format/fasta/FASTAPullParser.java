@@ -37,7 +37,8 @@ import java.util.zip.GZIPInputStream;
 
 import org.apache.tools.tar.TarEntry;
 import org.apache.tools.tar.TarInputStream;
-import org.utgenome.format.InvalidFormatException;
+import org.utgenome.UTGBErrorCode;
+import org.utgenome.UTGBException;
 import org.xerial.util.FileType;
 import org.xerial.util.log.Logger;
 
@@ -248,7 +249,7 @@ public class FASTAPullParser {
 	 *             when the input fasta data format is invalid
 	 * @throws IOException
 	 */
-	public FASTASequence nextSequence() throws InvalidFormatException, IOException {
+	public FASTASequence nextSequence() throws UTGBException, IOException {
 		Token t = nextToken();
 		if (t == null)
 			return null;
@@ -290,10 +291,10 @@ public class FASTAPullParser {
 		}
 	}
 
-	private String readSequence() throws InvalidFormatException, IOException {
+	private String readSequence() throws UTGBException, IOException {
 		Token t = nextToken();
 		if (t == null)
-			throw new InvalidFormatException("sequence is null: " + lineInfo());
+			throw new UTGBException(UTGBErrorCode.INVALID_FORMAT, "sequence is null: " + lineInfo());
 		TokenType type;
 		StringBuilder builder = new StringBuilder();
 		while ((type = t.getType()) == TokenType.SequenceLine) {

@@ -16,36 +16,27 @@
 //--------------------------------------
 // utgb-core Project
 //
-// StandardOutputStream.java
+// KmerIntegerFactoryTest.java
 // Since: 2010/10/05
 //
 //--------------------------------------
-package org.utgenome.util;
+package org.utgenome.util.kmer;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import static org.junit.Assert.assertEquals;
 
-/**
- * A wrapper of STDOUT for avoiding accidental close of STDOUT
- * 
- * @author leo
- * 
- */
-public class StandardOutputStream extends OutputStream {
+import org.junit.Test;
 
-	@Override
-	public void write(int b) throws IOException {
-		System.out.write(b);
+public class KmerIntegerFactoryTest {
+	@Test
+	public void factory() throws Exception {
+		KmerIntegerFactory f = new KmerIntegerFactory(4);
+
+		assertEquals(0x1B, f.parseString("ACGT"));
+		assertEquals(0x00, f.parseString("AAAA"));
+
+		assertEquals("TTTT", f.toString(f.reverseComplement(f.parseString("AAAA"))));
+		assertEquals("ACGT", f.toString(f.reverseComplement(f.parseString("ACGT"))));
+		assertEquals("ATTT", f.toString(f.reverseComplement(f.parseString("AAAT"))));
+
 	}
-
-	@Override
-	public void write(byte[] b, int off, int len) throws IOException {
-		System.out.write(b, off, len);
-	}
-
-	@Override
-	public void close() throws IOException {
-		// do nothing
-	}
-
 }

@@ -30,14 +30,12 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.utgenome.format.InvalidFormatException;
 import org.xerial.util.FileResource;
 
 public class FASTAPullParserTest {
@@ -51,7 +49,7 @@ public class FASTAPullParserTest {
 	}
 
 	@Test
-	public void pullParsing() throws IOException, InvalidFormatException {
+	public void pullParsing() throws Exception {
 		FASTAPullParser parser = new FASTAPullParser(new StringReader(">1|mySeq\nACGCTT\nACCC\n>2\nCCGGA"));
 		FASTASequence s1 = parser.nextSequence();
 		FASTASequence s2 = parser.nextSequence();
@@ -75,7 +73,7 @@ public class FASTAPullParserTest {
 	}
 
 	@Test
-	public void pullParsing2() throws IOException, InvalidFormatException {
+	public void pullParsing2() throws Exception {
 		FASTAPullParser parser = new FASTAPullParser(new StringReader(">1|mySeq\nACGCTT\nACCC\n>2\nCCGGA"));
 
 		assertEquals("1|mySeq", parser.nextDescriptionLine());

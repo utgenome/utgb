@@ -72,7 +72,7 @@ import org.utgenome.UTGBException;
  * Syntax
  * 
  * <fastq>	:=	<block>+
- * <block>	:=	@<seqname>\n<seq>\n+[<seqname>]\n<qual>\n
+ * <block>	:=	@<seqname>\n<seq>\n"+"[<seqname>]?\n<qual>\n
  * <seqname>	:=	[A-Za-z0-9_.:-]+
  * <seq>	:=	[A-Za-z\n\.~]+
  * <qual>	:=	[!-~\n]+

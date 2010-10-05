@@ -33,6 +33,6 @@ package org.utgenome;
 public enum UTGBErrorCode {
 	Unknown, InvalidRequestParameter,
 
-	DatabaseError, JSONToObjectMapping, MaliciousSQLSyntax, FailedToLoadTrackConfig, UnknownDBType, FileNotFound, InvalidSQLSyntax, PARSE_ERROR, BIND_ERROR, InvalidSyntax, IO_ERROR, INVALID_INPUT, INHERITED, INVALID_BED_LINE, MISSING_FILES, MISSING_OPTION,
+	DatabaseError, JSONToObjectMapping, MaliciousSQLSyntax, FailedToLoadTrackConfig, UnknownDBType, FileNotFound, InvalidSQLSyntax, PARSE_ERROR, BIND_ERROR, InvalidSyntax, IO_ERROR, INVALID_INPUT, INHERITED, INVALID_BED_LINE, MISSING_FILES, MISSING_OPTION, NOT_AN_ACGT, INVALID_FORMAT,
 
 }

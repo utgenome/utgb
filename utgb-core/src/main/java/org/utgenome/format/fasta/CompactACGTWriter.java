@@ -125,6 +125,10 @@ public class CompactACGTWriter {
 		}
 	}
 
+	public static byte to2bitCode(char acgt) {
+		return charToACGTCodeTable[acgt];
+	}
+
 	/**
 	 * This method is used to generate source code for the charToACGTCodeTable
 	 */

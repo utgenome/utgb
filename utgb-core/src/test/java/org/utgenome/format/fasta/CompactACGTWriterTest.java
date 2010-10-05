@@ -24,10 +24,11 @@
 //--------------------------------------
 package org.utgenome.format.fasta;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.utgenome.format.fasta.CompactACGTWriter;
 
 public class CompactACGTWriterTest {
 
@@ -42,6 +43,21 @@ public class CompactACGTWriterTest {
 	@Test
 	public void genTable() {
 		CompactACGTWriter.generateCharTo2BitACGTTable();
+	}
+
+	@Test
+	public void to2bitindex() throws Exception {
+		assertEquals(0, CompactACGTWriter.to2bitCode('A'));
+		assertEquals(1, CompactACGTWriter.to2bitCode('C'));
+		assertEquals(2, CompactACGTWriter.to2bitCode('G'));
+		assertEquals(3, CompactACGTWriter.to2bitCode('T'));
+		assertEquals(0, CompactACGTWriter.to2bitCode('a'));
+		assertEquals(1, CompactACGTWriter.to2bitCode('c'));
+		assertEquals(2, CompactACGTWriter.to2bitCode('g'));
+		assertEquals(3, CompactACGTWriter.to2bitCode('t'));
+
+		assertEquals(4, CompactACGTWriter.to2bitCode('N'));
+
 	}
 
 }

@@ -16,36 +16,18 @@
 //--------------------------------------
 // utgb-core Project
 //
-// StandardOutputStream.java
+// FastqSplitter.java
 // Since: 2010/10/05
 //
 //--------------------------------------
-package org.utgenome.util;
-
-import java.io.IOException;
-import java.io.OutputStream;
+package org.utgenome.format.fastq;
 
 /**
- * A wrapper of STDOUT for avoiding accidental close of STDOUT
+ * Read FASTQ file fragment
  * 
  * @author leo
  * 
  */
-public class StandardOutputStream extends OutputStream {
-
-	@Override
-	public void write(int b) throws IOException {
-		System.out.write(b);
-	}
-
-	@Override
-	public void write(byte[] b, int off, int len) throws IOException {
-		System.out.write(b, off, len);
-	}
-
-	@Override
-	public void close() throws IOException {
-		// do nothing
-	}
+public class FastqSplitReader {
 
 }

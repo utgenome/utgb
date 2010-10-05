@@ -36,9 +36,6 @@ import java.io.IOException;
 public class UTGBException extends Exception {
 	private UTGBErrorCode errorCode = UTGBErrorCode.Unknown;
 
-	public UTGBException() {
-	}
-
 	public UTGBException(String message) {
 		super(message);
 	}
@@ -49,6 +46,11 @@ public class UTGBException extends Exception {
 
 	public UTGBException(String message, Throwable cause) {
 		super(message, cause);
+	}
+
+	public UTGBException(UTGBErrorCode errorCode) {
+		super();
+		this.errorCode = errorCode;
 	}
 
 	public UTGBException(UTGBErrorCode errorCode, Throwable cause) {
