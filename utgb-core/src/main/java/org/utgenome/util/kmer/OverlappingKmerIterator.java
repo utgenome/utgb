@@ -22,26 +22,30 @@
 //--------------------------------------
 package org.utgenome.util.kmer;
 
+import org.utgenome.format.fasta.CompactACGT;
+
 /**
  * For walking overlapping k-mer integers
  * 
  * @author leo
  * 
  */
-public class OverlappingKmerIterator {
+public interface OverlappingKmerIterator {
 
-	private final String seq;
-	private final KmerIntegerFactory kmerGen;
-	private int pos = 0;
+	public CompactACGT nextKmer();
 
-	public OverlappingKmerIterator(String seq, int K) {
-		this.seq = seq;
-		this.kmerGen = new KmerIntegerFactory(K);
-	}
-
-	public int nextKMer() {
-		// TODO
-		return -1;
-	}
+	//	private final KmerIntegerFactory kmerGen;
+	//	private final CompactACGT seq;
+	//	private int pos = 0;
+	//
+	//	public OverlappingKmerIterator(String seq, int K) throws IOException, UTGBException {
+	//		this.seq = CompactACGT.createFromString(seq);
+	//		this.kmerGen = new KmerIntegerFactory(K);
+	//	}
+	//
+	//	public int nextKMer() {
+	//		// TODO
+	//		return -1;
+	//	}
 
 }

@@ -29,6 +29,8 @@ import java.io.IOException;
 
 import org.utgenome.UTGBErrorCode;
 import org.utgenome.UTGBException;
+import org.utgenome.util.kmer.KmerIntegerFactory;
+import org.utgenome.util.kmer.OverlappingKmerIterator;
 
 /**
  * Compact array for ACGT (and N) sequences
@@ -38,10 +40,10 @@ import org.utgenome.UTGBException;
  */
 public class CompactACGT implements GenomeSequence {
 
-	private byte[] sequence; // 2 bit for each char
-	private byte[] sequenceMask; // 1 bit for each char: 0 for ACGT, 1 for otherwise including N
-	private int length;
-	private int offset;
+	private final byte[] sequence; // 2 bit for each char
+	private final byte[] sequenceMask; // 1 bit for each char: 0 for ACGT, 1 for otherwise including N
+	private final int length;
+	private final int offset;
 
 	private final static int CODE_SIZE = 2;
 	private final static int BYTE = 8;
@@ -74,15 +76,55 @@ public class CompactACGT implements GenomeSequence {
 		}
 	}
 
+	class KmerIterator implements OverlappingKmerIterator {
+		private final int K;
+		private final KmerIntegerFactory f;
+		private int start;
+
+		public KmerIterator(int K) {
+			this.K = K;
+			this.f = new KmerIntegerFactory(K);
+			int start = offset;
+		}
+
+		public CompactACGT nextKmer() {
+
+			if (start + K > length)
+				return null;
+
+			try {
+				CompactACGT kmer = new CompactACGT(sequence, sequenceMask, K, CompactACGT.this.offset + start++);
+				return kmer;
+			}
+			catch (UTGBException e) {
+				throw new IllegalStateException(e);
+			}
+		}
+
+	}
+
+	public CompactACGT getSubSequence(int start, int length) throws UTGBException {
+		return new CompactACGT(sequence, sequenceMask, length, start + this.offset);
+	}
+
+	public OverlappingKmerIterator getKmerIterator(int K) {
+		return new KmerIterator(K);
+	}
+
 	public static CompactACGT createFromString(String seq) throws IOException, UTGBException {
 
 		ByteArrayOutputStream seqOut = new ByteArrayOutputStream();
 		ByteArrayOutputStream nSeqOut = new ByteArrayOutputStream();
-		CompactACGTWriter w = new CompactACGTWriter(seqOut, nSeqOut);
-		w.append(seq);
-		w.close();
+		try {
+			CompactACGTWriter w = new CompactACGTWriter(seqOut, nSeqOut);
+			w.append(seq);
+			w.close();
+			return new CompactACGT(seqOut.toByteArray(), nSeqOut.toByteArray(), seq.length(), 0);
+		}
+		catch (IOException e) {
+			throw UTGBException.convert(e);
+		}
 
-		return new CompactACGT(seqOut.toByteArray(), nSeqOut.toByteArray(), seq.length(), 0);
 	}
 
 	public int length() {
