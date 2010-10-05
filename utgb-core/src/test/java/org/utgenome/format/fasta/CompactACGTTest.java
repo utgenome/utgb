@@ -69,10 +69,21 @@ public class CompactACGTTest {
 
 		for (int K = 1; K < s.length(); ++K) {
 			for (int i = 0; i < s.length() - K + 1; ++i) {
-				CompactACGT subseq = seq.getSubSequence(i, K);
+				CompactACGT subseq = seq.subSequence(i, K);
 				assertEquals(s.substring(i, i + K), subseq.toString());
 			}
 		}
 	}
 
+	@Test
+	public void reverseComplement() throws Exception {
+		final String s = "ACGTAATACGATAT";
+		final CompactACGT seq = CompactACGT.createFromString(s);
+		final CompactACGT rc = seq.reverseComplement();
+		assertEquals(seq.length(), rc.length());
+		assertEquals(s.length(), rc.length());
+
+		assertEquals("ATATCGTATTACGT", rc.toString());
+
+	}
 }

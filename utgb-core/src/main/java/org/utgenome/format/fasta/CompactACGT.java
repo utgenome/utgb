@@ -103,8 +103,37 @@ public class CompactACGT implements GenomeSequence {
 
 	}
 
-	public CompactACGT getSubSequence(int start, int length) throws UTGBException {
+	/**
+	 * return a subsequence of this ACGT string. The returned CompactACGT holds the references to the sequence byte
+	 * arrays, and no buffer copy will be performed.
+	 * 
+	 * @param start
+	 * @param length
+	 * @return
+	 * @throws UTGBException
+	 */
+	public CompactACGT subSequence(int start, int length) throws UTGBException {
 		return new CompactACGT(sequence, sequenceMask, length, start + this.offset);
+	}
+
+	public CompactACGT reverseComplement() throws UTGBException {
+		ByteArrayOutputStream seqOut = new ByteArrayOutputStream();
+		ByteArrayOutputStream nSeqOut = new ByteArrayOutputStream();
+		try {
+
+			CompactACGTWriter w = new CompactACGTWriter(seqOut, nSeqOut);
+			// TODO byte-wise transformation
+			for (int i = length - 1; i >= 0; i--) {
+				int c = code2bitAt(i);
+				c = ~c & 0x03;
+				w.append2bit((byte) c);
+			}
+			w.close();
+			return new CompactACGT(seqOut.toByteArray(), nSeqOut.toByteArray(), length, 0);
+		}
+		catch (IOException e) {
+			throw UTGBException.convert(e);
+		}
 	}
 
 	public OverlappingKmerIterator getKmerIterator(int K) {
@@ -132,7 +161,10 @@ public class CompactACGT implements GenomeSequence {
 	}
 
 	public char charAt(int index) {
+		return ACGT[code2bitAt(index)];
+	}
 
+	int code2bitAt(int index) {
 		int x = index + offset;
 
 		int maskPos = x / 8;
@@ -143,8 +175,7 @@ public class CompactACGT implements GenomeSequence {
 		int bPos = x / 4;
 		int bOffset = x % 4;
 
-		int c = (sequence[bPos] >>> (6 - bOffset * 2)) & 0x03;
-		return ACGT[c];
+		return (sequence[bPos] >>> (6 - bOffset * 2)) & 0x03;
 	}
 
 	@Override

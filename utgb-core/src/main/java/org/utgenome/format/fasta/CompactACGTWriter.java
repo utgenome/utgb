@@ -95,7 +95,7 @@ public class CompactACGTWriter {
 		nSeqOut.flush();
 	}
 
-	private void append2bit(byte code) throws IOException {
+	void append2bit(byte code) throws IOException {
 
 		if (index >= BUFFER_SIZE * 4) {
 			// dump the buffer 
@@ -123,6 +123,10 @@ public class CompactACGTWriter {
 		for (int i = 0; i < t.length(); ++i) {
 			append2bit(charToACGTCodeTable[t.charAt(i)]);
 		}
+	}
+
+	public void append(char ch) throws IOException {
+		append2bit(charToACGTCodeTable[ch]);
 	}
 
 	public static byte to2bitCode(char acgt) {
