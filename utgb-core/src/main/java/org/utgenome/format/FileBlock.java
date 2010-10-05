@@ -16,36 +16,37 @@
 //--------------------------------------
 // utgb-core Project
 //
-// OverlappingKmerIterator.java
+// FileBlock.java
 // Since: 2010/10/05
 //
 //--------------------------------------
-package org.utgenome.util.kmer;
+package org.utgenome.format;
 
-import org.utgenome.format.fasta.CompactACGT;
+import java.io.File;
+
+import org.xerial.lens.Lens;
 
 /**
- * For walking overlapping k-mer integers
+ * A block in a file
  * 
  * @author leo
  * 
  */
-public interface OverlappingKmerIterator {
+public class FileBlock {
 
-	public CompactACGT nextKmer();
+	public final File file;
+	public final int id;
+	public final long offset;
 
-	//	private final KmerIntegerFactory kmerGen;
-	//	private final CompactACGT seq;
-	//	private int pos = 0;
-	//
-	//	public OverlappingKmerIterator(String seq, int K) throws IOException, UTGBException {
-	//		this.seq = CompactACGT.createFromString(seq);
-	//		this.kmerGen = new KmerIntegerFactory(K);
-	//	}
-	//
-	//	public int nextKMer() {
-	//		// TODO
-	//		return -1;
-	//	}
+	public FileBlock(File file, int id, long offset) {
+		this.file = file;
+		this.id = id;
+		this.offset = offset;
+	}
+
+	@Override
+	public String toString() {
+		return Lens.toSilk(this);
+	}
 
 }

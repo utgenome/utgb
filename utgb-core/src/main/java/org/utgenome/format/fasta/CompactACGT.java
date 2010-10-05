@@ -30,7 +30,6 @@ import java.io.IOException;
 import org.utgenome.UTGBErrorCode;
 import org.utgenome.UTGBException;
 import org.utgenome.util.kmer.KmerIntegerFactory;
-import org.utgenome.util.kmer.OverlappingKmerIterator;
 
 /**
  * Compact array for ACGT (and N) sequences

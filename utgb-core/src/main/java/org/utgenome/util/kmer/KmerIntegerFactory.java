@@ -44,12 +44,13 @@ public class KmerIntegerFactory {
 	}
 
 	/**
-	 * Return the XOR value of the double strand reads of a given k-mer sequence
+	 * Return the XOR value of the double strand reads of a given k-mer sequence. Since XOR is commutative, the result
+	 * value is the same for both strand reads.
 	 * 
 	 * @param K
 	 * @return
 	 */
-	public int doubleStrandID(int kmer) {
+	public int doubleStrandXOR(int kmer) {
 		int rc = reverseComplement(kmer);
 		return kmer ^ rc;
 	}
