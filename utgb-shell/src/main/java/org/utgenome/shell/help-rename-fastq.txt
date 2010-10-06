@@ -9,7 +9,7 @@ Each read in the FASTQ file will be assigned a name with the following format:
 
   (read group prefix).(read ID)
   
-Note that, for the paired end runs, the reads of the both ends expected to have 
-the same name, so use the same read group prefix for paired-end fastq files
-for the same lane (e.g., s_1_1.qseq, s_1_2.qseq).
+Note that, for the paired end runs the reads of the both ends are expected to have 
+the same name, so use the same read group prefix for paired-end FASTQ files
+belonging to the same lane (e.g., s_1_1.qseq, s_1_2.qseq).
 
