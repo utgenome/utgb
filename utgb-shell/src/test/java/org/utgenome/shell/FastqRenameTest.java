@@ -62,5 +62,8 @@ public class FastqRenameTest {
 			readCount++;
 		}
 
+		orig.close();
+		renamed.close();
+
 	}
 }

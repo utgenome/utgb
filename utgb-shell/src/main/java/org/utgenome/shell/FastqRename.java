@@ -33,7 +33,6 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 
-import org.utgenome.UTGBException;
 import org.utgenome.format.fastq.FastqRead;
 import org.utgenome.format.fastq.FastqReader;
 import org.utgenome.util.StandardInputStream;
@@ -61,7 +60,7 @@ public class FastqRename extends UTGBShellCommand {
 	public void execute(String[] args) throws Exception {
 
 		if (readGroup == null)
-			throw new UTGBException("-g (read group prefix) must be specified");
+			throw new UTGBShellException("-g (read group prefix) must be specified");
 
 		Reader in = null;
 		if ("-".equals(input))
