@@ -104,5 +104,6 @@ public class QSeqToFASTQ {
 			}
 		}
 
+		output.flush();
 	}
 }
