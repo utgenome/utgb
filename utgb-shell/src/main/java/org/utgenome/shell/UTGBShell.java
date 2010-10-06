@@ -64,7 +64,7 @@ public class UTGBShell {
 	/**
 	 * search sub commands from the this package (org.utgenome.shell)
 	 */
-	static void searchSubCommands() {
+	static void findSubCommands() {
 		String shellPackage = UTGBShell.class.getPackage().getName();
 		List<VirtualFile> classFileList = FileResource.listResources(shellPackage, new ResourceFilter() {
 			public boolean accept(String resourcePath) {
@@ -100,8 +100,8 @@ public class UTGBShell {
 	}
 
 	static {
-		// search the all available sub commands
-		searchSubCommands();
+		// search for the all available sub commands
+		findSubCommands();
 
 		// System.setProperty("com.apple.eawt.CocoaComponent.CompatibilityMode", "false");
 	}

@@ -160,16 +160,26 @@ public class CompactACGT implements GenomeSequence {
 	}
 
 	public char charAt(int index) {
-		return ACGT[code2bitAt(index)];
+		int acgtIndex = code2bitAt(index);
+		if (acgtIndex == -1)
+			return 'N';
+		else
+			return ACGT[acgtIndex];
 	}
 
+	/**
+	 * Return 2bit code at the index on the genome. If the base character at the position is not an ACGT, returns -1
+	 * 
+	 * @param index
+	 * @return 2bit code or -1 (when 'N')
+	 */
 	int code2bitAt(int index) {
 		int x = index + offset;
 
 		int maskPos = x / 8;
 		int maskOffset = x % 8;
 		if ((sequenceMask[maskPos] >>> (7 - maskOffset) & 0x01) != 0)
-			return 'N';
+			return -1;
 
 		int bPos = x / 4;
 		int bOffset = x % 4;
