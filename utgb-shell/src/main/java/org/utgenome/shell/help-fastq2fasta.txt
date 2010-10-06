@@ -1,0 +1,10 @@
+usage: fastq2fasta (input.fastq) (output.fasta)
+
+Convert an input FASTQ file(s) into FASTA format.
+
+[usage examples]
+
+$ utgb fastq2fasta in.fastq out.fa
+$ utgb fastq2fasta in.fastq > out.fa
+$ cat in1.fastq in2.fastq | utgb fastq2fasta > out.fa
+ 
