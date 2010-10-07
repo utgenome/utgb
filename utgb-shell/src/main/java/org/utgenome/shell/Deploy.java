@@ -71,7 +71,7 @@ public class Deploy extends UTGBShellCommand {
 
 	@Override
 	public String getOneLinerDescription() {
-		return "deploy the project (a war file) to a remote Tomcat server";
+		return "deploy the project (war file) to the remote Tomcat server";
 	}
 
 }

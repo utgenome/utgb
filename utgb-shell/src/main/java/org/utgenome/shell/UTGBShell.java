@@ -217,7 +217,7 @@ public class UTGBShell {
 				System.out.println("[sub commands]");
 				for (String subCommandName : subCommandTable.keySet()) {
 					UTGBShellCommand sc = subCommandTable.get(subCommandName);
-					System.out.format("  %-10s\t%s", subCommandName, sc.getOneLinerDescription());
+					System.out.format("  %-15s\t%s", subCommandName, sc.getOneLinerDescription());
 					System.out.println();
 				}
 				return;

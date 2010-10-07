@@ -4,8 +4,8 @@ Create a keyword database (db/keyword.sqlite).
 
 [usage] 
 
-$ utgb keyword import -r (refseq. name) (input BED file)
- - creates a keyword database from a given BED file
+$ utgb keyword import -r (refseq. name) (input BED/SAM/BAM file)
+ - creates a keyword database from a given BED/SAM/BAM file
 
 
 $ utgb keyword import -r (refseq name) -t ktab (TAB-delimited file)
@@ -22,7 +22,7 @@ $ utgb keyword alias (keyword alias file)
 (keyword)[TAB](aliases...)    
 
 $ utgb keyword search -r (refseq. name) (keyword)
- - search the input keyword from the database
+ - search the database for the input keyword
  
  
 Onece a keyword database is created, you can add a keyword search track to your browser. 

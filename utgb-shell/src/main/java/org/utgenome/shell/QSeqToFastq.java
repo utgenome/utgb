@@ -86,7 +86,7 @@ public class QSeqToFastq extends UTGBShellCommand {
 
 	@Override
 	public String getOneLinerDescription() {
-		return "converting Illumina's qseq format into FASTQ";
+		return "convert Illumina's qseq format into FASTQ";
 	}
 
 	@Override

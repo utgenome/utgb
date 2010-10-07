@@ -168,7 +168,7 @@ public class Server extends UTGBShellCommand {
 
 	@Override
 	public String getOneLinerDescription() {
-		return "start up the portable web server";
+		return "start up a portable web server";
 	}
 
 	@Override
