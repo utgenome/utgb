@@ -63,11 +63,54 @@ public class InfoSilkGenerator implements OnGenomeDataVisitor {
 		visitRead(g);
 
 	}
-	
+
 	public void visitBEDGene(BEDGene g) {
 		visitGene(g);
 		addLine("-score:" + g.score);
-		
+
+		if (!g.getCDS().isEmpty()) {
+			// Note that only one CDS region is contained in BED files.
+			CDS cds = g.getCDS().get(0);
+			addLine("-thick start: " + cds.start);
+			addLine("-thick end: " + cds.end);
+			addLine("-thick width: " + (cds.end - cds.start));
+
+			// compute the CDS sequence length
+			int cdsLength = 0;
+			for (Exon e : g.getExon()) {
+				Interval overlap = e.intersect(cds);
+				if (overlap == null)
+					continue;
+				cdsLength += overlap.length();
+			}
+			addLine("-thick length: " + cdsLength);
+
+			int len_UTR5 = 0;
+			for (Exon e : g.getExon()) {
+				Interval overlap = e.intersect(cds);
+				if (overlap == null) {
+					len_UTR5 += e.length();
+					continue;
+				}
+				else {
+					len_UTR5 += (overlap.getStart() - e.getStart());
+				}
+			}
+
+			//			int len_UTR3 = 0;
+			//			for(Exon e : g.getExon()) {
+			//				Interval overlap = e.intersect(cds);
+			//				if (overlap == null) {
+			//					len_UTR3 += e.length();
+			//					continue;
+			//				}
+			//				else {
+			//					len_UTR3 += (overlap.getStart() - e.getStart());
+			//				}
+			//			}
+
+		}
+
 	}
 
 	public void visitGap(Gap g) {

@@ -139,6 +139,22 @@ public class Interval implements OnGenome, Comparable<Interval>, Serializable {
 			return start <= other.end;
 	}
 
+	/**
+	 * Return the intersected interval with the other
+	 * 
+	 * @param other
+	 * @return
+	 */
+	public Interval intersect(Interval other) {
+		if (!this.hasOverlap(other))
+			return null;
+
+		int overlapStart = this.getStart() < other.getStart() ? other.getStart() : this.getStart();
+		int overlapEnd = this.getEnd() < other.getEnd() ? this.getEnd() : other.getEnd();
+
+		return new Interval(overlapStart, overlapEnd);
+	}
+
 	public boolean contains(int pos) {
 		return (start <= pos) && (pos <= end);
 	}
