@@ -26,6 +26,7 @@ package org.utgenome.gwt.utgb.client.bio;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * Generating read information in Silk format, which is used for displaying mouse over message
@@ -94,21 +95,35 @@ public class InfoSilkGenerator implements OnGenomeDataVisitor {
 				}
 				else {
 					len_UTR5 += (overlap.getStart() - e.getStart());
+					break;
 				}
 			}
 
-			//			int len_UTR3 = 0;
-			//			for(Exon e : g.getExon()) {
-			//				Interval overlap = e.intersect(cds);
-			//				if (overlap == null) {
-			//					len_UTR3 += e.length();
-			//					continue;
-			//				}
-			//				else {
-			//					len_UTR3 += (overlap.getStart() - e.getStart());
-			//				}
-			//			}
+			int len_UTR3 = 0;
+			for (ListIterator<Exon> it = g.getExon().listIterator(g.getExon().size()); it.hasPrevious();) {
+				Exon e = it.previous();
+				Interval overlap = e.intersect(cds);
+				if (overlap == null) {
+					len_UTR3 += e.length();
+					continue;
+				}
+				else {
+					len_UTR3 += (e.getEnd() - overlap.getEnd());
+					break;
+				}
+			}
 
+			if (g.isAntiSense()) {
+				// swap
+				int tmp = len_UTR5;
+				len_UTR5 = len_UTR3;
+				len_UTR3 = tmp;
+			}
+
+			if (len_UTR5 > 0)
+				addLine("-UTR length 5': " + len_UTR5);
+			if (len_UTR3 > 0)
+				addLine("-UTR length 3': " + len_UTR3);
 		}
 
 	}
