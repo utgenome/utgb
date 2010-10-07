@@ -22,6 +22,12 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.bio;
 
+/**
+ * Nucleotide ACGT <-> 2bit code conversion utility
+ * 
+ * @author leo
+ * 
+ */
 public class ACGT {
 
 	/**

@@ -30,6 +30,9 @@ package org.utgenome.gwt.utgb.client.bio;
  */
 public class CodonTable {
 
+	/**
+	 * 3mer integer (2bit encoding) to amino acid
+	 */
 	public final static AminoAcid[] kmerIntToAminoAcidTable = new AminoAcid[] { AminoAcid.Lys, AminoAcid.Asn, AminoAcid.Lys, AminoAcid.Asn, AminoAcid.Thr,
 			AminoAcid.Thr, AminoAcid.Thr, AminoAcid.Thr, AminoAcid.Arg, AminoAcid.Ser, AminoAcid.Arg, AminoAcid.Ser, AminoAcid.Ile, AminoAcid.Ile,
 			AminoAcid.Met, AminoAcid.Ile, AminoAcid.Gln, AminoAcid.His, AminoAcid.Glu, AminoAcid.His, AminoAcid.Pro, AminoAcid.Pro, AminoAcid.Pro,
