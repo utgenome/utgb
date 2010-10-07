@@ -29,6 +29,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Random;
 
+import org.utgenome.gwt.utgb.client.bio.ACGTEncoder;
 import org.xerial.util.StringUtil;
 
 /**
@@ -39,15 +40,6 @@ import org.xerial.util.StringUtil;
  */
 
 public class CompactACGTWriter {
-	/**
-	 * table for translating ASCII code to Nucleotide in 2 bit. (4 is for N);
-	 */
-	private final static byte[] charToACGTCodeTable = { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
-			4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 4, 1, 4, 4, 4, 2, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
-			4, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 4, 1, 4, 4, 4, 2, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
-			4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
-			4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
-			4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 };
 
 	private final OutputStream seqOut;
 	private final OutputStream nSeqOut;
@@ -121,16 +113,16 @@ public class CompactACGTWriter {
 	public void append(String sequence) throws IOException {
 		String t = sequence.trim();
 		for (int i = 0; i < t.length(); ++i) {
-			append2bit(charToACGTCodeTable[t.charAt(i)]);
+			append2bit(ACGTEncoder.to2bitCode(t.charAt(i)));
 		}
 	}
 
 	public void append(char ch) throws IOException {
-		append2bit(charToACGTCodeTable[ch]);
+		append2bit(ACGTEncoder.to2bitCode(ch));
 	}
 
 	public static byte to2bitCode(char acgt) {
-		return charToACGTCodeTable[acgt];
+		return ACGTEncoder.to2bitCode(acgt);
 	}
 
 	/**
@@ -153,6 +145,7 @@ public class CompactACGTWriter {
 				code = 2;
 				break;
 			case 'T':
+			case 'U':
 				code = 3;
 				break;
 			default:

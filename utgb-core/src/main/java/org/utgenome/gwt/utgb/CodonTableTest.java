@@ -27,7 +27,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 
 import org.junit.Test;
-import org.utgenome.gwt.utgb.client.bio.ACGT;
+import org.utgenome.gwt.utgb.client.bio.ACGTEncoder;
 import org.utgenome.gwt.utgb.client.bio.AminoAcid;
 import org.utgenome.gwt.utgb.client.bio.CodonTable;
 import org.utgenome.util.kmer.KmerIntegerFactory;
@@ -42,7 +42,7 @@ public class CodonTableTest {
 		for (int i = 0; i < 64; i++) {
 			String codon = f.toString(i);
 			AminoAcid aminoAcid = CodonTable.toAminoAcid(i);
-			AminoAcid aminoAcid2 = CodonTable.toAminoAcid(ACGT.toString(i, 3));
+			AminoAcid aminoAcid2 = CodonTable.toAminoAcid(ACGTEncoder.toString(i, 3));
 			assertEquals(aminoAcid, aminoAcid2);
 		}
 

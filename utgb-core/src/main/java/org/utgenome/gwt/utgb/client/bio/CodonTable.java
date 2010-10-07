@@ -53,7 +53,7 @@ public class CodonTable {
 			return AminoAcid.Xaa;
 
 		for (int i = 0; i < 3; ++i) {
-			int code2bit = ACGT.to2bitCode(codon3mer.charAt(i));
+			int code2bit = ACGTEncoder.to2bitCode(codon3mer.charAt(i));
 			if (code2bit >= 4)
 				return AminoAcid.Xaa;
 
