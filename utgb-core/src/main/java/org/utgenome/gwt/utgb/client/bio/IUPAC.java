@@ -23,11 +23,70 @@
 package org.utgenome.gwt.utgb.client.bio;
 
 /**
- * IUPAC Allele notation
+ * IUPAC: allele variation notation
  * 
  * @author leo
  * 
  */
 public enum IUPAC {
+
+	None("*", 0x00), A("A", 0x01), C("C", 0x02), G("G", 0x04), T("T", 0x08), M("A/C", 0x03), R("A/G", 0x05), W("A/T", 0x09), S("C/G", 0x06), Y("C/T", 0x0A), K(
+			"G/T", 0x0C), V("A/C/G", 0x07), H("A/C/T", 0x0B), D("A/G/T", 0x0D), B("C/G/T", 0x0E), N("A/C/G/T", 0x0F);
+
+	private final static IUPAC[] acgtToIUPACTable = new IUPAC[16];
+
+	static {
+		for (IUPAC each : IUPAC.values()) {
+			acgtToIUPACTable[each.bitFlag & 0x0F] = each;
+		}
+	}
+
+	public final String variation;
+	public final int bitFlag;
+
+	private IUPAC(String variation, int bitFlag) {
+		this.variation = variation;
+		this.bitFlag = bitFlag;
+	}
+
+	/**
+	 * Convert this IUPAC code the concatenation of allele bases (e.g., AC, AT, CGT, etc.)
+	 * 
+	 * @return
+	 */
+	public String toGenoType() {
+
+		StringBuilder genoType = new StringBuilder();
+		int flag = 0x01;
+		for (int i = 0; i < 4; i++) {
+			if ((bitFlag & flag) != 0) {
+				genoType.append(ACGTEncoder.toBase(i));
+			}
+		}
+		return genoType.toString();
+	}
+
+	/**
+	 * Translate a genotype to the corresponding IUPAC code
+	 * 
+	 * @param genoType
+	 *            concatenation of ACGT characters
+	 * @return
+	 */
+	public static IUPAC toIUPAC(String genoType) {
+
+		int flag = 0;
+
+		for (int i = 0; i < genoType.length(); ++i) {
+			byte code = ACGTEncoder.to2bitCode(genoType.charAt(i));
+			if (code >= 4)
+				continue;
+
+			int bit = 0x01 << code;
+			flag |= bit;
+		}
+
+		return acgtToIUPACTable[flag & 0x0F];
+	}
 
 }

@@ -49,6 +49,35 @@ public class ACGTEncoder {
 		return charToACGTCodeTable[base];
 	}
 
+	public static char toBase(int code) {
+		if (code > 3)
+			return 'N';
+		else
+			return acgt[code & 0x03];
+	}
+
+	/**
+	 * Return the k-mer interger of the given ACGT sequence
+	 * 
+	 * @param K
+	 * @param acgt
+	 * @return k-mer integer of the sequence, or -1 when N or the other invalid characters are contained in the sequence
+	 */
+	public static int toKmerInt(final int K, String acgt) {
+		int kmer = 0;
+
+		for (int i = 0; i < acgt.length(); i++) {
+			byte b = CompactACGTWriter.to2bitCode(acgt.charAt(i));
+			if (b >= 4)
+				return -1;
+
+			kmer <<= 2;
+			kmer |= b;
+		}
+
+		return kmer;
+	}
+
 	public static String toString(int kmerInt, int K) {
 		StringBuilder seq = new StringBuilder();
 		for (int i = 0; i < K; i++) {

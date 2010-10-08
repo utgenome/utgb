@@ -20,7 +20,7 @@
 // Since: 2010/10/07
 //
 //--------------------------------------
-package org.utgenome.gwt.utgb;
+package org.utgenome.gwt.utgb.bio;
 
 import static org.junit.Assert.assertEquals;
 
