@@ -111,19 +111,19 @@ public class ReadDisplayStyle {
 			if (r.mateIsMappedToTheSameChr())
 				return getReadColor(r);
 			else
-				return r.isSense() ? toColor(WEIRED_READ_COLOR_F) : toColor(WEIRED_READ_COLOR_R);
+				return ColorUtil.toColor(r.isSense() ? WEIRED_READ_COLOR_F : WEIRED_READ_COLOR_R);
 		}
 		else {
-			return r.isSense() ? toColor(ORPHAN_READ_COLOR_F) : toColor(ORPHAN_READ_COLOR_R);
+			return ColorUtil.toColor(r.isSense() ? ORPHAN_READ_COLOR_F : ORPHAN_READ_COLOR_R);
 		}
 	}
 
 	public Color getClippedReadColor(OnGenome g) {
-		return toColor(getReadColorHex(g), clippedRegionAlpha);
+		return ColorUtil.toColor(getReadColorHex(g), clippedRegionAlpha);
 	}
 
 	public Color getPaddingColor() {
-		return toColor(PADDING_COLOR);
+		return ColorUtil.toColor(PADDING_COLOR);
 	}
 
 	private String getReadColorHex(OnGenome g) {
@@ -140,25 +140,11 @@ public class ReadDisplayStyle {
 	}
 
 	public Color getReadColor(OnGenome g) {
-		return toColor(getReadColorHex(g));
+		return ColorUtil.toColor(getReadColorHex(g));
 	}
 
 	public Color getReadColor(OnGenome g, float alpha) {
-		return toColor(getReadColorHex(g), alpha);
-	}
-
-	public static Color toColor(String hex) {
-		int r = Integer.parseInt(hex.substring(1, 3), 16);
-		int g = Integer.parseInt(hex.substring(3, 5), 16);
-		int b = Integer.parseInt(hex.substring(5, 7), 16);
-		return new Color(r, g, b);
-	}
-
-	public static Color toColor(String hex, float alpha) {
-		int r = Integer.parseInt(hex.substring(1, 3), 16);
-		int g = Integer.parseInt(hex.substring(3, 5), 16);
-		int b = Integer.parseInt(hex.substring(5, 7), 16);
-		return new Color(r, g, b, alpha);
+		return ColorUtil.toColor(getReadColorHex(g), alpha);
 	}
 
 	public static ReadDisplayStyle defaultStyle() {

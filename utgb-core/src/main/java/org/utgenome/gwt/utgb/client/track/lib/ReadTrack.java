@@ -295,6 +295,37 @@ public class ReadTrack extends TrackBase {
 	}
 
 	@Override
+	public void setUp(TrackFrame trackFrame, TrackGroup group) {
+
+		geneCanvas.setTrackGroup(group);
+
+		update(group.getTrackWindow(), true);
+		TrackConfig config = getConfig();
+		config.addConfig("DB Path", new StringType(CONFIG_PATH), "");
+		config.addHiddenConfig(CONFIG_DB_TYPE, "AUTO");
+
+		style.setup(config);
+
+		ValueDomain actionTypes = ValueDomain.createNewValueDomain(new String[] { "none", "link", "info", "set" });
+		config.addConfig("On Click Action", new StringType(CONFIG_ONCLICK_ACTION, actionTypes), "link");
+		config.addConfig("On Click URL", new StringType(CONFIG_ONCLICK_URL), "http://www.google.com/search?q=%q");
+		config.addConfig("On Click Set (key:value, ...)", new StringType(CONFIG_ONCLICK_P_KEY), "read:%q");
+
+		updateClickAction();
+	}
+
+	private boolean needUpdateForGraphicRefinement = false;
+
+	@Override
+	public void beforeChangeTrackWindow(TrackWindow newWindow) {
+
+		if ("coverage".equals(style.layout) && current != null && !current.hasSameScaleWith(newWindow)) {
+			needUpdateForGraphicRefinement = true;
+		}
+
+	}
+
+	@Override
 	public void draw() {
 
 		// set up drawing options
@@ -330,37 +361,6 @@ public class ReadTrack extends TrackBase {
 			geneCanvas.clear();
 			update(change.getTrackWindow(), false);
 		}
-	}
-
-	@Override
-	public void setUp(TrackFrame trackFrame, TrackGroup group) {
-
-		geneCanvas.setTrackGroup(group);
-
-		update(group.getTrackWindow(), true);
-		TrackConfig config = getConfig();
-		config.addConfig("DB Path", new StringType(CONFIG_PATH), "");
-		config.addHiddenConfig(CONFIG_DB_TYPE, "AUTO");
-
-		style.setup(config);
-
-		ValueDomain actionTypes = ValueDomain.createNewValueDomain(new String[] { "none", "link", "info", "set" });
-		config.addConfig("On Click Action", new StringType(CONFIG_ONCLICK_ACTION, actionTypes), "link");
-		config.addConfig("On Click URL", new StringType(CONFIG_ONCLICK_URL), "http://www.google.com/search?q=%q");
-		config.addConfig("On Click Set (key:value, ...)", new StringType(CONFIG_ONCLICK_P_KEY), "read:%q");
-
-		updateClickAction();
-	}
-
-	private boolean needUpdateForGraphicRefinement = false;
-
-	@Override
-	public void beforeChangeTrackWindow(TrackWindow newWindow) {
-
-		if ("coverage".equals(style.layout) && current != null && !current.hasSameScaleWith(newWindow)) {
-			needUpdateForGraphicRefinement = true;
-		}
-
 	}
 
 	private TrackWindow current;

@@ -453,32 +453,38 @@ public class GWTGenomeCanvas extends TouchableComposite {
 	}
 
 	/**
-	 * @param w
+	 * @param newWindow
 	 */
-	public void setTrackWindow(TrackWindow w, boolean resetPrefetchWindow) {
+	public void setTrackWindow(TrackWindow newWindow, boolean resetPrefetchWindow) {
 
-		if (resetPrefetchWindow || !hasCacheCovering(w)) {
-			int prefetchStart = w.getStartOnGenome() - (int) (w.getSequenceLength() * PREFETCH_FACTOR);
-			int prefetchEnd = w.getEndOnGenome() + (int) (w.getSequenceLength() * PREFETCH_FACTOR);
+		if (resetPrefetchWindow || !hasCacheCovering(newWindow)) { // when need to prefetch the data
+			int prefetchStart = newWindow.getStartOnGenome() - (int) (newWindow.getSequenceLength() * PREFETCH_FACTOR);
+			int prefetchEnd = newWindow.getEndOnGenome() + (int) (newWindow.getSequenceLength() * PREFETCH_FACTOR);
 			if (prefetchStart <= 0) {
 				prefetchStart = 1;
-				prefetchEnd = w.getEndOnGenome() + (int) (w.getSequenceLength() * PREFETCH_FACTOR * 2);
+				prefetchEnd = newWindow.getEndOnGenome() + (int) (newWindow.getSequenceLength() * PREFETCH_FACTOR * 2);
 			}
-			int prefetchPixelSize = (int) (w.getPixelWidth() * (1 + PREFETCH_FACTOR * 2));
+			int prefetchPixelSize = (int) (newWindow.getPixelWidth() * (1 + PREFETCH_FACTOR * 2));
 			prefetchWindow = new TrackWindow(prefetchPixelSize, prefetchStart, prefetchEnd);
 			hasCache = false;
 		}
 
 		if (trackWindow != null) {
-			if (!trackWindow.hasSameScaleWith(w)) {
+			int newX = newWindow.convertToPixelX(trackWindow.getStartOnGenome());
+			if (!trackWindow.hasSameScaleWith(newWindow)) {
+				int newPixelWidth = newWindow.convertToPixelLength(trackWindow.getSequenceLength());
+				Style.scaleXwithAnimation(canvas, (double) newPixelWidth / trackWindow.getPixelWidth(), newX, 0.5);
 				imageACGT = null;
+			}
+			else {
+				Style.scrollX(canvas, newX, 0.5);
 			}
 		}
 
-		this.trackWindow = w;
-		reverse = w.isReverseStrand();
+		this.trackWindow = newWindow;
+		reverse = newWindow.isReverseStrand();
 
-		intervalLayout.setTrackWindow(w);
+		intervalLayout.setTrackWindow(newWindow);
 	}
 
 	public void setTrackGroup(TrackGroup trackGroup) {
@@ -502,6 +508,8 @@ public class GWTGenomeCanvas extends TouchableComposite {
 			w.removeFromParent();
 		}
 		readLabels.clear();
+		Style.scaleX(canvas, 1);
+		panel.setWidgetPosition(canvas, 0, 0);
 		basePanel.setWidgetPosition(panel, 0, 0);
 	}
 
@@ -632,7 +640,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 				else {
 					canvas.saveContext();
 					final int threshold = 40;
-					if (h > 2 && i < qual.length()) {
+					if (h > 5 && i < qual.length()) {
 						int qv = qual.charAt(i) - 33;
 						if (qv > threshold)
 							qv = threshold;
@@ -1141,19 +1149,16 @@ public class GWTGenomeCanvas extends TouchableComposite {
 		basePanel.setPixelSize(width, height);
 	}
 
+	public static Color getColor(String hex, float alpha) {
+		return ColorUtil.toColor(hex, alpha);
+	}
+
 	public Color getGeneColor(Interval l) {
 		return getGeneColor(l, 1f);
 	}
 
 	public Color getGeneColor(Interval l, float alpha) {
 		return style.getReadColor(l, alpha);
-	}
-
-	public static Color getColor(String hex, float alpha) {
-		int r = Integer.parseInt(hex.substring(1, 3), 16);
-		int g = Integer.parseInt(hex.substring(3, 5), 16);
-		int b = Integer.parseInt(hex.substring(5, 7), 16);
-		return new Color(r, g, b, alpha);
 	}
 
 	private static String getExonColorText(OnGenome g) {
