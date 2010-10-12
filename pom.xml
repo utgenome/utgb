@@ -85,11 +85,30 @@
       <timezone>+9</timezone>
     </developer>
     <developer>
-	  <id>yoshimura</id>
+      <id>yoshimura</id>
       <name>Jun Yoshimura</name>
       <organization>University of Tokyo</organization>
       <roles>
-		<role>Technician</role>
+	<role>Researcher</role>
+      </roles>
+      <timezone>+9</timezone>
+    </developer>
+    <developer>
+      <id>higasa</id>
+      <name>Koichiro Higasa</name>
+      <organization>University of Tokyo</organization>
+      <roles>
+	<role>Researcher</role>
+	<role>Tester</role>
+      </roles>
+      <timezone>+9</timezone>
+    </developer>
+    <developer>
+      <id>mino</id>
+      <name>Hiroshi Minoshima</name>
+      <organization>University of Tokyo</organization>
+      <roles>
+	<role>Tester</role>
       </roles>
       <timezone>+9</timezone>
     </developer>
@@ -142,7 +161,7 @@
       <name>Yukinobu Nagayasu</name>
       <organization>University of Tokyo</organization>
       <roles>
-		<role>Alumni</role>
+	<role>Alumni</role>
       </roles>
       <timezone>+9</timezone>
     </contributor>
