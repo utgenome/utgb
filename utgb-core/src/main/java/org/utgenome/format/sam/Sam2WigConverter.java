@@ -128,9 +128,9 @@ public class Sam2WigConverter {
 		// reduce
 		//   (chr, x), {1, 1, ...}  ->  output ((chr, x), sum of 1s)
 
+		sweepLine = 1;
 		long readCount = 0;
 
-		int sweepLine = 1;
 		// assume that SAM reads are sorted in the start order
 		for (; cursor.hasNext();) {
 			readCount++;

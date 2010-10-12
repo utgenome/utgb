@@ -28,6 +28,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.HashSet;
 import java.util.List;
 
 import org.junit.After;
@@ -87,6 +88,25 @@ public class PrioritySearchTreeTest {
 		assertEquals(1, result.size());
 		assertTrue(result.contains("D"));
 
+	}
+
+	@Test
+	public void iterator() throws Exception {
+
+		HashSet<String> nodeSet = new HashSet<String>();
+
+		int nodeCount = 0;
+		for (String each : p) {
+			nodeCount++;
+			nodeSet.add(each);
+		}
+
+		assertEquals(5, nodeCount);
+		assertTrue(nodeSet.contains("A"));
+		assertTrue(nodeSet.contains("B"));
+		assertTrue(nodeSet.contains("C"));
+		assertTrue(nodeSet.contains("D"));
+		assertTrue(nodeSet.contains("E"));
 	}
 
 }

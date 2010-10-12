@@ -25,7 +25,9 @@
 package org.utgenome.gwt.utgb.client.canvas;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * Priority search tree for efficient 2D search
@@ -33,7 +35,7 @@ import java.util.List;
  * @author leo
  * 
  */
-public class PrioritySearchTree<E> {
+public class PrioritySearchTree<E> implements Iterable<E> {
 
 	public class Node {
 		public E elem;
@@ -95,6 +97,41 @@ public class PrioritySearchTree<E> {
 
 	public static interface Visitor<E> {
 		public void visit(E visit);
+	}
+
+	private class DFSIterator implements Iterator<E> {
+
+		private Stack<Node> nodeStack = new Stack<Node>();
+
+		public DFSIterator(Node root) {
+			nodeStack.push(root);
+		}
+
+		public boolean hasNext() {
+			return !nodeStack.isEmpty();
+		}
+
+		public E next() {
+			if (nodeStack.isEmpty())
+				return null;
+
+			Node nextNode = nodeStack.pop();
+			if (nextNode.right != null)
+				nodeStack.push(nextNode.right);
+			if (nextNode.left != null)
+				nodeStack.push(nextNode.left);
+
+			return nextNode.elem;
+		}
+
+		public void remove() {
+			throw new UnsupportedOperationException("remove");
+		}
+
+	}
+
+	public Iterator<E> iterator() {
+		return new DFSIterator(root);
 	}
 
 	public void depthFirstSearch(Visitor<E> visitor) {

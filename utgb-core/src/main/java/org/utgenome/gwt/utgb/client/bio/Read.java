@@ -53,6 +53,11 @@ public class Read extends Interval {
 		super(start, end);
 	}
 
+	public Read(String name, int start, int end) {
+		super(start, end);
+		this.name = name;
+	}
+
 	protected Read(Read other) {
 		super(other.start, other.end);
 		this.name = other.name;
