@@ -28,6 +28,12 @@ import java.util.List;
 
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
 
+/**
+ * Interval layout
+ * 
+ * @author leo
+ * 
+ */
 public class IntervalTree<T extends OnGenome> implements Iterable<T> {
 
 	private PrioritySearchTree<T> pst = new PrioritySearchTree<T>();
@@ -66,6 +72,14 @@ public class IntervalTree<T extends OnGenome> implements Iterable<T> {
 	 */
 	public void overlapQuery(int start, int end, PrioritySearchTree.ResultHandler<T> handler) {
 		pst.rangeQuery(start + 1, Integer.MAX_VALUE, end - 1, handler);
+	}
+
+	public boolean isEmpty() {
+		return pst.size() > 0;
+	}
+
+	public void clear() {
+		pst.clear();
 	}
 
 	/**
