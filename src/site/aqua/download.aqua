@@ -38,7 +38,7 @@ in your project folder.
 
 ** Keyword database generator. (see also utgb keyword --help)
 *** utgb keyword import ("BED/SAM/BAM" files) 
-
+** (internal) Using GWT 2.0.4
 
 
 * {b|December 10th, 2009} UTGB Shell 1.2.18 released
