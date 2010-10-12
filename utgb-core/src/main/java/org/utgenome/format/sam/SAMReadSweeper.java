@@ -24,7 +24,6 @@ package org.utgenome.format.sam;
 
 import java.util.Collection;
 
-import net.sf.samtools.SAMRecord;
 import net.sf.samtools.SAMRecordIterator;
 
 import org.utgenome.gwt.utgb.client.bio.Interval;
@@ -59,60 +58,60 @@ public class SAMReadSweeper {
 	}
 
 	public void sweep(SAMRecordIterator cursor, ReadSetHandler handler) {
-		
+
 		int sweepLine = 1;
 		long readCount = 0;
 
-		// assume that SAM reads are sorted in the start order
-		for (; cursor.hasNext();) {
-			readCount++;
-
-			if (readCount != 0 && (readCount % 1000000) == 0) {
-				_logger.info(String.format("processed %,d reads", readCount));
-			}
-
-			SAMRecord read = cursor.next();
-
-			String ref = read.getReferenceName();
-
-			if (currentChr == null || (currentChr != null && !currentChr.equals(ref))) { // moved to the next chromosome
-				// flush the cached reads
-				if (!readSetInStartOrder.isEmpty()) {
-					final int maxReadEnd = maxReadEnd(readSetInStartOrder);
-					for(int i=sweepLine; i<maxReadEnd; i++) {
-						handler.handle(readSetInStartOrder)
-					}
-					sweep(readSetInStartOrder, sweepLine, maxReadEnd(readSetInStartOrder));
-				}
-
-				readSetInStartOrder.clear();
-				sweepLine = 1;
-				currentChr = ref;
-				reporter.switchChr();
-				_logger.info(String.format("processing %s", currentChr));
-
-			}
-
-			Interval readInterval = new Interval(read.getAlignmentStart(), read.getAlignmentEnd() + 1);
-			if (sweepLine < readInterval.getStart()) {
-				// we can sweep reads up to sweepEnd
-				int sweepEnd = readInterval.getStart();
-				sweep(readSetInStartOrder, sweepLine, sweepEnd);
-				sweepLine = sweepEnd;
-
-				// remove the reads before the sweep line   
-				for (Interval each : readSetInStartOrder) {
-					if (each.getStart() >= sweepLine)
-						break; // sweep finished
-					if (each.getEnd() <= sweepLine)
-						readSetInStartOrder.removeFirst();
-				}
-			}
-			readSetInStartOrder.add(readInterval);
-		}
-
-		if (!readSetInStartOrder.isEmpty()) {
-			sweep(readSetInStartOrder, sweepLine, maxReadEnd(readSetInStartOrder));
-		}
+		//		// assume that SAM reads are sorted in the start order
+		//		for (; cursor.hasNext();) {
+		//			readCount++;
+		//
+		//			if (readCount != 0 && (readCount % 1000000) == 0) {
+		//				_logger.info(String.format("processed %,d reads", readCount));
+		//			}
+		//
+		//			SAMRecord read = cursor.next();
+		//
+		//			String ref = read.getReferenceName();
+		//
+		//			if (currentChr == null || (currentChr != null && !currentChr.equals(ref))) { // moved to the next chromosome
+		//				// flush the cached reads
+		//				if (!readSetInStartOrder.isEmpty()) {
+		//					final int maxReadEnd = maxReadEnd(readSetInStartOrder);
+		//					for(int i=sweepLine; i<maxReadEnd; i++) {
+		//						handler.handle(readSetInStartOrder)
+		//					}
+		//					sweep(readSetInStartOrder, sweepLine, maxReadEnd(readSetInStartOrder));
+		//				}
+		//
+		//				readSetInStartOrder.clear();
+		//				sweepLine = 1;
+		//				currentChr = ref;
+		//				reporter.switchChr();
+		//				_logger.info(String.format("processing %s", currentChr));
+		//
+		//			}
+		//
+		//			Interval readInterval = new Interval(read.getAlignmentStart(), read.getAlignmentEnd() + 1);
+		//			if (sweepLine < readInterval.getStart()) {
+		//				// we can sweep reads up to sweepEnd
+		//				int sweepEnd = readInterval.getStart();
+		//				sweep(readSetInStartOrder, sweepLine, sweepEnd);
+		//				sweepLine = sweepEnd;
+		//
+		//				// remove the reads before the sweep line   
+		//				for (Interval each : readSetInStartOrder) {
+		//					if (each.getStart() >= sweepLine)
+		//						break; // sweep finished
+		//					if (each.getEnd() <= sweepLine)
+		//						readSetInStartOrder.removeFirst();
+		//				}
+		//			}
+		//			readSetInStartOrder.add(readInterval);
+		//		}
+		//
+		//		if (!readSetInStartOrder.isEmpty()) {
+		//			sweep(readSetInStartOrder, sweepLine, maxReadEnd(readSetInStartOrder));
+		//		}
 	}
 }
