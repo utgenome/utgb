@@ -212,7 +212,10 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
-	<version>2.0-beta-7</version>
+	<version>2.1.1</version>
+	<configuration>
+	  <generateSitemap>true</generateSitemap>
+	</configuration>
         <dependencies>
           <dependency>
             <groupId>org.xerial.maven</groupId>
