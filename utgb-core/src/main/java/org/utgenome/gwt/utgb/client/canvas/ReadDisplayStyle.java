@@ -107,7 +107,7 @@ public class ReadDisplayStyle {
 	}
 
 	public Color getSAMReadColor(SAMRead r) {
-		if (r.isMappedInProperPair()) {
+		if (r.isPairedRead() && r.isMappedInProperPair()) {
 			if (r.mateIsMappedToTheSameChr())
 				return getReadColor(r);
 			else
