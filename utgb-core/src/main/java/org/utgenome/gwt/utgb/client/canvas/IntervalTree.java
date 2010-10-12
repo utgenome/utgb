@@ -97,6 +97,11 @@ public class IntervalTree<T extends OnGenome> implements Iterable<T> {
 		return pst.iterator();
 	}
 
+	/**
+	 * return the elements in the tree
+	 * 
+	 * @return
+	 */
 	public List<T> elementList() {
 		List<T> r = new ArrayList<T>(pst.size());
 		for (T each : pst) {

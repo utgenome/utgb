@@ -7,6 +7,40 @@
 * Click http://utgenome.org/toolkit/utgb.jnlp to install UTGB Toolkit
 
 == Release Notes
+
+* {b|October 12th, 2010} UTGB Toolkit 1.4.7 released.
+** {b|NOTICE!} {i|This release contains several major changes.} (Documantation for these new features is yet to be done)
+** To upgrade your old UTGB project, do:
+<code>
+$ utgb upgrade
+</code>
+in your project folder.
+** XML-based configuration files are changed to use [toolkit/silk.html Silk format], which is far easier to describe by hand.
+** Configuration switch via {b|utgb -e (development|test|production)} option.
+** Track view files are moved to "(your project)/config/view" folder. No restart of the serve is necessary to update the view. Use the address, http://localhost:8989/browser.html?view=sample  if you create a new view file as config/view/sample.silk.
+** Support for "BED/WIG/SAM/BAM" formats in {b|utgb import}.
+** BAM file support in ReadTrack (paired-end read display, etc.)
+<code>
+-track
+ -class: ReadTrack
+ -property:
+  -path: db/sample.bam
+</code>
+ (db/sample.bam and db/sample.bam.bai file must be present to display the read data. You can create these files from SAM files via utgb import command.)
+** WIG file support in WigTrack
+<code>
+-track
+ -class: WigTrack
+ -property:
+  -path: db/sample.wig
+</code>
+** Several utilties to manipulate Illumina's read data; e.g., utgb illumina2qseq, utgb qseq2fastq, utgb rename-fastq, etc.
+
+** Keyword database generator. (see also utgb keyword --help)
+*** utgb keyword import ("BED/SAM/BAM" files) 
+
+
+
 * {b|December 10th, 2009} UTGB Shell 1.2.18 released
 ** Some minor bug fixes
 * {b|December 10th, 2009} UTGB Shell 1.2.16 released

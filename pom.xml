@@ -16,7 +16,7 @@
 
   <properties>
     <gwt.version>2.0.4</gwt.version>
-    <sqlite-jdbc.version>3.6.20.1</sqlite-jdbc.version>
+    <sqlite-jdbc.version>3.7.2</sqlite-jdbc.version>
   </properties>
   
   <inceptionYear>2007</inceptionYear>

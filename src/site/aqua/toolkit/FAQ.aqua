@@ -4,6 +4,13 @@
 
 = FAQ 
 
+== How do I set maximum memory size when running UTGB server?
+
+Use JVM_OPT variable to set JVM options:
+<code>
+$ JVM_OPT="-Xmx1g" utgb server -g
+</code>
+
 == How do I tell the UTGB Toolkit to use my proxy server?
 
 Edit "$(HOME)/.m2/settings.xml" file and add proxies element as follows:

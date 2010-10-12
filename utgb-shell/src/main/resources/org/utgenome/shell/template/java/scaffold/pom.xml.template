@@ -19,7 +19,7 @@
     <gwt.version>2.0.4</gwt.version>
     <gwt.module>$moduleName$</gwt.module>
     <gwt.module.path>$modulePath$</gwt.module.path>
-    <sqlite-jdbc.version>3.6.20.1</sqlite-jdbc.version>
+    <sqlite-jdbc.version>3.7.2</sqlite-jdbc.version>
     <tomcat.version>6.0.26</tomcat.version>
     <gwt.jvmargs></gwt.jvmargs>
   </properties>

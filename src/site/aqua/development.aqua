@@ -1,4 +1,22 @@
 = Information for UTGB Developers
+
+== How to build UTGB from source code
+
+Install Mercurial (hg: 1.4.x or higher) and Maven (mvn command: 2.0.9 or higher), then checkout the source code from the repository http://utgb.googlecode.com/ hosted at the google code.
+
+<code>
+$ hg clone https://utgb.googlecode.com/hg utgb
+$ cd utgb
+
+$ make clean install
+</code>
+The utgb toolkit will be installed your "$HOME/.utgb/bin" folder. Set this path to your PATH environment variable:
+
+<code>
+export PATH=$HOME/.utgb/bin;$PATH
+</code>
+
+
 == Mailing List
 * [http://groups.google.com/group/utgb UTGB Developers] (only for UTGB developers)
 
@@ -12,7 +30,6 @@
 
 * {b|2009 Nov 24} We migrated the source code repository from Subversion to Mercurial (hg)
 
-(to be written)
 
 
 == UTGB Components
