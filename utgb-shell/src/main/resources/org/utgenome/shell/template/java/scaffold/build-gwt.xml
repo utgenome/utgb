@@ -6,6 +6,7 @@
   <property name="gwt.memory" value="1G" />
   <property name="gwt.src" value="src/main/java"/>
   <property name="gwt.target" value="${gwt.module}"/>
+  <property name="gwt.module.path" value="${gwt.module.path}"/>
   <property name="gwt.home" value="target/gwt-home"/>
   
   <!--
@@ -27,7 +28,7 @@
       module[s]      Specifies the name(s) of the module(s) to compile
       
     -->
-  <target name="compile" depends="gwt-update-check" if="gwt.module" unless="gwt.build.notRequired">
+  <target name="compile" depends="gwt-update-check" if="gwt.build.required">
     <mkdir dir="${gwt.out}"/>
     <echo>GWT Compiler</echo>
     <path id="project.classpath">
@@ -39,11 +40,18 @@
       <arg line="-war ${gwt.out} ${gwt.opts} ${gwt.module}"/> 
     </java>
   </target>
-  
-  <target name="gwt-update-check">
-    <uptodate property="gwt.build.notRequired" targetfile="${gwt.out}/${gwt.target}/${gwt.target}.nocache.js">
-      <srcfiles dir="${gwt.src}" includes="**/client/**/*.java,**/public/**"/>
-    </uptodate>
+
+  <target name="gwt-update-check" if="gwt.module">
+  	<condition property="gwt.build.required">
+  	  <and>
+  	  	<available file="${gwt.src}/${gwt.module.path}"/>
+  	  	<not>
+  	    	<uptodate targetfile="${gwt.out}/${gwt.target}/${gwt.target}.nocache.js">
+  	      		<srcfiles dir="${gwt.src}" includes="**/client/**/*.java,**/public/**"/>
+  	    	</uptodate>
+  	  	</not>
+      </and>
+  	</condition>
   </target>
-  
+	
 </project>

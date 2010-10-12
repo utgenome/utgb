@@ -18,6 +18,7 @@
     <utgb.version>$utgbVersion$</utgb.version>
     <gwt.version>2.0.4</gwt.version>
     <gwt.module>$moduleName$</gwt.module>
+    <gwt.module.path>$modulePath$</gwt.module.path>
     <sqlite-jdbc.version>3.6.20.1</sqlite-jdbc.version>
     <tomcat.version>6.0.26</tomcat.version>
     <gwt.jvmargs></gwt.jvmargs>
@@ -134,6 +135,7 @@
                 <property name="gwt.home" value="target/gwt-home" />
                 <ant antfile="build-gwt.xml">
                   <property name="gwt.module" value="\${gwt.module}" />
+                  <property name="gwt.module.path" value="\${gwt.module.path}" />
                   <target name="compile" />
                 </ant>
               </tasks>

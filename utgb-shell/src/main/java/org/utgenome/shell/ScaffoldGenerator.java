@@ -73,6 +73,7 @@ public class ScaffoldGenerator {
 		property.put("group", config.group);
 		String moduleName = config.javaPackage + ".gwt.Browser";
 		property.setProperty("moduleName", moduleName);
+		property.setProperty("modulePath", moduleName.replaceAll("\\.", "/") + ".gwt.xml");
 		property.put("explodedWebappDir", UTGBShellCommand.EXPLODED_WEBAPP_DIR);
 
 		// properties for the GWT interface code

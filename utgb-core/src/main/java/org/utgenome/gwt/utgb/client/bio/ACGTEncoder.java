@@ -67,7 +67,7 @@ public class ACGTEncoder {
 		int kmer = 0;
 
 		for (int i = 0; i < acgt.length(); i++) {
-			byte b = CompactACGTWriter.to2bitCode(acgt.charAt(i));
+			byte b = to2bitCode(acgt.charAt(i));
 			if (b >= 4)
 				return -1;
 
