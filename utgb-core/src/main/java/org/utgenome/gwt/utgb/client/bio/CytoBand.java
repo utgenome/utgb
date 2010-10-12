@@ -24,7 +24,7 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.bio;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import java.io.Serializable;
 
 /**
  * CytoBand
@@ -32,7 +32,12 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @author yoshimura
  * 
  */
-public class CytoBand implements IsSerializable {
+public class CytoBand implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	/**
 	 * 
 	 */

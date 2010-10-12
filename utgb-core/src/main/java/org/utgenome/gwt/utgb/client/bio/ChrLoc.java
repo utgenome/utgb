@@ -24,9 +24,14 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.bio;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import java.io.Serializable;
 
-public class ChrLoc implements IsSerializable {
+public class ChrLoc implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public int start;
 	public int end;
 	public String chr;
