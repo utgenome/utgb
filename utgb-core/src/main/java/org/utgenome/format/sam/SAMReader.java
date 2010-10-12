@@ -57,6 +57,10 @@ public class SAMReader {
 		return new SAMFileReader(samFile);
 	}
 
+	public static class QueryConfig {
+
+	}
+
 	/**
 	 * Retrieved SAMReads (or SAMReadPair) overlapped with the specified interval
 	 * 

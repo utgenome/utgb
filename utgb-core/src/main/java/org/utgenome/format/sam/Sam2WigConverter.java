@@ -35,6 +35,7 @@ import net.sf.samtools.SAMRecordIterator;
 import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.xerial.util.ArrayDeque;
 import org.xerial.util.Deque;
+import org.xerial.util.log.Logger;
 
 /**
  * Converting SAM into WIG (coverage depth)
@@ -43,6 +44,8 @@ import org.xerial.util.Deque;
  * 
  */
 public class Sam2WigConverter {
+
+	private static Logger _logger = Logger.getLogger(Sam2WigConverter.class);
 
 	private Deque<Interval> readSetInStartOrder = new ArrayDeque<Interval>();
 	private String currentChr = null;
@@ -109,6 +112,7 @@ public class Sam2WigConverter {
 		SAMFileReader samReader = new SAMFileReader(samOrBam);
 		try {
 			convert(samReader.iterator());
+			_logger.info("done.");
 		}
 		finally {
 			samReader.close();
@@ -124,9 +128,17 @@ public class Sam2WigConverter {
 		// reduce
 		//   (chr, x), {1, 1, ...}  ->  output ((chr, x), sum of 1s)
 
+		long readCount = 0;
+
 		int sweepLine = 1;
 		// assume that SAM reads are sorted in the start order
 		for (; cursor.hasNext();) {
+			readCount++;
+
+			if (readCount != 0 && (readCount % 1000000) == 0) {
+				_logger.info(String.format("processed %,d reads", readCount));
+			}
+
 			SAMRecord read = cursor.next();
 
 			String ref = read.getReferenceName();
@@ -141,6 +153,8 @@ public class Sam2WigConverter {
 				sweepLine = 1;
 				currentChr = ref;
 				reporter.switchChr();
+				_logger.info(String.format("processing %s", currentChr));
+
 			}
 
 			Interval readInterval = new Interval(read.getAlignmentStart(), read.getAlignmentEnd() + 1);
