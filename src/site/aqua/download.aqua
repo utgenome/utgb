@@ -4,7 +4,8 @@
 * [toolkit/quickstart.html UTGB Toolkit Installation Guide]
 
 {b|New!} UTGB Shell installer using Java Web Start is available.
-* Click http://utgenome.org/toolkit/utgb.jnlp to install UTGB Toolkit
+* Open http://utgenome.org/toolkit/utgb.jnlp to install UTGB Toolkit
+** Downloadable archive for manual installation is also available from here: http://maven.utgenome.org/repository/artifact/org/utgenome/utgb-shell/
 
 == Release Notes
 
@@ -26,19 +27,20 @@ in your project folder.
  -property:
   -path: db/sample.bam
 </code>
- (db/sample.bam and db/sample.bam.bai file must be present to display the read data. You can create these files from SAM files via utgb import command.)
-** WIG file support in WigTrack
+ (In this example, db/sample.bam and db/sample.bam.bai files must be exist to display the read data. You can create these files from SAM files via {b|utgb import} command.)
+** WIG file support in WigTrack:
 <code>
 -track
  -class: WigTrack
  -property:
   -path: db/sample.wig
 </code>
+(First, you need to import your WIG files via utgb import command.)
 ** Several utilties to manipulate Illumina's read data; e.g., utgb illumina2qseq, utgb qseq2fastq, utgb rename-fastq, etc.
 
 ** Keyword database generator. (see also utgb keyword --help)
 *** utgb keyword import ("BED/SAM/BAM" files) 
-** (internal) Using GWT 2.0.4
+** (internal) Upgrading to GWT 2.0.4
 
 
 * {b|December 10th, 2009} UTGB Shell 1.2.18 released

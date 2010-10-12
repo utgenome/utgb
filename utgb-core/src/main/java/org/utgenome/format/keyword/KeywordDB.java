@@ -127,13 +127,13 @@ public class KeywordDB {
 
 		String forwardMatchQuery = SQLExpression.fillTemplate(
 				"select rowid as id, 3 as priority, offsets(keyword_index) as offsets, * from keyword_index where $1 keyword match $2", refCondition, SQLUtil
-						.doubleQuote(keywordSegmentsWithStar + " -" + sKeyword));
+						.doubleQuote(keywordSegmentsWithStar + " NOT " + sKeyword));
 
 		String unionSQL = SQLExpression.fillTemplate("select * from ($1 union all $2 union all $3)", perfectMatchQuery, aliasPerfectMatchQuery,
 				forwardMatchQuery);
 
 		// count the search results
-		String countSQL = SQLExpression.fillTemplate("select count(*) as count from (select distinct(id) from ($1))", unionSQL);
+		String countSQL = SQLExpression.fillTemplate("select count(*) as count from (select distinct id from ($1))", unionSQL);
 
 		db.query(countSQL, new ResultSetHandler<Void>() {
 			@Override
@@ -145,8 +145,8 @@ public class KeywordDB {
 
 		r.maxPage = r.count / pageSize + (r.count % pageSize == 0 ? 0 : 1);
 
-		String searchSQLTemplate = "select distinct(t.id) as id, original_keyword as name, offsets, ref, chr, start, end "
-				+ "from ($1) t, entry where t.id = entry.rowid order by priority, chr, start limit $2 offset $3";
+		String searchSQLTemplate = "select distinct t.id as id, original_keyword as name, offsets, ref, chr, start, end "
+				+ "from ($1) t join entry on t.id = entry.rowid order by priority, chr, start limit $2 offset $3";
 		String keywordSearchSQL = SQLExpression.fillTemplate(searchSQLTemplate, unionSQL, pageSize, pageSize * (page - 1));
 
 		r.result = db.query(keywordSearchSQL, KeywordSearchResult.Entry.class);
