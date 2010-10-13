@@ -35,6 +35,8 @@ import java.util.List;
 import net.sf.samtools.SAMFileReader;
 import net.sf.samtools.SAMFileReader.ValidationStringency;
 import net.sf.samtools.SAMRecord;
+import net.sf.samtools.SAMSequenceDictionary;
+import net.sf.samtools.SAMSequenceRecord;
 import net.sf.samtools.util.CloseableIterator;
 
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
@@ -57,8 +59,27 @@ public class SAMReader {
 		return new SAMFileReader(samFile);
 	}
 
-	public static class QueryConfig {
+	public List<String> getChrList(File samOrBamFile) {
 
+		SAMFileReader sam = new SAMFileReader(samOrBamFile);
+		try {
+			sam.setValidationStringency(ValidationStringency.SILENT);
+
+			SAMSequenceDictionary dict = sam.getFileHeader().getSequenceDictionary();
+			List<String> chrList = new ArrayList<String>();
+			for (SAMSequenceRecord eachSeq : dict.getSequences()) {
+				chrList.add(eachSeq.getSequenceName());
+			}
+			return chrList;
+		}
+		finally {
+			sam.close();
+		}
+	}
+
+	public static File getBamIndexFile(File bamFile) {
+		File baiFile = new File(bamFile.getAbsolutePath() + ".bai");
+		return baiFile;
 	}
 
 	/**
@@ -70,7 +91,7 @@ public class SAMReader {
 	 */
 	public static List<OnGenome> overlapQuery(File bamFile, ChrLoc loc) {
 
-		File baiFile = new File(bamFile.getAbsolutePath() + ".bai");
+		File baiFile = getBamIndexFile(bamFile);
 		SAMFileReader sam = new SAMFileReader(bamFile, baiFile, true);
 		sam.setValidationStringency(ValidationStringency.SILENT);
 

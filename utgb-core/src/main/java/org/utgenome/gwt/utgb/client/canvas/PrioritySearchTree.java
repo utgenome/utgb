@@ -104,7 +104,8 @@ public class PrioritySearchTree<E> implements Iterable<E> {
 		private Stack<Node> nodeStack = new Stack<Node>();
 
 		public DFSIterator(Node root) {
-			nodeStack.push(root);
+			if (root != null)
+				nodeStack.push(root);
 		}
 
 		public boolean hasNext() {
@@ -254,9 +255,12 @@ public class PrioritySearchTree<E> implements Iterable<E> {
 	 * Remove the specified node
 	 * 
 	 * @param elem
+	 * @return true if the specified element exists in the tree
 	 */
-	public void remove(E elem, int x, int y) {
+	public boolean remove(E elem, int x, int y) {
+		int prevNumNodes = size();
 		root = remove_internal(root, new Node(elem, x, y), lowerBoundOfX, upperBoundOfX);
+		return prevNumNodes != size();
 	}
 
 	Node insert_internal(Node currentNode, Node insertNode, int lowerRangeOfX, int upperRangeOfX) {

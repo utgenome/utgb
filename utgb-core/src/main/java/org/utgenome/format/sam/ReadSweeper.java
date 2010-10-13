@@ -22,6 +22,7 @@
 //--------------------------------------
 package org.utgenome.format.sam;
 
+import java.util.Collection;
 import java.util.Iterator;
 
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
@@ -29,53 +30,52 @@ import org.utgenome.gwt.utgb.client.canvas.IntervalTree;
 import org.xerial.util.log.Logger;
 
 /**
- * Sweeping SAM reads in the start order
+ * Sweeping SAM reads in their start order
  * 
  * @author leo
  * 
  */
-public class ReadSweeper {
+public class ReadSweeper<T extends OnGenome> {
 
 	private static Logger _logger = Logger.getLogger(ReadSweeper.class);
 
-	private IntervalTree<OnGenome> readSet = new IntervalTree<OnGenome>();
+	private IntervalTree<T> readSet = new IntervalTree<T>();
 	private int sweepLine = 1;
 	private long readCount = 0;
 
-	public static interface ReadSetHandler {
-		public void handle(int sweepLine, Iterable<OnGenome> readSet);
+	public interface ReadSetHandler<T extends OnGenome> {
+		public void handle(int sweepLine, Collection<T> readSet);
 	}
 
-	public void sweep(Iterator<OnGenome> cursor, ReadSetHandler handler) {
+	public void sweep(Iterator<T> cursor, ReadSetHandler<T> handler) {
 
 		readSet.clear();
-		sweepLine = 0;
+		sweepLine = 1;
 		readCount = 0;
 
 		// assume that read data are sorted in the start order
 		for (; cursor.hasNext();) {
 			readCount++;
 
-			if (readCount != 0 && (readCount % 1000000) == 0) {
+			if ((readCount % 1000000) == 0) {
 				_logger.info(String.format("processed %,d reads", readCount));
 			}
 
-			OnGenome read = cursor.next();
-			if (sweepLine < read.getStart()) {
+			T read = cursor.next();
+			int readStart = read.getStart();
+			if (sweepLine < readStart) {
 				// we can sweep reads up to sweepEnd
-				int sweepEnd = read.getStart();
-				sweepUpto(sweepEnd, handler);
+				sweepUpto(readStart, handler);
 			}
 			readSet.add(read);
 		}
 
 		if (!readSet.isEmpty()) {
-			final int maxReadEnd = maxReadEnd(readSet);
-			sweepUpto(maxReadEnd, handler);
+			sweepUpto(maxReadEnd(readSet), handler);
 		}
 	}
 
-	private static int maxReadEnd(Iterable<OnGenome> readSet) {
+	private int maxReadEnd(Iterable<T> readSet) {
 		int maxEnd = -1;
 		for (OnGenome each : readSet) {
 			if (maxEnd < each.getEnd())
@@ -84,11 +84,10 @@ public class ReadSweeper {
 		return maxEnd;
 	}
 
-	private void sweepUpto(int sweepEnd, ReadSetHandler handler) {
-		for (int i = sweepLine; i < sweepEnd; i++) {
-			handler.handle(i, readSet);
-			readSet.removeBefore(i);
+	private void sweepUpto(int sweepEnd, ReadSetHandler<T> handler) {
+		for (; sweepLine < sweepEnd; sweepLine++) {
+			handler.handle(sweepLine, readSet);
+			readSet.removeBefore(sweepLine);
 		}
-		sweepLine = sweepEnd;
 	}
 }

@@ -67,10 +67,10 @@ public class SAMRead extends Interval {
 
 		sb.append("name=" + qname);
 		sb.append(", flag=" + flag);
+		sb.append(", start=" + start);
 		sb.append(", mapq=" + mapq);
 		sb.append(", cigar=" + cigar);
 		sb.append(", iSize=" + iSize);
-		sb.append(", qual=\"" + qual + "\"");
 		sb.append(", tag=" + tag);
 
 		return sb.toString();

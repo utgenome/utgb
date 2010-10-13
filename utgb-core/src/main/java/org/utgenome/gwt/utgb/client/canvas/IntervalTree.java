@@ -22,6 +22,7 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.canvas;
 
+import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -34,7 +35,7 @@ import org.utgenome.gwt.utgb.client.bio.OnGenome;
  * @author leo
  * 
  */
-public class IntervalTree<T extends OnGenome> implements Iterable<T> {
+public class IntervalTree<T extends OnGenome> extends AbstractCollection<T> {
 
 	private PrioritySearchTree<T> pst = new PrioritySearchTree<T>();
 
@@ -43,9 +44,15 @@ public class IntervalTree<T extends OnGenome> implements Iterable<T> {
 	 * 
 	 * @param elem
 	 */
-	public void add(T elem) {
+	@Override
+	public boolean add(T elem) {
 		// swap start and end when inserting to PST
 		pst.insert(elem, elem.getEnd(), elem.getStart());
+		return true;
+	}
+
+	public boolean remove(T t) {
+		return pst.remove(t, t.getEnd(), t.getStart());
 	}
 
 	/**
@@ -74,10 +81,12 @@ public class IntervalTree<T extends OnGenome> implements Iterable<T> {
 		pst.rangeQuery(start + 1, Integer.MAX_VALUE, end - 1, handler);
 	}
 
+	@Override
 	public boolean isEmpty() {
-		return pst.size() > 0;
+		return pst.size() == 0;
 	}
 
+	@Override
 	public void clear() {
 		pst.clear();
 	}
@@ -93,6 +102,7 @@ public class IntervalTree<T extends OnGenome> implements Iterable<T> {
 		}
 	}
 
+	@Override
 	public Iterator<T> iterator() {
 		return pst.iterator();
 	}
@@ -108,5 +118,10 @@ public class IntervalTree<T extends OnGenome> implements Iterable<T> {
 			r.add(each);
 		}
 		return r;
+	}
+
+	@Override
+	public int size() {
+		return pst.size();
 	}
 }

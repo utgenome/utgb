@@ -92,4 +92,14 @@ public class IntervalTreeTest {
 		assertTrue(r.contains(E));
 	}
 
+	@Test
+	public void empty() throws Exception {
+		assertTrue(!t.isEmpty());
+		t.removeBefore(5);
+		assertTrue(!t.isEmpty());
+		t.clear();
+		assertTrue(t.isEmpty());
+
+	}
+
 }
