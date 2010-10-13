@@ -247,13 +247,22 @@ public class FASTADatabase {
 		if (!dbFile.exists())
 			throw new UTGBException(UTGBErrorCode.MISSING_FILES, "DB file doesn't exist: " + dbFile);
 
-		try {
-			SQLiteAccess db = new SQLiteAccess(dbFile.getAbsolutePath());
-			querySequence(db, location, handler);
+		SQLiteAccess db = null;
+		try
+		{
+			try {
+				db = new SQLiteAccess(dbFile.getAbsolutePath());
+				querySequence(db, location, handler);
+			}
+			finally {
+				if(db != null)
+					db.dispose();
+			}
 		}
 		catch (Exception e) {
 			throw UTGBException.convert(e);
 		}
+
 	}
 
 	public static void querySequence(SQLiteAccess db, ChrLoc location, BeanResultHandler<NSeq> handler) throws UTGBException {

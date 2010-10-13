@@ -160,6 +160,8 @@ public class SAMReader {
 		finally {
 			if (it != null)
 				it.close();
+			
+			sam.close();
 
 			if (_logger.isDebugEnabled()) {
 				_logger.debug(String.format("finished reading (%s) %s : %d reads", bamFile.getName(), loc, readCount));
