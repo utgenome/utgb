@@ -58,7 +58,7 @@ public enum AminoAcid {
 	Asx("B", "Asparagine or aspartic acid"),
 	Glx("Z", "Glutamine or glutamic acid"),
 	Xle("J", "Leucine or Isoleucine"),
-	Xaa("X", "Unspecified or unkonown amino acid"),
+	Xaa("X", "Unspecified or unknown amino acid"),
 	
 	// stop codons
 	Ochre("-", "Stop codon: Ochre"),
