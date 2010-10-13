@@ -71,6 +71,16 @@ public class IntervalTreeTest {
 	}
 
 	@Test
+	public void pointQuery() throws Exception {
+		List<Read> r = t.overlapQuery(4, 4);
+		assertTrue(!r.contains(A));
+		assertTrue(!r.contains(B));
+		assertTrue(r.contains(C));
+		assertTrue(!r.contains(D));
+		assertTrue(!r.contains(E));
+	}
+
+	@Test
 	public void sweepBefore() throws Exception {
 		t.removeBefore(2);
 		List<Read> r = t.elementList();

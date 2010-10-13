@@ -81,6 +81,10 @@ public class IntervalTree<T extends OnGenome> extends AbstractCollection<T> {
 		pst.rangeQuery(start + 1, Integer.MAX_VALUE, end - 1, handler);
 	}
 
+	public List<T> overlapQuery(OnGenome target) {
+		return overlapQuery(target.getStart(), target.getEnd());
+	}
+
 	@Override
 	public boolean isEmpty() {
 		return pst.size() == 0;

@@ -24,6 +24,7 @@ package org.utgenome.util.sv;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.List;
 
 import org.utgenome.format.fasta.CompactFASTA;
 import org.utgenome.gwt.utgb.client.bio.BEDGene;
@@ -87,8 +88,7 @@ public class VariationAnnotator {
 			}
 
 			public void handle(GeneticVariation v) throws Exception {
-				GeneticVariation annotated = annotate(v);
-				_logger.info(annotated);
+				annotate(v);
 			}
 
 			public void init() throws Exception {
@@ -98,8 +98,16 @@ public class VariationAnnotator {
 
 	}
 
-	GeneticVariation annotate(GeneticVariation v) {
-		return v;
+	void output(GeneticVariation v) {
+		_logger.info(v);
+	}
+
+	void annotate(GeneticVariation v) {
+
+		List<BEDGene> overlappedGeneSet = geneSet.overlapQuery(v);
+		for (BEDGene eachGene : overlappedGeneSet) {
+
+		}
 	}
 
 }
