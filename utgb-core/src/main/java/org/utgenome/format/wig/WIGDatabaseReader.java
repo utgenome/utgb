@@ -208,6 +208,9 @@ public class WIGDatabaseReader {
 			}
 			st2.stop();
 		}
+		
+		rs.close();
+		
 		_logger.debug("min: " + minValue + ", max: " + maxValue);
 		_logger.debug("Time(all)    : " + st1.getElapsedTime());
 		_logger.debug("Time(archive): " + st2.getElapsedTime());

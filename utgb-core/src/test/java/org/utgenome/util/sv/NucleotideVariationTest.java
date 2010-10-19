@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------------------
- *  Copyright 2009 utgenome.org
+ *  Copyright 2010 utgenome.org
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,23 +16,21 @@
 //--------------------------------------
 // utgb-core Project
 //
-// BEDReadTest.java
-// Since: 2010/05/20
+// NucleotideVariationTest.java
+// Since: 2010/10/13
 //
-// $URL$ 
-// $Author$
 //--------------------------------------
-package org.utgenome.gwt.utgb;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+package org.utgenome.util.sv;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.utgenome.gwt.utgb.client.bio.Read;
+import org.utgenome.util.sv.GeneticVariation.VariationType;
+import org.xerial.util.log.Logger;
 
-public class BEDReadTest {
+public class NucleotideVariationTest {
+
+	private static Logger _logger = Logger.getLogger(NucleotideVariationTest.class);
 
 	@Before
 	public void setUp() throws Exception {
@@ -43,11 +41,10 @@ public class BEDReadTest {
 	}
 
 	@Test
-	public void strand() throws Exception {
-		Read r = new Read();
-		r.setStrand("-");
-		assertTrue(r.isAntiSense());
-		assertFalse(r.isSense());
+	public void toSilk() throws Exception {
+		GeneticVariation snv = new GeneticVariation(VariationType.PointMutation, "chr1", 3, 4, "A");
+		_logger.info(snv);
+
 	}
 
 }

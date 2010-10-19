@@ -176,19 +176,25 @@ public class BEDDatabase {
 				// use db
 				SQLiteAccess dbAccess = new SQLiteAccess(dbInput.getAbsolutePath());
 
-				String sql = SQLExpression.fillTemplate("select start, end, name, score, strand, cds, exon, color from gene "
-						+ "where coordinate = '$1' and ((start between $2 and $3) or (start <= $2 and end >= $3))", location.chr, sqlEnd, sqlStart);
+				try
+				{
+					String sql = SQLExpression.fillTemplate("select start, end, name, score, strand, cds, exon, color from gene "
+							+ "where coordinate = '$1' and ((start between $2 and $3) or (start <= $2 and end >= $3))", location.chr, sqlEnd, sqlStart);
+	
+					if (_logger.isDebugEnabled())
+						_logger.debug(sql);
 
-				if (_logger.isDebugEnabled())
-					_logger.debug(sql);
-
-				dbAccess.query(sql, new ResultSetHandler() {
-					@Override
-					public Object handle(ResultSet rs) throws SQLException {
-						geneList.add(new BEDGene(BEDEntry.createFromResultSet(location.chr, rs)));
-						return null;
-					}
-				});
+					dbAccess.query(sql, new ResultSetHandler() {
+						@Override
+						public Object handle(ResultSet rs) throws SQLException {
+							geneList.add(new BEDGene(BEDEntry.createFromResultSet(location.chr, rs)));
+							return null;
+						}
+					});
+				}
+				finally {
+					dbAccess.dispose();	
+				}
 			}
 			else {
 				// use raw text
