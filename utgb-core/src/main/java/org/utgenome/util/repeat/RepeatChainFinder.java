@@ -38,6 +38,7 @@ import org.utgenome.gwt.utgb.client.canvas.PrioritySearchTree.ResultHandler;
 import org.xerial.ObjectHandlerBase;
 import org.xerial.lens.Lens;
 import org.xerial.util.graph.AdjacencyList;
+import org.xerial.util.graph.Edge;
 import org.xerial.util.log.Logger;
 import org.xerial.util.opt.Argument;
 import org.xerial.util.opt.Option;
@@ -59,7 +60,7 @@ public class RepeatChainFinder {
 	private File intervalFile;
 
 	@Option(symbol = "t", longName = "threshold", description = "threshold for connecting fragments")
-	public int threshold = 5;
+	public int threshold = 10;
 
 	/**
 	 * 2D interval
@@ -87,9 +88,11 @@ public class RepeatChainFinder {
 		}
 
 		public int forwardDistance(Interval2D other) {
-			int xDiff = other.getStart() - this.getEnd();
-			int yDiff = other.y2 - this.y1;
+			int xDiff = Math.abs(other.getStart() - this.getEnd());
+			//			if (xDiff < 0)
+			//				return -1;
 
+			int yDiff = Math.abs(other.y1 - this.y2);
 			if (this.isForward()) {
 				if (other.isForward())
 					return Math.max(xDiff, yDiff);
@@ -100,7 +103,7 @@ public class RepeatChainFinder {
 				if (other.isForward())
 					return -1;
 				else
-					return Math.max(xDiff, -yDiff);
+					return Math.max(xDiff, yDiff);
 			}
 		}
 
@@ -120,7 +123,7 @@ public class RepeatChainFinder {
 		}
 
 		public void output() {
-			_logger.info(String.format("output repead id:%d", id));
+			_logger.info(String.format("output repead id:%,d", id));
 		}
 
 	}
@@ -189,7 +192,7 @@ public class RepeatChainFinder {
 			// sweep the intervals
 			for (Interval2D current : intervals) {
 
-				// sweep intervals in [-infty, current.start - threshold)    
+				// sweep intervals in [-infinity, current.start - threshold)    
 				intervalTree.removeBefore(current.getStart() - threshold, new ResultHandler<RepeatChainFinder.Interval2D>() {
 					public void handle(Interval2D elem) {
 						sweep(elem);
@@ -202,7 +205,7 @@ public class RepeatChainFinder {
 
 				// connect to the closest edge
 				for (Interval2D each : intervalTree) {
-					int dist = each.forwardDistance(current);
+					final int dist = each.forwardDistance(current);
 					if (dist > 0 && dist < threshold) {
 						graph.addEdge(each, current, dist);
 					}
@@ -212,7 +215,17 @@ public class RepeatChainFinder {
 
 			}
 
-			_logger.info("graph:\n" + graph.toGraphViz());
+			if (_logger.isTraceEnabled())
+				_logger.trace("graph:\n" + graph.toGraphViz());
+
+			for (Interval2D node : graph.getNodeLabelSet()) {
+				List<Interval2D> adjacentNodes = new ArrayList<Interval2D>();
+				for (Edge each : graph.getOutEdgeSet(node)) {
+					adjacentNodes.add(graph.getNodeLabel(each.getDestNodeID()));
+				}
+				_logger.info(String.format("node %s -> %s", node, adjacentNodes));
+			}
+
 			_logger.info("done");
 		}
 
