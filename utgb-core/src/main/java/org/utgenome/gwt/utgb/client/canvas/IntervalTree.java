@@ -102,6 +102,13 @@ public class IntervalTree<T extends OnGenome> extends AbstractCollection<T> {
 		}
 	}
 
+	public void removeBefore(int start, PrioritySearchTree.ResultHandler<T> handler) {
+		for (T each : pst.rangeQuery(Integer.MIN_VALUE, start, start)) {
+			handler.handle(each);
+			pst.remove(each, each.getEnd(), each.getStart());
+		}
+	}
+
 	@Override
 	public Iterator<T> iterator() {
 		return pst.iterator();
