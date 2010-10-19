@@ -38,6 +38,8 @@ import org.utgenome.gwt.utgb.client.canvas.PrioritySearchTree.ResultHandler;
 import org.xerial.ObjectHandlerBase;
 import org.xerial.lens.Lens;
 import org.xerial.util.graph.AdjacencyList;
+import org.xerial.util.graph.DepthFirstSearch;
+import org.xerial.util.graph.DepthFirstSearchBase;
 import org.xerial.util.graph.Edge;
 import org.xerial.util.log.Logger;
 import org.xerial.util.opt.Argument;
@@ -218,13 +220,27 @@ public class RepeatChainFinder {
 			if (_logger.isTraceEnabled())
 				_logger.trace("graph:\n" + graph.toGraphViz());
 
+			// creating a chain graph
+			_logger.info("chaining...");
 			for (Interval2D node : graph.getNodeLabelSet()) {
 				List<Interval2D> adjacentNodes = new ArrayList<Interval2D>();
 				for (Edge each : graph.getOutEdgeSet(node)) {
 					adjacentNodes.add(graph.getNodeLabel(each.getDestNodeID()));
 				}
+
 				_logger.info(String.format("node %s -> %s", node, adjacentNodes));
 			}
+
+			_logger.info("DFS");
+			// find connected components from the graph
+			DepthFirstSearch<Interval2D, Integer> dfs = new DepthFirstSearchBase<RepeatChainFinder.Interval2D, Integer>() {
+
+				@Override
+				public void discoverNode(Interval2D node) {
+					//_logger.info(String.format("find node: %s", node));
+				}
+			};
+			dfs.run(graph);
 
 			_logger.info("done");
 		}
