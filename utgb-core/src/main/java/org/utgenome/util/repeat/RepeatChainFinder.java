@@ -37,6 +37,7 @@ import org.utgenome.gwt.utgb.client.canvas.IntervalTree;
 import org.utgenome.gwt.utgb.client.canvas.PrioritySearchTree.ResultHandler;
 import org.xerial.ObjectHandlerBase;
 import org.xerial.lens.Lens;
+import org.xerial.util.graph.AdjacencyList;
 import org.xerial.util.log.Logger;
 import org.xerial.util.opt.Argument;
 import org.xerial.util.opt.Option;
@@ -58,7 +59,7 @@ public class RepeatChainFinder {
 	private File intervalFile;
 
 	@Option(symbol = "t", longName = "threshold", description = "threshold for connecting fragments")
-	public int threshold;
+	public int threshold = 5;
 
 	/**
 	 * 2D interval
@@ -83,6 +84,24 @@ public class RepeatChainFinder {
 
 		public boolean isForward() {
 			return y1 <= y2;
+		}
+
+		public int forwardDistance(Interval2D other) {
+			int xDiff = other.getStart() - this.getEnd();
+			int yDiff = other.y2 - this.y1;
+
+			if (this.isForward()) {
+				if (other.isForward())
+					return Math.max(xDiff, yDiff);
+				else
+					return -1;
+			}
+			else {
+				if (other.isForward())
+					return -1;
+				else
+					return Math.max(xDiff, -yDiff);
+			}
 		}
 
 	}
@@ -164,6 +183,8 @@ public class RepeatChainFinder {
 			// sort intervals by their start order
 			Collections.sort(intervals);
 
+			final AdjacencyList<Interval2D, Integer> graph = new AdjacencyList<Interval2D, Integer>();
+
 			_logger.info("sweeping intervals...");
 			// sweep the intervals
 			for (Interval2D current : intervals) {
@@ -180,9 +201,18 @@ public class RepeatChainFinder {
 				});
 
 				// connect to the closest edge
+				for (Interval2D each : intervalTree) {
+					int dist = each.forwardDistance(current);
+					if (dist > 0 && dist < threshold) {
+						graph.addEdge(each, current, dist);
+					}
+				}
+
+				intervalTree.add(current);
 
 			}
 
+			_logger.info("graph:\n" + graph.toGraphViz());
 			_logger.info("done");
 		}
 
