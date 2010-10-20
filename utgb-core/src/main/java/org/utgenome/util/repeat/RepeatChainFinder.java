@@ -33,7 +33,6 @@ import org.utgenome.UTGBErrorCode;
 import org.utgenome.UTGBException;
 import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.utgenome.gwt.utgb.client.canvas.IntervalTree;
-import org.utgenome.gwt.utgb.client.canvas.PrioritySearchTree.ResultHandler;
 import org.xerial.ObjectHandlerBase;
 import org.xerial.lens.Lens;
 import org.xerial.util.graph.AdjacencyList;
@@ -194,15 +193,7 @@ public class RepeatChainFinder {
 			for (Interval2D current : intervals) {
 
 				// sweep intervals in [-infinity, current.start - threshold)    
-				intervalTree.removeBefore(current.getStart() - threshold, new ResultHandler<RepeatChainFinder.Interval2D>() {
-					public void handle(Interval2D elem) {
-						sweep(elem);
-					}
-
-					public boolean toContinue() {
-						return true;
-					}
-				});
+				intervalTree.removeBefore(current.getStart() - threshold);
 
 				// connect to the closest edge
 				for (Interval2D each : intervalTree) {
@@ -267,10 +258,6 @@ public class RepeatChainFinder {
 				findPath(next, cloneOfPathStack);
 			}
 		}
-
-	}
-
-	void sweep(Interval2D removeTarget) {
 
 	}
 
