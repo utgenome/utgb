@@ -40,13 +40,7 @@ public class GeneticVariation extends Interval {
 	private static final long serialVersionUID = 1L;
 
 	public static enum VariationType {
-		NA("unknown"), M("point mutation"), I("insertion"), D("deletion");
-
-		public final String description;
-
-		private VariationType(String description) {
-			this.description = description;
-		}
+		NotAvailable, Mutation, Insertion, Deletion;
 	};
 
 	// locus information ((start, end) values are in the parent Interval.class)
@@ -86,7 +80,7 @@ public class GeneticVariation extends Interval {
 
 	VariationType detectVariationType(String allele) {
 		if (allele == null)
-			return VariationType.NA;
+			return VariationType.NotAvailable;
 
 		String[] alleleList = allele.split("/");
 		if (alleleList.length == 1) {
@@ -97,16 +91,16 @@ public class GeneticVariation extends Interval {
 			iupac = IUPAC.None;
 
 		if (iupac != IUPAC.None)
-			return VariationType.M;
+			return VariationType.Mutation;
 
 		for (String each : alleleList) {
-			if (allele.startsWith("+"))
-				return VariationType.I;
-			else if (allele.startsWith("-"))
-				return VariationType.D;
+			if (each.startsWith("+"))
+				return VariationType.Insertion;
+			else if (each.startsWith("-"))
+				return VariationType.Deletion;
 		}
 
-		return VariationType.NA;
+		return VariationType.NotAvailable;
 	}
 
 	public String getGenotype() {
@@ -129,7 +123,7 @@ public class GeneticVariation extends Interval {
 
 	@Override
 	public String getName() {
-		return String.format("%s", variationType.description);
+		return String.format("%s", variationType.name());
 	}
 
 }

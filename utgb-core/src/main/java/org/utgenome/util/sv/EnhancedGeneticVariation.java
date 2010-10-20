@@ -43,8 +43,8 @@ public class EnhancedGeneticVariation extends GeneticVariation {
 	}
 
 	public enum MutationPosition {
-		NA("N/A"), InterGenic("inter-genic"), Intron("intron"), NonCoding("non-coding"), FirstExon("first coding exon"), Exon("coding exon"), LastExon(
-				"last coding exon"), SS5("splice site at 5'-end"), SS3("splice site at 3'-end");
+		NA("N/A"), InterGenic("inter-genic"), UTR5("5'-UTR"), UTR3("3'-UTR"), Intron("intron"), NonCoding("non-coding"), FirstExon("first coding exon"), Exon(
+				"coding exon"), LastExon("last coding exon"), SS5("splice site at 5'-end"), SS3("splice site at 3'-end");
 
 		public final String description;
 
