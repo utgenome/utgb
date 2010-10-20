@@ -22,11 +22,12 @@
 //--------------------------------------
 package org.utgenome.util.sv;
 
-import org.utgenome.gwt.utgb.client.bio.AminoAcid;
 import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.xerial.lens.Lens;
 
 /**
+ * genetic variation location [start, end), chr and allele (genotype) information
+ * 
  * @author leo
  * 
  */
@@ -41,39 +42,10 @@ public class GeneticVariation extends Interval {
 		Unknown, PointMutation, Insertion, Deletion
 	};
 
-	/**
-	 * mutation types (e.g., non-coding, missense, synonymous, non-sense, frame-shift, splice-site mutation, etc.)
-	 * 
-	 * @author leo
-	 * 
-	 */
-	public enum MutationType {
-		Unknown("unknown"), NC("non coding"), MS("missense"), SN("synonymous"), NS("non-sense mutation"), FS("frame-shift mutation"), SS(
-				"splice-site muatation");
-
-		private final String description;
-
-		private MutationType(String description) {
-			this.description = description;
-		}
-
-		public String getDescription() {
-			return description;
-		}
-
-	}
-
 	// locus information ((start, end) values are in the parent Interval.class)
 	public VariationType type = VariationType.Unknown;
 	public String chr;
 	public String allele;
-
-	// additional annotations
-	public MutationType mutationType = MutationType.Unknown;
-	public String refBase;
-	public String strand;
-	public AminoAcid aRef = null;
-	public AminoAcid aAlt = null;
 
 	/**
 	 * @param type
@@ -90,6 +62,13 @@ public class GeneticVariation extends Interval {
 		this.type = type;
 		this.chr = chr;
 		this.allele = allele;
+	}
+
+	public GeneticVariation(GeneticVariation other) {
+		super(other);
+		this.type = other.type;
+		this.chr = other.chr;
+		this.allele = other.allele;
 	}
 
 	@Override

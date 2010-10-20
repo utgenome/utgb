@@ -63,7 +63,10 @@ public enum AminoAcid {
 	// stop codons
 	Ochre("-", "Stop codon: Ochre"),
 	Opal("-", "Stop codon: Opal"),
-	Amber("-", "Stop codon: Amber")
+	Amber("-", "Stop codon: Amber"),
+	
+	// for non-coding region
+	NA("N/A", "not available")
 	;
 
 	public final String symbol;

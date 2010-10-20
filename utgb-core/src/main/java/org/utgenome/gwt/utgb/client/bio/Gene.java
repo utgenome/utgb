@@ -66,6 +66,10 @@ public class Gene extends Read implements Serializable {
 		return exonList;
 	}
 
+	public Exon getExon(int index) {
+		return exonList.get(index);
+	}
+
 	public void addCDS(CDS cds) {
 		cdsList.add(cds);
 	}

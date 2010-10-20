@@ -32,7 +32,7 @@ import java.io.Serializable;
  * @author yoshimura
  * 
  */
-public class BEDGene extends Gene implements Serializable{
+public class BEDGene extends Gene implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -41,11 +41,15 @@ public class BEDGene extends Gene implements Serializable{
 
 	public BEDGene() {
 	}
-	
+
 	public BEDGene(BEDGene other) {
 		super(other);
 		this.coordinate = other.coordinate;
 		this.score = other.score;
+	}
+
+	public CDS getCDSRange() {
+		return getCDS().get(0);
 	}
 
 	@Override
