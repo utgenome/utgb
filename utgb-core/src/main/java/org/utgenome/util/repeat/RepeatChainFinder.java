@@ -37,8 +37,6 @@ import org.utgenome.gwt.utgb.client.canvas.PrioritySearchTree.ResultHandler;
 import org.xerial.ObjectHandlerBase;
 import org.xerial.lens.Lens;
 import org.xerial.util.graph.AdjacencyList;
-import org.xerial.util.graph.DepthFirstSearch;
-import org.xerial.util.graph.DepthFirstSearchBase;
 import org.xerial.util.graph.Edge;
 import org.xerial.util.log.Logger;
 import org.xerial.util.opt.Argument;
@@ -110,21 +108,21 @@ public class RepeatChainFinder {
 
 	}
 
-	public static class IntervalChain {
+	public static class IntervalChain implements Comparable<IntervalChain> {
 
-		public final int id;
-		public List<Interval2D> chain = new ArrayList<Interval2D>();
+		public List<Interval2D> chain;
 
-		public IntervalChain(int id) {
-			this.id = id;
+		public IntervalChain(List<Interval2D> chain) {
+			this.chain = chain;
 		}
 
-		public void add(Interval2D interval) {
-			chain.add(interval);
+		public int compareTo(IntervalChain o) {
+			return chain.get(0).compareTo(o.chain.get(0));
 		}
 
-		public void output() {
-			_logger.info(String.format("output repead id:%,d", id));
+		@Override
+		public String toString() {
+			return String.format("repeat:%s", chain);
 		}
 
 	}
@@ -145,8 +143,8 @@ public class RepeatChainFinder {
 		}
 	}
 
-	final IntervalTree<Interval2D> intervalTree = new IntervalTree<Interval2D>();
 	final AdjacencyList<Interval2D, Integer> graph = new AdjacencyList<Interval2D, Integer>();
+	final ArrayList<IntervalChain> chainList = new ArrayList<IntervalChain>();
 
 	public void execute(String[] args) throws Exception {
 
@@ -191,6 +189,7 @@ public class RepeatChainFinder {
 			Collections.sort(intervals);
 
 			_logger.info("sweeping intervals...");
+			final IntervalTree<Interval2D> intervalTree = new IntervalTree<Interval2D>();
 			// sweep the intervals
 			for (Interval2D current : intervals) {
 
@@ -233,6 +232,7 @@ public class RepeatChainFinder {
 			}
 
 			// enumerate paths
+			_logger.info("enumerating connected paths...");
 			for (Interval2D each : graph.getNodeLabelSet()) {
 				if (!graph.getInEdgeSet(each).isEmpty())
 					continue;
@@ -241,16 +241,9 @@ public class RepeatChainFinder {
 				findPath(each, new ArrayList<Interval2D>());
 			}
 
-			_logger.info("DFS");
-			// find connected components from the graph
-			DepthFirstSearch<Interval2D, Integer> dfs = new DepthFirstSearchBase<RepeatChainFinder.Interval2D, Integer>() {
-
-				@Override
-				public void discoverNode(Interval2D node) {
-					//_logger.info(String.format("find node: %s", node));
-				}
-			};
-			dfs.run(graph);
+			// sort the result
+			Collections.sort(chainList);
+			_logger.info(chainList);
 
 			_logger.info("done");
 		}
@@ -261,8 +254,9 @@ public class RepeatChainFinder {
 
 		List<Interval2D> outNodeList = graph.outNodeList(startNode);
 		if (outNodeList.isEmpty()) {
-			// report path
-			_logger.info(String.format("path: %s", pathStack));
+			// if this node is a leaf, report the path
+			IntervalChain chain = new IntervalChain(pathStack);
+			chainList.add(chain);
 		}
 		else {
 			// traverse children
