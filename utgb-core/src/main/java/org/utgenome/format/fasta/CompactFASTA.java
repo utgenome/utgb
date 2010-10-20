@@ -120,14 +120,14 @@ public class CompactFASTA {
 	 * @throws IOException
 	 * @throws UTGBException
 	 */
-	public GenomeSequence getSequence(String chr, int start, int end) throws IOException, UTGBException {
+	public CompactACGT getSequence(String chr, int start, int end) throws IOException, UTGBException {
 		if (!indexTable.containsKey(chr))
 			return null;
 		CompactFASTAIndex index = indexTable.get(chr);
 		return getSequence(index, start, end);
 	}
 
-	GenomeSequence getSequence(CompactFASTAIndex index, int start, int end) throws IOException, UTGBException {
+	CompactACGT getSequence(CompactFASTAIndex index, int start, int end) throws IOException, UTGBException {
 		if (index == null)
 			throw new IllegalArgumentException("index must not be null");
 

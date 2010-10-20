@@ -31,8 +31,9 @@ import java.util.List;
 
 import org.utgenome.UTGBException;
 import org.utgenome.format.bed.BED2SilkReader;
+import org.utgenome.format.fasta.CompactACGT;
 import org.utgenome.format.fasta.CompactFASTA;
-import org.utgenome.format.fasta.GenomeSequence;
+import org.utgenome.gwt.utgb.client.bio.AminoAcid;
 import org.utgenome.gwt.utgb.client.bio.BEDGene;
 import org.utgenome.gwt.utgb.client.bio.CDS;
 import org.utgenome.gwt.utgb.client.bio.CodonTable;
@@ -190,12 +191,17 @@ public class VariationAnnotator {
 					int frameIndex = distFromBoundary / 3;
 					int frameOffset = distFromBoundary % 3;
 					int frameStart = eachGene.isSense() ? e.getStart() + 3 * frameIndex : e.getEnd() - 3 * (frameIndex + 1);
-					GenomeSequence refCodon = fasta.getSequence(v.chr, frameStart, frameStart + 3);
+
+					// check codon
+					CompactACGT refCodon = fasta.getSequence(v.chr, frameStart, frameStart + 3);
+					AminoAcid refAA = CodonTable.toAminoAcid(e.isSense() ? refCodon.toString() : refCodon.reverseComplement().toString());
+
+					// TODO check alternative AminoAcid
 
 					EnhancedGeneticVariation annot = new EnhancedGeneticVariation(v);
 					annot.geneName = eachGene.getName();
 					annot.mutationPosition = getExonPos(exonPos, numExon);
-					annot.aRef = CodonTable.toAminoAcid(refCodon.toString());
+					annot.aRef = refAA;
 					result.add(annot);
 					break;
 				}
