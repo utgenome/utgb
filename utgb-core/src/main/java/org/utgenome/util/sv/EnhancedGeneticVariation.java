@@ -23,7 +23,6 @@
 package org.utgenome.util.sv;
 
 import org.utgenome.gwt.utgb.client.bio.AminoAcid;
-import org.utgenome.gwt.utgb.client.bio.IUPAC;
 
 public class EnhancedGeneticVariation extends GeneticVariation {
 
@@ -63,8 +62,7 @@ public class EnhancedGeneticVariation extends GeneticVariation {
 	// additional annotations
 	public MutationType mutationType = MutationType.NA;
 	public MutationPosition mutationPosition = MutationPosition.NA;
-	public String refBase;
-	public IUPAC iupac = IUPAC.None;
+
 	public String strand;
 	public String geneName;
 	public AminoAcid aRef = AminoAcid.NA;

@@ -92,6 +92,12 @@ public class Interval implements OnGenome, Comparable<Interval>, Serializable {
 		correctInterval();
 	}
 
+	public void setStartAndEnd(int start, int end) {
+		this.start = start;
+		this.end = end;
+		correctInterval();
+	}
+
 	protected void correctInterval() {
 		// do not swap start and end when one of them is undefined
 		if (start == -1 || end == -1)

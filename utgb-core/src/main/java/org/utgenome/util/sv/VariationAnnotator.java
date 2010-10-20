@@ -24,11 +24,18 @@ package org.utgenome.util.sv;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.utgenome.UTGBException;
+import org.utgenome.format.bed.BED2SilkReader;
 import org.utgenome.format.fasta.CompactFASTA;
+import org.utgenome.format.fasta.GenomeSequence;
 import org.utgenome.gwt.utgb.client.bio.BEDGene;
+import org.utgenome.gwt.utgb.client.bio.CDS;
+import org.utgenome.gwt.utgb.client.bio.CodonTable;
 import org.utgenome.gwt.utgb.client.bio.Exon;
 import org.utgenome.gwt.utgb.client.canvas.IntervalTree;
 import org.utgenome.util.sv.EnhancedGeneticVariation.MutationPosition;
@@ -89,24 +96,30 @@ public class VariationAnnotator {
 	public void execute() throws Exception {
 
 		// load FASTA (packed via utgb pack)
-		_logger.info("loading FASTA pac file...");
+		_logger.info("loading FASTA pac file: " + fastaFile);
 		fasta = CompactFASTA.loadIntoMemory(fastaFile);
 
 		// load BED
-		_logger.info("loading gene information...");
-		Lens.findFromSilk(new BufferedReader(new FileReader(geneBED)), "gene", BEDGene.class, new ObjectHandler<BEDGene>() {
-			public void finish() throws Exception {
-				_logger.info("loading done.");
-			}
+		_logger.info("loading gene information: " + geneBED);
+		Reader bedReader = new BED2SilkReader(new BufferedReader(new FileReader(geneBED)));
+		try {
+			Lens.findFromSilk(bedReader, "gene", BEDGene.class, new ObjectHandler<BEDGene>() {
+				public void finish() throws Exception {
+					_logger.info(String.format("loaded %d genes", geneSet.size()));
+				}
 
-			public void handle(BEDGene gene) throws Exception {
-				geneSet.add(gene);
-			}
+				public void handle(BEDGene gene) throws Exception {
+					geneSet.add(gene);
+				}
 
-			public void init() throws Exception {
-				_logger.info("loading gene BED file...");
-			}
-		});
+				public void init() throws Exception {
+					_logger.info("loading gene BED file...");
+				}
+			});
+		}
+		finally {
+			bedReader.close();
+		}
 
 		// load variation position file
 		_logger.info("loading variation data...");
@@ -119,7 +132,8 @@ public class VariationAnnotator {
 
 			public void handle(GeneticVariation v) throws Exception {
 				count++;
-				annotate(v);
+				List<EnhancedGeneticVariation> annotation = annotate(v);
+				_logger.info(annotation);
 				if ((count % 10000) == 0) {
 					_logger.info(String.format("processed %,d mutations", count));
 				}
@@ -142,8 +156,10 @@ public class VariationAnnotator {
 	 * 
 	 * @param v
 	 * @return
+	 * @throws UTGBException
+	 * @throws IOException
 	 */
-	List<EnhancedGeneticVariation> annotate(GeneticVariation v) {
+	List<EnhancedGeneticVariation> annotate(GeneticVariation v) throws IOException, UTGBException {
 
 		List<EnhancedGeneticVariation> result = new ArrayList<EnhancedGeneticVariation>();
 
@@ -160,23 +176,34 @@ public class VariationAnnotator {
 			// exon/intron region
 			for (BEDGene eachGene : overlappedGeneSet) {
 				final int numExon = eachGene.getExon().size();
+				final CDS cds = eachGene.getCDSRange();
 				boolean hasOverlapWithExon = false;
 				for (int exonPos = 0; exonPos < numExon; exonPos++) {
 					Exon e = eachGene.getExon(eachGene.isSense() ? exonPos : numExon - exonPos - 1);
 					if (!e.hasOverlap(v))
 						continue;
-					else {
+					else
 						hasOverlapWithExon = true;
-						EnhancedGeneticVariation annot = new EnhancedGeneticVariation(v);
-						annot.mutationPosition = getExonPos(exonPos, numExon);
 
-						result.add(annot);
-						break;
-					}
+					// check frame
+					int distFromBoundary = (eachGene.isSense() ? v.getStart() - e.getStart() : e.getEnd() - v.getStart() - 1);
+					int frameIndex = distFromBoundary / 3;
+					int frameOffset = distFromBoundary % 3;
+					int frameStart = eachGene.isSense() ? e.getStart() + 3 * frameIndex : e.getEnd() - 3 * (frameIndex + 1);
+					GenomeSequence refCodon = fasta.getSequence(v.chr, frameStart, frameStart + 3);
+
+					EnhancedGeneticVariation annot = new EnhancedGeneticVariation(v);
+					annot.geneName = eachGene.getName();
+					annot.mutationPosition = getExonPos(exonPos, numExon);
+					annot.aRef = CodonTable.toAminoAcid(refCodon.toString());
+					result.add(annot);
+					break;
 				}
-				if (!hasOverlapWithExon) {
+
+				if (!hasOverlapWithExon) { // no overlap with exons
 					EnhancedGeneticVariation annot = new EnhancedGeneticVariation(v);
 					annot.mutationPosition = MutationPosition.Intron;
+					result.add(annot);
 				}
 			}
 		}

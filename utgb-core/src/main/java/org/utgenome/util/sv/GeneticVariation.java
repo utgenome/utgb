@@ -22,6 +22,7 @@
 //--------------------------------------
 package org.utgenome.util.sv;
 
+import org.utgenome.gwt.utgb.client.bio.IUPAC;
 import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.xerial.lens.Lens;
 
@@ -39,13 +40,24 @@ public class GeneticVariation extends Interval {
 	private static final long serialVersionUID = 1L;
 
 	public static enum VariationType {
-		Unknown, PointMutation, Insertion, Deletion
+		NA("unknown"), M("point mutation"), I("insertion"), D("deletion");
+
+		public final String description;
+
+		private VariationType(String description) {
+			this.description = description;
+		}
 	};
 
 	// locus information ((start, end) values are in the parent Interval.class)
-	public VariationType type = VariationType.Unknown;
+	public VariationType variationType;
 	public String chr;
-	public String allele;
+	private String genotype;
+	public IUPAC iupac = IUPAC.None;
+	public String refBase;
+
+	public GeneticVariation() {
+	}
 
 	/**
 	 * @param type
@@ -54,26 +66,70 @@ public class GeneticVariation extends Interval {
 	 *            1-origin (inclusive)
 	 * @param end
 	 *            1-origin (exclusive)
-	 * @param allele
-	 *            A, C, AC, ACGT, *, etc.
+	 * @param genotype
+	 *            A, C, AC, ACGT (genotype), *, +A (insertion to reference), -aatT (deletion from reference), etc.
 	 */
-	public GeneticVariation(VariationType type, String chr, int start, int end, String allele) {
+	public GeneticVariation(String chr, int start, int end, String genotype) {
 		super(start, end);
-		this.type = type;
 		this.chr = chr;
-		this.allele = allele;
+		setGenotype(genotype);
 	}
 
 	public GeneticVariation(GeneticVariation other) {
 		super(other);
-		this.type = other.type;
+		this.variationType = other.variationType;
 		this.chr = other.chr;
-		this.allele = other.allele;
+		this.genotype = other.genotype;
+		this.iupac = other.iupac;
+		this.refBase = other.refBase;
+	}
+
+	VariationType detectVariationType(String allele) {
+		if (allele == null)
+			return VariationType.NA;
+
+		String[] alleleList = allele.split("/");
+		if (alleleList.length == 1) {
+			// IUPAC
+			iupac = IUPAC.find(allele);
+		}
+		else
+			iupac = IUPAC.None;
+
+		if (iupac != IUPAC.None)
+			return VariationType.M;
+
+		for (String each : alleleList) {
+			if (allele.startsWith("+"))
+				return VariationType.I;
+			else if (allele.startsWith("-"))
+				return VariationType.D;
+		}
+
+		return VariationType.NA;
+	}
+
+	public String getGenotype() {
+		return genotype;
+	}
+
+	public void setGenotype(String genotype) {
+		this.genotype = genotype;
+		this.variationType = detectVariationType(genotype);
+	}
+
+	public void setPos(int pos) {
+		setStartAndEnd(pos, pos);
 	}
 
 	@Override
 	public String toString() {
 		return Lens.toSilk(this);
+	}
+
+	@Override
+	public String getName() {
+		return String.format("%s", variationType.description);
 	}
 
 }

@@ -16,35 +16,40 @@
 //--------------------------------------
 // utgb-core Project
 //
-// NucleotideVariationTest.java
-// Since: 2010/10/13
+// TestHelper.java
+// Since: 2010/10/20
 //
 //--------------------------------------
-package org.utgenome.util.sv;
+package org.utgenome.util;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.utgenome.util.sv.GeneticVariation.VariationType;
-import org.xerial.util.log.Logger;
+import java.io.File;
+import java.io.IOException;
 
-public class NucleotideVariationTest {
+import org.xerial.util.FileResource;
+import org.xerial.util.FileUtil;
 
-	private static Logger _logger = Logger.getLogger(NucleotideVariationTest.class);
+/**
+ * Utilities for writing JUnit code
+ * 
+ * @author leo
+ * 
+ */
+public class TestHelper {
 
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	@After
-	public void tearDown() throws Exception {
-	}
-
-	@Test
-	public void toSilk() throws Exception {
-		GeneticVariation snv = new GeneticVariation(VariationType.PointMutation, "chr1", 3, 4, "A");
-		_logger.info(snv);
-
+	/**
+	 * Create a temporary file
+	 * 
+	 * @param <T>
+	 * @param referenceClass
+	 * @param srcFileName
+	 * @return
+	 * @throws IOException
+	 */
+	public static <T> File createTempFileFrom(Class<T> referenceClass, String srcFileName) throws IOException {
+		File tmp = FileUtil.createTempFile(new File("target"), "temp", srcFileName);
+		FileUtil.copy(FileResource.openByteStream(referenceClass, srcFileName), tmp);
+		tmp.deleteOnExit();
+		return tmp;
 	}
 
 }

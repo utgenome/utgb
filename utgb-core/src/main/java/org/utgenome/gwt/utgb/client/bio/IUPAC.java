@@ -89,4 +89,12 @@ public enum IUPAC {
 		return acgtToIUPACTable[flag & 0x0F];
 	}
 
+	public static IUPAC find(String iupacCode) {
+		IUPAC iupac = IUPAC.valueOf(IUPAC.class, iupacCode);
+		if (iupac == null)
+			return IUPAC.None;
+		else
+			return iupac;
+	}
+
 }
