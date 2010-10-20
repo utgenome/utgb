@@ -113,7 +113,7 @@ public class GeneticVariation extends Interval {
 	}
 
 	public void setPos(int pos) {
-		setStartAndEnd(pos, pos);
+		atomicSetStartAndEnd(pos, pos);
 	}
 
 	@Override

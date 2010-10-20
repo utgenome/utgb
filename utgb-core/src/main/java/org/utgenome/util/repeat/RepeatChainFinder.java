@@ -27,7 +27,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 import org.utgenome.UTGBErrorCode;
@@ -147,8 +146,7 @@ public class RepeatChainFinder {
 	}
 
 	final IntervalTree<Interval2D> intervalTree = new IntervalTree<Interval2D>();
-	final HashMap<Interval2D, Integer> labelOfInterval = new HashMap<RepeatChainFinder.Interval2D, Integer>();
-	final HashMap<Integer, IntervalChain> chainOfLabel = new HashMap<Integer, IntervalChain>();
+	final AdjacencyList<Interval2D, Integer> graph = new AdjacencyList<Interval2D, Integer>();
 
 	public void execute(String[] args) throws Exception {
 
@@ -161,6 +159,7 @@ public class RepeatChainFinder {
 
 			_logger.info("loading intervals..");
 			// import (x1, y1, x2, y2) tab-separated data
+
 			BufferedReader in = new BufferedReader(new FileReader(intervalFile));
 			try {
 				TabAsTreeParser t = new TabAsTreeParser(in);
@@ -171,11 +170,15 @@ public class RepeatChainFinder {
 				label.add("y2");
 				t.setColunLabel(label);
 				t.setRowNodeName("entry");
-
 				// load 2D intervals
 				Lens.find(Interval2D.class, "entry", new ObjectHandlerBase<Interval2D>() {
 					public void handle(Interval2D interval) throws Exception {
 						intervals.add(interval);
+					}
+
+					@Override
+					public void finish() throws Exception {
+						_logger.info(String.format("loaded %d intervals", intervals.size()));
 					}
 				}, t);
 			}
@@ -183,12 +186,9 @@ public class RepeatChainFinder {
 				in.close();
 			}
 
-			_logger.info(String.format("loaded %d intervals", intervals.size()));
 			_logger.info("sorting intervals...");
 			// sort intervals by their start order
 			Collections.sort(intervals);
-
-			final AdjacencyList<Interval2D, Integer> graph = new AdjacencyList<Interval2D, Integer>();
 
 			_logger.info("sweeping intervals...");
 			// sweep the intervals
@@ -228,7 +228,17 @@ public class RepeatChainFinder {
 					adjacentNodes.add(graph.getNodeLabel(each.getDestNodeID()));
 				}
 
-				_logger.info(String.format("node %s -> %s", node, adjacentNodes));
+				if (_logger.isTraceEnabled())
+					_logger.trace(String.format("node %s -> %s", node, adjacentNodes));
+			}
+
+			// enumerate paths
+			for (Interval2D each : graph.getNodeLabelSet()) {
+				if (!graph.getInEdgeSet(each).isEmpty())
+					continue;
+
+				// create chain
+				findPath(each, new ArrayList<Interval2D>());
 			}
 
 			_logger.info("DFS");
@@ -247,17 +257,27 @@ public class RepeatChainFinder {
 
 	}
 
-	void sweep(Interval2D removeTarget) {
-		if (labelOfInterval.containsKey(removeTarget)) {
-			// output a finished chain
-			int label = labelOfInterval.get(removeTarget);
-			IntervalChain chain = chainOfLabel.get(label);
-			chain.output();
+	private void findPath(Interval2D startNode, ArrayList<Interval2D> pathStack) {
 
-			// remove the swept entries from the holders
-			labelOfInterval.remove(removeTarget);
-			chainOfLabel.remove(label);
+		List<Interval2D> outNodeList = graph.outNodeList(startNode);
+		if (outNodeList.isEmpty()) {
+			// report path
+			_logger.info(String.format("path: %s", pathStack));
 		}
+		else {
+			// traverse children
+			for (Interval2D next : outNodeList) {
+				ArrayList<Interval2D> cloneOfPathStack = new ArrayList<Interval2D>();
+				cloneOfPathStack.addAll(pathStack);
+				cloneOfPathStack.add(startNode);
+				findPath(next, cloneOfPathStack);
+			}
+		}
+
+	}
+
+	void sweep(Interval2D removeTarget) {
+
 	}
 
 }
