@@ -361,7 +361,7 @@ public class RepeatChainFinder {
 					continue;
 
 				// create chain
-				findPath(each, each);
+				findPathsToLeaf(each, each);
 			}
 			_logger.info("# of paths : " + rangeList.size());
 
@@ -519,7 +519,7 @@ public class RepeatChainFinder {
 
 	}
 
-	private void findPath(Interval2D current, Interval2D pathStart) {
+	private void findPathsToLeaf(Interval2D current, Interval2D pathStart) {
 
 		// TODO cycle detection
 		List<Interval2D> outNodeList = graph.outNodeList(current);
@@ -531,7 +531,7 @@ public class RepeatChainFinder {
 		else {
 			// traverse children
 			for (Interval2D next : outNodeList) {
-				findPath(next, pathStart);
+				findPathsToLeaf(next, pathStart);
 			}
 		}
 

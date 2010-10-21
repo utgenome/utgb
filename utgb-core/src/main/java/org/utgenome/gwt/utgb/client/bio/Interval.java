@@ -184,6 +184,7 @@ public class Interval implements OnGenome, Comparable<Interval>, Serializable {
 	public int compareTo(Interval other) {
 		long diff = this.getStart() - other.getStart();
 		if (diff == 0) {
+			// Comparing hash values is necessary for the same range intervals but might have different parameter values.
 			return this.hashCode() - other.hashCode();
 		}
 		else

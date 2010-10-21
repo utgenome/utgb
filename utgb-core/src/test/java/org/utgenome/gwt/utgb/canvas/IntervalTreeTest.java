@@ -34,6 +34,14 @@ import org.utgenome.gwt.utgb.client.canvas.IntervalTree;
 public class IntervalTreeTest {
 
 	IntervalTree<Read> t;
+	/* 
+	 *   1 2 3 4 5 6 7 8
+	 *  A--
+	 *    B----
+	 *  C--------------
+	 *      D|
+	 *          E--  
+	 */
 	final static Read A = new Read("A", 1, 2);
 	final static Read B = new Read("B", 2, 4);
 	final static Read C = new Read("C", 1, 8);
@@ -48,6 +56,38 @@ public class IntervalTreeTest {
 		t.add(C);
 		t.add(D);
 		t.add(E);
+	}
+
+	@Test
+	public void sweepBefore() throws Exception {
+		t.removeBefore(2);
+		List<Read> r = t.elementList();
+		assertTrue(!r.contains(A));
+		assertTrue(r.contains(B));
+		assertTrue(r.contains(C));
+		assertTrue(r.contains(D));
+		assertTrue(r.contains(E));
+	}
+
+	@Test
+	public void sweepBefore2() throws Exception {
+		t.removeBefore(5);
+		List<Read> r = t.elementList();
+		assertTrue(!r.contains(A));
+		assertTrue(!r.contains(B));
+		assertTrue(r.contains(C));
+		assertTrue(!r.contains(D));
+		assertTrue(r.contains(E));
+	}
+
+	@Test
+	public void removeBefore() throws Exception {
+		t.removeBefore(3);
+		assertTrue(!t.contains(A));
+		assertTrue(t.contains(B));
+		assertTrue(t.contains(C));
+		assertTrue(t.contains(D));
+		assertTrue(t.contains(E));
 	}
 
 	@Test
@@ -78,28 +118,6 @@ public class IntervalTreeTest {
 		assertTrue(r.contains(C));
 		assertTrue(!r.contains(D));
 		assertTrue(!r.contains(E));
-	}
-
-	@Test
-	public void sweepBefore() throws Exception {
-		t.removeBefore(2);
-		List<Read> r = t.elementList();
-		assertTrue(!r.contains(A));
-		assertTrue(r.contains(B));
-		assertTrue(r.contains(C));
-		assertTrue(r.contains(D));
-		assertTrue(r.contains(E));
-	}
-
-	@Test
-	public void sweepBefore2() throws Exception {
-		t.removeBefore(5);
-		List<Read> r = t.elementList();
-		assertTrue(!r.contains(A));
-		assertTrue(!r.contains(B));
-		assertTrue(r.contains(C));
-		assertTrue(!r.contains(D));
-		assertTrue(r.contains(E));
 	}
 
 	@Test
