@@ -29,7 +29,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.TreeSet;
+import java.util.Set;
+import java.util.TreeMap;
 
 import org.utgenome.UTGBErrorCode;
 import org.utgenome.UTGBException;
@@ -37,6 +38,7 @@ import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.utgenome.gwt.utgb.client.canvas.IntervalTree;
 import org.xerial.ObjectHandlerBase;
 import org.xerial.lens.Lens;
+import org.xerial.util.StringUtil;
 import org.xerial.util.graph.AdjacencyList;
 import org.xerial.util.graph.Edge;
 import org.xerial.util.log.Logger;
@@ -108,6 +110,10 @@ public class RepeatChainFinder {
 		@Override
 		public String toString() {
 			return String.format("(%d, %d)-(%d, %d)", getStart(), y1, getEnd(), y2);
+		}
+
+		public int xLength() {
+			return getEnd() - getStart();
 		}
 
 		public Interval getStartPoint() {
@@ -307,15 +313,35 @@ public class RepeatChainFinder {
 			}
 			_logger.info("# of paths : " + rangeList.size());
 
-			// remove duplicate
-			TreeSet<Interval2D> rangeSet = new TreeSet<Interval2D>(new Comparator<Interval2D>() {
-				public int compare(Interval2D o1, Interval2D o2) {
-					return o1.compareTo(o2);
-				}
-			});
+			Collections.sort(rangeList);
 
-			for (Interval2D eachRange : rangeList) {
-				rangeSet.add(eachRange);
+			// remove duplicate
+			List<Interval2D> rangeSet = new ArrayList<Interval2D>();
+			{
+				TreeMap<Interval, Interval2D> longestRange = new TreeMap<Interval, Interval2D>(new Comparator<Interval>() {
+					public int compare(Interval o1, Interval o2) {
+						int diff = o1.getStart() - o2.getStart();
+						if (diff == 0)
+							return o1.getEnd() - o2.getEnd();
+						else
+							return diff;
+					}
+				});
+				{
+					for (Interval2D each : rangeList) {
+						Interval key = each.getStartPoint();
+						if (longestRange.containsKey(key)) {
+							Interval2D prev = longestRange.get(key);
+							if (prev.xLength() < each.xLength()) {
+								longestRange.remove(key);
+								longestRange.put(key, each);
+							}
+						}
+						else
+							longestRange.put(key, each);
+					}
+				}
+				rangeSet.addAll(longestRange.values());
 			}
 			_logger.info("# of unique paths : " + rangeSet.size());
 			//_logger.info(StringUtil.join(rangeSet, ",\n"));
@@ -348,7 +374,13 @@ public class RepeatChainFinder {
 				}
 			}
 
-			_logger.info("# of disjoint sets: " + clusterSet.rootNodeSet().size());
+			Set<Interval2D> clusterRoots = clusterSet.rootNodeSet();
+			_logger.info("# of disjoint sets: " + clusterRoots.size());
+			int clusterCount = 1;
+			for (Interval2D root : clusterRoots) {
+				List<Interval2D> cluster = clusterSet.disjointSetOf(root);
+				_logger.info(String.format("cluster %d:\n%s", clusterCount++, StringUtil.join(cluster, ",\n")));
+			}
 
 			_logger.info("done");
 		}

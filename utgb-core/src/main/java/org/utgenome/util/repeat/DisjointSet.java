@@ -65,6 +65,21 @@ public class DisjointSet<E> {
 		return roots;
 	}
 
+	public List<E> disjointSetOf(E x) {
+		final int setID = find(x);
+
+		List<E> result = new ArrayList<E>();
+		result.add(x);
+		for (int id = 0; id < parentID.size(); id++) {
+			int pid = parentID.get(id);
+			if (pid == setID) {
+				result.add(elementIndex.getByID(id));
+			}
+		}
+
+		return result;
+	}
+
 	public void union(E x, E y) {
 		linkByID(find(x), find(y));
 	}
@@ -97,6 +112,13 @@ public class DisjointSet<E> {
 		}
 	}
 
+	/**
+	 * Find the disjoint set ID of the given element
+	 * 
+	 * @param x
+	 *            element
+	 * @return
+	 */
 	public int find(E x) {
 		return findByID(elementIndex.getID(x));
 	}
