@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
@@ -203,6 +204,7 @@ public class RepeatChainFinder {
 
 	public static class IntervalCluster implements Comparable<IntervalCluster> {
 
+		public int id;
 		public final List<Interval2D> component;
 		public final int length;
 
@@ -215,6 +217,10 @@ public class RepeatChainFinder {
 					maxLength = each.maxLength();
 			}
 			this.length = maxLength;
+		}
+
+		public void setId(int id) {
+			this.id = id;
 		}
 
 		public void validate() throws UTGBException {
@@ -484,10 +490,16 @@ public class RepeatChainFinder {
 
 		File silkFile = new File("target", "cluster-info.silk");
 		SilkWriter silk = new SilkWriter(new BufferedOutputStream(new FileOutputStream(silkFile)));
+		silk.preamble();
+		silk.leaf("date", new Date().toString());
+		silk.leaf("threshold", threshold);
 
 		for (IntervalCluster cluster : clusterList) {
 			final int clusterID = clusterCount++;
+			cluster.setId(clusterID);
 			_logger.info(String.format("cluster %d:(%s)", clusterID, cluster));
+			silk.leafObject("cluter", cluster);
+
 			try {
 				cluster.validate();
 				File outFile = new File("target", String.format("cluster%d.fa", clusterID));
@@ -502,12 +514,14 @@ public class RepeatChainFinder {
 
 					final int id = segmentID++;
 					// output (x1, x2)
-					fastaOut.append(String.format(">s1%d-src (%d,%d):%d => (%d,%d):%d\n", id, s, e, e - s, segment.y1, segment.y2, segment.y2 - segment.y1));
+					fastaOut.append(String.format(">c%02d-s%04d-s (%d,%d):%d => (%d,%d):%d\n", clusterID, id, s, e, e - s, segment.y1, segment.y2, segment.y2
+							- segment.y1));
 					fastaOut.append(sequence.substring(s - 1, e - 1)); // adjust to 0-origin
 					fastaOut.append("\n");
 
 					// output (y1, y2)
-					fastaOut.append(String.format(">s1%d-src (%d,%d):%d => (%d,%d):%d\n", id, s, e, e - s, segment.y1, segment.y2, segment.y2 - segment.y1));
+					fastaOut.append(String.format(">c%02d-s%04d-d (%d,%d):%d => (%d,%d):%d\n", clusterID, id, s, e, e - s, segment.y1, segment.y2, segment.y2
+							- segment.y1));
 					if (segment.y1 < segment.y2) {
 						fastaOut.append(sequence.substring(segment.y1 - 1, segment.y2 - 2)); // adjust to 0-origin
 					}
