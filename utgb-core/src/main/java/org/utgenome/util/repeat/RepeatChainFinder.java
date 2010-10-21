@@ -72,10 +72,13 @@ public class RepeatChainFinder {
 	private File fastaFile;
 
 	@Option(symbol = "t", longName = "threshold", description = "threshold for connecting fragments")
-	public int threshold = 50;
+	private int threshold = 50;
 
 	@Option(symbol = "s", description = "sequence name to read from FASTA")
-	public String chr;
+	private String chr;
+
+	@Option(symbol = "o", description = "output folder")
+	private String outFolder;
 
 	/**
 	 * 2D interval
@@ -210,6 +213,11 @@ public class RepeatChainFinder {
 
 		public IntervalCluster(List<Interval2D> elements) {
 			this.component = elements;
+			Collections.sort(elements, new Comparator<Interval2D>() {
+				public int compare(Interval2D o1, Interval2D o2) {
+					return o2.maxLength() - o1.maxLength();
+				}
+			});
 
 			int maxLength = -1;
 			for (Interval2D each : elements) {
@@ -289,6 +297,11 @@ public class RepeatChainFinder {
 
 		if (intervalFile == null)
 			throw new UTGBException(UTGBErrorCode.MISSING_FILES, "no input file is given");
+
+		if (outFolder == null) {
+			outFolder = String.format("target/cluster-T%d", threshold);
+			new File(outFolder).mkdirs();
+		}
 
 		{
 			int numChain = 0;
@@ -488,23 +501,25 @@ public class RepeatChainFinder {
 		FASTA fasta = new FASTA(fastaFile);
 		String sequence = fasta.getRawSequence(chr);
 
-		File silkFile = new File("target", "cluster-info.silk");
+		File silkFile = new File(outFolder, "cluster-info.silk");
 		SilkWriter silk = new SilkWriter(new BufferedOutputStream(new FileOutputStream(silkFile)));
 		silk.preamble();
 		silk.leaf("date", new Date().toString());
 		silk.leaf("threshold", threshold);
+		silk.leaf("fasta", fastaFile);
+		silk.leaf("dot plot file", intervalFile);
 
 		for (IntervalCluster cluster : clusterList) {
 			final int clusterID = clusterCount++;
 			cluster.setId(clusterID);
 			_logger.info(String.format("cluster %d:(%s)", clusterID, cluster));
 
-			SilkWriter sub = silk.node("cluster").attribute("id", Integer.toString(clusterID))
+			SilkWriter sub = silk.node("cluster").attribute("id", Integer.toString(clusterID)).attribute("max length", Integer.toString(cluster.length))
 					.attribute("component size", Integer.toString(cluster.component.size()));
 
 			try {
 				cluster.validate();
-				File outFile = new File("target", String.format("cluster%d.fa", clusterID));
+				File outFile = new File(outFolder, String.format("cluster%02d.fa", clusterID));
 				_logger.info("output " + outFile);
 				BufferedWriter fastaOut = new BufferedWriter(new FileWriter(outFile));
 				int segmentID = 1;
@@ -513,8 +528,8 @@ public class RepeatChainFinder {
 
 					SilkWriter c = sub.node("component");
 					c.leaf("x1", segment.getStart());
-					c.leaf("y1", segment.y1);
 					c.leaf("x2", segment.getEnd());
+					c.leaf("y1", segment.y1);
 					c.leaf("y2", segment.y2);
 
 					final int s = segment.getStart();
