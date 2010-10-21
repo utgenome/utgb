@@ -202,6 +202,34 @@ public class RepeatChainFinder {
 			this.length = maxLength;
 		}
 
+		public void verify() throws UTGBException {
+
+			if (elements.size() <= 1)
+				return;
+
+			for (Interval2D p : elements) {
+				boolean hasOverlap = false;
+				for (Interval2D q : elements) {
+					if (p == q)
+						continue;
+					if (p.hasOverlap(q)) {
+						hasOverlap = true;
+						break;
+					}
+					else {
+						Interval py = new Interval(p.y1, p.y2);
+						Interval qy = new Interval(q.y1, q.y2);
+						if (py.hasOverlap(qy)) {
+							hasOverlap = true;
+							break;
+						}
+					}
+				}
+				if (!hasOverlap)
+					throw new UTGBException(UTGBErrorCode.ValidationFailure);
+			}
+		}
+
 		public int compareTo(IntervalCluster o) {
 			return this.length - o.length;
 		}
@@ -328,7 +356,6 @@ public class RepeatChainFinder {
 			_logger.info("# of paths : " + rangeList.size());
 
 			// remove duplicates
-			List<Interval2D> rangeSet = new ArrayList<Interval2D>();
 			{
 				Collections.sort(rangeList);
 				TreeMap<Interval, Interval2D> longestRange = new TreeMap<Interval, Interval2D>(new Comparator<Interval>() {
@@ -354,9 +381,10 @@ public class RepeatChainFinder {
 							longestRange.put(key, each);
 					}
 				}
-				rangeSet.addAll(longestRange.values());
+				rangeList.clear();
+				rangeList.addAll(longestRange.values());
 			}
-			_logger.info("# of unique paths : " + rangeSet.size());
+			_logger.info("# of unique paths : " + rangeList.size());
 			//_logger.info(StringUtil.join(rangeSet, ",\n"));
 
 			// assign the overlapped intervals to the same cluster
@@ -364,7 +392,7 @@ public class RepeatChainFinder {
 			{
 				_logger.info("clustring paths in X-coordinate...");
 				IntervalTree<Interval2D> xOverlapChecker = new IntervalTree<Interval2D>();
-				for (Interval2D each : rangeSet) {
+				for (Interval2D each : rangeList) {
 					clusterSet.add(each);
 					for (Interval2D overlapped : xOverlapChecker.overlapQuery(each)) {
 						clusterSet.union(overlapped, each);
@@ -380,7 +408,7 @@ public class RepeatChainFinder {
 			{
 				_logger.info("clustring paths in Y-coordinate...");
 				IntervalTree<FlippedInterval2D> yOverlapChecker = new IntervalTree<FlippedInterval2D>();
-				for (Interval2D each : rangeSet) {
+				for (Interval2D each : rangeList) {
 					FlippedInterval2D flip = new FlippedInterval2D(each);
 					for (FlippedInterval2D overlapped : yOverlapChecker.overlapQuery(flip)) {
 						clusterSet.union(overlapped.orig, each);
@@ -414,8 +442,15 @@ public class RepeatChainFinder {
 				return o2.length - o1.length;
 			}
 		});
-		for (IntervalCluster each : clusterList)
+		for (IntervalCluster each : clusterList) {
 			_logger.info(String.format("cluster %d:%s", clusterCount++, each));
+			try {
+				each.verify();
+			}
+			catch (UTGBException e) {
+				_logger.error(e);
+			}
+		}
 	}
 
 	private void findPath(Interval2D current, Interval2D pathStart) {
