@@ -23,7 +23,9 @@
 package org.utgenome.util.repeat;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.xerial.util.IndexedSet;
 
@@ -47,8 +49,20 @@ public class DisjointSet<E> {
 		boolean isNewElement = elementIndex.add(element);
 		if (isNewElement) {
 			int id = elementIndex.getID(element);
+			parentID.add(id);
 			rank.add(0);
 		}
+	}
+
+	public Set<E> rootNodeSet() {
+		Set<E> roots = new HashSet<E>();
+		for (E each : elementIndex) {
+			int id = elementIndex.getID(each);
+			int pid = parentID.get(id);
+			if (id == pid)
+				roots.add(each);
+		}
+		return roots;
 	}
 
 	public void union(E x, E y) {
@@ -58,6 +72,16 @@ public class DisjointSet<E> {
 	public void link(E x, E y) {
 		int xID = elementIndex.getID(x);
 		int yID = elementIndex.getID(y);
+
+		if (xID == IndexedSet.INVALID_ID) {
+			add(x);
+			xID = elementIndex.getID(x);
+		}
+
+		if (yID == IndexedSet.INVALID_ID) {
+			add(y);
+			yID = elementIndex.getID(y);
+		}
 
 		linkByID(xID, yID);
 	}

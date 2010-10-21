@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
+import org.utgenome.gwt.utgb.client.util.Optional;
 
 /**
  * Interval layout
@@ -81,8 +82,30 @@ public class IntervalTree<T extends OnGenome> extends AbstractCollection<T> {
 		pst.rangeQuery(start + 1, Integer.MAX_VALUE, end - 1, handler);
 	}
 
+	public void overlapQuery(OnGenome target, PrioritySearchTree.ResultHandler<T> handler) {
+		overlapQuery(target.getStart(), target.getEnd(), handler);
+	}
+
 	public List<T> overlapQuery(OnGenome target) {
 		return overlapQuery(target.getStart(), target.getEnd());
+	}
+
+	public T findOverlap(OnGenome target) {
+		final Optional<T> result = new Optional<T>();
+		this.overlapQuery(target, new PrioritySearchTree.ResultHandler<T>() {
+
+			boolean toContinue = true;
+
+			public void handle(T overlappedEntry) {
+				result.set(overlappedEntry);
+				toContinue = false;
+			}
+
+			public boolean toContinue() {
+				return toContinue;
+			}
+		});
+		return result.isDefined() ? result.get() : null;
 	}
 
 	@Override

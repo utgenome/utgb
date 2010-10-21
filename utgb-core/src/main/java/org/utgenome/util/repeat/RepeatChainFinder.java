@@ -37,7 +37,6 @@ import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.utgenome.gwt.utgb.client.canvas.IntervalTree;
 import org.xerial.ObjectHandlerBase;
 import org.xerial.lens.Lens;
-import org.xerial.util.StringUtil;
 import org.xerial.util.graph.AdjacencyList;
 import org.xerial.util.graph.Edge;
 import org.xerial.util.log.Logger;
@@ -81,8 +80,8 @@ public class RepeatChainFinder {
 
 		public Interval2D(Interval2D first, Interval2D last) {
 			super(first.getStart(), last.getStart());
-			this.y1 = first.getEnd();
-			this.y2 = last.getEnd();
+			this.y1 = first.y1;
+			this.y2 = last.y2;
 		}
 
 		public int compareTo(Interval2D other) {
@@ -149,6 +148,16 @@ public class RepeatChainFinder {
 
 	}
 
+	public static class FlippedInterval2D extends Interval {
+		final Interval2D orig;
+
+		public FlippedInterval2D(Interval2D orig) {
+			super(orig.y1, orig.y2);
+			this.orig = orig;
+		}
+
+	}
+
 	public static class IntervalChain implements Comparable<IntervalChain> {
 
 		public List<Interval2D> chain;
@@ -207,7 +216,7 @@ public class RepeatChainFinder {
 	}
 
 	final AdjacencyList<Interval2D, Integer> graph = new AdjacencyList<Interval2D, Integer>();
-	final ArrayList<IntervalChain> chainList = new ArrayList<IntervalChain>();
+	final ArrayList<Interval2D> rangeList = new ArrayList<Interval2D>();
 
 	public void execute(String[] args) throws Exception {
 
@@ -294,46 +303,71 @@ public class RepeatChainFinder {
 					continue;
 
 				// create chain
-				findPath(each, new ArrayList<Interval2D>());
+				findPath(each, each);
 			}
-			_logger.info("# of paths : " + chainList.size());
+			_logger.info("# of paths : " + rangeList.size());
 
-			// sort the result
-			//			_logger.info("sorting the chains...");
-			//			Collections.sort(chainList);
-
+			// remove duplicate
 			TreeSet<Interval2D> rangeSet = new TreeSet<Interval2D>(new Comparator<Interval2D>() {
 				public int compare(Interval2D o1, Interval2D o2) {
 					return o1.compareTo(o2);
 				}
 			});
 
-			for (IntervalChain eachChain : chainList) {
-				rangeSet.add(eachChain.toRagne());
+			for (Interval2D eachRange : rangeList) {
+				rangeSet.add(eachRange);
 			}
 			_logger.info("# of unique paths : " + rangeSet.size());
-			_logger.info(StringUtil.join(rangeSet, ",\n"));
+			//_logger.info(StringUtil.join(rangeSet, ",\n"));
+
+			// assign the overlapped intervals to the same cluster
+			DisjointSet<Interval2D> clusterSet = new DisjointSet<Interval2D>();
+			{
+				_logger.info("clustring paths in X-coordinate...");
+				IntervalTree<Interval2D> xOverlapChecker = new IntervalTree<Interval2D>();
+				for (Interval2D each : rangeSet) {
+					clusterSet.add(each);
+					for (Interval2D overlapped : xOverlapChecker.overlapQuery(each)) {
+						clusterSet.link(overlapped, each);
+					}
+					xOverlapChecker.add(each);
+				}
+			}
+			_logger.info("# of disjoint sets: " + clusterSet.rootNodeSet().size());
+
+			{
+				_logger.info("clustring paths in Y-coordinate...");
+				IntervalTree<FlippedInterval2D> yOverlapChecker = new IntervalTree<FlippedInterval2D>();
+				for (Interval2D each : rangeSet) {
+					FlippedInterval2D flip = new FlippedInterval2D(each);
+					clusterSet.add(each);
+					for (FlippedInterval2D overlapped : yOverlapChecker.overlapQuery(flip)) {
+						clusterSet.link(overlapped.orig, flip.orig);
+					}
+					yOverlapChecker.add(flip);
+				}
+			}
+
+			_logger.info("# of disjoint sets: " + clusterSet.rootNodeSet().size());
 
 			_logger.info("done");
 		}
 
 	}
 
-	private void findPath(Interval2D startNode, ArrayList<Interval2D> pathStack) {
+	private void findPath(Interval2D current, Interval2D pathStart) {
 
-		List<Interval2D> outNodeList = graph.outNodeList(startNode);
+		// TODO cycle detection
+		List<Interval2D> outNodeList = graph.outNodeList(current);
 		if (outNodeList.isEmpty()) {
 			// if this node is a leaf, report the path
-			IntervalChain chain = new IntervalChain(pathStack);
-			chainList.add(chain);
+			Interval2D range = new Interval2D(pathStart, current);
+			rangeList.add(range);
 		}
 		else {
 			// traverse children
 			for (Interval2D next : outNodeList) {
-				ArrayList<Interval2D> cloneOfPathStack = new ArrayList<Interval2D>();
-				cloneOfPathStack.addAll(pathStack);
-				cloneOfPathStack.add(startNode);
-				findPath(next, cloneOfPathStack);
+				findPath(next, pathStart);
 			}
 		}
 
