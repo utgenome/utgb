@@ -203,13 +203,13 @@ public class VariationAnnotator {
 				continue;
 			}
 
-			boolean hasOverlapWithExon = false;
+			boolean foundVariation = false;
 			for (int exonIndex = 0; exonIndex < numExon; exonIndex++) {
-				final Exon e = eachGene.getExon(eachGene.isSense() ? exonIndex : numExon - exonIndex - 1);
-				final int exonStart = e.getStart();
-				final int exonEnd = e.getEnd();
+				final Exon exon = eachGene.getExon(eachGene.isSense() ? exonIndex : numExon - exonIndex - 1);
+				final int exonStart = exon.getStart();
+				final int exonEnd = exon.getEnd();
 
-				if (!e.hasOverlap(v)) {
+				if (!exon.hasOverlap(v)) {
 					// Is in splice site? 
 					final Interval spliceSite5p = new Interval(exonStart - 2, exonStart);
 					if (spliceSite5p.contains(v)) {
@@ -217,20 +217,23 @@ public class VariationAnnotator {
 						annot.geneName = eachGene.getName();
 						annot.mutationPosition = MutationPosition.SS5;
 						result.add(annot);
+
+						foundVariation = true;
 						break;
 					}
 					final Interval spliceSite3p = new Interval(exonEnd, exonEnd + 2);
 					if (spliceSite3p.contains(v)) {
 						EnhancedGeneticVariation annot = new EnhancedGeneticVariation(v);
 						annot.geneName = eachGene.getName();
-						annot.mutationPosition = MutationPosition.SS5;
+						annot.mutationPosition = MutationPosition.SS3;
 						result.add(annot);
+						foundVariation = true;
 						break;
 					}
 					continue;
 				}
 
-				hasOverlapWithExon = true;
+				foundVariation = true;
 
 				// check frame
 				int cdsStart = cds.contains(exonStart) ? exonStart : cds.getStart();
@@ -243,19 +246,31 @@ public class VariationAnnotator {
 
 				// check codon
 				CompactACGT refCodon = fasta.getSequence(v.chr, frameStart, frameStart + 3);
-				AminoAcid refAA = CodonTable.toAminoAcid(e.isSense() ? refCodon.toString() : refCodon.reverseComplement().toString());
-
-				// TODO check alternative AminoAcid
+				AminoAcid refAA = CodonTable.toAminoAcid(exon.isSense() ? refCodon.toString() : refCodon.reverseComplement().toString());
 
 				EnhancedGeneticVariation annot = new EnhancedGeneticVariation(v);
 				annot.geneName = eachGene.getName();
 				annot.mutationPosition = getExonPos(exonIndex, numExon);
 				annot.aRef = refAA;
+
+				// TODO check alternative AminoAcid
+				switch (v.variationType) {
+				case Deletion:
+					break;
+				case Insertion:
+					break;
+				case Mutation:
+
+					break;
+				default:
+					break;
+				}
+
 				result.add(annot);
 				break;
 			}
 
-			if (!hasOverlapWithExon) { // no overlap with exons
+			if (!foundVariation) { // when no overlap with exons/SS is found
 				// intron
 				EnhancedGeneticVariation annot = new EnhancedGeneticVariation(v);
 				annot.geneName = eachGene.getName();

@@ -27,7 +27,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.TreeSet;
 
 import org.utgenome.UTGBErrorCode;
 import org.utgenome.UTGBException;
@@ -35,6 +37,7 @@ import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.utgenome.gwt.utgb.client.canvas.IntervalTree;
 import org.xerial.ObjectHandlerBase;
 import org.xerial.lens.Lens;
+import org.xerial.util.StringUtil;
 import org.xerial.util.graph.AdjacencyList;
 import org.xerial.util.graph.Edge;
 import org.xerial.util.log.Logger;
@@ -58,7 +61,7 @@ public class RepeatChainFinder {
 	private File intervalFile;
 
 	@Option(symbol = "t", longName = "threshold", description = "threshold for connecting fragments")
-	public int threshold = 10;
+	public int threshold = 100;
 
 	/**
 	 * 2D interval
@@ -76,9 +79,48 @@ public class RepeatChainFinder {
 		public Interval2D() {
 		}
 
+		public Interval2D(Interval2D first, Interval2D last) {
+			super(first.getStart(), last.getStart());
+			this.y1 = first.getEnd();
+			this.y2 = last.getEnd();
+		}
+
+		public int compareTo(Interval2D other) {
+
+			int diff = getStart() - other.getStart();
+			if (diff != 0)
+				return diff;
+
+			diff = y1 - other.y1;
+			if (diff != 0)
+				return diff;
+
+			diff = getEnd() - other.getEnd();
+			if (diff != 0)
+				return diff;
+
+			diff = y2 - other.y2;
+			if (diff != 0)
+				return diff;
+
+			return 0;
+		}
+
 		@Override
 		public String toString() {
 			return String.format("(%d, %d)-(%d, %d)", getStart(), y1, getEnd(), y2);
+		}
+
+		public Interval getStartPoint() {
+			return new Interval(getStart(), y1);
+		}
+
+		public Interval getEndPoint() {
+			return new Interval(getEnd(), y2);
+		}
+
+		public boolean isInLowerRightRegion() {
+			return getEnd() < getStart();
 		}
 
 		public boolean isForward() {
@@ -119,9 +161,31 @@ public class RepeatChainFinder {
 			return chain.get(0).compareTo(o.chain.get(0));
 		}
 
+		public int length() {
+			int s = getFirst().getStart();
+			int e = getLast().getStart();
+			return e - s;
+		}
+
+		public Interval2D getFirst() {
+			return chain.get(0);
+		}
+
+		public Interval2D getLast() {
+			return chain.get(chain.size() - 1);
+		}
+
+		public Interval2D toRagne() {
+			return new Interval2D(getFirst(), getLast());
+		}
+
 		@Override
 		public String toString() {
-			return String.format("repeat:%s", chain);
+			Interval2D first = getFirst();
+			Interval2D last = getLast();
+			int s = first.getStart();
+			int e = last.getStart();
+			return String.format("length %,10d: %s - %s", e - s, first.getStartPoint(), last.getEndPoint());
 		}
 
 	}
@@ -170,7 +234,8 @@ public class RepeatChainFinder {
 				// load 2D intervals
 				Lens.find(Interval2D.class, "entry", new ObjectHandlerBase<Interval2D>() {
 					public void handle(Interval2D interval) throws Exception {
-						intervals.add(interval);
+						if (!interval.isInLowerRightRegion())
+							intervals.add(interval);
 					}
 
 					@Override
@@ -195,7 +260,7 @@ public class RepeatChainFinder {
 				// sweep intervals in [-infinity, current.start - threshold)    
 				intervalTree.removeBefore(current.getStart() - threshold);
 
-				// connect to the closest edge
+				// connect to the close intervals
 				for (Interval2D each : intervalTree) {
 					final int dist = each.forwardDistance(current);
 					if (dist > 0 && dist < threshold) {
@@ -231,10 +296,23 @@ public class RepeatChainFinder {
 				// create chain
 				findPath(each, new ArrayList<Interval2D>());
 			}
+			_logger.info("# of paths : " + chainList.size());
 
 			// sort the result
-			Collections.sort(chainList);
-			_logger.info(chainList);
+			//			_logger.info("sorting the chains...");
+			//			Collections.sort(chainList);
+
+			TreeSet<Interval2D> rangeSet = new TreeSet<Interval2D>(new Comparator<Interval2D>() {
+				public int compare(Interval2D o1, Interval2D o2) {
+					return o1.compareTo(o2);
+				}
+			});
+
+			for (IntervalChain eachChain : chainList) {
+				rangeSet.add(eachChain.toRagne());
+			}
+			_logger.info("# of unique paths : " + rangeSet.size());
+			_logger.info(StringUtil.join(rangeSet, ",\n"));
 
 			_logger.info("done");
 		}
