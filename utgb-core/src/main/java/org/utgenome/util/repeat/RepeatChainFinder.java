@@ -498,7 +498,9 @@ public class RepeatChainFinder {
 			final int clusterID = clusterCount++;
 			cluster.setId(clusterID);
 			_logger.info(String.format("cluster %d:(%s)", clusterID, cluster));
-			silk.leafObject("cluter", cluster);
+
+			SilkWriter sub = silk.node("cluster").attribute("id", Integer.toString(clusterID))
+					.attribute("component size", Integer.toString(cluster.component.size()));
 
 			try {
 				cluster.validate();
@@ -507,8 +509,14 @@ public class RepeatChainFinder {
 				BufferedWriter fastaOut = new BufferedWriter(new FileWriter(outFile));
 				int segmentID = 1;
 
-				// TODO collect subsequence from both (x1, x2) and (y1, y2)
 				for (Interval2D segment : cluster.component) {
+
+					SilkWriter c = sub.node("component");
+					c.leaf("x1", segment.getStart());
+					c.leaf("y1", segment.y1);
+					c.leaf("x2", segment.getEnd());
+					c.leaf("y2", segment.y2);
+
 					final int s = segment.getStart();
 					final int e = segment.getEnd();
 
@@ -516,14 +524,18 @@ public class RepeatChainFinder {
 					// output (x1, x2)
 					fastaOut.append(String.format(">c%02d-s%04d-s (%d,%d):%d => (%d,%d):%d\n", clusterID, id, s, e, e - s, segment.y1, segment.y2, segment.y2
 							- segment.y1));
-					fastaOut.append(sequence.substring(s - 1, e - 1)); // adjust to 0-origin
+					String sSeq = sequence.substring(s - 1, e - 1);
+					fastaOut.append(sSeq); // adjust to 0-origin
 					fastaOut.append("\n");
+					c.leaf("seq.x", sSeq);
 
 					// output (y1, y2)
 					fastaOut.append(String.format(">c%02d-s%04d-d (%d,%d):%d => (%d,%d):%d\n", clusterID, id, s, e, e - s, segment.y1, segment.y2, segment.y2
 							- segment.y1));
 					if (segment.y1 < segment.y2) {
-						fastaOut.append(sequence.substring(segment.y1 - 1, segment.y2 - 2)); // adjust to 0-origin
+						String tSeq = sequence.substring(segment.y1 - 1, segment.y2 - 1);
+						fastaOut.append(tSeq); // adjust to 0-origin
+						c.leaf("seq.y", tSeq);
 					}
 					else {
 						// reverse complement
@@ -532,6 +544,7 @@ public class RepeatChainFinder {
 						if (seq.length() != rc.length())
 							throw new UTGBException(UTGBErrorCode.AssertionFailure, "reverse complement has an wrong length");
 						fastaOut.append(rc);
+						c.leaf("seq.y", rc);
 					}
 					fastaOut.append("\n");
 
