@@ -22,9 +22,11 @@
 //--------------------------------------
 package org.utgenome.util.repeat;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -43,6 +45,7 @@ import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.utgenome.gwt.utgb.client.canvas.IntervalTree;
 import org.xerial.ObjectHandlerBase;
 import org.xerial.lens.Lens;
+import org.xerial.silk.SilkWriter;
 import org.xerial.util.graph.AdjacencyList;
 import org.xerial.util.graph.Edge;
 import org.xerial.util.log.Logger;
@@ -131,11 +134,11 @@ public class RepeatChainFinder {
 			return String.format("max len:%d, (%d, %d)-(%d, %d)", maxLength(), getStart(), y1, getEnd(), y2);
 		}
 
-		public Interval getStartPoint() {
+		public Interval startPoint() {
 			return new Interval(getStart(), y1);
 		}
 
-		public Interval getEndPoint() {
+		public Interval endPoint() {
 			return new Interval(getEnd(), y2);
 		}
 
@@ -149,9 +152,6 @@ public class RepeatChainFinder {
 
 		public int forwardDistance(Interval2D other) {
 			int xDiff = Math.abs(other.getStart() - this.getEnd());
-			//			if (xDiff < 0)
-			//				return -1;
-
 			int yDiff = Math.abs(other.y1 - this.y2);
 			if (this.isForward()) {
 				if (other.isForward())
@@ -185,6 +185,11 @@ public class RepeatChainFinder {
 
 	}
 
+	/**
+	 * 
+	 * @author leo
+	 * 
+	 */
 	public static class FlippedInterval2D extends Interval {
 		private static final long serialVersionUID = 1L;
 		final Interval2D orig;
@@ -198,11 +203,11 @@ public class RepeatChainFinder {
 
 	public static class IntervalCluster implements Comparable<IntervalCluster> {
 
-		public final List<Interval2D> elements;
+		public final List<Interval2D> component;
 		public final int length;
 
 		public IntervalCluster(List<Interval2D> elements) {
-			this.elements = elements;
+			this.component = elements;
 
 			int maxLength = -1;
 			for (Interval2D each : elements) {
@@ -214,12 +219,12 @@ public class RepeatChainFinder {
 
 		public void validate() throws UTGBException {
 
-			if (elements.size() <= 1)
+			if (component.size() <= 1)
 				return;
 
-			for (Interval2D p : elements) {
+			for (Interval2D p : component) {
 				boolean hasOverlap = false;
-				for (Interval2D q : elements) {
+				for (Interval2D q : component) {
 					if (p == q)
 						continue;
 					if (p.hasOverlap(q)) {
@@ -245,7 +250,7 @@ public class RepeatChainFinder {
 		}
 
 		public int size() {
-			return elements.size();
+			return component.size();
 		}
 
 		@Override
@@ -380,7 +385,7 @@ public class RepeatChainFinder {
 				{
 					// merge paths sharing start points
 					for (Interval2D each : rangeList) {
-						Interval key = each.getStartPoint();
+						Interval key = each.startPoint();
 						if (longestRange.containsKey(key)) {
 							Interval2D prev = longestRange.get(key);
 							if (prev.maxLength() < each.maxLength()) {
@@ -399,7 +404,7 @@ public class RepeatChainFinder {
 				{
 					// merge paths sharing end points
 					for (Interval2D each : rangeList) {
-						Interval key = each.getEndPoint();
+						Interval key = each.endPoint();
 						if (longestRange.containsKey(key)) {
 							Interval2D prev = longestRange.get(key);
 							if (prev.maxLength() < each.maxLength()) {
@@ -477,8 +482,11 @@ public class RepeatChainFinder {
 		FASTA fasta = new FASTA(fastaFile);
 		String sequence = fasta.getRawSequence(chr);
 
+		File silkFile = new File("target", "cluster-info.silk");
+		SilkWriter silk = new SilkWriter(new BufferedOutputStream(new FileOutputStream(silkFile)));
+
 		for (IntervalCluster cluster : clusterList) {
-			int clusterID = clusterCount++;
+			final int clusterID = clusterCount++;
 			_logger.info(String.format("cluster %d:(%s)", clusterID, cluster));
 			try {
 				cluster.validate();
@@ -488,27 +496,31 @@ public class RepeatChainFinder {
 				int segmentID = 1;
 
 				// TODO collect subsequence from both (x1, x2) and (y1, y2)
-				for (Interval2D segment : cluster.elements) {
-
-				}
-
-				for (Interval2D segment : cluster.elements) {
+				for (Interval2D segment : cluster.component) {
 					final int s = segment.getStart();
 					final int e = segment.getEnd();
-					fastaOut.append(String.format(">segment%d (%d,%d):%d => (%d,%d):%d\n", segmentID++, s, e, e - s, segment.y1, segment.y2, segment.y2
-							- segment.y1));
+
+					final int id = segmentID++;
+					// output (x1, x2)
+					fastaOut.append(String.format(">s1%d-src (%d,%d):%d => (%d,%d):%d\n", id, s, e, e - s, segment.y1, segment.y2, segment.y2 - segment.y1));
+					fastaOut.append(sequence.substring(s - 1, e - 1)); // adjust to 0-origin
+					fastaOut.append("\n");
+
+					// output (y1, y2)
+					fastaOut.append(String.format(">s1%d-src (%d,%d):%d => (%d,%d):%d\n", id, s, e, e - s, segment.y1, segment.y2, segment.y2 - segment.y1));
 					if (segment.y1 < segment.y2) {
-						fastaOut.append(sequence.substring(segment.y1, segment.y2));
+						fastaOut.append(sequence.substring(segment.y1 - 1, segment.y2 - 2)); // adjust to 0-origin
 					}
 					else {
 						// reverse complement
-						String seq = sequence.substring(segment.y2, segment.y1);
+						String seq = sequence.substring(segment.y2 - 1, segment.y1 - 1); // adjust to 0-origin
 						String rc = CompactACGT.createFromString(seq).reverseComplement().toString();
 						if (seq.length() != rc.length())
 							throw new UTGBException(UTGBErrorCode.AssertionFailure, "reverse complement has an wrong length");
 						fastaOut.append(rc);
 					}
 					fastaOut.append("\n");
+
 				}
 				fastaOut.close();
 			}
@@ -516,6 +528,7 @@ public class RepeatChainFinder {
 				_logger.error(e);
 			}
 		}
+		silk.close();
 
 	}
 
