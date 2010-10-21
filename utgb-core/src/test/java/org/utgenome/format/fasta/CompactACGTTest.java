@@ -85,4 +85,5 @@ public class CompactACGTTest {
 		assertEquals("ATATCGTATTACGT", rc.toString());
 
 	}
+
 }

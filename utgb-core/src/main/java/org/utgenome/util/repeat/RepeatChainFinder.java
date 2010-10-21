@@ -477,17 +477,22 @@ public class RepeatChainFinder {
 		FASTA fasta = new FASTA(fastaFile);
 		String sequence = fasta.getRawSequence(chr);
 
-		for (IntervalCluster each : clusterList) {
+		for (IntervalCluster cluster : clusterList) {
 			int clusterID = clusterCount++;
-			_logger.info(String.format("cluster %d:(%s)", clusterID, each));
+			_logger.info(String.format("cluster %d:(%s)", clusterID, cluster));
 			try {
-				each.validate();
+				cluster.validate();
 				File outFile = new File("target", String.format("cluster%d.fa", clusterID));
 				_logger.info("output " + outFile);
 				BufferedWriter fastaOut = new BufferedWriter(new FileWriter(outFile));
 				int segmentID = 1;
 
-				for (Interval2D segment : each.elements) {
+				// TODO collect subsequence from both (x1, x2) and (y1, y2)
+				for (Interval2D segment : cluster.elements) {
+
+				}
+
+				for (Interval2D segment : cluster.elements) {
 					final int s = segment.getStart();
 					final int e = segment.getEnd();
 					fastaOut.append(String.format(">segment%d (%d,%d):%d => (%d,%d):%d\n", segmentID++, s, e, e - s, segment.y1, segment.y2, segment.y2
@@ -497,9 +502,11 @@ public class RepeatChainFinder {
 					}
 					else {
 						// reverse complement
-						String rc = CompactACGT.createFromString(sequence.substring(segment.y2, segment.y1)).reverseComplement().toString();
+						String seq = sequence.substring(segment.y2, segment.y1);
+						String rc = CompactACGT.createFromString(seq).reverseComplement().toString();
+						if (seq.length() != rc.length())
+							throw new UTGBException(UTGBErrorCode.AssertionFailure, "reverse complement has an wrong length");
 						fastaOut.append(rc);
-						fastaOut.append(sequence.substring(segment.y2, segment.y1));
 					}
 					fastaOut.append("\n");
 				}
