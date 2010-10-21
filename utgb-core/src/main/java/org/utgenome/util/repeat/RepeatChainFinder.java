@@ -96,7 +96,7 @@ public class RepeatChainFinder {
 		}
 
 		public Interval2D(Interval2D first, Interval2D last) {
-			super(first.getStart(), last.getStart());
+			super(first.getStart(), last.getEnd());
 			this.y1 = first.y1;
 			this.y2 = last.y2;
 		}
@@ -367,7 +367,7 @@ public class RepeatChainFinder {
 
 			// remove paths sharing the same start or end points
 			{
-				Collections.sort(rangeList);
+				//Collections.sort(rangeList);
 				TreeMap<Interval, Interval2D> longestRange = new TreeMap<Interval, Interval2D>(new Comparator<Interval>() {
 					public int compare(Interval o1, Interval o2) {
 						int diff = o1.getStart() - o2.getStart();
@@ -433,8 +433,6 @@ public class RepeatChainFinder {
 				}
 
 				_logger.info("# of disjoint sets: " + clusterSet.rootNodeSet().size());
-
-				//reportCluster(clusterSet);
 			}
 
 			{
@@ -492,7 +490,8 @@ public class RepeatChainFinder {
 				for (Interval2D segment : each.elements) {
 					final int s = segment.getStart();
 					final int e = segment.getEnd();
-					fastaOut.append(String.format(">segment%d (%d,%d)-(%d,%d)\n", segmentID++, s, segment.y1, e, segment.y2));
+					fastaOut.append(String.format(">segment%d (%d,%d):%d => (%d,%d):%d\n", segmentID++, s, e, e - s, segment.y1, segment.y2, segment.y2
+							- segment.y1));
 					if (segment.y1 < segment.y2) {
 						fastaOut.append(sequence.substring(segment.y1, segment.y2));
 					}
