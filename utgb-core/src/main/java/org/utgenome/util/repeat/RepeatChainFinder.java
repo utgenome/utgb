@@ -38,7 +38,6 @@ import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.utgenome.gwt.utgb.client.canvas.IntervalTree;
 import org.xerial.ObjectHandlerBase;
 import org.xerial.lens.Lens;
-import org.xerial.util.StringUtil;
 import org.xerial.util.graph.AdjacencyList;
 import org.xerial.util.graph.Edge;
 import org.xerial.util.log.Logger;
@@ -62,7 +61,7 @@ public class RepeatChainFinder {
 	private File intervalFile;
 
 	@Option(symbol = "t", longName = "threshold", description = "threshold for connecting fragments")
-	public int threshold = 100;
+	public int threshold = 50;
 
 	/**
 	 * 2D interval
@@ -78,6 +77,12 @@ public class RepeatChainFinder {
 		public int y2;
 
 		public Interval2D() {
+		}
+
+		public Interval2D(int x1, int y1, int x2, int y2) {
+			super(x1, x2);
+			this.y1 = y1;
+			this.y2 = y2;
 		}
 
 		public Interval2D(Interval2D first, Interval2D last) {
@@ -107,13 +112,13 @@ public class RepeatChainFinder {
 			return 0;
 		}
 
-		@Override
-		public String toString() {
-			return String.format("(%d, %d)-(%d, %d)", getStart(), y1, getEnd(), y2);
+		public int maxLength() {
+			return Math.max(super.length(), Math.abs(y2 - y1));
 		}
 
-		public int xLength() {
-			return getEnd() - getStart();
+		@Override
+		public String toString() {
+			return String.format("max len:%d, (%d, %d)-(%d, %d)", maxLength(), getStart(), y1, getEnd(), y2);
 		}
 
 		public Interval getStartPoint() {
@@ -152,9 +157,26 @@ public class RepeatChainFinder {
 			}
 		}
 
+		@Override
+		public boolean equals(Object o) {
+			Interval2D other = Interval2D.class.cast(o);
+			return this.getStart() == other.getStart() && this.getEnd() == other.getEnd() && this.y1 == other.y1 && this.y2 == other.y2;
+		}
+
+		@Override
+		public int hashCode() {
+			int hash = 3;
+			hash += 137 * this.getStart();
+			hash += 137 * this.getEnd();
+			hash += 137 * this.y1;
+			hash += 137 * this.y2;
+			return hash;
+		}
+
 	}
 
 	public static class FlippedInterval2D extends Interval {
+		private static final long serialVersionUID = 1L;
 		final Interval2D orig;
 
 		public FlippedInterval2D(Interval2D orig) {
@@ -164,43 +186,33 @@ public class RepeatChainFinder {
 
 	}
 
-	public static class IntervalChain implements Comparable<IntervalChain> {
+	public static class IntervalCluster implements Comparable<IntervalCluster> {
 
-		public List<Interval2D> chain;
+		public final List<Interval2D> elements;
+		public final int length;
 
-		public IntervalChain(List<Interval2D> chain) {
-			this.chain = chain;
+		public IntervalCluster(List<Interval2D> elements) {
+			this.elements = elements;
+
+			int maxLength = -1;
+			for (Interval2D each : elements) {
+				if (maxLength < each.maxLength())
+					maxLength = each.maxLength();
+			}
+			this.length = maxLength;
 		}
 
-		public int compareTo(IntervalChain o) {
-			return chain.get(0).compareTo(o.chain.get(0));
+		public int compareTo(IntervalCluster o) {
+			return this.length - o.length;
 		}
 
-		public int length() {
-			int s = getFirst().getStart();
-			int e = getLast().getStart();
-			return e - s;
-		}
-
-		public Interval2D getFirst() {
-			return chain.get(0);
-		}
-
-		public Interval2D getLast() {
-			return chain.get(chain.size() - 1);
-		}
-
-		public Interval2D toRagne() {
-			return new Interval2D(getFirst(), getLast());
+		public int size() {
+			return elements.size();
 		}
 
 		@Override
 		public String toString() {
-			Interval2D first = getFirst();
-			Interval2D last = getLast();
-			int s = first.getStart();
-			int e = last.getStart();
-			return String.format("length %,10d: %s - %s", e - s, first.getStartPoint(), last.getEndPoint());
+			return String.format("length:%d, size:%d", length, size());
 		}
 
 	}
@@ -232,6 +244,8 @@ public class RepeatChainFinder {
 		{
 			int numChain = 0;
 			final List<Interval2D> intervals = new ArrayList<Interval2D>();
+
+			_logger.info("chain threshold: " + threshold);
 
 			_logger.info("loading intervals..");
 			// import (x1, y1, x2, y2) tab-separated data
@@ -268,23 +282,23 @@ public class RepeatChainFinder {
 			Collections.sort(intervals);
 
 			_logger.info("sweeping intervals...");
-			final IntervalTree<Interval2D> intervalTree = new IntervalTree<Interval2D>();
-			// sweep the intervals
-			for (Interval2D current : intervals) {
+			{
+				final IntervalTree<Interval2D> intervalTree = new IntervalTree<Interval2D>();
+				for (Interval2D current : intervals) {
 
-				// sweep intervals in [-infinity, current.start - threshold)    
-				intervalTree.removeBefore(current.getStart() - threshold);
+					// sweep intervals in [-infinity, current.start - threshold)    
+					intervalTree.removeBefore(current.getStart() - threshold);
 
-				// connect to the close intervals
-				for (Interval2D each : intervalTree) {
-					final int dist = each.forwardDistance(current);
-					if (dist > 0 && dist < threshold) {
-						graph.addEdge(each, current, dist);
+					// connect to the close intervals
+					for (Interval2D each : intervalTree) {
+						final int dist = each.forwardDistance(current);
+						if (dist > 0 && dist < threshold) {
+							graph.addEdge(each, current, dist);
+						}
 					}
+
+					intervalTree.add(current);
 				}
-
-				intervalTree.add(current);
-
 			}
 
 			if (_logger.isTraceEnabled())
@@ -313,11 +327,10 @@ public class RepeatChainFinder {
 			}
 			_logger.info("# of paths : " + rangeList.size());
 
-			Collections.sort(rangeList);
-
-			// remove duplicate
+			// remove duplicates
 			List<Interval2D> rangeSet = new ArrayList<Interval2D>();
 			{
+				Collections.sort(rangeList);
 				TreeMap<Interval, Interval2D> longestRange = new TreeMap<Interval, Interval2D>(new Comparator<Interval>() {
 					public int compare(Interval o1, Interval o2) {
 						int diff = o1.getStart() - o2.getStart();
@@ -332,7 +345,7 @@ public class RepeatChainFinder {
 						Interval key = each.getStartPoint();
 						if (longestRange.containsKey(key)) {
 							Interval2D prev = longestRange.get(key);
-							if (prev.xLength() < each.xLength()) {
+							if (prev.maxLength() < each.maxLength()) {
 								longestRange.remove(key);
 								longestRange.put(key, each);
 							}
@@ -354,37 +367,55 @@ public class RepeatChainFinder {
 				for (Interval2D each : rangeSet) {
 					clusterSet.add(each);
 					for (Interval2D overlapped : xOverlapChecker.overlapQuery(each)) {
-						clusterSet.link(overlapped, each);
+						clusterSet.union(overlapped, each);
 					}
 					xOverlapChecker.add(each);
 				}
+
+				_logger.info("# of disjoint sets: " + clusterSet.rootNodeSet().size());
+
+				//reportCluster(clusterSet);
 			}
-			_logger.info("# of disjoint sets: " + clusterSet.rootNodeSet().size());
 
 			{
 				_logger.info("clustring paths in Y-coordinate...");
 				IntervalTree<FlippedInterval2D> yOverlapChecker = new IntervalTree<FlippedInterval2D>();
 				for (Interval2D each : rangeSet) {
 					FlippedInterval2D flip = new FlippedInterval2D(each);
-					clusterSet.add(each);
 					for (FlippedInterval2D overlapped : yOverlapChecker.overlapQuery(flip)) {
-						clusterSet.link(overlapped.orig, flip.orig);
+						clusterSet.union(overlapped.orig, each);
 					}
 					yOverlapChecker.add(flip);
 				}
-			}
 
-			Set<Interval2D> clusterRoots = clusterSet.rootNodeSet();
-			_logger.info("# of disjoint sets: " + clusterRoots.size());
-			int clusterCount = 1;
-			for (Interval2D root : clusterRoots) {
-				List<Interval2D> cluster = clusterSet.disjointSetOf(root);
-				_logger.info(String.format("cluster %d:\n%s", clusterCount++, StringUtil.join(cluster, ",\n")));
+				// report clusters
+				reportCluster(clusterSet);
 			}
 
 			_logger.info("done");
 		}
 
+	}
+
+	private void reportCluster(DisjointSet<Interval2D> clusterSet) {
+		Set<Interval2D> clusterRoots = clusterSet.rootNodeSet();
+		_logger.info("# of chains: " + clusterSet.numElements());
+
+		_logger.info("# of disjoint sets: " + clusterRoots.size());
+		int clusterCount = 1;
+		List<IntervalCluster> clusterList = new ArrayList<IntervalCluster>();
+		for (Interval2D root : clusterRoots) {
+			IntervalCluster cluster = new IntervalCluster(clusterSet.disjointSetOf(root));
+			clusterList.add(cluster);
+		}
+
+		Collections.sort(clusterList, new Comparator<IntervalCluster>() {
+			public int compare(IntervalCluster o1, IntervalCluster o2) {
+				return o2.length - o1.length;
+			}
+		});
+		for (IntervalCluster each : clusterList)
+			_logger.info(String.format("cluster %d:%s", clusterCount++, each));
 	}
 
 	private void findPath(Interval2D current, Interval2D pathStart) {

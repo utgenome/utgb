@@ -58,7 +58,7 @@ public class DisjointSet<E> {
 		Set<E> roots = new HashSet<E>();
 		for (E each : elementIndex) {
 			int id = elementIndex.getID(each);
-			int pid = parentID.get(id);
+			int pid = findByID(id);
 			if (id == pid)
 				roots.add(each);
 		}
@@ -69,7 +69,6 @@ public class DisjointSet<E> {
 		final int setID = find(x);
 
 		List<E> result = new ArrayList<E>();
-		result.add(x);
 		for (int id = 0; id < parentID.size(); id++) {
 			int pid = parentID.get(id);
 			if (pid == setID) {
@@ -84,7 +83,7 @@ public class DisjointSet<E> {
 		linkByID(find(x), find(y));
 	}
 
-	public void link(E x, E y) {
+	private void link(E x, E y) {
 		int xID = elementIndex.getID(x);
 		int yID = elementIndex.getID(y);
 
@@ -110,6 +109,10 @@ public class DisjointSet<E> {
 			if (rank.get(xID) == rank.get(yID))
 				rank.set(yID, rank.get(yID) + 1);
 		}
+	}
+
+	public int numElements() {
+		return elementIndex.size();
 	}
 
 	/**
