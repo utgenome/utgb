@@ -23,8 +23,11 @@
 package org.utgenome.util.repeat;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -34,6 +37,8 @@ import java.util.TreeMap;
 
 import org.utgenome.UTGBErrorCode;
 import org.utgenome.UTGBException;
+import org.utgenome.format.fasta.CompactACGT;
+import org.utgenome.format.fasta.FASTA;
 import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.utgenome.gwt.utgb.client.canvas.IntervalTree;
 import org.xerial.ObjectHandlerBase;
@@ -57,11 +62,16 @@ public class RepeatChainFinder {
 
 	private static Logger _logger = Logger.getLogger(RepeatChainFinder.class);
 
-	@Argument
+	@Argument(index = 0)
 	private File intervalFile;
+	@Argument(index = 1)
+	private File fastaFile;
 
 	@Option(symbol = "t", longName = "threshold", description = "threshold for connecting fragments")
 	public int threshold = 50;
+
+	@Option(symbol = "s", description = "sequence name to read from FASTA")
+	public String chr;
 
 	/**
 	 * 2D interval
@@ -130,7 +140,7 @@ public class RepeatChainFinder {
 		}
 
 		public boolean isInLowerRightRegion() {
-			return getEnd() < getStart();
+			return y1 < getStart();
 		}
 
 		public boolean isForward() {
@@ -202,7 +212,7 @@ public class RepeatChainFinder {
 			this.length = maxLength;
 		}
 
-		public void verify() throws UTGBException {
+		public void validate() throws UTGBException {
 
 			if (elements.size() <= 1)
 				return;
@@ -355,7 +365,7 @@ public class RepeatChainFinder {
 			}
 			_logger.info("# of paths : " + rangeList.size());
 
-			// remove duplicates
+			// remove paths sharing the same start or end points
 			{
 				Collections.sort(rangeList);
 				TreeMap<Interval, Interval2D> longestRange = new TreeMap<Interval, Interval2D>(new Comparator<Interval>() {
@@ -368,6 +378,7 @@ public class RepeatChainFinder {
 					}
 				});
 				{
+					// merge paths sharing start points
 					for (Interval2D each : rangeList) {
 						Interval key = each.getStartPoint();
 						if (longestRange.containsKey(key)) {
@@ -383,6 +394,27 @@ public class RepeatChainFinder {
 				}
 				rangeList.clear();
 				rangeList.addAll(longestRange.values());
+
+				longestRange.clear();
+				{
+					// merge paths sharing end points
+					for (Interval2D each : rangeList) {
+						Interval key = each.getEndPoint();
+						if (longestRange.containsKey(key)) {
+							Interval2D prev = longestRange.get(key);
+							if (prev.maxLength() < each.maxLength()) {
+								longestRange.remove(key);
+								longestRange.put(key, each);
+							}
+						}
+						else
+							longestRange.put(key, each);
+					}
+				}
+
+				rangeList.clear();
+				rangeList.addAll(longestRange.values());
+
 			}
 			_logger.info("# of unique paths : " + rangeList.size());
 			//_logger.info(StringUtil.join(rangeSet, ",\n"));
@@ -425,7 +457,7 @@ public class RepeatChainFinder {
 
 	}
 
-	private void reportCluster(DisjointSet<Interval2D> clusterSet) {
+	private void reportCluster(DisjointSet<Interval2D> clusterSet) throws IOException, UTGBException {
 		Set<Interval2D> clusterRoots = clusterSet.rootNodeSet();
 		_logger.info("# of chains: " + clusterSet.numElements());
 
@@ -442,15 +474,43 @@ public class RepeatChainFinder {
 				return o2.length - o1.length;
 			}
 		});
+
+		_logger.info("load fasta sequence: " + fastaFile);
+		FASTA fasta = new FASTA(fastaFile);
+		String sequence = fasta.getRawSequence(chr);
+
 		for (IntervalCluster each : clusterList) {
-			_logger.info(String.format("cluster %d:%s", clusterCount++, each));
+			int clusterID = clusterCount++;
+			_logger.info(String.format("cluster %d:(%s)", clusterID, each));
 			try {
-				each.verify();
+				each.validate();
+				File outFile = new File("target", String.format("cluster%d.fa", clusterID));
+				_logger.info("output " + outFile);
+				BufferedWriter fastaOut = new BufferedWriter(new FileWriter(outFile));
+				int segmentID = 1;
+
+				for (Interval2D segment : each.elements) {
+					final int s = segment.getStart();
+					final int e = segment.getEnd();
+					fastaOut.append(String.format(">segment%d (%d,%d)-(%d,%d)\n", segmentID++, s, segment.y1, e, segment.y2));
+					if (segment.y1 < segment.y2) {
+						fastaOut.append(sequence.substring(segment.y1, segment.y2));
+					}
+					else {
+						// reverse complement
+						String rc = CompactACGT.createFromString(sequence.substring(segment.y2, segment.y1)).reverseComplement().toString();
+						fastaOut.append(rc);
+						fastaOut.append(sequence.substring(segment.y2, segment.y1));
+					}
+					fastaOut.append("\n");
+				}
+				fastaOut.close();
 			}
 			catch (UTGBException e) {
 				_logger.error(e);
 			}
 		}
+
 	}
 
 	private void findPath(Interval2D current, Interval2D pathStart) {
