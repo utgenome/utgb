@@ -22,6 +22,8 @@
 //--------------------------------------
 package org.utgenome.util.aligner;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +45,14 @@ public class SuffixArrayBuilderTest {
 		for (int each : SA)
 			SA_v.add(each);
 
-		_logger.info(SA_v);
+		int[] answer = { 16, 15, 14, 10, 6, 2, 11, 7, 3, 1, 0, 13, 12, 9, 5, 8, 4 };
+		List<Integer> ans = new ArrayList<Integer>();
+		for (int each : answer)
+			ans.add(each);
+
+		_logger.debug(SA_v);
+		assertEquals(ans, SA_v);
 
 	}
+
 }
