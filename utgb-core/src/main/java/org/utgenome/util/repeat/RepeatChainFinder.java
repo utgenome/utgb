@@ -475,7 +475,9 @@ public class RepeatChainFinder {
 				for (Interval2D each : rangeList) {
 					clusterSet.add(each);
 					for (Interval2D overlapped : xOverlapChecker.overlapQuery(each)) {
-						clusterSet.union(overlapped, each);
+
+						if (each.contains(overlapped) || overlapped.contains(each))
+							clusterSet.union(overlapped, each);
 					}
 					xOverlapChecker.add(each);
 				}
@@ -503,7 +505,8 @@ public class RepeatChainFinder {
 				for (Interval2D each : rangeList) {
 					FlippedInterval2D flip = new FlippedInterval2D(each);
 					for (FlippedInterval2D overlapped : yOverlapChecker.overlapQuery(flip)) {
-						clusterSet.union(overlapped.orig, each);
+						if (flip.contains(overlapped) || overlapped.contains(flip))
+							clusterSet.union(overlapped.orig, each);
 					}
 					yOverlapChecker.add(flip);
 				}
@@ -523,7 +526,7 @@ public class RepeatChainFinder {
 				}
 
 				// report clusters
-				reportCluster(clusterSet);
+				new SegmentReport().reportCluster(clusterSet);
 			}
 
 			_logger.info("done");
@@ -553,86 +556,148 @@ public class RepeatChainFinder {
 		return clusterList;
 	}
 
-	private void reportCluster(DisjointSet<Interval2D> clusterSet) throws IOException, UTGBException {
-		Set<Interval2D> clusterRoots = clusterSet.rootNodeSet();
-		_logger.info("# of chains: " + clusterSet.numElements());
-		_logger.info("# of disjoint sets: " + clusterRoots.size());
-
-		List<IntervalCluster> clusterList = createClusters(clusterSet);
-
-		_logger.info("load fasta sequence: " + fastaFile);
-		FASTA fasta = new FASTA(fastaFile);
-		String sequence = fasta.getRawSequence(chr);
-
-		File silkFile = new File(outFolder, "cluster-info.silk");
-		SilkWriter silk = new SilkWriter(new BufferedOutputStream(new FileOutputStream(silkFile)));
-		silk.preamble();
-		silk.leaf("date", new Date().toString());
-		silk.leaf("threshold", threshold);
-		silk.leaf("fasta", fastaFile);
-		silk.leaf("dot plot file", intervalFile);
-
-		for (IntervalCluster cluster : clusterList) {
-			final int clusterID = cluster.id;
-			_logger.info(String.format("cluster %d:(%s)", cluster.id, cluster));
-
-			SilkWriter sub = silk.node("cluster").attribute("id", Integer.toString(clusterID)).attribute("max length", Integer.toString(cluster.length))
-					.attribute("component size", Integer.toString(cluster.component.size()));
-
-			try {
-				cluster.validate();
-				File outFile = new File(outFolder, String.format("cluster%02d.fa", clusterID));
-				_logger.info("output " + outFile);
-				BufferedWriter fastaOut = new BufferedWriter(new FileWriter(outFile));
-				int segmentID = 1;
-
-				for (Interval2D segment : cluster.component) {
-
-					SilkWriter c = sub.node("component");
-					c.leaf("x1", segment.getStart());
-					c.leaf("x2", segment.getEnd());
-					c.leaf("y1", segment.y1);
-					c.leaf("y2", segment.y2);
-
-					final int s = segment.getStart();
-					final int e = segment.getEnd();
-
-					final int id = segmentID++;
-					// output (x1, x2)
-					fastaOut.append(String.format(">c%02d-s%04d-s (%d,%d):%d => (%d,%d):%d\n", clusterID, id, s, e, e - s, segment.y1, segment.y2, segment.y2
-							- segment.y1));
-					String sSeq = sequence.substring(s - 1, e - 1);
-					fastaOut.append(sSeq); // adjust to 0-origin
-					fastaOut.append("\n");
-					c.leaf("seq.x", sSeq);
-
-					// output (y1, y2)
-					fastaOut.append(String.format(">c%02d-s%04d-d (%d,%d):%d => (%d,%d):%d\n", clusterID, id, s, e, e - s, segment.y1, segment.y2, segment.y2
-							- segment.y1));
-					if (segment.y1 < segment.y2) {
-						String tSeq = sequence.substring(segment.y1 - 1, segment.y2 - 1);
-						fastaOut.append(tSeq); // adjust to 0-origin
-						c.leaf("seq.y", tSeq);
-					}
-					else {
-						// reverse complement
-						String seq = sequence.substring(segment.y2 - 1, segment.y1 - 1); // adjust to 0-origin
-						String rc = CompactACGT.createFromString(seq).reverseComplement().toString();
-						if (seq.length() != rc.length())
-							throw new UTGBException(UTGBErrorCode.AssertionFailure, "reverse complement has an wrong length");
-						fastaOut.append(rc);
-						c.leaf("seq.y", rc);
-					}
-					fastaOut.append("\n");
-
-				}
-				fastaOut.close();
+	private List<Interval> mergeSegments(List<Interval> intervalList) {
+		Collections.sort(intervalList);
+		List<Interval> result = new ArrayList<Interval>();
+		Interval prev = null;
+		for (Interval each : intervalList) {
+			if (prev == null) {
+				prev = each;
+				continue;
 			}
-			catch (UTGBException e) {
-				_logger.error(e);
+
+			if (prev.hasOverlap(each)) {
+				prev = new Interval(prev.getStart(), Math.max(prev.getEnd(), each.getEnd()));
+			}
+			else {
+				result.add(prev);
+				prev = each;
 			}
 		}
-		silk.close();
+		if (prev != null)
+			result.add(prev);
+
+		return result;
+	}
+
+	private class Segments {
+		public List<Interval> segments = new ArrayList<Interval>();
+		public List<Interval> reverseSegments = new ArrayList<Interval>();
+
+		public void merge() {
+			segments = mergeSegments(segments);
+			reverseSegments = mergeSegments(reverseSegments);
+		}
+
+		public int max(List<Interval> l) {
+			int max = 0;
+			for (Interval each : l)
+				if (max < each.length())
+					max = each.length();
+			return max;
+		}
+
+		public int maxLength() {
+			return Math.max(max(segments), max(reverseSegments));
+		}
+
+		public int size() {
+			return segments.size() + reverseSegments.size();
+		}
+	}
+
+	private Segments mergeSegments(IntervalCluster cluster) {
+
+		Segments seg = new Segments();
+		for (Interval2D each : cluster.component) {
+			int x1 = each.getStart();
+			int x2 = each.getEnd();
+			seg.segments.add(new Interval(x1, x2));
+			if (each.y1 < each.y2)
+				seg.segments.add(new Interval(each.y1, each.y2));
+			else
+				seg.reverseSegments.add(new Interval(each.y1, each.y2));
+		}
+
+		seg.merge();
+
+		return seg;
+	}
+
+	class SegmentReport {
+
+		int segmentID = 0;
+		int clusterID = 0;
+		final String sequence;
+		final SilkWriter silk;
+
+		public SegmentReport() throws IOException, UTGBException {
+
+			// fasta
+			_logger.info("load fasta sequence: " + fastaFile);
+			FASTA fasta = new FASTA(fastaFile);
+			sequence = fasta.getRawSequence(chr);
+
+			// silk
+			File silkFile = new File(outFolder, "cluster-info.silk");
+			silk = new SilkWriter(new BufferedOutputStream(new FileOutputStream(silkFile)));
+			silk.preamble();
+			silk.leaf("date", new Date().toString());
+			silk.leaf("threshold", threshold);
+			silk.leaf("fasta", fastaFile);
+			silk.leaf("dot plot file", intervalFile);
+		}
+
+		public void reportCluster(DisjointSet<Interval2D> clusterSet) throws IOException, UTGBException {
+			Set<Interval2D> clusterRoots = clusterSet.rootNodeSet();
+			_logger.info("# of chains: " + clusterSet.numElements());
+			_logger.info("# of disjoint sets: " + clusterRoots.size());
+
+			List<IntervalCluster> clusterList = createClusters(clusterSet);
+			for (IntervalCluster cluster : clusterList) {
+				clusterID = cluster.id;
+				_logger.info(String.format("cluster %d:(%s)", cluster.id, cluster));
+
+				try {
+					cluster.validate();
+					File outFile = new File(outFolder, String.format("cluster%02d.fa", clusterID));
+					_logger.info("output " + outFile);
+					BufferedWriter fastaOut = new BufferedWriter(new FileWriter(outFile));
+					segmentID = 1;
+					Segments seg = mergeSegments(cluster);
+
+					SilkWriter sub = silk.node("cluster").attribute("id", Integer.toString(clusterID))
+							.attribute("max length", Integer.toString(seg.maxLength())).attribute("component size", Integer.toString(seg.size()));
+
+					outputSegments(seg.segments, sub, fastaOut, false);
+					outputSegments(seg.reverseSegments, sub, fastaOut, true);
+
+					fastaOut.close();
+				}
+				catch (UTGBException e) {
+					_logger.error(e);
+				}
+			}
+			silk.close();
+		}
+
+		public void outputSegments(List<Interval> segments, SilkWriter sub, BufferedWriter fastaOut, boolean isReverse) throws IOException, UTGBException {
+			for (Interval segment : segments) {
+				final int s = segment.getStart();
+				final int e = segment.getEnd();
+				final int id = segmentID++;
+				// output (x1, x2)
+				fastaOut.append(String.format(">c%02d-s%04d start:%d, end:%d, len:%d\n", clusterID, id, s, e, e - s));
+				String sSeq = sequence.substring(s - 1, e - 1);
+				sSeq = CompactACGT.createFromString(sSeq).reverseComplement().toString();
+				fastaOut.append(sSeq); // adjust to 0-origin
+				fastaOut.append("\n");
+				// output silk
+				SilkWriter c = sub.node("component").attribute("id", Integer.toString(id)).attribute("x1", Integer.toString(s))
+						.attribute("x2", Integer.toString(e)).attribute("strand", isReverse ? "-" : "+").attribute("len", Integer.toString(e - s));
+				//c.leaf("seq", sSeq);
+			}
+		}
 
 	}
 

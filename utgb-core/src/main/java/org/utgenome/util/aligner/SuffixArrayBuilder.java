@@ -53,7 +53,7 @@ public class SuffixArrayBuilder {
 	public SuffixArrayBuilder(String input) {
 		this.N = input.length() + 1;
 		StringWrapper w = new StringWrapper(input);
-		this.input = new LightArray(w.array, 0);
+		this.input = new SubArray(w.array, 0);
 		this.K = w.K;
 		this.bucket = new int[K + 1];
 		typeLS = new BitVector(N);
@@ -97,12 +97,12 @@ public class SuffixArrayBuilder {
 		}
 	}
 
-	public static class LightArray implements RandomAccess {
+	public static class SubArray implements RandomAccess {
 
 		private final int[] orig;
 		private final int offset;
 
-		public LightArray(final int[] orig, int offset) {
+		public SubArray(final int[] orig, int offset) {
 			this.orig = orig;
 			this.offset = offset;
 		}
@@ -173,7 +173,8 @@ public class SuffixArrayBuilder {
 		int name = 0;
 		int prev = -1;
 		for (int i = 0; i < N1; i++) {
-			int pos = SA[i];
+			final int pos = SA[i];
+			final int plen = SA[N1 + (pos >> 1)];
 			boolean diff = false;
 
 			for (int d = 0; d < N; ++d) {
@@ -200,7 +201,7 @@ public class SuffixArrayBuilder {
 
 		// Step 2: solve the reduced problem
 		int SA1[] = SA;
-		RandomAccess inputS1 = new LightArray(SA, N - N1);
+		RandomAccess inputS1 = new SubArray(SA, N - N1);
 		if (name < N1) {
 			new SuffixArrayBuilder(inputS1, N1, name - 1).SAIS(SA1);
 		}
