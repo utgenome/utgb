@@ -38,8 +38,7 @@ public class SuffixArrayBuilderTest {
 	public void sais() throws Exception {
 
 		String s = "mmiissiissiippii";
-		int[] SA = new int[s.length() + 1];
-		new SuffixArrayBuilder(s).SAIS(SA);
+		int[] SA = new SuffixArrayBuilder(s).SAIS();
 
 		List<Integer> SA_v = new ArrayList<Integer>();
 		for (int each : SA)

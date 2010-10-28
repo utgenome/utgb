@@ -125,6 +125,12 @@ public class SuffixArrayBuilder {
 		}
 	}
 
+	public int[] SAIS() {
+		int[] result = new int[N];
+		SAIS(result);
+		return result;
+	}
+
 	public void SAIS(int[] SA) {
 		typeLS.set(N - 2, false);
 		typeLS.set(N - 1, true); // the sentinel 
