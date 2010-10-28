@@ -117,9 +117,9 @@ public class SuffixArrayBuilder {
 
 		@Override
 		public String toString() {
-			ArrayList<Integer> v = new ArrayList<Integer>(orig.length);
-			for (int each : orig)
-				v.add(each);
+			ArrayList<Integer> v = new ArrayList<Integer>();
+			for (int i = offset; i < orig.length; ++i)
+				v.add(orig[i]);
 			return StringUtil.join(v, ", ");
 
 		}
@@ -160,15 +160,18 @@ public class SuffixArrayBuilder {
 				SA[N1++] = SA[i];
 		}
 
-		// find the lexicographics names of substrings
+		// init the name array buffer
+		for (int i = N1; i < N; ++i)
+			SA[i] = -1;
+		// find the lexicographic names of substrings
 		int name = 0;
 		int prev = -1;
-		for (int i = N1; i < N; i++) {
+		for (int i = 0; i < N1; i++) {
 			int pos = SA[i];
 			boolean diff = false;
 
-			for (int d = 0; d < N; d++) {
-				if (prev == -1 || input.get(pos + d) != input.get(pos + d) || typeLS.get(pos + d) != typeLS.get(prev + d)) {
+			for (int d = 0; d < N; ++d) {
+				if (prev == -1 || input.get(pos + d) != input.get(prev + d) || typeLS.get(pos + d) != typeLS.get(prev + d)) {
 					diff = true;
 					break;
 				}
@@ -181,9 +184,7 @@ public class SuffixArrayBuilder {
 				prev = pos;
 			}
 
-			pos = (pos % 2 == 0) ? pos / 2 : (pos - 1) / 2;
-			SA[N1 + pos] = name - 1;
-
+			SA[N1 + (pos >> 1)] = name - 1;
 		}
 
 		for (int i = N - 1, j = N - 1; i >= N1; --i) {

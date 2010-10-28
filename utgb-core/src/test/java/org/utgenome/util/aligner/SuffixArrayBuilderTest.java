@@ -22,6 +22,9 @@
 //--------------------------------------
 package org.utgenome.util.aligner;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 import org.xerial.util.log.Logger;
 
@@ -36,6 +39,11 @@ public class SuffixArrayBuilderTest {
 		int[] SA = new int[s.length() + 1];
 		new SuffixArrayBuilder(s).SAIS(SA);
 
-		_logger.info(SA);
+		List<Integer> SA_v = new ArrayList<Integer>();
+		for (int each : SA)
+			SA_v.add(each);
+
+		_logger.info(SA_v);
+
 	}
 }
