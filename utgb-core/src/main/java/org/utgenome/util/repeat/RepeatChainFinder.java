@@ -694,7 +694,7 @@ public class RepeatChainFinder {
 				fastaOut.append("\n");
 				// output silk
 				SilkWriter c = sub.node("component").attribute("id", Integer.toString(id)).attribute("x1", Integer.toString(s))
-						.attribute("x2", Integer.toString(e)).attribute("strand", isReverse ? "-" : "+").attribute("len", Integer.toString(e - s));
+						.attribute("x2", Integer.toString(e)).attribute("strand", isReverse? "-" : "+").attribute("len", Integer.toString(e - s));
 				//c.leaf("seq", sSeq);
 			}
 		}
