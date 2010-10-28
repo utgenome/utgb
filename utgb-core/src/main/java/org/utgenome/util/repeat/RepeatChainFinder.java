@@ -30,6 +30,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -171,6 +172,10 @@ public class RepeatChainFinder {
 			}
 		}
 
+		public void toDotFormat(Writer out) throws IOException {
+			out.append(String.format("%d\t%d\t%d\t%d\n", getStart(), y1, getEnd(), y2));
+		}
+
 		@Override
 		public boolean equals(Object o) {
 			Interval2D other = Interval2D.class.cast(o);
@@ -265,6 +270,12 @@ public class RepeatChainFinder {
 
 		public int size() {
 			return component.size();
+		}
+
+		public void toDotFile(Writer out) throws IOException {
+			for (Interval2D each : component) {
+				each.toDotFormat(out);
+			}
 		}
 
 		@Override
@@ -441,6 +452,19 @@ public class RepeatChainFinder {
 
 			}
 			_logger.info("# of unique paths : " + rangeList.size());
+
+			BufferedWriter pathOut = new BufferedWriter(new FileWriter(new File(outFolder, "paths.dot")));
+			try {
+				//pathOut.append(String.format("%s\t%s\n", "src", "dest"));
+				for (Interval2D each : rangeList) {
+					each.toDotFormat(pathOut);
+				}
+			}
+			finally {
+				pathOut.flush();
+				pathOut.close();
+			}
+
 			//_logger.info(StringUtil.join(rangeSet, ",\n"));
 
 			// assign the overlapped intervals to the same cluster
@@ -460,6 +484,20 @@ public class RepeatChainFinder {
 			}
 
 			{
+				for (IntervalCluster cluster : createClusters(clusterSet)) {
+					BufferedWriter xClusterOut = new BufferedWriter(new FileWriter(new File(outFolder, String.format("x_cluster%03d.dot", cluster.id))));
+					try {
+						//xClusterOut.append(String.format("%s\t%s\n", "src", "dest"));
+						cluster.toDotFile(xClusterOut);
+					}
+					finally {
+						xClusterOut.flush();
+						xClusterOut.close();
+					}
+				}
+			}
+
+			{
 				_logger.info("clustring paths in Y-coordinate...");
 				IntervalTree<FlippedInterval2D> yOverlapChecker = new IntervalTree<FlippedInterval2D>();
 				for (Interval2D each : rangeList) {
@@ -468,6 +506,20 @@ public class RepeatChainFinder {
 						clusterSet.union(overlapped.orig, each);
 					}
 					yOverlapChecker.add(flip);
+				}
+
+				{
+					for (IntervalCluster cluster : createClusters(clusterSet)) {
+						BufferedWriter yClusterOut = new BufferedWriter(new FileWriter(new File(outFolder, String.format("y_cluster%03d.dot", cluster.id))));
+						try {
+							//yClusterOut.append(String.format("%s\t%s\n", "src", "dest"));
+							cluster.toDotFile(yClusterOut);
+						}
+						finally {
+							yClusterOut.flush();
+							yClusterOut.close();
+						}
+					}
 				}
 
 				// report clusters
@@ -479,13 +531,10 @@ public class RepeatChainFinder {
 
 	}
 
-	private void reportCluster(DisjointSet<Interval2D> clusterSet) throws IOException, UTGBException {
-		Set<Interval2D> clusterRoots = clusterSet.rootNodeSet();
-		_logger.info("# of chains: " + clusterSet.numElements());
-
-		_logger.info("# of disjoint sets: " + clusterRoots.size());
-		int clusterCount = 1;
+	public List<IntervalCluster> createClusters(DisjointSet<Interval2D> clusterSet) {
 		List<IntervalCluster> clusterList = new ArrayList<IntervalCluster>();
+		Set<Interval2D> clusterRoots = clusterSet.rootNodeSet();
+
 		for (Interval2D root : clusterRoots) {
 			IntervalCluster cluster = new IntervalCluster(clusterSet.disjointSetOf(root));
 			clusterList.add(cluster);
@@ -496,6 +545,20 @@ public class RepeatChainFinder {
 				return o2.length - o1.length;
 			}
 		});
+
+		int clusterCount = 1;
+		for (IntervalCluster each : clusterList) {
+			each.setId(clusterCount++);
+		}
+		return clusterList;
+	}
+
+	private void reportCluster(DisjointSet<Interval2D> clusterSet) throws IOException, UTGBException {
+		Set<Interval2D> clusterRoots = clusterSet.rootNodeSet();
+		_logger.info("# of chains: " + clusterSet.numElements());
+		_logger.info("# of disjoint sets: " + clusterRoots.size());
+
+		List<IntervalCluster> clusterList = createClusters(clusterSet);
 
 		_logger.info("load fasta sequence: " + fastaFile);
 		FASTA fasta = new FASTA(fastaFile);
@@ -510,9 +573,8 @@ public class RepeatChainFinder {
 		silk.leaf("dot plot file", intervalFile);
 
 		for (IntervalCluster cluster : clusterList) {
-			final int clusterID = clusterCount++;
-			cluster.setId(clusterID);
-			_logger.info(String.format("cluster %d:(%s)", clusterID, cluster));
+			final int clusterID = cluster.id;
+			_logger.info(String.format("cluster %d:(%s)", cluster.id, cluster));
 
 			SilkWriter sub = silk.node("cluster").attribute("id", Integer.toString(clusterID)).attribute("max length", Integer.toString(cluster.length))
 					.attribute("component size", Integer.toString(cluster.component.size()));
