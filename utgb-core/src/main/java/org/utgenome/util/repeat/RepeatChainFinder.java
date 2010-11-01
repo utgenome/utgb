@@ -475,7 +475,6 @@ public class RepeatChainFinder {
 				for (Interval2D each : rangeList) {
 					clusterSet.add(each);
 					for (Interval2D overlapped : xOverlapChecker.overlapQuery(each)) {
-
 						if (each.contains(overlapped) || overlapped.contains(each))
 							clusterSet.union(overlapped, each);
 					}
@@ -694,7 +693,7 @@ public class RepeatChainFinder {
 				fastaOut.append("\n");
 				// output silk
 				SilkWriter c = sub.node("component").attribute("id", Integer.toString(id)).attribute("x1", Integer.toString(s))
-						.attribute("x2", Integer.toString(e)).attribute("strand", isReverse? "-" : "+").attribute("len", Integer.toString(e - s));
+						.attribute("x2", Integer.toString(e)).attribute("strand", isReverse ? "-" : "+").attribute("len", Integer.toString(e - s));
 				//c.leaf("seq", sSeq);
 			}
 		}

@@ -54,4 +54,56 @@ public class SuffixArrayBuilderTest {
 
 	}
 
+	public static class IntWrap implements RandomAccess {
+
+		int[] array;
+
+		public IntWrap(int[] array) {
+			this.array = array;
+		}
+
+		public int get(int index) {
+			return array[index];
+		}
+
+		public void set(int index, int value) {
+			array[index] = value;
+		}
+
+	}
+
+	@Test
+	public void sais2() throws Exception {
+
+		String s = "ATAATACGATAATAA";
+		// A:0, T:1, G:2, C:3
+		int[] s_i = new int[s.length() + 1];
+		for (int i = 0; i < s.length(); ++i) {
+			switch (s.charAt(i)) {
+			case 'A':
+				s_i[i] = 1;
+				break;
+			case 'T':
+				s_i[i] = 2;
+				break;
+			case 'G':
+				s_i[i] = 3;
+				break;
+			case 'C':
+				s_i[i] = 4;
+				break;
+			}
+		}
+		s_i[s.length()] = 0;
+
+		int[] SA = new SuffixArrayBuilder(new IntWrap(s_i), 16, 4).SAIS();
+
+		List<Integer> SA_v = new ArrayList<Integer>();
+		for (int each : SA)
+			SA_v.add(each);
+
+		_logger.debug(SA_v);
+
+	}
+
 }
