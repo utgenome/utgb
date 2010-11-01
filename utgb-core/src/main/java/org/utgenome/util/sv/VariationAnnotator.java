@@ -253,7 +253,7 @@ public class VariationAnnotator {
 				annot.mutationPosition = getExonPos(exonIndex, numExon);
 				annot.aRef = refAA;
 
-				// TODO check alternative AminoAcid
+				// TODO check alternative AminoAcid 
 				switch (v.variationType) {
 				case Deletion:
 					break;
