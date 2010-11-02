@@ -1,0 +1,17 @@
+-variation(chr, pos, refBase, genotype, mutationtype, mutationPosition)|
+37507300	G	Y	NC	UTR5
+37518840	A	K	NC	UTR3
+37507505	C	G	MS	FirstExon
+37510130	T	G	MS	Exon
+37518610	C	G	MS	LastExon
+37507514	G	A	SN	FirstExon
+37510145	C	T	SN	Exon
+37518600	G	C	SN	LastExon
+37507568	C	A	NS	FirstExon
+37510188	A	T	NS	Exon
+37518542	G	A	NS	LastExon
+37507600	*	-C	FS	FirstExon
+37510170	*	-A	FS	Exon
+37518570	*	-G	FS	LastExon
+37507780	G	A	SS	SS5
+37510122	G	T	SS	SS3
