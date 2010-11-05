@@ -88,12 +88,12 @@ public class SuffixArrayBuilder {
 			this.K = codeTable.size() + 1;
 		}
 
-		public int get(int index) {
-			return array[index];
+		public int get(long index) {
+			return array[(int) index];
 		}
 
-		public void set(int index, int value) {
-			array[index] = value;
+		public void set(long index, int value) {
+			array[(int) index] = value;
 		}
 	}
 
@@ -107,12 +107,12 @@ public class SuffixArrayBuilder {
 			this.offset = offset;
 		}
 
-		public int get(int index) {
-			return orig[index + offset];
+		public int get(long index) {
+			return orig[(int) index + offset];
 		}
 
-		public void set(int index, int value) {
-			orig[index + offset] = value;
+		public void set(long index, int value) {
+			orig[(int) index + offset] = value;
 		}
 
 		@Override

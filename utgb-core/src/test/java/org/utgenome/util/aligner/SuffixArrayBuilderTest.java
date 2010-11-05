@@ -62,12 +62,12 @@ public class SuffixArrayBuilderTest {
 			this.array = array;
 		}
 
-		public int get(int index) {
-			return array[index];
+		public int get(long index) {
+			return array[(int) index];
 		}
 
-		public void set(int index, int value) {
-			array[index] = value;
+		public void set(long index, int value) {
+			array[(int) index] = value;
 		}
 
 	}

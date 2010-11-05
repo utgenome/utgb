@@ -24,7 +24,7 @@ package org.utgenome.util.aligner;
 
 public interface RandomAccess {
 
-	public int get(int index);
+	public int get(long index);
 
-	public void set(int index, int value);
+	public void set(long index, int value);
 }
