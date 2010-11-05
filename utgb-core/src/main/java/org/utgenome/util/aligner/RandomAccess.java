@@ -22,6 +22,12 @@
 //--------------------------------------
 package org.utgenome.util.aligner;
 
+/**
+ * interface for accessing an array of integers
+ * 
+ * @author leo
+ * 
+ */
 public interface RandomAccess {
 
 	public int get(long index);
