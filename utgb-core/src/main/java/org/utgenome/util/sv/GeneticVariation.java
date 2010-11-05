@@ -98,6 +98,12 @@ public class GeneticVariation extends Interval {
 		return VariationType.NotAvailable;
 	}
 
+	@Override
+	public void setStart(int start) {
+		super.setStart(start);
+		super.setEnd(start);
+	}
+
 	public String getGenotype() {
 		return genotype;
 	}
