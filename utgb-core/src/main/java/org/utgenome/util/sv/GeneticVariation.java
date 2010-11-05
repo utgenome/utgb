@@ -83,21 +83,16 @@ public class GeneticVariation extends Interval {
 			return VariationType.NotAvailable;
 
 		String[] alleleList = allele.split("/");
-		if (alleleList.length == 1) {
-			// IUPAC
-			iupac = IUPAC.find(allele);
-		}
-		else
-			iupac = IUPAC.None;
-
-		if (iupac != IUPAC.None)
-			return VariationType.Mutation;
 
 		for (String each : alleleList) {
 			if (each.startsWith("+"))
 				return VariationType.Insertion;
 			else if (each.startsWith("-"))
 				return VariationType.Deletion;
+			else {
+				iupac = IUPAC.find(allele);
+				return VariationType.Mutation;
+			}
 		}
 
 		return VariationType.NotAvailable;

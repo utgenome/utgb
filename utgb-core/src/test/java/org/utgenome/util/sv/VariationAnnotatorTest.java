@@ -34,8 +34,8 @@ public class VariationAnnotatorTest {
 	public void annotation() throws Exception {
 
 		File chr21 = TestHelper.createTempFileFrom(VariationAnnotatorTest.class, "test_refGene1102.fa");
-		File bed = TestHelper.createTempFileFrom(VariationAnnotatorTest.class, "refgene_chr21_offset2.bed");
-		File var = TestHelper.createTempFileFrom(VariationAnnotatorTest.class, "var_offset.silk");
+		File bed = TestHelper.createTempFileFrom(VariationAnnotatorTest.class, "refgene_chr21_offset.bed");
+		File var = TestHelper.createTempFileFrom(VariationAnnotatorTest.class, "var_input.silk");
 
 		CompactFASTAGenerator g = new CompactFASTAGenerator();
 		g.packFASTA(chr21.getAbsolutePath());

@@ -25,6 +25,9 @@ package org.utgenome.util.sv;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.xerial.lens.Lens;
+import org.xerial.lens.ObjectHandler;
+import org.xerial.util.FileResource;
 import org.xerial.util.log.Logger;
 
 public class GeneticVariationTest {
@@ -43,7 +46,26 @@ public class GeneticVariationTest {
 	public void toSilk() throws Exception {
 		GeneticVariation snv = new GeneticVariation("chr1", 3, 4, "A");
 		_logger.info(snv);
+	}
 
+	@Test
+	public void testVar() throws Exception {
+		Lens.findFromSilk(FileResource.open(GeneticVariationTest.class, "var_input.silk"), "variation", GeneticVariation.class,
+				new ObjectHandler<GeneticVariation>() {
+
+					public void init() throws Exception {
+
+					}
+
+					public void handle(GeneticVariation input) throws Exception {
+						_logger.info(input);
+
+					}
+
+					public void finish() throws Exception {
+
+					}
+				});
 	}
 
 }
