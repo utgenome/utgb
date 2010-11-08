@@ -30,7 +30,7 @@ import java.util.ArrayList;
  * @author leo
  * 
  */
-public class LArray {
+public class LArray implements RandomAccess {
 
 	private final long size;
 
