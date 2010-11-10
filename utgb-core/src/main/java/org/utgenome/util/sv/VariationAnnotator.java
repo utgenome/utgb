@@ -264,8 +264,12 @@ public class VariationAnnotator {
 				case Insertion:
 					break;
 				case Mutation: {
+					String genoType = v.iupac.toGenoType();
+					for (int i = 0; i < genoType.length(); i++) {
+						char t = genoType.charAt(i);
+						final String mutatedCodon = refCodonStr.substring(0, frameOffset) + v.getGenotype() + refCodonStr.substring(frameOffset + 1);
+					}
 
-					final String mutatedCodon = refCodonStr.substring(0, frameOffset) + v.getGenotype() + refCodonStr.substring(frameOffset + 1);
 					break;
 				}
 				default:

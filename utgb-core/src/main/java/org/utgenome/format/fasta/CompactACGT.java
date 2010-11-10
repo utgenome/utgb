@@ -29,6 +29,7 @@ import java.io.IOException;
 
 import org.utgenome.UTGBErrorCode;
 import org.utgenome.UTGBException;
+import org.utgenome.gwt.utgb.client.bio.ACGTEncoder;
 import org.utgenome.util.kmer.KmerIntegerFactory;
 
 /**
@@ -39,14 +40,13 @@ import org.utgenome.util.kmer.KmerIntegerFactory;
  */
 public class CompactACGT implements GenomeSequence {
 
-	private final byte[] sequence; // 2 bit for each char
-	private final byte[] sequenceMask; // 1 bit for each char: 0 for ACGT, 1 for otherwise including N
+	final byte[] sequence; // 2 bit for each char
+	final byte[] sequenceMask; // 1 bit for each char: 0 for ACGT, 1 for otherwise including N
 	private final int length;
 	private final int offset;
 
-	private final static int CODE_SIZE = 2;
-	private final static int BYTE = 8;
-	private final static char[] ACGT = { 'A', 'C', 'G', 'T' };
+	final static int CODE_SIZE = 2;
+	final static int BYTE = 8;
 
 	/**
 	 * @param sequence
@@ -160,11 +160,7 @@ public class CompactACGT implements GenomeSequence {
 	}
 
 	public char charAt(int index) {
-		int acgtIndex = code2bitAt(index);
-		if (acgtIndex == -1)
-			return 'N';
-		else
-			return ACGT[acgtIndex];
+		return ACGTEncoder.toBase(code2bitAt(index));
 	}
 
 	/**
