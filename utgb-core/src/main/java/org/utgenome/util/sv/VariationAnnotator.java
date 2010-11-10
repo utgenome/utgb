@@ -232,7 +232,6 @@ public class VariationAnnotator {
 				// check frame
 				int cdsStart = cds.contains(exonStart) ? exonStart : cds.getStart();
 				int cdsEnd = cds.contains(exonEnd) ? exonEnd : cds.getEnd();
-
 				final int distFromBoundary = (eachGene.isSense() ? v.getStart() - cdsStart : cdsEnd - v.getStart() - 1);
 				final int frameIndex = distFromBoundary / 3;
 				final int frameStart = eachGene.isSense() ? cdsStart + 3 * frameIndex : cdsEnd - 3 * (frameIndex + 1);
@@ -251,29 +250,39 @@ public class VariationAnnotator {
 				// TODO check alternative AminoAcid 
 				switch (v.variationType) {
 				case Deletion: {
-
 					EnhancedGeneticVariation annot = createReport(v, eachGene.getName(), getExonPosition(exonIndex, numExon), refAA);
-
+					final int suffixStart = v.getStart() + v.indelLength;
 					if (eachGene.isSense()) {
 						Kmer altCodon = new Kmer(fasta.getSequence(v.chr, frameStart, v.getStart()));
-						final int suffixStart = v.getStart() + v.indelLength;
+
 						altCodon.append(fasta.getSequence(v.chr, suffixStart, suffixStart + (3 - (v.getStart() - frameStart))).toString());
 						annot.aAlt = CodonTable.toAminoAcid(altCodon.toInt());
 						annot.codonRef = refCodon.toString();
 						annot.codonAlt = altCodon.toString();
 					}
 					else {
-						// TODO
+						int newCDSEnd = cdsEnd - v.indelLength;
+						if (cdsEnd < v.getStart()) {
+							// broken CDS. unable to determine the codon frame
+						}
+						else {
+							int newFrameIndex = (newCDSEnd - v.getStart() - 1) / 3;
+							int newFrameStart = newCDSEnd - 3 * (frameIndex + 1);
+							Kmer altCodon = new Kmer(fasta.getSequence(v.chr, newFrameStart, v.getStart()));
+							altCodon.append(fasta.getSequence(v.chr, suffixStart, suffixStart + (3 - (v.getStart() - newFrameStart))).toString());
+							altCodon = altCodon.reverseComplement();
 
+							annot.aAlt = CodonTable.toAminoAcid(altCodon.toInt());
+							annot.codonRef = refCodon.toString();
+							annot.codonAlt = altCodon.toString();
+						}
 					}
-
 					result.add(annot);
-
 					break;
 				}
 				case Insertion: {
-					// TODO
 					EnhancedGeneticVariation annot = createReport(v, eachGene.getName(), getExonPosition(exonIndex, numExon), refAA);
+
 					result.add(annot);
 					break;
 				}
