@@ -24,50 +24,29 @@ package org.utgenome.gwt.utgb.client.bio;
 
 /**
  * AminoAcid table
+ * 
  * @author leo
- *
+ * 
  */
 public enum AminoAcid {
-	
-	Ala("A", "Alanine"),
-	Arg("R", "Arginine"),
-	Asn("N", "Asparagine"),
-	Asp("D", "Aspartic acid"),
-	Cys("C", "Cysteine"),
-	Glu("E", "Glutamic acid"),
-	Gln("Q", "Glutamine"),
-	Gly("G", "Glycine"),
-	His("H", "Histidine"),
-	Ile("I", "Isoleucine"),
-	Leu("L", "Leucine"),
-	Lys("K", "Lysine"),
-	Met("M", "Methionine"),
-	Phe("F", "Phenylanlanine"),
-	Pro("P", "Proline"),
-	Ser("S", "Serine"),
-	Thr("T", "Theronine"),
-	Trp("W", "Tryptophan"),
-	Tyr("Y", "Tyrosine"),
-	Val("V", "Valine"),
-	
+
+	Ala("A", "Alanine"), Arg("R", "Arginine"), Asn("N", "Asparagine"), Asp("D", "Aspartic acid"), Cys("C", "Cysteine"), Glu("E", "Glutamic acid"), Gln("Q",
+			"Glutamine"), Gly("G", "Glycine"), His("H", "Histidine"), Ile("I", "Isoleucine"), Leu("L", "Leucine"), Lys("K", "Lysine"), Met("M", "Methionine"), Phe(
+			"F", "Phenylanlanine"), Pro("P", "Proline"), Ser("S", "Serine"), Thr("T", "Theronine"), Trp("W", "Tryptophan"), Tyr("Y", "Tyrosine"), Val("V",
+			"Valine"),
+
 	// 21st and 22nd amino acids
-	Sec("U", "Selenocysteine"),
-	Pyl("O", "Pyrrolysine"),
-	
+	Sec("U", "Selenocysteine"), Pyl("O", "Pyrrolysine"),
+
 	// ambiguous amino acids
-	Asx("B", "Asparagine or aspartic acid"),
-	Glx("Z", "Glutamine or glutamic acid"),
-	Xle("J", "Leucine or Isoleucine"),
-	Xaa("X", "Unspecified or unknown amino acid"),
-	
+	Asx("B", "Asparagine or aspartic acid"), Glx("Z", "Glutamine or glutamic acid"), Xle("J", "Leucine or Isoleucine"), Xaa("X",
+			"Unspecified or unknown amino acid"),
+
 	// stop codons
-	Ochre("-", "Stop codon: Ochre"),
-	Opal("-", "Stop codon: Opal"),
-	Amber("-", "Stop codon: Amber"),
-	
+	Ochre("-", "Stop codon: Ochre"), Opal("-", "Stop codon: Opal"), Amber("-", "Stop codon: Amber"),
+
 	// for non-coding region
-	NA("N/A", "not available")
-	;
+	NA("N/A", "not available");
 
 	public final String symbol;
 	public final String fullName;
@@ -76,8 +55,8 @@ public enum AminoAcid {
 		this.symbol = symbol;
 		this.fullName = fullName;
 	}
+
+	public boolean isStopCodon() {
+		return this == Ochre || this == Opal || this == Amber;
+	}
 }
-
-
-
-

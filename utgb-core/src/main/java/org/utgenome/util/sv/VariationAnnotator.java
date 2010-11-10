@@ -42,7 +42,6 @@ import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.utgenome.gwt.utgb.client.canvas.IntervalTree;
 import org.utgenome.util.StandardOutputStream;
 import org.utgenome.util.sv.EnhancedGeneticVariation.MutationPosition;
-import org.utgenome.util.sv.EnhancedGeneticVariation.MutationType;
 import org.xerial.lens.Lens;
 import org.xerial.lens.ObjectHandler;
 import org.xerial.silk.SilkWriter;
@@ -183,7 +182,6 @@ public class VariationAnnotator {
 		if (overlappedGeneSet.isEmpty()) { // The variation is in an inter-genic region		
 			EnhancedGeneticVariation annot = new EnhancedGeneticVariation(v);
 			annot.mutationPosition = MutationPosition.InterGenic;
-			annot.mutationType = MutationType.NA;
 
 			result.add(annot);
 			return result;
@@ -214,13 +212,15 @@ public class VariationAnnotator {
 					// Is in splice site? 
 					final Interval spliceSite5p = new Interval(exonStart - 2, exonStart);
 					if (spliceSite5p.contains(v)) {
-						result.add(createReport(v, eachGene.getName(), MutationPosition.SS5));
+						EnhancedGeneticVariation annot = createReport(v, eachGene.getName(), MutationPosition.SS5);
+						result.add(annot);
 						foundVariation = true;
 						break;
 					}
 					final Interval spliceSite3p = new Interval(exonEnd, exonEnd + 2);
 					if (spliceSite3p.contains(v)) {
-						result.add(createReport(v, eachGene.getName(), MutationPosition.SS3));
+						EnhancedGeneticVariation annot = createReport(v, eachGene.getName(), MutationPosition.SS3);
+						result.add(annot);
 						foundVariation = true;
 						break;
 					}
@@ -275,7 +275,6 @@ public class VariationAnnotator {
 							EnhancedGeneticVariation annot = createReport(v, eachGene.getName(), getExonPosition(exonIndex, numExon), refAA);
 							AminoAcid altAA = CodonTable.toAminoAcid(altCodon.toInt());
 							annot.aAlt = altAA;
-
 							result.add(annot);
 						}
 					}
@@ -293,7 +292,6 @@ public class VariationAnnotator {
 				// intron
 				EnhancedGeneticVariation annot = new EnhancedGeneticVariation(v);
 				annot.geneName = eachGene.getName();
-				annot.mutationType = MutationType.NC;
 				annot.mutationPosition = MutationPosition.Intron;
 				result.add(annot);
 			}
