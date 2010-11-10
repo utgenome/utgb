@@ -103,4 +103,22 @@ public class KmerTest {
 
 	}
 
+	@Test
+	public void insert() throws Exception {
+		final String s = "ACTTGT";
+		Kmer kmer = new Kmer(s);
+		kmer.insert(2, "GAC");
+
+		assertEquals("ACGACTTGT", kmer.toString());
+
+		assertEquals("AAAATTTTTTTT", new Kmer("TTTTTTTT").insert(0, "AAAA").toString());
+
+	}
+
+	@Test
+	public void delete() throws Exception {
+		assertEquals("ACTCTTGT", new Kmer("ACTCTAGTTGT").delete(5, 3).toString());
+		assertEquals("A", new Kmer("ACTCTAGTTGT").delete(1, 100).toString());
+	}
+
 }

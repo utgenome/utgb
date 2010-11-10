@@ -121,13 +121,110 @@ public class Kmer implements GenomeSequence {
 	}
 
 	public void set(int index, char acgt) {
-		final int offset = index % 4;
-		sequence2bit[index / 4] |= (byte) ((ACGTEncoder.to2bitCode(acgt) & 0x03) << (6 - offset * 2));
+		setACGT(sequence2bit, index, acgt);
 	}
 
 	public void set(int index, String acgt) {
-		final int offset = index % 4;
-		sequence2bit[index / 4] |= (byte) ((ACGTEncoder.to2bitCode(acgt.charAt(0)) & 0x03) << (6 - offset * 2));
+		set(index, acgt.charAt(0));
+	}
+
+	public Kmer delete(int deletePos, int deleteLen) {
+
+		if (deletePos < 0)
+			throw new IllegalArgumentException("deletePos must be >= 0");
+
+		if (deletePos + deleteLen > size) {
+			deleteLen = size - deletePos;
+		}
+		final int newSize = size - deleteLen;
+
+		// prepare the new array for the inserted sequence 
+		byte[] new2bitArray = new byte[newSize / 4 + (newSize % 4 == 0 ? 0 : 1)];
+		for (int i = 0; i < new2bitArray.length; ++i)
+			new2bitArray[i] = 0;
+
+		// paste the prefix
+		final int prefixBlockSize = deletePos / 4 + (deletePos % 4 == 0 ? 0 : 1);
+		for (int i = 0; i < prefixBlockSize; i++) {
+
+			int mask = 0xFF;
+			if (i == prefixBlockSize - 1) {
+				int offset = deletePos % 4;
+				if (offset > 0) {
+					int shiftSize = 8 - offset * 2;
+					mask >>>= shiftSize;
+					mask <<= shiftSize;
+				}
+			}
+
+			new2bitArray[i] = (byte) (sequence2bit[i] & mask);
+		}
+
+		// paste the suffix
+		final int suffixStart = deletePos + deleteLen;
+		for (int i = suffixStart; i < size; ++i) {
+			setACGT(new2bitArray, i - deleteLen, charAt(i));
+		}
+
+		this.sequence2bit = new2bitArray;
+		this.size = newSize;
+
+		return this;
+	}
+
+	public Kmer insert(int insertPos, String acgt) {
+
+		if (insertPos < 0)
+			throw new IllegalArgumentException("insertPos must be >= 0");
+
+		final int insertLen = acgt.length();
+		final int newSize = size + insertLen;
+
+		// prepare the new array for the inserted sequence 
+		byte[] new2bitArray = new byte[newSize / 4 + (newSize % 4 == 0 ? 0 : 1)];
+		for (int i = 0; i < new2bitArray.length; ++i)
+			new2bitArray[i] = 0;
+
+		// paste the prefix
+		final int prefixBlockSize = insertPos / 4 + (insertPos % 4 == 0 ? 0 : 1);
+		for (int i = 0; i < prefixBlockSize; i++) {
+
+			int mask = 0xFF;
+			if (i == prefixBlockSize - 1) {
+				int offset = insertPos % 4;
+				if (offset > 0) {
+					int shiftSize = 8 - offset * 2;
+					mask >>>= shiftSize;
+					mask <<= shiftSize;
+				}
+			}
+
+			new2bitArray[i] = (byte) (sequence2bit[i] & mask);
+		}
+
+		// paste the inserted sequence
+		for (int i = 0; i < acgt.length(); i++) {
+			final int blockPos = (insertPos + i) / 4;
+			final int blockOffset = (insertPos + i) % 4;
+			setACGT(new2bitArray, insertPos + i, acgt.charAt(i));
+		}
+
+		// paste the suffix
+		for (int i = insertPos; i < size; ++i) {
+			setACGT(new2bitArray, i + insertLen, charAt(i));
+		}
+
+		this.sequence2bit = new2bitArray;
+		this.size = newSize;
+		return this;
+	}
+
+	private static void setACGT(byte[] array, int index, char acgt) {
+		array[index / 4] |= (byte) ((ACGTEncoder.to2bitCode(acgt) & 0x03) << (6 - (index % 4) * 2));
+	}
+
+	private static void setACGTCode(byte[] array, int index, int code) {
+		array[index / 4] |= (byte) ((code & 0x03) << (6 - (index % 4) * 2));
 	}
 
 	public Kmer reverseComplement() {
@@ -137,7 +234,7 @@ public class Kmer implements GenomeSequence {
 		for (int i = size - 1; i >= 0; --i, rIndex++) {
 			final int offset = i % 4;
 			int code = (sequence2bit[i / 4] >>> (6 - offset * 2)) & 0x03;
-			rc[rIndex / 4] |= (byte) ((~code & 0x03) << (6 - (rIndex % 4) * 2));
+			setACGTCode(rc, rIndex, ~code);
 		}
 
 		return new Kmer(rc, size);
