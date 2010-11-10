@@ -52,4 +52,9 @@ public class TestHelper {
 		return tmp;
 	}
 
+	public static <T> File createTempDir() throws IOException {
+		File tmp = FileUtil.createTempDir(new File("target"), "tempdir");
+		return tmp;
+	}
+
 }

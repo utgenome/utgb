@@ -27,6 +27,7 @@ import java.io.File;
 import org.junit.Test;
 import org.utgenome.format.fasta.CompactFASTAGenerator;
 import org.utgenome.util.TestHelper;
+import org.xerial.util.FileUtil;
 
 public class VariationAnnotatorTest {
 
@@ -38,9 +39,13 @@ public class VariationAnnotatorTest {
 		File var = TestHelper.createTempFileFrom(VariationAnnotatorTest.class, "var_input.silk");
 
 		CompactFASTAGenerator g = new CompactFASTAGenerator();
+		File tmpDir = TestHelper.createTempDir();
+		g.setWorkDir(tmpDir);
 		g.packFASTA(chr21.getAbsolutePath());
 
-		VariationAnnotator.main(new String[] { chr21.getAbsolutePath(), bed.getAbsolutePath(), var.getAbsolutePath() });
+		VariationAnnotator.main(new String[] { new File(tmpDir, chr21.getName()).getAbsolutePath(), bed.getAbsolutePath(), var.getAbsolutePath() });
+
+		FileUtil.rmdir(tmpDir);
 
 	}
 }

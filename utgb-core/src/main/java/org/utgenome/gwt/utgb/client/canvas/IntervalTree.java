@@ -56,6 +56,10 @@ public class IntervalTree<T extends OnGenome> extends AbstractCollection<T> {
 		return pst.remove(t, t.getEnd(), t.getStart());
 	}
 
+	public void overlapQuery(int start, PrioritySearchTree.ResultHandler<T> handler) {
+		overlapQuery(start, start, handler);
+	}
+
 	/**
 	 * Get entries overlapping with [start, end)
 	 * 

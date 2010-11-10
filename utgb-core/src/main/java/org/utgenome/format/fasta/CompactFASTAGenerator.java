@@ -66,6 +66,10 @@ public class CompactFASTAGenerator {
 		this.workDir = workDir;
 	}
 
+	public void setWorkDir(File workDir) {
+		this.workDir = workDir.getAbsolutePath();
+	}
+
 	public String getWorkDir() {
 		return workDir;
 	}

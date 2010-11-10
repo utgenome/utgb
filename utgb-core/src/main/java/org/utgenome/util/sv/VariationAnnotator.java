@@ -134,7 +134,7 @@ public class VariationAnnotator {
 			int count = 0;
 
 			public void finish() throws Exception {
-				_logger.info("done");
+				_logger.info("The end of the variation data");
 			}
 
 			public void handle(GeneticVariation v) throws Exception {
@@ -157,7 +157,6 @@ public class VariationAnnotator {
 		silk.endDocument();
 		silk.close();
 
-		_logger.info("done.");
 	}
 
 	void output(GeneticVariation v) {
@@ -282,6 +281,13 @@ public class VariationAnnotator {
 				}
 				case Insertion: {
 					EnhancedGeneticVariation annot = createReport(v, eachGene.getName(), getExonPosition(exonIndex, numExon), refAA);
+
+					if (eachGene.isSense()) {
+
+					}
+					else {
+
+					}
 
 					result.add(annot);
 					break;
