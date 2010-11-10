@@ -50,6 +50,8 @@ public class GeneticVariation extends Interval {
 	public IUPAC iupac = IUPAC.None;
 	public String refBase;
 
+	public int indelLength = 0;
+
 	public GeneticVariation() {
 	}
 
@@ -85,10 +87,14 @@ public class GeneticVariation extends Interval {
 		String[] alleleList = allele.split("/");
 
 		for (String each : alleleList) {
-			if (each.startsWith("+"))
+			if (each.startsWith("+")) {
+				indelLength = each.length() - 1;
 				return VariationType.Insertion;
-			else if (each.startsWith("-"))
+			}
+			else if (each.startsWith("-")) {
+				indelLength = each.length() - 1;
 				return VariationType.Deletion;
+			}
 			else {
 				iupac = IUPAC.find(allele);
 				return VariationType.Mutation;

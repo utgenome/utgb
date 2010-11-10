@@ -230,12 +230,11 @@ public class VariationAnnotator {
 				foundVariation = true;
 
 				// check frame
-				final int cdsStart = cds.contains(exonStart) ? exonStart : cds.getStart();
-				final int cdsEnd = cds.contains(exonEnd) ? exonEnd : cds.getEnd();
+				int cdsStart = cds.contains(exonStart) ? exonStart : cds.getStart();
+				int cdsEnd = cds.contains(exonEnd) ? exonEnd : cds.getEnd();
 
 				final int distFromBoundary = (eachGene.isSense() ? v.getStart() - cdsStart : cdsEnd - v.getStart() - 1);
 				final int frameIndex = distFromBoundary / 3;
-
 				final int frameStart = eachGene.isSense() ? cdsStart + 3 * frameIndex : cdsEnd - 3 * (frameIndex + 1);
 
 				// check the codon
@@ -252,8 +251,22 @@ public class VariationAnnotator {
 				// TODO check alternative AminoAcid 
 				switch (v.variationType) {
 				case Deletion: {
-					// TODO
+
 					EnhancedGeneticVariation annot = createReport(v, eachGene.getName(), getExonPosition(exonIndex, numExon), refAA);
+
+					if (eachGene.isSense()) {
+						Kmer altCodon = new Kmer(fasta.getSequence(v.chr, frameStart, v.getStart()));
+						final int suffixStart = v.getStart() + v.indelLength;
+						altCodon.append(fasta.getSequence(v.chr, suffixStart, suffixStart + (3 - (v.getStart() - frameStart))).toString());
+						annot.aAlt = CodonTable.toAminoAcid(altCodon.toInt());
+						annot.codonRef = refCodon.toString();
+						annot.codonAlt = altCodon.toString();
+					}
+					else {
+						// TODO
+
+					}
+
 					result.add(annot);
 
 					break;
@@ -277,6 +290,9 @@ public class VariationAnnotator {
 							EnhancedGeneticVariation annot = createReport(v, eachGene.getName(), getExonPosition(exonIndex, numExon), refAA);
 							AminoAcid altAA = CodonTable.toAminoAcid(altCodon.toInt());
 							annot.aAlt = altAA;
+							annot.codonRef = refCodon.toString();
+							annot.codonAlt = altCodon.toString();
+
 							result.add(annot);
 						}
 					}

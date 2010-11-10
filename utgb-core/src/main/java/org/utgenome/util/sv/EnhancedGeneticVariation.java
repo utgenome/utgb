@@ -67,6 +67,8 @@ public class EnhancedGeneticVariation extends GeneticVariation {
 	public String geneName;
 	public AminoAcid aRef = AminoAcid.NA;
 	public AminoAcid aAlt = AminoAcid.NA;
+	public String codonRef;
+	public String codonAlt;
 
 	public MutationType getMutationType() {
 		switch (mutationPosition) {
@@ -87,6 +89,10 @@ public class EnhancedGeneticVariation extends GeneticVariation {
 
 		if (aRef == aAlt)
 			return MutationType.SN;
+
+		if (variationType != VariationType.Mutation) {
+			return MutationType.FS;
+		}
 
 		if (!aRef.isStopCodon() && aAlt.isStopCodon()) {
 			return MutationType.NS;

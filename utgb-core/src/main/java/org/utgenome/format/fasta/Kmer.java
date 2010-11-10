@@ -172,6 +172,10 @@ public class Kmer implements GenomeSequence {
 		return this;
 	}
 
+	public Kmer append(String acgt) {
+		return insert(this.size, acgt);
+	}
+
 	public Kmer insert(int insertPos, String acgt) {
 
 		if (insertPos < 0)

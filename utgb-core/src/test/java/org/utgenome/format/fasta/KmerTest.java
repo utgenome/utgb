@@ -121,4 +121,9 @@ public class KmerTest {
 		assertEquals("A", new Kmer("ACTCTAGTTGT").delete(1, 100).toString());
 	}
 
+	@Test
+	public void append() throws Exception {
+		assertEquals("ACGGTTG", new Kmer("ACGGT").append("TG").toString());
+	}
+
 }
