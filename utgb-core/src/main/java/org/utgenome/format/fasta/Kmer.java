@@ -43,6 +43,15 @@ public class Kmer implements GenomeSequence {
 		this.size = size;
 	}
 
+	public Kmer(Kmer other) {
+		this.sequence2bit = new byte[other.sequence2bit.length];
+		this.size = other.size;
+		// copy
+		for (int i = 0; i < sequence2bit.length; ++i) {
+			sequence2bit[i] = other.sequence2bit[i];
+		}
+	}
+
 	public Kmer(CompactACGT acgt) {
 		this.size = acgt.length();
 		sequence2bit = new byte[acgt.sequence.length];
@@ -127,6 +136,34 @@ public class Kmer implements GenomeSequence {
 		}
 		return s.toString();
 
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!Kmer.class.isInstance(obj))
+			return false;
+
+		Kmer other = Kmer.class.cast(obj);
+
+		if (this.size != other.size)
+			return false;
+
+		for (int i = 0; i < this.sequence2bit.length; ++i) {
+			if (this.sequence2bit[i] != other.sequence2bit[i])
+				return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+
+		int h = 3;
+		for (int i = 0; i < this.sequence2bit.length; ++i)
+			h += sequence2bit[i] * 1997;
+
+		return h;
 	}
 
 }

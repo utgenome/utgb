@@ -214,20 +214,13 @@ public class VariationAnnotator {
 					// Is in splice site? 
 					final Interval spliceSite5p = new Interval(exonStart - 2, exonStart);
 					if (spliceSite5p.contains(v)) {
-						EnhancedGeneticVariation annot = new EnhancedGeneticVariation(v);
-						annot.geneName = eachGene.getName();
-						annot.mutationPosition = MutationPosition.SS5;
-						result.add(annot);
-
+						result.add(createReport(v, eachGene.getName(), MutationPosition.SS5));
 						foundVariation = true;
 						break;
 					}
 					final Interval spliceSite3p = new Interval(exonEnd, exonEnd + 2);
 					if (spliceSite3p.contains(v)) {
-						EnhancedGeneticVariation annot = new EnhancedGeneticVariation(v);
-						annot.geneName = eachGene.getName();
-						annot.mutationPosition = MutationPosition.SS3;
-						result.add(annot);
+						result.add(createReport(v, eachGene.getName(), MutationPosition.SS3));
 						foundVariation = true;
 						break;
 					}
@@ -242,33 +235,49 @@ public class VariationAnnotator {
 
 				final int distFromBoundary = (eachGene.isSense() ? v.getStart() - cdsStart : cdsEnd - v.getStart() - 1);
 				final int frameIndex = distFromBoundary / 3;
-				final int frameOffset = distFromBoundary % 3;
+				int frameOffset = distFromBoundary % 3;
 				final int frameStart = eachGene.isSense() ? cdsStart + 3 * frameIndex : cdsEnd - 3 * (frameIndex + 1);
 
 				// check the codon
-
 				Kmer refCodon = new Kmer(fasta.getSequence(v.chr, frameStart, frameStart + 3));
-				final String refCodonStr = eachGene.isSense() ? refCodon.toString() : refCodon.reverseComplement().toString();
-				final AminoAcid refAA = CodonTable.toAminoAcid(refCodonStr);
+				if (!eachGene.isSense()) {
+					refCodon = refCodon.reverseComplement();
+					frameOffset = 3 - frameOffset;
+				}
+				final AminoAcid refAA = CodonTable.toAminoAcid(refCodon.toInt());
 
 				// create a variation report
-				EnhancedGeneticVariation annot = new EnhancedGeneticVariation(v);
-				annot.geneName = eachGene.getName();
-				annot.mutationPosition = getExonPosition(exonIndex, numExon);
-				annot.aRef = refAA;
 
 				// TODO check alternative AminoAcid 
 				switch (v.variationType) {
-				case Deletion:
+				case Deletion: {
+
+					EnhancedGeneticVariation annot = createReport(v, eachGene.getName(), getExonPosition(exonIndex, numExon), refAA);
+					result.add(annot);
 
 					break;
-				case Insertion:
+				}
+				case Insertion: {
+					EnhancedGeneticVariation annot = createReport(v, eachGene.getName(), getExonPosition(exonIndex, numExon), refAA);
+					result.add(annot);
 					break;
+				}
 				case Mutation: {
+
+					char ref = refCodon.charAt(frameOffset);
 					String genoType = v.iupac.toGenoType();
 					for (int i = 0; i < genoType.length(); i++) {
 						char t = genoType.charAt(i);
-						final String mutatedCodon = refCodonStr.substring(0, frameOffset) + v.getGenotype() + refCodonStr.substring(frameOffset + 1);
+						Kmer altCodon = new Kmer(refCodon);
+						altCodon.set(frameOffset, t);
+
+						if (!refCodon.equals(altCodon)) {
+							EnhancedGeneticVariation annot = createReport(v, eachGene.getName(), getExonPosition(exonIndex, numExon), refAA);
+							AminoAcid altAA = CodonTable.toAminoAcid(altCodon.toInt());
+							annot.aAlt = altAA;
+
+							result.add(annot);
+						}
 					}
 
 					break;
@@ -277,7 +286,6 @@ public class VariationAnnotator {
 					break;
 				}
 
-				result.add(annot);
 				break;
 			}
 
@@ -292,6 +300,22 @@ public class VariationAnnotator {
 		}
 
 		return result;
+
+	}
+
+	private EnhancedGeneticVariation createReport(GeneticVariation v, String geneName, MutationPosition pos) {
+		EnhancedGeneticVariation annot = new EnhancedGeneticVariation(v);
+		annot.geneName = geneName;
+		annot.mutationPosition = pos;
+		return annot;
+	}
+
+	private EnhancedGeneticVariation createReport(GeneticVariation v, String geneName, MutationPosition pos, AminoAcid refAA) {
+		EnhancedGeneticVariation annot = new EnhancedGeneticVariation(v);
+		annot.geneName = geneName;
+		annot.mutationPosition = pos;
+		annot.aRef = refAA;
+		return annot;
 
 	}
 
