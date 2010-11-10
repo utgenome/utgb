@@ -22,6 +22,8 @@
 //--------------------------------------
 package org.utgenome.util.sv;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,9 +45,25 @@ public class GeneticVariationTest {
 	}
 
 	@Test
-	public void toSilk() throws Exception {
-		GeneticVariation snv = new GeneticVariation("chr1", 3, 4, "A");
-		_logger.info(snv);
+	public void mutation() throws Exception {
+		GeneticVariation v = new GeneticVariation("chr1", 3, "A");
+		assertEquals(GeneticVariation.VariationType.Mutation, v.variationType);
+		assertEquals(0, v.indelLength);
+		assertEquals("A", v.getGenotype());
+	}
+
+	@Test
+	public void indel() throws Exception {
+		GeneticVariation v = new GeneticVariation("chr1", 10000, "+ATTT");
+		assertEquals(GeneticVariation.VariationType.Insertion, v.variationType);
+		assertEquals(4, v.indelLength);
+		assertEquals("ATTT", v.getGenotype().substring(1));
+
+		GeneticVariation v2 = new GeneticVariation("chr1", 10000, "-CGCGCG");
+		assertEquals(GeneticVariation.VariationType.Deletion, v2.variationType);
+		assertEquals(6, v2.indelLength);
+		assertEquals("CGCGCG", v2.getGenotype().substring(1));
+
 	}
 
 	@Test
@@ -58,7 +76,7 @@ public class GeneticVariationTest {
 					}
 
 					public void handle(GeneticVariation input) throws Exception {
-						_logger.info(input);
+						_logger.debug(input);
 
 					}
 

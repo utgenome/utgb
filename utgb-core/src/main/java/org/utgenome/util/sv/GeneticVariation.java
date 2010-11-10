@@ -46,9 +46,11 @@ public class GeneticVariation {
 	public VariationType variationType;
 	public String chr;
 	public int start = -1; // 1-origin (inclusive, -1 means undefined value)
-	private String genotype;
-	public IUPAC altBase;
 	public String refBase;
+
+	// parameters to be determined automatically 
+	private String genotype;
+	private IUPAC altBase;
 
 	public int indelLength = 0;
 
@@ -78,6 +80,7 @@ public class GeneticVariation {
 		this.genotype = other.genotype;
 		this.altBase = other.altBase;
 		this.refBase = other.refBase;
+		this.indelLength = other.indelLength;
 	}
 
 	VariationType detectVariationType(String allele) {
@@ -102,6 +105,10 @@ public class GeneticVariation {
 		}
 
 		return VariationType.NotAvailable;
+	}
+
+	public IUPAC getAltBase() {
+		return altBase;
 	}
 
 	public String getGenotype() {

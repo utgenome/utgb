@@ -254,7 +254,7 @@ public class VariationAnnotator {
 				switch (v.variationType) {
 				case Mutation: {
 					// Check alternative amino acids 
-					final String genoType = v.altBase.toGenoType();
+					final String genoType = v.getAltBase().toGenoType();
 					for (int i = 0; i < genoType.length(); i++) {
 						final char altBase = genoType.charAt(i);
 						Kmer altCodon = new Kmer(refCodon);
