@@ -91,6 +91,7 @@ public enum IUPAC {
 
 	public static IUPAC find(String iupacCode) {
 		IUPAC iupac = IUPAC.valueOf(IUPAC.class, iupacCode);
+
 		if (iupac == null)
 			return IUPAC.None;
 		else

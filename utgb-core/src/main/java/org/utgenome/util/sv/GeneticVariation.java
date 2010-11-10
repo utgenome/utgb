@@ -24,6 +24,7 @@ package org.utgenome.util.sv;
 
 import org.utgenome.gwt.utgb.client.bio.IUPAC;
 import org.xerial.lens.Lens;
+import org.xerial.util.log.Logger;
 
 /**
  * genetic variation location [start, end), chr and allele (genotype) information
@@ -32,6 +33,8 @@ import org.xerial.lens.Lens;
  * 
  */
 public class GeneticVariation {
+
+	private static Logger _logger = Logger.getLogger(GeneticVariation.class);
 
 	/**
 	 * 
@@ -99,7 +102,14 @@ public class GeneticVariation {
 				return VariationType.Deletion;
 			}
 			else {
-				altBase = IUPAC.find(allele);
+				try {
+					altBase = IUPAC.find(allele);
+				}
+				catch (IllegalArgumentException e) {
+					// unknown IUPAC code
+					_logger.warn("unkonwn IUPAC code: " + allele);
+					altBase = IUPAC.None;
+				}
 				return VariationType.Mutation;
 			}
 		}

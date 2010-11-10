@@ -32,7 +32,7 @@ import org.xerial.util.FileUtil;
 public class VariationAnnotatorTest {
 
 	@Test
-	public void annotation() throws Exception {
+	public void annotationForward() throws Exception {
 
 		File chr21 = TestHelper.createTempFileFrom(VariationAnnotatorTest.class, "test_refGene1102.fa");
 		File bed = TestHelper.createTempFileFrom(VariationAnnotatorTest.class, "refgene_chr21_offset.bed");
@@ -48,4 +48,23 @@ public class VariationAnnotatorTest {
 		FileUtil.rmdir(tmpDir);
 
 	}
+
+	@Test
+	public void annotationReverse() throws Exception {
+
+		File chr21 = TestHelper.createTempFileFrom(VariationAnnotatorTest.class, "test_refGene1110.fa");
+		File bed = TestHelper.createTempFileFrom(VariationAnnotatorTest.class, "refgene_chr21_offset1110.bed");
+		File var = TestHelper.createTempFileFrom(VariationAnnotatorTest.class, "var_input1110.silk");
+
+		CompactFASTAGenerator g = new CompactFASTAGenerator();
+		File tmpDir = TestHelper.createTempDir();
+		g.setWorkDir(tmpDir);
+		g.packFASTA(chr21.getAbsolutePath());
+
+		VariationAnnotator.main(new String[] { new File(tmpDir, chr21.getName()).getAbsolutePath(), bed.getAbsolutePath(), var.getAbsolutePath() });
+
+		FileUtil.rmdir(tmpDir);
+
+	}
+
 }
