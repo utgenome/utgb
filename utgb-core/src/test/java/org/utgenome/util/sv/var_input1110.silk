@@ -1,0 +1,16 @@
+-variation(chr, pos, refBase, genotype, mutationtype, mutationPosition)|
+chr21	34	T	G	NC	UTR5
+chr21	4229	C	G	NC	UTR3
+chr21	200	A	T	MS	FirstExon
+chr21	1021	C	G	MS	Exon
+chr21	4183	C	U	MS	LastExon
+chr21	209	C	T	SN	FirstExon
+chr21	1027	G	A	SN	Exon
+chr21	4190	C	A	SN	LastExon
+chr21	206	A	U	NS	FirstExon
+chr21	1010	C	U	NS	Exon
+chr21	200	*	-A	FS	FirstExon
+chr21	989	*	-G	FS	Exon
+chr21	4189	*	-T	FS	LastExon
+chr21	215	T	G	SS	SS5
+chr21	972	C	T	SS	SS3
