@@ -60,6 +60,10 @@ public class IntervalTree<T extends OnGenome> extends AbstractCollection<T> {
 		overlapQuery(start, start, handler);
 	}
 
+	public List<T> overlapQuery(int start) {
+		return overlapQuery(start, start);
+	}
+
 	/**
 	 * Get entries overlapping with [start, end)
 	 * 

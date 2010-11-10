@@ -60,15 +60,14 @@ public class EnhancedGeneticVariation extends GeneticVariation {
 	private static final long serialVersionUID = 1L;
 
 	// additional annotations
-	private MutationType mutationType = MutationType.NA;
-	public MutationPosition mutationPosition = MutationPosition.NA;
+	public MutationPosition mutationPosition;
 
 	public String strand;
 	public String geneName;
-	public AminoAcid aRef = AminoAcid.NA;
-	public AminoAcid aAlt = AminoAcid.NA;
-	public String codonRef;
-	public String codonAlt;
+	public AminoAcid refAA;
+	public AminoAcid altAA;
+	public String refCodon;
+	public String altCodon;
 
 	public MutationType getMutationType() {
 		switch (mutationPosition) {
@@ -84,17 +83,17 @@ public class EnhancedGeneticVariation extends GeneticVariation {
 			return MutationType.SS;
 		}
 
-		if (aRef == AminoAcid.NA && aAlt == AminoAcid.NA)
+		if (refAA == AminoAcid.NA && altAA == AminoAcid.NA)
 			return MutationType.NC;
 
 		if (variationType != VariationType.Mutation && indelLength != 3) {
 			return MutationType.FS;
 		}
 
-		if (aRef == aAlt)
+		if (refAA == altAA)
 			return MutationType.SN;
 
-		if (!aRef.isStopCodon() && aAlt.isStopCodon()) {
+		if (!refAA.isStopCodon() && altAA.isStopCodon()) {
 			return MutationType.NS;
 		}
 		else

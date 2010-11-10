@@ -39,6 +39,7 @@ import org.utgenome.gwt.utgb.client.bio.BEDGene;
 import org.utgenome.gwt.utgb.client.bio.CDS;
 import org.utgenome.gwt.utgb.client.bio.CodonTable;
 import org.utgenome.gwt.utgb.client.bio.Exon;
+import org.utgenome.gwt.utgb.client.bio.Gene;
 import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.utgenome.gwt.utgb.client.canvas.IntervalTree;
 import org.utgenome.util.StandardOutputStream;
@@ -180,7 +181,7 @@ public class VariationAnnotator {
 		List<EnhancedGeneticVariation> result = new ArrayList<EnhancedGeneticVariation>();
 
 		// Find genes containing the variation
-		List<BEDGene> overlappedGeneSet = geneSet.overlapQuery(v);
+		List<BEDGene> overlappedGeneSet = geneSet.overlapQuery(v.start);
 
 		if (overlappedGeneSet.isEmpty()) { // The variation is in an inter-genic region		
 			EnhancedGeneticVariation annot = new EnhancedGeneticVariation(v);
@@ -196,70 +197,73 @@ public class VariationAnnotator {
 			final CDS cds = eachGene.getCDSRange();
 
 			// Is in UTR?
-			if (!cds.contains(v.getStart())) {
+			if (!cds.contains(v.start)) {
 				EnhancedGeneticVariation annot = new EnhancedGeneticVariation(v);
 				annot.geneName = eachGene.getName();
-				boolean is5pUTR = v.precedes(cds) && eachGene.isSense();
+				boolean is5pUTR = (v.start < cds.getStart()) && eachGene.isSense();
 				annot.mutationPosition = is5pUTR ? MutationPosition.UTR5 : MutationPosition.UTR3;
 				result.add(annot);
 				continue;
 			}
 
+			// The variation is contained in CDS 
 			boolean foundVariation = false;
 			for (int exonIndex = 0; exonIndex < numExon; exonIndex++) {
 				final Exon exon = eachGene.getExon(eachGene.isSense() ? exonIndex : numExon - exonIndex - 1);
 				final int exonStart = exon.getStart();
 				final int exonEnd = exon.getEnd();
 
-				if (!exon.hasOverlap(v)) {
+				if (!exon.contains(v.start)) {
 					// Is in splice site? 
 					final Interval spliceSite5p = new Interval(exonStart - 2, exonStart);
-					if (spliceSite5p.contains(v)) {
-						EnhancedGeneticVariation annot = createReport(v, eachGene.getName(), MutationPosition.SS5);
+					if (spliceSite5p.contains(v.start)) {
+						EnhancedGeneticVariation annot = createReport(v, eachGene, MutationPosition.SS5);
 						result.add(annot);
 						foundVariation = true;
 						break;
 					}
 					final Interval spliceSite3p = new Interval(exonEnd, exonEnd + 2);
-					if (spliceSite3p.contains(v)) {
-						EnhancedGeneticVariation annot = createReport(v, eachGene.getName(), MutationPosition.SS3);
+					if (spliceSite3p.contains(v.start)) {
+						EnhancedGeneticVariation annot = createReport(v, eachGene, MutationPosition.SS3);
 						result.add(annot);
 						foundVariation = true;
 						break;
 					}
+					// forward to the next exon 
 					continue;
 				}
 
 				// This variation is in an exon region
 				foundVariation = true;
 
-				// check frame
+				// Codon frame
 				int cdsStart = cds.contains(exonStart) ? exonStart : cds.getStart();
 				int cdsEnd = cds.contains(exonEnd) ? exonEnd : cds.getEnd();
-				final int distFromBoundary = (eachGene.isSense() ? v.getStart() - cdsStart : cdsEnd - v.getStart() - 1);
+				final int distFromBoundary = (eachGene.isSense() ? v.start - cdsStart : cdsEnd - v.start - 1);
 				final int frameIndex = distFromBoundary / 3;
 				final int frameStart = eachGene.isSense() ? cdsStart + 3 * frameIndex : cdsEnd - 3 * (frameIndex + 1);
 
-				// check the codon
-				int frameOffset = (v.getStart() - frameStart) % 3;
+				// Get the codon in the reference sequence
+				int frameOffset = (v.start - frameStart) % 3;
 				Kmer refCodon = new Kmer(fasta.getSequence(v.chr, frameStart, frameStart + 3));
 
-				// create a variation report
+				// Get the mutation position (first exon, exon, last exon) 
+				final MutationPosition exonPos = getExonPosition(exonIndex, numExon);
 
-				// TODO check alternative AminoAcid 
+				// Create a variation report for each mutation type
 				switch (v.variationType) {
 				case Mutation: {
-					String genoType = v.iupac.toGenoType();
+					// Check alternative amino acids 
+					final String genoType = v.altBase.toGenoType();
 					for (int i = 0; i < genoType.length(); i++) {
-						char t = genoType.charAt(i);
+						final char altBase = genoType.charAt(i);
 						Kmer altCodon = new Kmer(refCodon);
-						altCodon.set(frameOffset, t);
-
+						altCodon.set(frameOffset, altBase);
 						if (!refCodon.equals(altCodon)) {
-							EnhancedGeneticVariation annot = createReport(v, eachGene.getName(), getExonPosition(exonIndex, numExon), refCodon);
+							EnhancedGeneticVariation annot = createReport(v, eachGene, exonPos, refCodon);
 							AminoAcid altAA = CodonTable.toAminoAcid(eachGene.isSense() ? altCodon.toInt() : kif.reverseComplement(altCodon.toInt()));
-							annot.aAlt = altAA;
-							annot.codonAlt = altCodon.toString();
+							annot.altAA = altAA;
+							annot.altCodon = altCodon.toString();
 							result.add(annot);
 						}
 					}
@@ -267,44 +271,44 @@ public class VariationAnnotator {
 					break;
 				}
 				case Deletion: {
-					EnhancedGeneticVariation annot = createReport(v, eachGene.getName(), getExonPosition(exonIndex, numExon), refCodon);
-					final int suffixStart = v.getStart() + v.indelLength;
+					EnhancedGeneticVariation annot = createReport(v, eachGene, exonPos, refCodon);
+					final int suffixStart = v.start + v.indelLength;
 					if (eachGene.isSense()) {
-						Kmer altCodon = new Kmer(fasta.getSequence(v.chr, frameStart, v.getStart()));
+						Kmer altCodon = new Kmer(fasta.getSequence(v.chr, frameStart, v.start));
 
-						altCodon.append(fasta.getSequence(v.chr, suffixStart, suffixStart + (3 - (v.getStart() - frameStart))).toString());
-						annot.aAlt = CodonTable.toAminoAcid(altCodon.toInt());
-						annot.codonAlt = altCodon.toString();
+						altCodon.append(fasta.getSequence(v.chr, suffixStart, suffixStart + (3 - (v.start - frameStart))).toString());
+						annot.altAA = CodonTable.toAminoAcid(altCodon.toInt());
+						annot.altCodon = altCodon.toString();
 					}
 					else {
 						int newCDSEnd = cdsEnd - v.indelLength;
-						if (cdsEnd < v.getStart()) {
+						if (cdsEnd < v.start) {
 							// broken CDS. unable to determine the codon frame
 						}
 						else {
-							int newFrameIndex = (newCDSEnd - v.getStart() - 1) / 3;
+							int newFrameIndex = (newCDSEnd - v.start - 1) / 3;
 							int newFrameStart = newCDSEnd - 3 * (frameIndex + 1);
-							Kmer altCodon = new Kmer(fasta.getSequence(v.chr, newFrameStart, v.getStart()));
-							altCodon.append(fasta.getSequence(v.chr, suffixStart, suffixStart + (3 - (v.getStart() - newFrameStart))).toString());
+							Kmer altCodon = new Kmer(fasta.getSequence(v.chr, newFrameStart, v.start));
+							altCodon.append(fasta.getSequence(v.chr, suffixStart, suffixStart + (3 - (v.start - newFrameStart))).toString());
 							altCodon = altCodon.reverseComplement();
 
-							annot.aAlt = CodonTable.toAminoAcid(altCodon.toInt());
-							annot.codonAlt = altCodon.toString();
+							annot.altAA = CodonTable.toAminoAcid(altCodon.toInt());
+							annot.altCodon = altCodon.toString();
 						}
 					}
 					result.add(annot);
 					break;
 				}
 				case Insertion: {
-					EnhancedGeneticVariation annot = createReport(v, eachGene.getName(), getExonPosition(exonIndex, numExon), refCodon);
+					EnhancedGeneticVariation annot = createReport(v, eachGene, exonPos, refCodon);
 					Kmer altCodon = new Kmer(refCodon).insert(frameOffset, annot.getGenotype().substring(1));
 					if (eachGene.isAntiSense()) {
 						altCodon.reverseComplement();
 					}
 
 					int altKmer = altCodon.toInt(3);
-					annot.aAlt = CodonTable.toAminoAcid(altKmer);
-					annot.codonAlt = ACGTEncoder.toString(altKmer, 3);
+					annot.altAA = CodonTable.toAminoAcid(altKmer);
+					annot.altCodon = ACGTEncoder.toString(altKmer, 3);
 					result.add(annot);
 					break;
 				}
@@ -326,21 +330,21 @@ public class VariationAnnotator {
 
 	}
 
-	private EnhancedGeneticVariation createReport(GeneticVariation v, String geneName, MutationPosition pos) {
+	private EnhancedGeneticVariation createReport(GeneticVariation v, Gene gene, MutationPosition pos) {
 		EnhancedGeneticVariation annot = new EnhancedGeneticVariation(v);
-		annot.strand = v.isSense() ? "+" : "-";
-		annot.geneName = geneName;
+		annot.strand = gene.isSense() ? "+" : "-";
+		annot.geneName = gene.getName();
 		annot.mutationPosition = pos;
 		return annot;
 	}
 
-	private EnhancedGeneticVariation createReport(GeneticVariation v, String geneName, MutationPosition pos, Kmer refCodon) {
+	private EnhancedGeneticVariation createReport(GeneticVariation v, Gene gene, MutationPosition pos, Kmer refCodon) {
 		EnhancedGeneticVariation annot = new EnhancedGeneticVariation(v);
-		annot.strand = v.isSense() ? "+" : "-";
-		annot.geneName = geneName;
+		annot.strand = gene.isSense() ? "+" : "-";
+		annot.geneName = gene.getName();
 		annot.mutationPosition = pos;
-		annot.codonRef = refCodon.toString();
-		annot.aRef = CodonTable.toAminoAcid(v.isSense() ? refCodon.toInt(3) : kif.reverseComplement(refCodon.toInt(3)));
+		annot.refCodon = refCodon.toString();
+		annot.refAA = CodonTable.toAminoAcid(gene.isSense() ? refCodon.toInt(3) : kif.reverseComplement(refCodon.toInt(3)));
 		return annot;
 
 	}

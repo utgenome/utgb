@@ -23,7 +23,6 @@
 package org.utgenome.util.sv;
 
 import org.utgenome.gwt.utgb.client.bio.IUPAC;
-import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.xerial.lens.Lens;
 
 /**
@@ -32,7 +31,7 @@ import org.xerial.lens.Lens;
  * @author leo
  * 
  */
-public class GeneticVariation extends Interval {
+public class GeneticVariation {
 
 	/**
 	 * 
@@ -43,11 +42,12 @@ public class GeneticVariation extends Interval {
 		NotAvailable, Mutation, Insertion, Deletion;
 	};
 
-	// locus information ((start, end) values are in the parent Interval.class)
+	// locus information 
 	public VariationType variationType;
 	public String chr;
+	public int start = -1; // 1-origin (inclusive, -1 means undefined value)
 	private String genotype;
-	public IUPAC iupac = IUPAC.None;
+	public IUPAC altBase;
 	public String refBase;
 
 	public int indelLength = 0;
@@ -65,18 +65,18 @@ public class GeneticVariation extends Interval {
 	 * @param genotype
 	 *            A, C, AC, ACGT (genotype), *, +A (insertion to reference), -aatT (deletion from reference), etc.
 	 */
-	public GeneticVariation(String chr, int start, int end, String genotype) {
-		super(start, end);
+	public GeneticVariation(String chr, int start, String genotype) {
 		this.chr = chr;
+		this.start = start;
 		setGenotype(genotype);
 	}
 
 	public GeneticVariation(GeneticVariation other) {
-		super(other);
+		this.start = other.start;
 		this.variationType = other.variationType;
 		this.chr = other.chr;
 		this.genotype = other.genotype;
-		this.iupac = other.iupac;
+		this.altBase = other.altBase;
 		this.refBase = other.refBase;
 	}
 
@@ -96,18 +96,12 @@ public class GeneticVariation extends Interval {
 				return VariationType.Deletion;
 			}
 			else {
-				iupac = IUPAC.find(allele);
+				altBase = IUPAC.find(allele);
 				return VariationType.Mutation;
 			}
 		}
 
 		return VariationType.NotAvailable;
-	}
-
-	@Override
-	public void setStart(int start) {
-		super.setStart(start);
-		super.setEnd(start);
 	}
 
 	public String getGenotype() {
@@ -119,18 +113,9 @@ public class GeneticVariation extends Interval {
 		this.variationType = detectVariationType(genotype);
 	}
 
-	public void setPos(int pos) {
-		atomicSetStartAndEnd(pos, pos);
-	}
-
 	@Override
 	public String toString() {
 		return Lens.toSilk(this);
-	}
-
-	@Override
-	public String getName() {
-		return String.format("%s", variationType.name());
 	}
 
 }
