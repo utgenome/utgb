@@ -66,4 +66,14 @@ public class IUPACTest {
 		assertEquals(IUPAC.None, IUPAC.toIUPAC("*"));
 	}
 
+	@Test
+	public void toGenoType() throws Exception {
+		assertEquals("A", IUPAC.A.toGenoType());
+		assertEquals("C", IUPAC.C.toGenoType());
+		assertEquals("G", IUPAC.G.toGenoType());
+		assertEquals("T", IUPAC.T.toGenoType());
+		assertEquals("", IUPAC.None.toGenoType());
+		assertEquals("ACT", IUPAC.H.toGenoType());
+	}
+
 }

@@ -129,6 +129,7 @@ public class VariationAnnotator {
 		final SilkWriter silk = new SilkWriter(new StandardOutputStream());
 
 		// load variation position file
+		// TODO parallelization
 		_logger.info("loading variation data...");
 		Lens.findFromSilk(new BufferedReader(new FileReader(variationPosFile)), "variation", GeneticVariation.class, new ObjectHandler<GeneticVariation>() {
 			int count = 0;
@@ -236,32 +237,37 @@ public class VariationAnnotator {
 				foundVariation = true;
 
 				// check frame
-				int cdsStart = cds.contains(exonStart) ? exonStart : cds.getStart();
-				int cdsEnd = cds.contains(exonEnd) ? exonEnd : cds.getEnd();
+				final int cdsStart = cds.contains(exonStart) ? exonStart : cds.getStart();
+				final int cdsEnd = cds.contains(exonEnd) ? exonEnd : cds.getEnd();
 
-				int distFromBoundary = (eachGene.isSense() ? v.getStart() - cdsStart : cdsEnd - v.getStart() - 1);
-				int frameIndex = distFromBoundary / 3;
-				int frameOffset = distFromBoundary % 3;
-				int frameStart = eachGene.isSense() ? cdsStart + 3 * frameIndex : cdsEnd - 3 * (frameIndex + 1);
+				final int distFromBoundary = (eachGene.isSense() ? v.getStart() - cdsStart : cdsEnd - v.getStart() - 1);
+				final int frameIndex = distFromBoundary / 3;
+				final int frameOffset = distFromBoundary % 3;
+				final int frameStart = eachGene.isSense() ? cdsStart + 3 * frameIndex : cdsEnd - 3 * (frameIndex + 1);
 
-				// check codon
-				CompactACGT refCodon = fasta.getSequence(v.chr, frameStart, frameStart + 3);
-				AminoAcid refAA = CodonTable.toAminoAcid(exon.isSense() ? refCodon.toString() : refCodon.reverseComplement().toString());
+				// check the codon
+				final CompactACGT refCodon = fasta.getSequence(v.chr, frameStart, frameStart + 3);
+				final String refCodonStr = eachGene.isSense() ? refCodon.toString() : refCodon.reverseComplement().toString();
+				final AminoAcid refAA = CodonTable.toAminoAcid(refCodonStr);
 
+				// create a variation report
 				EnhancedGeneticVariation annot = new EnhancedGeneticVariation(v);
 				annot.geneName = eachGene.getName();
-				annot.mutationPosition = getExonPos(exonIndex, numExon);
+				annot.mutationPosition = getExonPosition(exonIndex, numExon);
 				annot.aRef = refAA;
 
 				// TODO check alternative AminoAcid 
 				switch (v.variationType) {
 				case Deletion:
+
 					break;
 				case Insertion:
 					break;
-				case Mutation:
+				case Mutation: {
 
+					final String mutatedCodon = refCodonStr.substring(0, frameOffset) + v.getGenotype() + refCodonStr.substring(frameOffset + 1);
 					break;
+				}
 				default:
 					break;
 				}
@@ -284,7 +290,7 @@ public class VariationAnnotator {
 
 	}
 
-	private MutationPosition getExonPos(int exonPos, int numExon) {
+	private MutationPosition getExonPosition(int exonPos, int numExon) {
 		return (exonPos == 0) ? MutationPosition.FirstExon : (exonPos == numExon - 1) ? MutationPosition.LastExon : MutationPosition.Exon;
 	}
 

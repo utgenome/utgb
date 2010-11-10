@@ -58,7 +58,7 @@ public enum IUPAC {
 
 		StringBuilder genoType = new StringBuilder();
 		int flag = 0x01;
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < 4; i++, flag <<= 1) {
 			if ((bitFlag & flag) != 0) {
 				genoType.append(ACGTEncoder.toBase(i));
 			}

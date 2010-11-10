@@ -116,8 +116,8 @@ public class CompactACGT implements GenomeSequence {
 	}
 
 	public CompactACGT reverseComplement() throws UTGBException {
-		ByteArrayOutputStream seqOut = new ByteArrayOutputStream();
-		ByteArrayOutputStream nSeqOut = new ByteArrayOutputStream();
+		ByteArrayOutputStream seqOut = new ByteArrayOutputStream(sequence.length);
+		ByteArrayOutputStream nSeqOut = new ByteArrayOutputStream(sequenceMask.length);
 		try {
 
 			CompactACGTWriter w = new CompactACGTWriter(seqOut, nSeqOut);
