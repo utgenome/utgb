@@ -43,6 +43,19 @@ public class KmerTest {
 	}
 
 	@Test
+	public void createFromCompactACGT() throws Exception {
+		final String s = "AAACCTGT";
+		Kmer kmer = new Kmer(CompactACGT.createFromString(s));
+		assertEquals(s, kmer.toString());
+		for (int i = 0; i < s.length(); ++i) {
+			assertEquals(s.charAt(i), kmer.charAt(i));
+		}
+
+		assertEquals(s.length(), kmer.length());
+
+	}
+
+	@Test
 	public void setACGT() throws Exception {
 		final String s = "AAACCTGT";
 		Kmer kmer = new Kmer(s);
