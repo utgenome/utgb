@@ -235,10 +235,11 @@ public class VariationAnnotator {
 
 				final int distFromBoundary = (eachGene.isSense() ? v.getStart() - cdsStart : cdsEnd - v.getStart() - 1);
 				final int frameIndex = distFromBoundary / 3;
-				int frameOffset = distFromBoundary % 3;
+
 				final int frameStart = eachGene.isSense() ? cdsStart + 3 * frameIndex : cdsEnd - 3 * (frameIndex + 1);
 
 				// check the codon
+				int frameOffset = distFromBoundary % 3;
 				Kmer refCodon = new Kmer(fasta.getSequence(v.chr, frameStart, frameStart + 3));
 				if (!eachGene.isSense()) {
 					refCodon = refCodon.reverseComplement();
@@ -251,13 +252,14 @@ public class VariationAnnotator {
 				// TODO check alternative AminoAcid 
 				switch (v.variationType) {
 				case Deletion: {
-
+					// TODO
 					EnhancedGeneticVariation annot = createReport(v, eachGene.getName(), getExonPosition(exonIndex, numExon), refAA);
 					result.add(annot);
 
 					break;
 				}
 				case Insertion: {
+					// TODO
 					EnhancedGeneticVariation annot = createReport(v, eachGene.getName(), getExonPosition(exonIndex, numExon), refAA);
 					result.add(annot);
 					break;

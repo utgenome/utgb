@@ -94,4 +94,13 @@ public class KmerTest {
 
 	}
 
+	@Test
+	public void firstKmerInt() throws Exception {
+		final String s = "ACTTGT";
+		Kmer kmer = new Kmer(s);
+
+		assertEquals(ACGTEncoder.toKmerInt(3, s), kmer.toInt(3));
+
+	}
+
 }

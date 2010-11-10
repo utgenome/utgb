@@ -66,7 +66,8 @@ public class ACGTEncoder {
 	public static int toKmerInt(final int K, String acgt) {
 		int kmer = 0;
 
-		for (int i = 0; i < acgt.length(); i++) {
+		final int max = Math.min(K, acgt.length());
+		for (int i = 0; i < max; i++) {
 			byte b = to2bitCode(acgt.charAt(i));
 			if (b >= 4)
 				return -1;

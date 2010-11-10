@@ -77,19 +77,34 @@ public class Kmer implements GenomeSequence {
 	}
 
 	public int toInt() {
-		if (size > 30)
-			throw new IllegalArgumentException("The size must be <= 30: K = " + size);
+		return toInt(size);
+	}
+
+	public int toInt(int firstKmer) {
+		if (firstKmer > 30)
+			throw new IllegalArgumentException("The size must be <= 30: K = " + firstKmer);
+		if (firstKmer > size) {
+			throw new IllegalArgumentException("K must be less than or equal to " + size);
+		}
 
 		int kmerInteger = 0;
-		for (int i = 0; i < sequence2bit.length; i++) {
+		final int lastIndex = firstKmer / 4 + (firstKmer % 4 == 0 ? 0 : 1);
+		final int K = firstKmer;
+		for (int i = 0; i < lastIndex; i++) {
 			if (i > 0) {
-				int bitLength = 8;
-				if (i == sequence2bit.length - 1 && (size % 8) != 0) {
-					bitLength = size % 8;
-				}
-				kmerInteger <<= bitLength;
+				kmerInteger <<= 8;
 			}
-			kmerInteger |= sequence2bit[i] & 0xFF;
+
+			int shiftSize = 0;
+			if (i == lastIndex - 1) {
+				int offset = K % 4;
+				if (offset > 0)
+					shiftSize = 8 - offset * 2;
+			}
+			int mask = 0xFF;
+			mask >>>= shiftSize;
+
+			kmerInteger |= (sequence2bit[i] >>> shiftSize) & mask;
 		}
 
 		return kmerInteger;
