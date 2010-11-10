@@ -71,10 +71,31 @@ public class KmerTest {
 	}
 
 	@Test
-	public void set() throws Exception {
+	public void setTest() throws Exception {
 		Kmer ref = new Kmer("GCC");
 		ref.set(1, 'G');
 		assertEquals("GGC", ref.toString());
+		ref.set(1, 'A');
+		assertEquals("GAC", ref.toString());
+		ref.set(1, 'C');
+		assertEquals("GCC", ref.toString());
+		ref.set(1, 'T');
+		assertEquals("GTC", ref.toString());
+	}
+
+	@Test
+	public void setTest2() throws Exception {
+
+		String base = "ACGTGTACGTACGTTGACGGTTAATT";
+		for (int i = 0; i < base.length(); ++i) {
+			for (int k = 0; k < 4; k++) {
+				String answer = base.substring(0, i) + ACGTEncoder.toBase(k) + base.substring(i + 1);
+				Kmer m = new Kmer(base);
+				m.set(i, ACGTEncoder.toBase(k));
+				assertEquals(answer, m.toString());
+			}
+		}
+
 	}
 
 	@Test
