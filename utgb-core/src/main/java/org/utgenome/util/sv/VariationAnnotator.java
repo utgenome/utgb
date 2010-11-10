@@ -166,7 +166,7 @@ public class VariationAnnotator {
 		_logger.info(v);
 	}
 
-	private KmerIntegerFactory kif = new KmerIntegerFactory(3);
+	private static KmerIntegerFactory kif = new KmerIntegerFactory(3);
 
 	/**
 	 * Annotate the given genetic variation using the reference sequence and gene set.
@@ -275,7 +275,6 @@ public class VariationAnnotator {
 					final int suffixStart = v.start + v.indelLength;
 					if (eachGene.isSense()) {
 						Kmer altCodon = new Kmer(fasta.getSequence(v.chr, frameStart, v.start));
-
 						altCodon.append(fasta.getSequence(v.chr, suffixStart, suffixStart + (3 - (v.start - frameStart))).toString());
 						annot.altAA = CodonTable.toAminoAcid(altCodon.toInt());
 						annot.altCodon = altCodon.toString();
@@ -319,9 +318,7 @@ public class VariationAnnotator {
 
 			if (!foundVariation) { // when no overlap with exons/SS is found
 				// intron
-				EnhancedGeneticVariation annot = new EnhancedGeneticVariation(v);
-				annot.geneName = eachGene.getName();
-				annot.mutationPosition = MutationPosition.Intron;
+				EnhancedGeneticVariation annot = createReport(v, eachGene, MutationPosition.Intron);
 				result.add(annot);
 			}
 		}
@@ -330,7 +327,7 @@ public class VariationAnnotator {
 
 	}
 
-	private EnhancedGeneticVariation createReport(GeneticVariation v, Gene gene, MutationPosition pos) {
+	private static EnhancedGeneticVariation createReport(GeneticVariation v, Gene gene, MutationPosition pos) {
 		EnhancedGeneticVariation annot = new EnhancedGeneticVariation(v);
 		annot.strand = gene.isSense() ? "+" : "-";
 		annot.geneName = gene.getName();
@@ -338,7 +335,7 @@ public class VariationAnnotator {
 		return annot;
 	}
 
-	private EnhancedGeneticVariation createReport(GeneticVariation v, Gene gene, MutationPosition pos, Kmer refCodon) {
+	private static EnhancedGeneticVariation createReport(GeneticVariation v, Gene gene, MutationPosition pos, Kmer refCodon) {
 		EnhancedGeneticVariation annot = new EnhancedGeneticVariation(v);
 		annot.strand = gene.isSense() ? "+" : "-";
 		annot.geneName = gene.getName();
@@ -349,7 +346,7 @@ public class VariationAnnotator {
 
 	}
 
-	private MutationPosition getExonPosition(int exonPos, int numExon) {
+	private static MutationPosition getExonPosition(int exonPos, int numExon) {
 		return (exonPos == 0) ? MutationPosition.FirstExon : (exonPos == numExon - 1) ? MutationPosition.LastExon : MutationPosition.Exon;
 	}
 

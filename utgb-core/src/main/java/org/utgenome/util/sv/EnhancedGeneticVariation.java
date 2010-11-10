@@ -83,10 +83,10 @@ public class EnhancedGeneticVariation extends GeneticVariation {
 			return MutationType.SS;
 		}
 
-		if (refAA == AminoAcid.NA && altAA == AminoAcid.NA)
+		if (refAA == null && altAA == null)
 			return MutationType.NC;
 
-		if (variationType != VariationType.Mutation && indelLength != 3) {
+		if (variationType != VariationType.Mutation) {
 			return MutationType.FS;
 		}
 
