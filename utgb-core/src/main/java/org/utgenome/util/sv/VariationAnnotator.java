@@ -31,8 +31,8 @@ import java.util.List;
 
 import org.utgenome.UTGBException;
 import org.utgenome.format.bed.BED2SilkReader;
-import org.utgenome.format.fasta.CompactACGT;
 import org.utgenome.format.fasta.CompactFASTA;
+import org.utgenome.format.fasta.Kmer;
 import org.utgenome.gwt.utgb.client.bio.AminoAcid;
 import org.utgenome.gwt.utgb.client.bio.BEDGene;
 import org.utgenome.gwt.utgb.client.bio.CDS;
@@ -246,7 +246,8 @@ public class VariationAnnotator {
 				final int frameStart = eachGene.isSense() ? cdsStart + 3 * frameIndex : cdsEnd - 3 * (frameIndex + 1);
 
 				// check the codon
-				final CompactACGT refCodon = fasta.getSequence(v.chr, frameStart, frameStart + 3);
+
+				Kmer refCodon = new Kmer(fasta.getSequence(v.chr, frameStart, frameStart + 3));
 				final String refCodonStr = eachGene.isSense() ? refCodon.toString() : refCodon.reverseComplement().toString();
 				final AminoAcid refAA = CodonTable.toAminoAcid(refCodonStr);
 

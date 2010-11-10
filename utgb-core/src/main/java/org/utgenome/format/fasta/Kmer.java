@@ -27,7 +27,7 @@ import org.utgenome.gwt.utgb.client.bio.ACGTEncoder;
 /**
  * K-mer integer representation of ACGT.
  * 
- * The difference with {@link CompactACGT} is this K-mer representation is modifiable, to facilitate genome sequence
+ * The difference with {@link CompactACGT} is this K-mer representation is modifiable to facilitate genome sequence
  * editing.
  * 
  * @author leo
@@ -65,6 +65,25 @@ public class Kmer implements GenomeSequence {
 		for (int i = 0; i < acgt.length(); ++i) {
 			set(i, acgt.charAt(i));
 		}
+	}
+
+	public int toInt() {
+		if (size > 30)
+			throw new IllegalArgumentException("The size must be <= 30: K = " + size);
+
+		int kmerInteger = 0;
+		for (int i = 0; i < sequence2bit.length; i++) {
+			if (i > 0) {
+				int bitLength = 8;
+				if (i == sequence2bit.length - 1 && (size % 8) != 0) {
+					bitLength = size % 8;
+				}
+				kmerInteger <<= bitLength;
+			}
+			kmerInteger |= sequence2bit[i] & 0xFF;
+		}
+
+		return kmerInteger;
 	}
 
 	public int length() {

@@ -25,6 +25,7 @@ package org.utgenome.format.fasta;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+import org.utgenome.gwt.utgb.client.bio.ACGTEncoder;
 
 public class KmerTest {
 
@@ -65,6 +66,18 @@ public class KmerTest {
 		assertEquals(s.length(), rc.length());
 
 		assertEquals("ATATCGTATTACGT", rc.toString());
+
+	}
+
+	@Test
+	public void kmerInt() throws Exception {
+		final String s = "AAACCTGT";
+		Kmer kmer = new Kmer(s);
+
+		assertEquals(ACGTEncoder.toKmerInt(s.length(), s), kmer.toInt());
+		kmer.set(4, "T");
+		final String alt = "AAACTTGT";
+		assertEquals(ACGTEncoder.toKmerInt(alt.length(), alt), kmer.toInt());
 
 	}
 
