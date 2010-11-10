@@ -71,6 +71,13 @@ public class KmerTest {
 	}
 
 	@Test
+	public void set() throws Exception {
+		Kmer ref = new Kmer("GCC");
+		ref.set(1, 'G');
+		assertEquals("GGC", ref.toString());
+	}
+
+	@Test
 	public void reverse() throws Exception {
 		final String s = "ACGTAATACGATAT";
 		final Kmer seq = new Kmer(s);

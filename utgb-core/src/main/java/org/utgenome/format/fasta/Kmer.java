@@ -224,7 +224,9 @@ public class Kmer implements GenomeSequence {
 	}
 
 	private static void setACGT(byte[] array, int index, char acgt) {
-		array[index / 4] |= (byte) ((ACGTEncoder.to2bitCode(acgt) & 0x03) << (6 - (index % 4) * 2));
+		int code = ACGTEncoder.to2bitCode(acgt) & 0x03;
+		int shiftSize = 6 - (index % 4) * 2;
+		array[index / 4] |= (byte) (code << shiftSize);
 	}
 
 	private static void setACGTCode(byte[] array, int index, int code) {

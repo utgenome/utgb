@@ -84,15 +84,15 @@ public class EnhancedGeneticVariation extends GeneticVariation {
 			return MutationType.SS;
 		}
 
-		if (aRef == AminoAcid.NA || aAlt == AminoAcid.NA)
+		if (aRef == AminoAcid.NA && aAlt == AminoAcid.NA)
 			return MutationType.NC;
+
+		if (variationType != VariationType.Mutation && indelLength != 3) {
+			return MutationType.FS;
+		}
 
 		if (aRef == aAlt)
 			return MutationType.SN;
-
-		if (variationType != VariationType.Mutation) {
-			return MutationType.FS;
-		}
 
 		if (!aRef.isStopCodon() && aAlt.isStopCodon()) {
 			return MutationType.NS;

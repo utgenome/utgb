@@ -2,6 +2,8 @@
 chr21	37	G	Y	NC	UTR5
 chr21	11577	A	K	NC	UTR3
 chr21	242	C	G	MS	FirstExon
+chr21	242	C	+C	MS	FirstExon
+chr21	243	C	+T	MS	FirstExon
 chr21	2867	T	G	MS	Exon
 chr21	11347	C	G	MS	LastExon
 chr21	251	G	A	SN	FirstExon
@@ -15,3 +17,4 @@ chr21	2907	*	-A	FS	Exon
 chr21	11307	*	-G	FS	LastExon
 chr21	517	G	A	SS	SS5
 chr21	2859	G	T	SS	SS3
+chr21	11307	*	-GTT	FS	LastExon

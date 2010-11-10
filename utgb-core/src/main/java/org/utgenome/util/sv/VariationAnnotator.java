@@ -33,6 +33,7 @@ import org.utgenome.UTGBException;
 import org.utgenome.format.bed.BED2SilkReader;
 import org.utgenome.format.fasta.CompactFASTA;
 import org.utgenome.format.fasta.Kmer;
+import org.utgenome.gwt.utgb.client.bio.ACGTEncoder;
 import org.utgenome.gwt.utgb.client.bio.AminoAcid;
 import org.utgenome.gwt.utgb.client.bio.BEDGene;
 import org.utgenome.gwt.utgb.client.bio.CDS;
@@ -41,6 +42,7 @@ import org.utgenome.gwt.utgb.client.bio.Exon;
 import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.utgenome.gwt.utgb.client.canvas.IntervalTree;
 import org.utgenome.util.StandardOutputStream;
+import org.utgenome.util.kmer.KmerIntegerFactory;
 import org.utgenome.util.sv.EnhancedGeneticVariation.MutationPosition;
 import org.xerial.lens.Lens;
 import org.xerial.lens.ObjectHandler;
@@ -163,6 +165,8 @@ public class VariationAnnotator {
 		_logger.info(v);
 	}
 
+	private KmerIntegerFactory kif = new KmerIntegerFactory(3);
+
 	/**
 	 * Annotate the given genetic variation using the reference sequence and gene set.
 	 * 
@@ -226,6 +230,7 @@ public class VariationAnnotator {
 					continue;
 				}
 
+				// This variation is in an exon region
 				foundVariation = true;
 
 				// check frame
@@ -236,27 +241,39 @@ public class VariationAnnotator {
 				final int frameStart = eachGene.isSense() ? cdsStart + 3 * frameIndex : cdsEnd - 3 * (frameIndex + 1);
 
 				// check the codon
-				int frameOffset = distFromBoundary % 3;
+				int frameOffset = (v.getStart() - frameStart) % 3;
 				Kmer refCodon = new Kmer(fasta.getSequence(v.chr, frameStart, frameStart + 3));
-				if (!eachGene.isSense()) {
-					refCodon = refCodon.reverseComplement();
-					frameOffset = 3 - frameOffset;
-				}
-				final AminoAcid refAA = CodonTable.toAminoAcid(refCodon.toInt());
 
 				// create a variation report
 
 				// TODO check alternative AminoAcid 
 				switch (v.variationType) {
+				case Mutation: {
+					String genoType = v.iupac.toGenoType();
+					for (int i = 0; i < genoType.length(); i++) {
+						char t = genoType.charAt(i);
+						Kmer altCodon = new Kmer(refCodon);
+						altCodon.set(frameOffset, t);
+
+						if (!refCodon.equals(altCodon)) {
+							EnhancedGeneticVariation annot = createReport(v, eachGene.getName(), getExonPosition(exonIndex, numExon), refCodon);
+							AminoAcid altAA = CodonTable.toAminoAcid(eachGene.isSense() ? altCodon.toInt() : kif.reverseComplement(altCodon.toInt()));
+							annot.aAlt = altAA;
+							annot.codonAlt = altCodon.toString();
+							result.add(annot);
+						}
+					}
+
+					break;
+				}
 				case Deletion: {
-					EnhancedGeneticVariation annot = createReport(v, eachGene.getName(), getExonPosition(exonIndex, numExon), refAA);
+					EnhancedGeneticVariation annot = createReport(v, eachGene.getName(), getExonPosition(exonIndex, numExon), refCodon);
 					final int suffixStart = v.getStart() + v.indelLength;
 					if (eachGene.isSense()) {
 						Kmer altCodon = new Kmer(fasta.getSequence(v.chr, frameStart, v.getStart()));
 
 						altCodon.append(fasta.getSequence(v.chr, suffixStart, suffixStart + (3 - (v.getStart() - frameStart))).toString());
 						annot.aAlt = CodonTable.toAminoAcid(altCodon.toInt());
-						annot.codonRef = refCodon.toString();
 						annot.codonAlt = altCodon.toString();
 					}
 					else {
@@ -272,7 +289,6 @@ public class VariationAnnotator {
 							altCodon = altCodon.reverseComplement();
 
 							annot.aAlt = CodonTable.toAminoAcid(altCodon.toInt());
-							annot.codonRef = refCodon.toString();
 							annot.codonAlt = altCodon.toString();
 						}
 					}
@@ -280,45 +296,21 @@ public class VariationAnnotator {
 					break;
 				}
 				case Insertion: {
-					EnhancedGeneticVariation annot = createReport(v, eachGene.getName(), getExonPosition(exonIndex, numExon), refAA);
-
-					if (eachGene.isSense()) {
-
-					}
-					else {
-
+					EnhancedGeneticVariation annot = createReport(v, eachGene.getName(), getExonPosition(exonIndex, numExon), refCodon);
+					Kmer altCodon = new Kmer(refCodon).insert(frameOffset, annot.getGenotype().substring(1));
+					if (eachGene.isAntiSense()) {
+						altCodon.reverseComplement();
 					}
 
+					int altKmer = altCodon.toInt(3);
+					annot.aAlt = CodonTable.toAminoAcid(altKmer);
+					annot.codonAlt = ACGTEncoder.toString(altKmer, 3);
 					result.add(annot);
-					break;
-				}
-				case Mutation: {
-
-					char ref = refCodon.charAt(frameOffset);
-					String genoType = v.iupac.toGenoType();
-					for (int i = 0; i < genoType.length(); i++) {
-						char t = genoType.charAt(i);
-						Kmer altCodon = new Kmer(refCodon);
-						altCodon.set(frameOffset, t);
-
-						if (!refCodon.equals(altCodon)) {
-							EnhancedGeneticVariation annot = createReport(v, eachGene.getName(), getExonPosition(exonIndex, numExon), refAA);
-							AminoAcid altAA = CodonTable.toAminoAcid(altCodon.toInt());
-							annot.aAlt = altAA;
-							annot.codonRef = refCodon.toString();
-							annot.codonAlt = altCodon.toString();
-
-							result.add(annot);
-						}
-					}
-
 					break;
 				}
 				default:
 					break;
 				}
-
-				break;
 			}
 
 			if (!foundVariation) { // when no overlap with exons/SS is found
@@ -336,16 +328,19 @@ public class VariationAnnotator {
 
 	private EnhancedGeneticVariation createReport(GeneticVariation v, String geneName, MutationPosition pos) {
 		EnhancedGeneticVariation annot = new EnhancedGeneticVariation(v);
+		annot.strand = v.isSense() ? "+" : "-";
 		annot.geneName = geneName;
 		annot.mutationPosition = pos;
 		return annot;
 	}
 
-	private EnhancedGeneticVariation createReport(GeneticVariation v, String geneName, MutationPosition pos, AminoAcid refAA) {
+	private EnhancedGeneticVariation createReport(GeneticVariation v, String geneName, MutationPosition pos, Kmer refCodon) {
 		EnhancedGeneticVariation annot = new EnhancedGeneticVariation(v);
+		annot.strand = v.isSense() ? "+" : "-";
 		annot.geneName = geneName;
 		annot.mutationPosition = pos;
-		annot.aRef = refAA;
+		annot.codonRef = refCodon.toString();
+		annot.aRef = CodonTable.toAminoAcid(v.isSense() ? refCodon.toInt(3) : kif.reverseComplement(refCodon.toInt(3)));
 		return annot;
 
 	}
