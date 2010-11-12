@@ -119,8 +119,15 @@ public class SAMReader {
 					continue;
 				}
 
-				// Is properly mapped mate-pair?
-				if (!query.isMappedInProperPair()) {
+				// ignore properly mated flag (since it can be 0 even when  
+				// the insert size is a little longer/shorter than the average)  
+				//				// Is properly mapped mate-pair?
+				//				if (!query.isMappedInProperPair()) {
+				//					result.add(query);
+				//					continue;
+				//				}
+
+				if (!query.isPairedRead()) {
 					result.add(query);
 					continue;
 				}
@@ -136,13 +143,13 @@ public class SAMReader {
 				SAMRead mate = samReadTable.get(query.getName());
 				boolean foundPair = false;
 				if (query.isFirstRead()) {
-					if (mate.isSecondRead()) {
+					if (mate.isSecondRead() && query.rname.equals(mate.rname)) {
 						result.add(new SAMReadPair(query, mate));
 						foundPair = true;
 					}
 				}
 				else {
-					if (mate.isFirstRead()) {
+					if (mate.isFirstRead() && query.rname.equals(mate.rname)) {
 						result.add(new SAMReadPair(mate, query));
 						foundPair = true;
 					}
@@ -160,7 +167,7 @@ public class SAMReader {
 		finally {
 			if (it != null)
 				it.close();
-			
+
 			sam.close();
 
 			if (_logger.isDebugEnabled()) {
