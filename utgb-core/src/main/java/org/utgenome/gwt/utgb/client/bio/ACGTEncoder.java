@@ -50,7 +50,7 @@ public class ACGTEncoder {
 	}
 
 	public static char toBase(int code) {
-		if (code > 3)
+		if (code < 0 || code > 3)
 			return 'N';
 		else
 			return acgt[code & 0x03];
