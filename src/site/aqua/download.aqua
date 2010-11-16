@@ -9,6 +9,9 @@
 
 == Release Notes
 
+* {b|November 17th, 2010} UTGB Toolkit 1.4.8 released.
+** Fixed a bug in utgb import (bed file)
+
 * {b|October 12th, 2010} UTGB Toolkit 1.4.7 released.
 ** {b|NOTICE!} {i|This release contains several major changes.} (Documantation for these new features is yet to be done)
 ** To upgrade your old UTGB project, do:
