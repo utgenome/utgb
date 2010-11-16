@@ -194,7 +194,7 @@ public class VariationAnnotator {
 		// The variation is in an exon/intron region
 		for (BEDGene eachGene : overlappedGeneSet) {
 			final int numExon = eachGene.getExon().size();
-			final CDS cds = eachGene.getCDSRange();
+			final CDS cds = eachGene.cdsRange();
 
 			// Is in UTR?
 			if (!cds.contains(v.start)) {

@@ -288,7 +288,7 @@ public class BED2Silk {
 	}
 
 	private static String[] readBEDLine(String line) throws DataFormatException {
-		String[] temp = line.replace(" ", "\t").trim().split("\t+");
+		String[] temp = line.replaceAll("[ \t]+", "\t").trim().split("\t");
 		// split by tab or space
 		if (temp.length < 3) {
 			throw new DataFormatException("Number of line parameters < 3");

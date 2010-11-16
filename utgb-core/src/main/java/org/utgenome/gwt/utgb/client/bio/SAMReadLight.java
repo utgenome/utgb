@@ -35,7 +35,6 @@ public class SAMReadLight extends Interval {
 	//schema record(qname, flag, rname, start, end, mapq, cigar, mrnm, mpos, isize, seq, qual, tag*)
 	public String qname;
 	public int flag;
-	public String rname;
 	// left-most position on the reference sequence
 	public int unclippedStart;
 	public int unclippedEnd;

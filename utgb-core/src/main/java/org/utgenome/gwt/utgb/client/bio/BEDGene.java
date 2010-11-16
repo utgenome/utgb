@@ -48,7 +48,7 @@ public class BEDGene extends Gene implements Serializable {
 		this.score = other.score;
 	}
 
-	public CDS getCDSRange() {
+	public CDS cdsRange() {
 		return getCDS().get(0);
 	}
 
