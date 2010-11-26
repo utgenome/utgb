@@ -8,7 +8,9 @@
 </listAttribute>
 <booleanAttribute key="org.eclipse.debug.core.appendEnvironmentVariables" value="true"/>
 <stringAttribute key="org.eclipse.debug.ui.ATTR_CAPTURE_IN_FILE" value="${workspace_loc:/utgb-core/src/main/java/org/utgenome/gwt/utgb/client/track/TrackFactorySetup.java}"/>
+<stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.maven.ide.eclipse.launchconfig.classpathProvider"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.utgenome.gwt.utgb.TrackLoaderGenerator"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="target/classes -p org.utgenome.gwt.utgb.client.track -c TrackFactorySetup"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="utgb-core"/>
+<stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.maven.ide.eclipse.launchconfig.sourcepathProvider"/>
 </launchConfiguration>
