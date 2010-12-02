@@ -36,7 +36,6 @@ import org.utgenome.gwt.ipad.event.TouchMoveHandler;
 import org.utgenome.gwt.ipad.event.TouchStartEvent;
 import org.utgenome.gwt.ipad.event.TouchStartHandler;
 import org.utgenome.gwt.utgb.client.UTGBClientException;
-import org.utgenome.gwt.utgb.client.bio.BEDGene;
 import org.utgenome.gwt.utgb.client.bio.CDS;
 import org.utgenome.gwt.utgb.client.bio.CIGAR;
 import org.utgenome.gwt.utgb.client.bio.Exon;
@@ -52,8 +51,9 @@ import org.utgenome.gwt.utgb.client.bio.Read;
 import org.utgenome.gwt.utgb.client.bio.ReadCoverage;
 import org.utgenome.gwt.utgb.client.bio.ReadList;
 import org.utgenome.gwt.utgb.client.bio.ReferenceSequence;
-import org.utgenome.gwt.utgb.client.bio.SAMRead;
+import org.utgenome.gwt.utgb.client.bio.SAMReadLight;
 import org.utgenome.gwt.utgb.client.bio.SAMReadPair;
+import org.utgenome.gwt.utgb.client.bio.SAMReadPairFragment;
 import org.utgenome.gwt.utgb.client.canvas.GWTGraphCanvas.GraphStyle;
 import org.utgenome.gwt.utgb.client.canvas.IntervalLayout.IntervalRetriever;
 import org.utgenome.gwt.utgb.client.canvas.IntervalLayout.LocusLayout;
@@ -547,7 +547,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 	 * @author leo
 	 * 
 	 */
-	class ReadPainter implements OnGenomeDataVisitor {
+	class ReadPainter extends OnGenomeDataVisitorBase {
 
 		private LocusLayout gl;
 		private int h = getReadHeight();
@@ -564,6 +564,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 			return LocusLayout.scaledHeight(y, h);
 		}
 
+		@Override
 		public void visitGene(Gene g) {
 			int gx1 = pixelPositionOnWindow(g.getStart());
 			int gx2 = pixelPositionOnWindow(g.getEnd());
@@ -578,10 +579,6 @@ public class GWTGenomeCanvas extends TouchableComposite {
 			}
 
 			drawLabel(g);
-		}
-
-		public void visitBEDGene(BEDGene g) {
-			visitGene(g);
 		}
 
 		public void drawBases(int startOnGenome, int y, String seq, String qual) {
@@ -634,7 +631,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 				if (h >= geneHeight)
 					h = geneHeight;
 
-				if (!style.showBaseQuality) {
+				if (qual != null && !style.showBaseQuality && h > 5) {
 					canvas.drawImage(imageACGT, pixelWidthOfBase * baseIndex, 0, pixelWidthOfBase, h, (int) x1, y, pixelWidthOfBase, h);
 				}
 				else {
@@ -651,12 +648,6 @@ public class GWTGenomeCanvas extends TouchableComposite {
 
 						canvas.setFillStyle(colors[baseIndex]);
 						canvas.fillRect(x1, y, x2 - x1, geneHeight);
-
-						//canvas.setFillStyle(new Color(102, 102, 255, 0.5f));
-						// canvas.fillRect((int) x1, y + (h - height), pixelWidthOfBase, height);
-
-						// canvas.setFillStyle(new Color(255, 255, 255, ratio * 0.7f + 0.3f));
-						// canvas.fillRect(x1, y, x2 - x1, geneHeight);
 
 						canvas.setFillStyle(new Color(255, 255, 255, 0.7f));
 						canvas.fillRect((int) x1, y, pixelWidthOfBase, h * (1 - ratio));
@@ -718,6 +709,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 
 		}
 
+		@Override
 		public void visitGap(Gap p) {
 			drawPadding(pixelPositionOnWindow(p.getStart()), pixelPositionOnWindow(p.getEnd()), getYPos(), getColor("#666666", 1.0f), true);
 		}
@@ -726,53 +718,53 @@ public class GWTGenomeCanvas extends TouchableComposite {
 			drawLabel(r, getYPos());
 		}
 
+		@Override
 		public void visitInterval(Interval interval) {
 			draw(interval, getYPos());
 		}
 
+		@Override
 		public void visitRead(Read r) {
 			draw(r, getYPos());
 			drawLabel(r);
 		}
 
+		@Override
 		public void visitSAMReadPair(SAMReadPair pair) {
 
-			SAMRead first = pair.getFirst();
-			SAMRead second = pair.getSecond();
+			SAMReadLight first = pair.getFirst();
+			SAMReadLight second = pair.getSecond();
 
 			int y1 = getYPos();
 			int y2 = y1;
 
 			if (!style.overlapPairedReads && first.unclippedSequenceHasOverlapWith(second)) {
 				if (first.unclippedStart > second.unclippedStart) {
-					SAMRead tmp = first;
+					SAMReadLight tmp = first;
 					first = second;
 					second = tmp;
 				}
 				y2 = getYPos(gl.getYOffset() + 1);
 			}
 			else {
-				drawPadding(pixelPositionOnWindow(first.getEnd()), pixelPositionOnWindow(second.getStart()), y1, style.getPaddingColor(), true);
+				visitGap(pair.getGap());
 			}
 
-			drawSAMRead(first, y1, true);
-			drawSAMRead(second, y2, true);
+			drawLabel(pair);
+			drawSAMRead(first, y1, false);
+			drawSAMRead(second, y2, false);
 		}
 
-		public void visitSAMRead(SAMRead r) {
+		@Override
+		public void visitSAMReadPairFragment(SAMReadPairFragment fragment) {
+			drawLabel(fragment);
+			visitGap(fragment.getGap());
+			drawSAMRead(fragment.oneEnd, getYPos(), false);
+		}
+
+		@Override
+		public void visitSAMReadLight(SAMReadLight r) {
 			drawSAMRead(r, getYPos(), true);
-
-			if (r.isMappedInProperPair() && r.mateIsMappedToTheSameChr()) {
-				// draw gap
-				if (r.mStart < r.unclippedStart) {
-					drawPadding(pixelPositionOnWindow(r.mStart), pixelPositionOnWindow(r.getStart()), getYPos(), style.getPaddingColor(), true);
-				}
-				else {
-					drawPadding(pixelPositionOnWindow(r.getEnd()), pixelPositionOnWindow(r.mStart), getYPos(), style.getPaddingColor(), true);
-				}
-
-			}
-
 		}
 
 		class PostponedInsertion {
@@ -786,7 +778,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 
 		}
 
-		public void drawSAMRead(SAMRead r, int y, boolean drawLabel) {
+		public void drawSAMRead(SAMReadLight r, int y, boolean drawLabel) {
 
 			try {
 				int cx1 = pixelPositionOnWindow(r.unclippedStart);
@@ -828,7 +820,8 @@ public class GWTGenomeCanvas extends TouchableComposite {
 							// ref : ---AAA
 							// read: AAAAAA
 							// cigar: 3I3M
-							postponed.add(new PostponedInsertion(x1, r.seq.substring(seqIndex, seqIndex + e.length)));
+							if (r.getSequence() != null)
+								postponed.add(new PostponedInsertion(x1, r.getSequence().substring(seqIndex, seqIndex + e.length)));
 							readEnd = readStart;
 							seqIndex += e.length;
 							break;
@@ -842,9 +835,10 @@ public class GWTGenomeCanvas extends TouchableComposite {
 						case Matches: {
 							int x2 = pixelPositionOnWindow(readEnd);
 
-							if (drawBase) {
+							if (drawBase && r.getSequence() != null) {
 								//drawGeneRect(x1, x2, y, getCDSColor(r, 0.3f), true);
-								drawBases(readStart, y, r.seq.substring(seqIndex, seqIndex + e.length), r.qual.substring(seqIndex, seqIndex + e.length));
+								drawBases(readStart, y, r.getSequence().substring(seqIndex, seqIndex + e.length),
+										r.getQV() != null ? r.getQV().substring(seqIndex, seqIndex + e.length) : null);
 							}
 							else {
 								drawGeneRect(x1, x2, y, style.getSAMReadColor(r), style.drawShadow);
@@ -864,9 +858,9 @@ public class GWTGenomeCanvas extends TouchableComposite {
 							int x0 = pixelPositionOnWindow(softclipStart);
 							x1 = pixelPositionOnWindow(softclipEnd);
 
-							if (drawBase) {
-								drawBases(softclipStart, y, r.seq.substring(seqIndex, seqIndex + e.length).toLowerCase(),
-										r.qual.substring(seqIndex, seqIndex + e.length));
+							if (drawBase && r.getSequence() != null) {
+								drawBases(softclipStart, y, r.getSequence().substring(seqIndex, seqIndex + e.length).toLowerCase(), r.getQV() != null ? r
+										.getQV().substring(seqIndex, seqIndex + e.length) : null);
 							}
 							else {
 								drawGeneRect(x0, x1, y, style.getClippedReadColor(r), style.drawShadow);
@@ -897,20 +891,24 @@ public class GWTGenomeCanvas extends TouchableComposite {
 				drawLabel(r, y);
 		}
 
+		@Override
 		public void visitSequence(ReferenceSequence referenceSequence) {
 			// TODO Auto-generated method stub
 
 		}
 
+		@Override
 		public void visitReadCoverage(ReadCoverage readCoverage) {
 			drawBlock(readCoverage);
 		}
 
+		@Override
 		public void visitGraph(GraphData graph) {
 			// TODO Auto-generated method stub
 
 		}
 
+		@Override
 		public void visitReadList(ReadList readList) {
 			// TODO Auto-generated method stub
 

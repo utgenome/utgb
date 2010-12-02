@@ -38,10 +38,7 @@ public class SAMReadLight extends Interval {
 	// left-most position on the reference sequence
 	public int unclippedStart;
 	public int unclippedEnd;
-
 	public String cigar;
-	public String mrnm; // mate reference name
-	public int mStart; // mate start (new parameter!) 
 
 	public SAMReadLight() {
 
@@ -85,6 +82,14 @@ public class SAMReadLight extends Interval {
 		return !isSense();
 	}
 
+	public String getSequence() {
+		return null;
+	}
+
+	public String getQV() {
+		return null;
+	}
+
 	//	@Override
 	//	public void accept(OnGenomeDataVisitor visitor) {
 	//		visitor.visitSAMReadLight(this);
@@ -110,4 +115,20 @@ public class SAMReadLight extends Interval {
 		return SAMReadFlag.isQueryUnmapped(this.flag);
 	}
 
+	public boolean unclippedSequenceHasOverlapWith(SAMReadLight other) {
+		if (unclippedStart <= other.unclippedStart)
+			return other.unclippedStart <= unclippedEnd;
+		else
+			return unclippedStart <= other.unclippedEnd;
+
+	}
+
+	public boolean unclippedSequenceContains(int startOnGenome) {
+		return unclippedStart <= startOnGenome && startOnGenome <= unclippedEnd;
+	}
+
+	@Override
+	public void accept(OnGenomeDataVisitor visitor) {
+		visitor.visitSAMReadLight(this);
+	}
 }

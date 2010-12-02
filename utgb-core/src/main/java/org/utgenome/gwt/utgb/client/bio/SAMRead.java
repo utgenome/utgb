@@ -32,18 +32,12 @@ import org.utgenome.gwt.utgb.client.util.Properties;
  * @author yoshimura
  * 
  */
-public class SAMRead extends Interval {
+public class SAMRead extends SAMReadLight {
 	private static final long serialVersionUID = 1L;
 
 	//schema record(qname, flag, rname, start, end, mapq, cigar, mrnm, mpos, isize, seq, qual, tag*)
-	public String qname;
-	public int flag;
 	public String rname;
-	// left-most position on the reference sequence
-	public int unclippedStart;
-	public int unclippedEnd;
 	public int mapq; // Mapping Quality
-	public String cigar;
 	public String mrnm; // mate reference name
 	public int mStart; // mate start (new parameter!) 
 	public int iSize;
@@ -89,6 +83,16 @@ public class SAMRead extends Interval {
 	}
 
 	@Override
+	public String getSequence() {
+		return seq;
+	}
+
+	@Override
+	public String getQV() {
+		return qual;
+	}
+
+	@Override
 	public String getName() {
 		return qname;
 	}
@@ -108,40 +112,8 @@ public class SAMRead extends Interval {
 		visitor.visitSAMRead(this);
 	}
 
-	public boolean isPairedRead() {
-		return SAMReadFlag.isPairedRead(this.flag);
-	}
-
-	public boolean isMappedInProperPair() {
-		return SAMReadFlag.isMappedInProperPair(this.flag);
-	}
-
-	public boolean isFirstRead() {
-		return SAMReadFlag.isFirstRead(this.flag);
-	}
-
-	public boolean isSecondRead() {
-		return SAMReadFlag.isSecondRead(this.flag);
-	}
-
-	public boolean isUnmapped() {
-		return SAMReadFlag.isQueryUnmapped(this.flag);
-	}
-
-	public boolean unclippedSequenceHasOverlapWith(SAMRead other) {
-		if (unclippedStart <= other.unclippedStart)
-			return other.unclippedStart <= unclippedEnd;
-		else
-			return unclippedStart <= other.unclippedEnd;
-
-	}
-
 	public boolean mateIsMappedToTheSameChr() {
 		return rname != null && rname.equals(mrnm);
-	}
-
-	public boolean unclippedSequenceContains(int startOnGenome) {
-		return unclippedStart <= startOnGenome && startOnGenome <= unclippedEnd;
 	}
 
 }

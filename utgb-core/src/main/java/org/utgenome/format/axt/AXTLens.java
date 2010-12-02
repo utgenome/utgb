@@ -22,10 +22,12 @@
 //--------------------------------------
 package org.utgenome.format.axt;
 
+/**
+ * Lens for AXT format
+ * 
+ * @author leo
+ * 
+ */
 public class AXTLens {
 
 }
-
-
-
-

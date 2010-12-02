@@ -28,15 +28,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import org.utgenome.gwt.utgb.client.bio.BEDGene;
-import org.utgenome.gwt.utgb.client.bio.Gene;
 import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
 import org.utgenome.gwt.utgb.client.bio.OnGenomeDataVisitorBase;
-import org.utgenome.gwt.utgb.client.bio.Read;
 import org.utgenome.gwt.utgb.client.bio.ReadCoverage;
-import org.utgenome.gwt.utgb.client.bio.SAMRead;
+import org.utgenome.gwt.utgb.client.bio.SAMReadLight;
 import org.utgenome.gwt.utgb.client.bio.SAMReadPair;
+import org.utgenome.gwt.utgb.client.bio.SAMReadPairFragment;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 
 /**
@@ -133,21 +131,6 @@ public class IntervalLayout {
 		}
 
 		@Override
-		public void visitGene(Gene g) {
-			visitInterval(g);
-		}
-
-		@Override
-		public void visitBEDGene(BEDGene g) {
-			visitGene(g);
-		}
-
-		@Override
-		public void visitRead(Read r) {
-			visitInterval(r);
-		}
-
-		@Override
 		public void visitInterval(Interval interval) {
 			start = interval.getStart();
 			end = interval.getEnd();
@@ -155,20 +138,20 @@ public class IntervalLayout {
 		}
 
 		@Override
-		public void visitSAMRead(SAMRead r) {
+		public void visitSAMReadLight(SAMReadLight r) {
 
 			start = r.unclippedStart;
 			end = r.unclippedEnd;
 
-			// preserve space for a gap if exists
-			if (r.isMappedInProperPair()) {
-				if (r.mStart > r.unclippedEnd) {
-					end = r.mStart;
-				}
-				else if (r.mStart < r.unclippedStart) {
-					start = r.mStart;
-				}
-			}
+			//			// preserve space for a gap if exists
+			//			if (r.isPairedRead()) {
+			//				if (r.mStart > r.unclippedEnd) {
+			//					end = r.mStart;
+			//				}
+			//				else if (r.mStart < r.unclippedStart) {
+			//					start = r.mStart;
+			//				}
+			//			}
 
 			isDefined = true;
 		}
@@ -177,6 +160,13 @@ public class IntervalLayout {
 		public void visitReadCoverage(ReadCoverage readCoverage) {
 			this.height = Math.abs(readCoverage.maxHeight - readCoverage.minHeight);
 			visitInterval(readCoverage);
+		}
+
+		@Override
+		public void visitSAMReadPairFragment(SAMReadPairFragment fragment) {
+			start = fragment.getStart();
+			end = fragment.getEnd();
+			isDefined = true;
 		}
 
 		@Override

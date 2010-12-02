@@ -41,8 +41,9 @@ import net.sf.samtools.util.CloseableIterator;
 
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
-import org.utgenome.gwt.utgb.client.bio.SAMRead;
+import org.utgenome.gwt.utgb.client.bio.SAMReadLight;
 import org.utgenome.gwt.utgb.client.bio.SAMReadPair;
+import org.utgenome.gwt.utgb.client.bio.SAMReadPairFragment;
 import org.xerial.util.log.Logger;
 
 /**
@@ -82,6 +83,22 @@ public class SAMReader {
 		return baiFile;
 	}
 
+	public static interface SAMReadFactory {
+		public SAMReadLight newSAMRead(SAMRecord r);
+	}
+
+	public static class CompleteSAMReadFactory implements SAMReadFactory {
+		public SAMReadLight newSAMRead(SAMRecord r) {
+			return SAM2SilkReader.convertToSAMRead(r);
+		}
+	}
+
+	public static class LightWeightSAMReadFactory implements SAMReadFactory {
+		public SAMReadLight newSAMRead(SAMRecord r) {
+			return SAM2SilkReader.convertToSAMReadLight(r);
+		}
+	}
+
 	/**
 	 * Retrieved SAMReads (or SAMReadPair) overlapped with the specified interval
 	 * 
@@ -92,92 +109,98 @@ public class SAMReader {
 	public static List<OnGenome> overlapQuery(File bamFile, ChrLoc loc) {
 
 		File baiFile = getBamIndexFile(bamFile);
-		SAMFileReader sam = new SAMFileReader(bamFile, baiFile, true);
+		SAMFileReader sam = new SAMFileReader(bamFile, baiFile, false);
 		sam.setValidationStringency(ValidationStringency.SILENT);
-
-		List<OnGenome> result = new ArrayList<OnGenome>();
-
-		HashMap<String, SAMRead> samReadTable = new HashMap<String, SAMRead>();
 
 		if (_logger.isDebugEnabled())
 			_logger.debug(String.format("query BAM (%s) %s", bamFile, loc));
 
 		int readCount = 0;
-		CloseableIterator<SAMRecord> it = sam.queryOverlapping(loc.chr, loc.start, loc.end);
-		try {
+		List<OnGenome> result = new ArrayList<OnGenome>();
+		{
+			List<SAMRecord> readSet = new ArrayList<SAMRecord>();
 
-			for (; it.hasNext();) {
-				SAMRead query = SAM2SilkReader.convertToSAMRead(it.next());
+			// Retrieve SAMRecords from the  BAM file
+			CloseableIterator<SAMRecord> it = sam.queryOverlapping(loc.chr, loc.start, loc.end);
+			try {
 
-				readCount++;
-				if (_logger.isDebugEnabled() && (readCount % 10000) == 0) {
-					_logger.debug(String.format("reading (%s) %s : %d reads", bamFile.getName(), loc, readCount));
+				for (; it.hasNext();) {
+					SAMRecord read = it.next();
+
+					readCount++;
+					if (_logger.isDebugEnabled() && (readCount % 10000) == 0) {
+						_logger.debug(String.format("reading (%s) %s : %d reads", bamFile.getName(), loc, readCount));
+					}
+
+					// ignore unmapped reads
+					if (read.getReadUnmappedFlag())
+						continue;
+
+					readSet.add(read);
+				}
+			}
+			finally {
+				if (it != null)
+					it.close();
+
+				sam.close();
+
+				if (_logger.isDebugEnabled()) {
+					_logger.debug(String.format("finished reading (%s) %s : %d reads", bamFile.getName(), loc, readCount));
+				}
+			}
+			SAMReadFactory rf = readCount < 500 ? new CompleteSAMReadFactory() : new LightWeightSAMReadFactory();
+
+			// Mating paired-end reads
+			{
+				HashMap<String, SAMRecord> samReadTable = new HashMap<String, SAMRecord>();
+				for (SAMRecord read : readSet) {
+
+					// Add single-end read as is
+					if (!read.getReadPairedFlag()) {
+						result.add(rf.newSAMRead(read));
+						continue;
+					}
+
+					// The paired read names must be the same.
+					if (!samReadTable.containsKey(read.getReadName())) {
+						// new entry
+						samReadTable.put(read.getReadName(), read);
+						continue;
+					}
+
+					// Found a paired-end read set.
+					SAMRecord mate = samReadTable.get(read.getReadName());
+					boolean foundPair = false;
+					if (read.getFirstOfPairFlag()) {
+						if (mate.getSecondOfPairFlag()) {
+							result.add(new SAMReadPair(rf.newSAMRead(read), rf.newSAMRead(mate)));
+							foundPair = true;
+						}
+					}
+					else {
+						if (mate.getFirstOfPairFlag()) {
+							result.add(new SAMReadPair(rf.newSAMRead(mate), rf.newSAMRead(read)));
+							foundPair = true;
+						}
+					}
+
+					if (!foundPair) {
+						// The read names are the same, but they are not mated (error?)
+						result.add(rf.newSAMRead(mate));
+						result.add(rf.newSAMRead(read));
+					}
+
+					samReadTable.remove(mate.getReadName());
 				}
 
-				if (query.isUnmapped()) {
-					// ignore unmapped sequence
-					continue;
-				}
-
-				// ignore properly mated flag (since it can be 0 even when  
-				// the insert size is a little longer/shorter than the average)  
-				//				// Is properly mapped mate-pair?
-				//				if (!query.isMappedInProperPair()) {
-				//					result.add(query);
-				//					continue;
-				//				}
-
-				if (!query.isPairedRead()) {
-					result.add(query);
-					continue;
-				}
-
-				// The paired read names must be the same.
-				if (!samReadTable.containsKey(query.getName())) {
-					// new entry
-					samReadTable.put(query.getName(), query);
-					continue;
-				}
-
-				// Found a paired-end read set.
-				SAMRead mate = samReadTable.get(query.getName());
-				boolean foundPair = false;
-				if (query.isFirstRead()) {
-					if (mate.isSecondRead() && query.rname.equals(mate.rname)) {
-						result.add(new SAMReadPair(query, mate));
-						foundPair = true;
+				// add the remaining reads to the results 
+				for (SAMRecord each : samReadTable.values()) {
+					if (each.getReadPairedFlag()) {
+						result.add(new SAMReadPairFragment(rf.newSAMRead(each), each.getMateAlignmentStart()));
 					}
 				}
-				else {
-					if (mate.isFirstRead() && query.rname.equals(mate.rname)) {
-						result.add(new SAMReadPair(mate, query));
-						foundPair = true;
-					}
-				}
-
-				if (!foundPair) {
-					// The read names are the same, but they are not mated (error?)
-					result.add(mate);
-					result.add(query);
-				}
-
-				samReadTable.remove(mate.getName());
 			}
-		}
-		finally {
-			if (it != null)
-				it.close();
-
-			sam.close();
-
-			if (_logger.isDebugEnabled()) {
-				_logger.debug(String.format("finished reading (%s) %s : %d reads", bamFile.getName(), loc, readCount));
-			}
-
-		}
-
-		for (SAMRead each : samReadTable.values()) {
-			result.add(each);
 		}
 
 		if (_logger.isDebugEnabled()) {

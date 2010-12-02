@@ -16,57 +16,54 @@
 //--------------------------------------
 // utgb-core Project
 //
-// SAMReadPair.java
-// Since: Aug 2, 2010
+// SAMReadPairFragment.java
+// Since: 2010/12/02
 //
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.bio;
 
 /**
- * Mate pair (paired end) of SAMReads
+ * Paired-end reads without the other mate data
  * 
  * @author leo
  * 
  */
-public class SAMReadPair extends Interval {
-
+public class SAMReadPairFragment extends Interval {
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
 
-	private SAMReadLight first;
-	private SAMReadLight second;
+	public SAMReadLight oneEnd;
+	public int mateStart;
 
-	public SAMReadPair() {
+	public SAMReadPairFragment() {
 	}
 
-	public SAMReadPair(SAMReadLight first, SAMReadLight second) {
-		super(Math.min(first.unclippedStart, second.unclippedStart), Math.max(first.unclippedEnd, second.unclippedEnd));
-		if (!(first.isFirstRead() && second.isSecondRead())) {
-			throw new IllegalArgumentException("invalid sam read pair:\n" + first + "\n" + second);
-		}
-
-		this.first = first;
-		this.second = second;
-	}
-
-	public SAMReadLight getFirst() {
-		return first;
-	}
-
-	public SAMReadLight getSecond() {
-		return second;
-	}
-
-	public Gap getGap() {
-		return new Gap(first.getEnd(), second.getStart());
+	public SAMReadPairFragment(SAMReadLight oneEnd, int mateStart) {
+		super(Math.min(oneEnd.unclippedStart, mateStart), Math.max(oneEnd.unclippedEnd, mateStart));
+		this.oneEnd = oneEnd;
+		this.mateStart = mateStart;
 	}
 
 	@Override
 	public String getName() {
-		return first.getName();
+		return oneEnd.getName();
+	}
+
+	public Gap getGap() {
+		if (mateStart > oneEnd.unclippedEnd) {
+			return new Gap(oneEnd.unclippedEnd, mateStart);
+		}
+		else if (mateStart < oneEnd.unclippedStart) {
+			return new Gap(mateStart, oneEnd.unclippedStart);
+		}
+		else
+			return new Gap(-1, -1);
 	}
 
 	@Override
 	public void accept(OnGenomeDataVisitor visitor) {
-		visitor.visitSAMReadPair(this);
+		visitor.visitSAMReadPairFragment(this);
 	}
 }

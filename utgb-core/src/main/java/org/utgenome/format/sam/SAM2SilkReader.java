@@ -38,6 +38,7 @@ import net.sf.samtools.util.CloseableIterator;
 import org.apache.tools.ant.util.ReaderInputStream;
 import org.utgenome.format.FormatConversionReader;
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
+import org.utgenome.gwt.utgb.client.bio.SAMReadLight;
 import org.utgenome.gwt.utgb.client.util.Properties;
 import org.xerial.silk.SilkWriter;
 
@@ -105,6 +106,24 @@ public class SAM2SilkReader extends FormatConversionReader {
 			}
 		}
 
+		return read;
+	}
+
+	/**
+	 * convert a SAMRecord into a SAMRead, which can be used in GWT code.
+	 * 
+	 * @param record
+	 * @return
+	 */
+	public static SAMReadLight convertToSAMReadLight(SAMRecord record) {
+		SAMReadLight read = new SAMReadLight(record.getAlignmentStart(), record.getAlignmentEnd() + 1);
+		if (record != null) {
+			read.qname = record.getReadName();
+			read.flag = record.getFlags();
+			read.cigar = record.getCigarString();
+			read.unclippedStart = record.getUnclippedStart();
+			read.unclippedEnd = record.getUnclippedEnd() + 1;
+		}
 		return read;
 	}
 

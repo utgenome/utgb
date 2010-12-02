@@ -329,11 +329,6 @@ public class ReadTrack extends TrackBase {
 	public void draw() {
 
 		// set up drawing options
-		//		geneCanvas.setShowLabels(getConfig().getBoolean(CONFIG_SHOW_LABELS, true));
-		//		geneCanvas.setReadHeight(getConfig().getInt(CONFIG_READ_HEIGHT, 12));
-		//		geneCanvas.setReadHeightMin(getConfig().getInt(CONFIG_MIN_READ_HEIGHT, 2));
-		//		geneCanvas.setCoverageStyle(getConfig().getString(CONFIG_COVERAGE_STYLE, "default"));
-		//		geneCanvas.setAllowOverlapPairedReads(getConfig().getBoolean(CONFIG_PE_OVERLAP, false));
 
 		geneCanvas.setReadStyle(style);
 

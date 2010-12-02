@@ -24,7 +24,7 @@ package org.utgenome.gwt.utgb.client.canvas;
 
 import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
-import org.utgenome.gwt.utgb.client.bio.SAMRead;
+import org.utgenome.gwt.utgb.client.bio.SAMReadLight;
 import org.utgenome.gwt.utgb.client.db.ValueDomain;
 import org.utgenome.gwt.utgb.client.db.datatype.StringType;
 import org.utgenome.gwt.utgb.client.track.TrackConfig;
@@ -106,9 +106,9 @@ public class ReadDisplayStyle {
 
 	}
 
-	public Color getSAMReadColor(SAMRead r) {
-		if (r.isPairedRead() && r.isMappedInProperPair()) {
-			if (r.mateIsMappedToTheSameChr())
+	public Color getSAMReadColor(SAMReadLight r) {
+		if (r.isPairedRead()) {
+			if (r.isMappedInProperPair())
 				return getReadColor(r);
 			else
 				return ColorUtil.toColor(r.isSense() ? WEIRED_READ_COLOR_F : WEIRED_READ_COLOR_R);

@@ -34,7 +34,7 @@ import java.util.ListIterator;
  * @author leo
  * 
  */
-public class InfoSilkGenerator implements OnGenomeDataVisitor {
+public class InfoSilkGenerator extends OnGenomeDataVisitorBase {
 
 	public ArrayList<String> lines = new ArrayList<String>();
 
@@ -55,16 +55,7 @@ public class InfoSilkGenerator implements OnGenomeDataVisitor {
 		lines.add(text);
 	}
 
-	public void visitBSSRead(BSSRead b) {
-		visitInterval(b);
-
-	}
-
-	public void visitGene(Gene g) {
-		visitRead(g);
-
-	}
-
+	@Override
 	public void visitBEDGene(BEDGene g) {
 		visitGene(g);
 		addLine("-score:" + g.score);
@@ -128,10 +119,12 @@ public class InfoSilkGenerator implements OnGenomeDataVisitor {
 
 	}
 
+	@Override
 	public void visitGap(Gap g) {
 
 	}
 
+	@Override
 	public void visitInterval(Interval interval) {
 		addLine("-name: " + interval.getName());
 		addLine("-start: " + interval.getStart());
@@ -139,16 +132,15 @@ public class InfoSilkGenerator implements OnGenomeDataVisitor {
 		addLine("-length: " + interval.length());
 	}
 
+	@Override
 	public void visitRead(Read r) {
 		visitInterval(r);
 		addLine("-strand: " + r.getStrand());
 	}
 
+	@Override
 	public void visitSAMRead(SAMRead r) {
-		visitInterval(r);
-		addLine("-flag: " + Integer.toBinaryString(r.flag));
-		addLine("-strand: " + (r.isSense() ? "+" : "-"));
-		addLine("-cigar: " + r.cigar);
+		visitSAMReadLight(r);
 		//addLine("-QV: " + r.qual);
 		if (r.iSize != 0)
 			addLine("-insert size: " + r.iSize);
@@ -164,27 +156,39 @@ public class InfoSilkGenerator implements OnGenomeDataVisitor {
 		}
 	}
 
-	public void visitSAMReadPair(SAMReadPair pair) {
-
-		visitSAMRead(pair.getFirst());
-		visitSAMRead(pair.getSecond());
+	@Override
+	public void visitSAMReadLight(SAMReadLight r) {
+		visitInterval(r);
+		addLine("-flag: " + Integer.toBinaryString(r.flag));
+		addLine("-strand: " + (r.isSense() ? "+" : "-"));
+		addLine("-cigar: " + r.cigar);
 	}
 
+	@Override
 	public void visitSequence(ReferenceSequence referenceSequence) {
 		// TODO Auto-generated method stub
-
 	}
 
+	@Override
 	public void visitReadCoverage(ReadCoverage readCoverage) {
 		addLine("-name: " + readCoverage.getName());
 		//addLine("-start: " + readCoverage.getStart());
 		//addLine("-length: " + readCoverage.length());
 	}
 
+	@Override
+	public void visitSAMReadPairFragment(SAMReadPairFragment fragment) {
+		super.visitSAMReadPairFragment(fragment);
+		addLine("-mate start: " + fragment.mateStart);
+
+	}
+
+	@Override
 	public void visitGraph(GraphData graph) {
 		addLine("graph data");
 	}
 
+	@Override
 	public void visitReadList(ReadList readList) {
 		visitInterval(readList);
 	}
