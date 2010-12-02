@@ -32,6 +32,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.PriorityQueue;
 
 import net.sf.samtools.SAMFileReader;
 import net.sf.samtools.SAMFileReader.ValidationStringency;
@@ -111,14 +112,17 @@ public class SAMReader {
 
 		public int[] coverage;
 		private final ChrLoc loc;
-		private int binCursor = 0;
+		private int startCursor = 0;
 		private int readCount = 0;
 		private IntervalTree<Interval> intervals = new IntervalTree<Interval>();
+
+		private int currentDepth = 0;
 
 		public ComputeDepth(ChrLoc loc, int pixelWidth) {
 			w = new GenomeWindow(loc.start, loc.end);
 			this.pixelWidth = pixelWidth;
 			this.loc = loc;
+			startCursor = loc.start;
 			coverage = new int[pixelWidth];
 			for (int i = 0; i < coverage.length; ++i)
 				coverage[i] = 0;
@@ -128,6 +132,8 @@ public class SAMReader {
 			computeDepth(loadedReadSet.iterator());
 			computeDepth(cursor);
 		}
+
+		private PriorityQueue<Integer> boundary = new PriorityQueue<Integer>();
 
 		public void computeDepth(Iterator<SAMRecord> cursor) {
 
@@ -143,25 +149,48 @@ public class SAMReader {
 
 				int start = read.getAlignmentStart();
 				int end = read.getAlignmentEnd();
-				int binIndex = w.getXPosOnWindow(start, pixelWidth);
+				boundary.add(end);
 
-				if (binCursor < binIndex) {
-					// sweep coverage[ .. binCursor]
-					int e = w.calcGenomePosition(binCursor, pixelWidth);
-					for (; binCursor < binIndex; ++binCursor) {
-						int s = e;
-						e = w.calcGenomePosition(binCursor + 1, pixelWidth);
-						if (intervals.countOverlap(s, e) > 0) {
-							for (; s <= e; ++s) {
-								int depth = intervals.countOverlap(s);
-								coverage[binCursor] = Math.max(coverage[binCursor], depth);
-							}
-						}
-					}
-					intervals.removeBefore(e);
+				for (; !boundary.isEmpty();) {
+					int readEnd = boundary.peek();
+					if (readEnd > start)
+						break;
+
+					setDepth(startCursor, readEnd, currentDepth);
+					currentDepth--;
+					startCursor = readEnd;
+					boundary.poll();
 				}
-				intervals.add(new Interval(start, end));
+
+				setDepth(startCursor, start, currentDepth);
+				startCursor = start;
+				currentDepth++;
 			}
+
+			for (; !boundary.isEmpty();) {
+				int readEnd = boundary.peek();
+				setDepth(startCursor, readEnd, currentDepth);
+				currentDepth--;
+				startCursor = readEnd;
+				boundary.poll();
+			}
+
+		}
+
+		private void setDepth(int start, int end, int depth) {
+			if (depth <= 0)
+				return;
+			int binStart = w.getXPosOnWindow(start, pixelWidth);
+			int binEnd = w.getXPosOnWindow(end, pixelWidth);
+			for (int b = binStart; b <= binEnd; ++b) {
+				if (b < 0)
+					continue;
+				if (b > coverage.length)
+					break;
+
+				coverage[b] = Math.max(coverage[b], currentDepth);
+			}
+
 		}
 
 	}
