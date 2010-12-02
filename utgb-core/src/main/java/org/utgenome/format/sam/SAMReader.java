@@ -127,7 +127,6 @@ public class SAMReader {
 				for (; it.hasNext();) {
 					SAMRecord read = it.next();
 
-					readCount++;
 					if (_logger.isDebugEnabled() && (readCount % 10000) == 0) {
 						_logger.debug(String.format("reading (%s) %s : %d reads", bamFile.getName(), loc, readCount));
 					}
@@ -136,6 +135,7 @@ public class SAMReader {
 					if (read.getReadUnmappedFlag())
 						continue;
 
+					readCount++;
 					readSet.add(read);
 				}
 			}

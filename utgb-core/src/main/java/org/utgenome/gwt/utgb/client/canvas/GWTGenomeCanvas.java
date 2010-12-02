@@ -631,13 +631,13 @@ public class GWTGenomeCanvas extends TouchableComposite {
 				if (h >= geneHeight)
 					h = geneHeight;
 
-				if (qual != null && !style.showBaseQuality && h > 5) {
+				if (qual == null || h < 5 || !style.showBaseQuality) {
 					canvas.drawImage(imageACGT, pixelWidthOfBase * baseIndex, 0, pixelWidthOfBase, h, (int) x1, y, pixelWidthOfBase, h);
 				}
 				else {
 					canvas.saveContext();
 					final int threshold = 40;
-					if (h > 5 && i < qual.length()) {
+					if (i < qual.length()) {
 						int qv = qual.charAt(i) - 33;
 						if (qv > threshold)
 							qv = threshold;
