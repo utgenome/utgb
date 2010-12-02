@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
+import org.utgenome.gwt.utgb.client.canvas.PrioritySearchTree.ResultHandler;
 import org.utgenome.gwt.utgb.client.util.Optional;
 
 /**
@@ -62,6 +63,29 @@ public class IntervalTree<T extends OnGenome> extends AbstractCollection<T> {
 
 	public List<T> overlapQuery(int start) {
 		return overlapQuery(start, start);
+	}
+
+	private class OverlapCounter implements ResultHandler<T> {
+		int count = 0;
+
+		public void handle(T elem) {
+			count++;
+		}
+
+		public boolean toContinue() {
+			return true;
+		}
+
+	}
+
+	public int countOverlap(int start) {
+		return countOverlap(start, start);
+	}
+
+	public int countOverlap(int start, int end) {
+		OverlapCounter c = new OverlapCounter();
+		overlapQuery(start, end, c);
+		return c.count;
 	}
 
 	/**

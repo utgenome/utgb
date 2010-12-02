@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import net.sf.samtools.SAMFileReader;
@@ -39,11 +40,15 @@ import net.sf.samtools.SAMSequenceDictionary;
 import net.sf.samtools.SAMSequenceRecord;
 import net.sf.samtools.util.CloseableIterator;
 
+import org.utgenome.graphics.GenomeWindow;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
+import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
+import org.utgenome.gwt.utgb.client.bio.ReadCoverage;
 import org.utgenome.gwt.utgb.client.bio.SAMReadLight;
 import org.utgenome.gwt.utgb.client.bio.SAMReadPair;
 import org.utgenome.gwt.utgb.client.bio.SAMReadPairFragment;
+import org.utgenome.gwt.utgb.client.canvas.IntervalTree;
 import org.xerial.util.log.Logger;
 
 /**
@@ -99,6 +104,90 @@ public class SAMReader {
 		}
 	}
 
+	private static class ComputeDepth {
+
+		private final GenomeWindow w;
+		private final int pixelWidth;
+
+		public int[] coverage;
+		private int binCursor = 0;
+
+		private IntervalTree<Interval> intervals = new IntervalTree<Interval>();
+
+		public ComputeDepth(ChrLoc loc, int pixelWidth) {
+			w = new GenomeWindow(loc.start, loc.end);
+			this.pixelWidth = pixelWidth;
+			coverage = new int[pixelWidth];
+			for (int i = 0; i < coverage.length; ++i)
+				coverage[i] = 0;
+		}
+
+		public void computeDepth(List<SAMRecord> loadedReadSet, CloseableIterator<SAMRecord> cursor) {
+			computeDepth(loadedReadSet.iterator());
+			computeDepth(cursor);
+		}
+
+		public void computeDepth(Iterator<SAMRecord> cursor) {
+
+			for (; cursor.hasNext();) {
+				SAMRecord read = cursor.next();
+
+				int start = read.getAlignmentStart();
+				int end = read.getAlignmentEnd();
+				int binIndex = w.getXPosOnWindow(start, pixelWidth);
+
+				if (binCursor < binIndex) {
+					// sweep coverage[ .. binCursor]
+					int e = w.calcGenomePosition(binCursor, pixelWidth);
+					for (; binCursor < binIndex; ++binCursor) {
+						int s = e;
+						e = w.calcGenomePosition(binCursor + 1, pixelWidth);
+						if (intervals.countOverlap(s, e) > 0) {
+							for (; s <= e; ++s) {
+								int depth = intervals.countOverlap(s);
+								coverage[binCursor] = Math.max(coverage[binCursor], depth);
+							}
+							intervals.removeBefore(e);
+						}
+					}
+				}
+				intervals.add(new Interval(start, end));
+			}
+		}
+
+	}
+
+	public static List<OnGenome> depthCoverage(ChrLoc loc, int pixelWidth, List<SAMRecord> loadedReadSet, CloseableIterator<SAMRecord> cursor) {
+
+		ComputeDepth d = new ComputeDepth(loc, pixelWidth);
+		d.computeDepth(loadedReadSet, cursor);
+
+		List<OnGenome> result = new ArrayList<OnGenome>();
+		result.add(new ReadCoverage(loc.start, loc.end, pixelWidth, d.coverage));
+		return result;
+	}
+
+	public static List<OnGenome> depthCoverage(ChrLoc loc, int pixelWidth, File bamFile) {
+
+		File baiFile = getBamIndexFile(bamFile);
+		SAMFileReader sam = new SAMFileReader(bamFile, baiFile, false);
+		sam.setValidationStringency(ValidationStringency.SILENT);
+
+		// Retrieve SAMRecords from the  BAM file
+		CloseableIterator<SAMRecord> it = sam.queryOverlapping(loc.chr, loc.start, loc.end);
+		try {
+			ComputeDepth d = new ComputeDepth(loc, pixelWidth);
+			d.computeDepth(it);
+			List<OnGenome> result = new ArrayList<OnGenome>();
+			result.add(new ReadCoverage(loc.start, loc.end, pixelWidth, d.coverage));
+			return result;
+		}
+		finally {
+			if (it != null)
+				it.close();
+		}
+	}
+
 	/**
 	 * Retrieved SAMReads (or SAMReadPair) overlapped with the specified interval
 	 * 
@@ -106,7 +195,7 @@ public class SAMReader {
 	 * @param loc
 	 * @return
 	 */
-	public static List<OnGenome> overlapQuery(File bamFile, ChrLoc loc) {
+	public static List<OnGenome> overlapQuery(File bamFile, ChrLoc loc, int pixelWidth) {
 
 		File baiFile = getBamIndexFile(bamFile);
 		SAMFileReader sam = new SAMFileReader(bamFile, baiFile, false);
@@ -127,7 +216,7 @@ public class SAMReader {
 				for (; it.hasNext();) {
 					SAMRecord read = it.next();
 
-					if (_logger.isDebugEnabled() && (readCount % 10000) == 0) {
+					if (_logger.isDebugEnabled() && readCount > 0 && (readCount % 10000) == 0) {
 						_logger.debug(String.format("reading (%s) %s : %d reads", bamFile.getName(), loc, readCount));
 					}
 
@@ -137,6 +226,12 @@ public class SAMReader {
 
 					readCount++;
 					readSet.add(read);
+
+					if (readCount > 5000) {
+						// Switch to the depth-coverage mode
+						return depthCoverage(loc, pixelWidth, readSet, it);
+					}
+
 				}
 			}
 			finally {
@@ -197,7 +292,12 @@ public class SAMReader {
 				// add the remaining reads to the results 
 				for (SAMRecord each : samReadTable.values()) {
 					if (each.getReadPairedFlag()) {
-						result.add(new SAMReadPairFragment(rf.newSAMRead(each), each.getMateAlignmentStart()));
+						if (each.getReferenceName().equals(each.getMateReferenceName())) {
+							result.add(new SAMReadPairFragment(rf.newSAMRead(each), each.getMateAlignmentStart()));
+						}
+						else {
+							result.add(rf.newSAMRead(each));
+						}
 					}
 				}
 			}
