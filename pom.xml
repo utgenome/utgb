@@ -371,19 +371,19 @@
 
   <distributionManagement>
     <repository>
-      <id>utgb.dav</id>
+      <id>utgb.scp</id>
       <name>UTGB Maven Repository</name>
-      <url>dav:http://maven.utgenome.org/repository/artifact</url>
+      <url>scpexe://maven.utgenome.org/home/web/maven.utgenome.org/repository/artifact</url>
     </repository>
     <snapshotRepository>
-      <id>utgb.dav</id>
+      <id>utgb.scp</id>
       <name>UTGB Maven Snapshot Repository</name>
-      <url>dav:http://maven.utgenome.org/repository/snapshot</url>
+      <url>scpexe:///maven.utgenome.org/home/web/maven.utgenome.org/repository/snapshot</url>
       <uniqueVersion>false</uniqueVersion>
     </snapshotRepository>
     <site>
-      <id>utgb.dav</id>
-      <url>dav:http://maven.utgenome.org/repository/site/utgb</url>
+      <id>utgb.scp</id>
+      <url>scpexe://maven.utgenome.org/home/web/maven.utgeonme.org/repository/site/utgb</url>
     </site>
   </distributionManagement>
 
