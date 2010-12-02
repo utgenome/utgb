@@ -185,7 +185,7 @@ public class SAMReader {
 			for (int b = binStart; b <= binEnd; ++b) {
 				if (b < 0)
 					continue;
-				if (b > coverage.length)
+				if (b >= coverage.length)
 					break;
 
 				coverage[b] = Math.max(coverage[b], currentDepth);
@@ -347,7 +347,12 @@ public class SAMReader {
 
 		Collections.sort(result, new Comparator<OnGenome>() {
 			public int compare(OnGenome o1, OnGenome o2) {
-				return o1.getStart() - o2.getStart();
+				int diff = o1.getStart() - o2.getStart();
+				if (diff == 0) {
+					return o1.length() - o2.length();
+				}
+				else
+					return diff;
 			}
 		});
 

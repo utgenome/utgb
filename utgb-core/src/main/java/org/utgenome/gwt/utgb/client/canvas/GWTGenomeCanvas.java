@@ -508,7 +508,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 			w.removeFromParent();
 		}
 		readLabels.clear();
-		Style.scaleX(canvas, 1);
+		Style.scaleXwithAnimation(canvas, 1, 0.0);
 		panel.setWidgetPosition(canvas, 0, 0);
 		basePanel.setWidgetPosition(panel, 0, 0);
 	}
@@ -1031,6 +1031,8 @@ public class GWTGenomeCanvas extends TouchableComposite {
 					continue;
 				}
 				int y = (int) ((h * heigtOfRead) * scalingFactor);
+				if (y <= 0)
+					y = 1;
 				canvas.saveContext();
 				canvas.translate(x - x1 + 0.5f, 0);
 				canvas.fillRect(0, 0, 1, y - 0.5f);
