@@ -110,13 +110,15 @@ public class SAMReader {
 		private final int pixelWidth;
 
 		public int[] coverage;
+		private final ChrLoc loc;
 		private int binCursor = 0;
-
+		private int readCount = 0;
 		private IntervalTree<Interval> intervals = new IntervalTree<Interval>();
 
 		public ComputeDepth(ChrLoc loc, int pixelWidth) {
 			w = new GenomeWindow(loc.start, loc.end);
 			this.pixelWidth = pixelWidth;
+			this.loc = loc;
 			coverage = new int[pixelWidth];
 			for (int i = 0; i < coverage.length; ++i)
 				coverage[i] = 0;
@@ -131,6 +133,13 @@ public class SAMReader {
 
 			for (; cursor.hasNext();) {
 				SAMRecord read = cursor.next();
+				if (read.getReadUnmappedFlag())
+					continue;
+
+				readCount++;
+				if (_logger.isDebugEnabled() && readCount > 0 && (readCount % 10000) == 0) {
+					_logger.debug(String.format("reading %s : %d reads", loc, readCount));
+				}
 
 				int start = read.getAlignmentStart();
 				int end = read.getAlignmentEnd();
@@ -147,9 +156,9 @@ public class SAMReader {
 								int depth = intervals.countOverlap(s);
 								coverage[binCursor] = Math.max(coverage[binCursor], depth);
 							}
-							intervals.removeBefore(e);
 						}
 					}
+					intervals.removeBefore(e);
 				}
 				intervals.add(new Interval(start, end));
 			}
