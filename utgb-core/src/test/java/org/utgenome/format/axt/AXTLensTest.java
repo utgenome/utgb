@@ -41,6 +41,13 @@ public class AXTLensTest {
 		AXTLens.lens(FileResource.open(AXTLensTest.class, "sample.axt"), new ObjectHandlerBase<AXTAlignment>() {
 			HashSet<Integer> idSet = new HashSet<Integer>();
 
+			boolean initialized = false;
+
+			@Override
+			public void init() throws Exception {
+				initialized = true;
+			}
+
 			public void handle(AXTAlignment input) throws Exception {
 				idSet.add(input.num);
 				switch (input.num) {
@@ -94,6 +101,7 @@ public class AXTLensTest {
 				for (int i = 0; i <= 3; ++i) {
 					assertTrue(idSet.contains(i));
 				}
+				assertTrue("init() has not been called", initialized);
 			}
 
 		});
