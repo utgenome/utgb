@@ -24,10 +24,12 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class UTGBEntryTestEntry extends UTGBEntryPointBase {
 
+	@Ignore
 	@Test
 	public void dummyTest() {
 	}
