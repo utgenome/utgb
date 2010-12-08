@@ -378,7 +378,7 @@
     <snapshotRepository>
       <id>utgb.scp</id>
       <name>UTGB Maven Snapshot Repository</name>
-      <url>scpexe:///maven.utgenome.org/home/web/maven.utgenome.org/repository/snapshot</url>
+      <url>scpexe://maven.utgenome.org/home/web/maven.utgenome.org/repository/snapshot</url>
       <uniqueVersion>false</uniqueVersion>
     </snapshotRepository>
     <site>
