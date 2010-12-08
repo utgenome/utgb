@@ -36,8 +36,8 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Date;
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -47,7 +47,7 @@ import org.apache.tools.bzip2.CBZip2InputStream;
 import org.apache.tools.tar.TarEntry;
 import org.apache.tools.tar.TarInputStream;
 import org.xerial.core.XerialException;
-import org.xerial.lens.Lens;
+import org.xerial.lens.SilkLens;
 import org.xerial.silk.SilkWriter;
 import org.xerial.util.FileResource;
 import org.xerial.util.StringUtil;
@@ -97,7 +97,7 @@ public class Maven extends UTGBShellCommand {
 		File mavenArchiveInfoFile = new File(mavenFolderName, "maven-archive.silk");
 		if (mavenArchiveInfoFile.exists()) {
 			try {
-				Lens.loadSilk(archiveInfo, new FileReader(mavenArchiveInfoFile));
+				SilkLens.loadSilk(archiveInfo, new FileReader(mavenArchiveInfoFile));
 			}
 			catch (XerialException e) {
 				_logger.error(e);

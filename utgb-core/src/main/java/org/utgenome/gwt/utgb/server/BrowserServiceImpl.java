@@ -54,8 +54,6 @@ import org.utgenome.gwt.utgb.client.BrowserService;
 import org.utgenome.gwt.utgb.client.UTGBClientErrorCode;
 import org.utgenome.gwt.utgb.client.UTGBClientException;
 import org.utgenome.gwt.utgb.client.bean.DatabaseEntry;
-import org.utgenome.gwt.utgb.client.bean.track.TrackDescription;
-import org.utgenome.gwt.utgb.client.bio.AlignmentResult;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.ChrRange;
 import org.utgenome.gwt.utgb.client.bio.CompactWIGData;
@@ -72,7 +70,6 @@ import org.utgenome.gwt.utgb.client.view.TrackView;
 import org.utgenome.gwt.utgb.server.app.ChromosomeMap;
 import org.utgenome.gwt.utgb.server.app.ReadView;
 import org.utgenome.gwt.utgb.server.util.WebApplicationResource;
-import org.xerial.ObjectHandlerBase;
 import org.xerial.core.XerialException;
 import org.xerial.db.DBException;
 import org.xerial.db.sql.SQLExpression;
@@ -80,9 +77,11 @@ import org.xerial.db.sql.sqlite.SQLiteAccess;
 import org.xerial.db.sql.sqlite.SQLiteCatalog;
 import org.xerial.json.JSONArray;
 import org.xerial.json.JSONObject;
-import org.xerial.lens.Lens;
+import org.xerial.lens.JSONLens;
+import org.xerial.lens.SilkLens;
+import org.xerial.lens.XMLLens;
+import org.xerial.util.ObjectHandlerBase;
 import org.xerial.util.StopWatch;
-import org.xerial.util.bean.BeanUtil;
 import org.xerial.util.log.Logger;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -114,7 +113,7 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 
 	public TrackView createTrackView(String silk) throws UTGBClientException {
 		try {
-			TrackView v = Lens.loadSilk(TrackView.class, new StringReader(silk));
+			TrackView v = SilkLens.loadSilk(TrackView.class, new StringReader(silk));
 			return v;
 		}
 		catch (Exception e) {
@@ -128,7 +127,7 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 			_logger.info(String.format("loading view: ", viewName));
 			String view = getHTTPContent(viewName);
 			try {
-				TrackView v = Lens.loadSilk(TrackView.class, new URL(viewName));
+				TrackView v = SilkLens.loadSilk(TrackView.class, new URL(viewName));
 				return v;
 			}
 			catch (IOException e) {
@@ -150,7 +149,7 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 						throw new UTGBClientException(UTGBClientErrorCode.MISSING_FILES, String.format("%s is not found", viewFile));
 
 					f = new FileReader(viewFilePath);
-					TrackView v = Lens.loadSilk(TrackView.class, f);
+					TrackView v = SilkLens.loadSilk(TrackView.class, f);
 					return v;
 				}
 				catch (UTGBException e) {
@@ -251,7 +250,7 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 	private TrackBean loadTrackInfo(String trackXMLResourcePath) throws UTGBException {
 		try {
 			BufferedReader xmlReader = WebApplicationResource.openResource(this.getServletContext(), trackXMLResourcePath);
-			TrackBean trackInfo = BeanUtil.createXMLBean(TrackBean.class, xmlReader);
+			TrackBean trackInfo = XMLLens.createXMLBean(TrackBean.class, xmlReader);
 			return trackInfo;
 		}
 		catch (XerialException e) {
@@ -352,22 +351,6 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 		return viewXML;
 	}
 
-	public TrackDescription getTrackDescription(String url) {
-
-		try {
-			BufferedReader in = openURL(url);
-			return BeanUtil.createXMLBean(TrackDescription.class, in);
-		}
-		catch (IOException e) {
-			_logger.error(e);
-		}
-		catch (XerialException e) {
-			_logger.error(e);
-		}
-
-		return null;
-	}
-
 	private BufferedReader openURL(String url) throws IOException {
 		BufferedReader in;
 		if (!url.startsWith("http://")) {
@@ -420,7 +403,7 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 			BufferedReader reader = openURL(serviceURI);
 
 			RefseqGeneRetriever geneRetriever = new RefseqGeneRetriever();
-			Lens.findFromJSON(reader, "gene", Gene.class, geneRetriever);
+			JSONLens.findFromJSON(reader, "gene", Gene.class, geneRetriever);
 			return geneRetriever.getResult();
 		}
 		catch (Exception e) {
@@ -430,19 +413,6 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 			_logger.debug("proxy request: done " + sw.getElapsedTime() + " sec");
 		}
 		return new ArrayList<Gene>(); // no result
-	}
-
-	public AlignmentResult getAlignment(String serviceURI, String target, String sequence) {
-		AlignmentResult result = new AlignmentResult();
-		try {
-
-			BufferedReader reader = openURL(serviceURI);
-			BeanUtil.populateBeanWithJSON(result, reader);
-		}
-		catch (Exception e) {
-			_logger.error(e);
-		}
-		return result;
 	}
 
 	public ChrRange getChrRegion(String species, String revision) {
@@ -629,11 +599,11 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 			_logger.info(WebTrackBase.getProjectRootPath() + "/" + refSeqFileName);
 			final CompactFASTA cf = new CompactFASTA(WebTrackBase.getProjectRootPath() + "/" + refSeqFileName);
 
-			Lens.findFromSilk(new SAM2SilkReader(new FileReader(new File(WebTrackBase.getProjectRootPath() + "/" + readFileName))), "record", SAMRead.class,
-					new ObjectHandlerBase<SAMRead>() {
+			SilkLens.findFromSilk(new SAM2SilkReader(new FileReader(new File(WebTrackBase.getProjectRootPath() + "/" + readFileName))), "record",
+					SAMRead.class, new ObjectHandlerBase<SAMRead>() {
 						public void handle(SAMRead input) throws Exception {
 							input.refSeq = cf.getSequence(input.rname, input.getStart() - 1, input.getEnd()).toString();
-							_logger.info(Lens.toSilk(input));
+							_logger.info(SilkLens.toSilk(input));
 							readDataList.add(input);
 						}
 					});

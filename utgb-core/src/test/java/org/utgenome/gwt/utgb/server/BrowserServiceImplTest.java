@@ -32,8 +32,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.utgenome.gwt.utgb.client.bio.Alignment;
 import org.utgenome.gwt.utgb.client.bio.AlignmentResult;
+import org.xerial.lens.JSONLens;
 import org.xerial.util.FileResource;
-import org.xerial.util.bean.BeanUtil;
 import org.xerial.util.log.Logger;
 
 public class BrowserServiceImplTest {
@@ -125,16 +125,15 @@ public class BrowserServiceImplTest {
 		alignmentList.add(a1);
 		alignmentList.add(a2);
 
-		String json = BeanUtil.toJSON(alignmentList);
+		String json = JSONLens.toJSON(alignmentList);
 		_logger.debug(String.format("{\"alignment\":%s}", json));
 	}
 
 	@Test
 	public void loadAlignmentJSON() throws Exception, IOException {
-		AlignmentResult result = (AlignmentResult) BeanUtil.createBeanFromJSON(AlignmentResult.class, FileResource.open(BrowserServiceImpl.class,
-				"alignment.json"));
+		AlignmentResult result = JSONLens.loadJSON(AlignmentResult.class, FileResource.open(BrowserServiceImpl.class, "alignment.json"));
 
-		String json = BeanUtil.toJSON(result);
+		String json = JSONLens.toJSON(result);
 		_logger.debug(json);
 
 	}

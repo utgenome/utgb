@@ -38,7 +38,7 @@ import org.xerial.db.DBException;
 import org.xerial.db.sql.SQLExpression;
 import org.xerial.db.sql.SQLUtil;
 import org.xerial.db.sql.sqlite.SQLiteAccess;
-import org.xerial.util.bean.BeanUtil;
+import org.xerial.lens.XMLLens;
 import org.xerial.util.log.Logger;
 import org.xerial.util.opt.Argument;
 import org.xerial.util.opt.Option;
@@ -87,10 +87,12 @@ public class EGTXMLReader {
 
 		}
 
+		@Override
 		public void insertGene(Gene gene) throws DBException {
 			int geneID = geneCount++;
-			sqlite.update(SQLExpression.fillTemplate("insert into gene values($1, $2, $3, $4, $5, $6)", geneID, SQLUtil.singleQuote(gene.getTarget()), gene
-					.getStart(), gene.getEnd(), SQLUtil.singleQuote(gene.getStrand()), SQLUtil.singleQuote(gene.getName())), false);
+			sqlite.update(
+					SQLExpression.fillTemplate("insert into gene values($1, $2, $3, $4, $5, $6)", geneID, SQLUtil.singleQuote(gene.getTarget()),
+							gene.getStart(), gene.getEnd(), SQLUtil.singleQuote(gene.getStrand()), SQLUtil.singleQuote(gene.getName())), false);
 
 			sqlite.update(SQLExpression.fillTemplate("insert into gene_info values($1, $2)", geneID, SQLUtil.singleQuote(gene.getUrl())), false);
 
@@ -135,10 +137,12 @@ public class EGTXMLReader {
 
 		}
 
+		@Override
 		public void insertGene(Gene gene) throws DBException {
 			int geneID = geneCount++;
-			sqlite.update(SQLExpression.fillTemplate("insert into gene values($1, $2, $3, $4, $5, $6)", geneID, SQLUtil.singleQuote(gene.getTarget()), gene
-					.getStart(), gene.getEnd(), SQLUtil.singleQuote(gene.getStrand()), SQLUtil.singleQuote(gene.getName())), false);
+			sqlite.update(
+					SQLExpression.fillTemplate("insert into gene values($1, $2, $3, $4, $5, $6)", geneID, SQLUtil.singleQuote(gene.getTarget()),
+							gene.getStart(), gene.getEnd(), SQLUtil.singleQuote(gene.getStrand()), SQLUtil.singleQuote(gene.getName())), false);
 
 			/*
 			sqlite.update(SQLExpression.fillTemplate(
@@ -271,7 +275,7 @@ public class EGTXMLReader {
 
 		beginTime = System.currentTimeMillis();
 
-		BeanUtil.populateBeanWithXML(this, xmlReader);
+		XMLLens.populateBeanWithXML(this, xmlReader);
 		dbGenerator.commit();
 	}
 

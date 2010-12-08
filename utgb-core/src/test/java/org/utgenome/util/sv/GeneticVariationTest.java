@@ -27,9 +27,9 @@ import static org.junit.Assert.assertEquals;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.xerial.lens.Lens;
-import org.xerial.lens.ObjectHandler;
+import org.xerial.lens.SilkLens;
 import org.xerial.util.FileResource;
+import org.xerial.util.ObjectHandler;
 import org.xerial.util.log.Logger;
 
 public class GeneticVariationTest {
@@ -68,7 +68,7 @@ public class GeneticVariationTest {
 
 	@Test
 	public void testVar() throws Exception {
-		Lens.findFromSilk(FileResource.open(GeneticVariationTest.class, "var_input.silk"), "variation", GeneticVariation.class,
+		SilkLens.findFromSilk(FileResource.open(GeneticVariationTest.class, "var_input.silk"), "variation", GeneticVariation.class,
 				new ObjectHandler<GeneticVariation>() {
 
 					public void init() throws Exception {

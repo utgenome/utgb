@@ -24,9 +24,7 @@
 //--------------------------------------
 package org.utgenome.shell;
 
-import org.xerial.core.XerialException;
-import org.xerial.json.JSONObject;
-import org.xerial.util.bean.BeanUtil;
+import org.xerial.lens.JSONLens;
 import org.xerial.util.opt.Option;
 
 /**
@@ -61,8 +59,8 @@ public class UTGBPortableConfig {
 
 	@Option(symbol = "h", longName = "help", description = "display help message")
 	boolean displayHelp = false;
-	
-	@Option(longName="module", description = "GWT modules name. default = utgb")
+
+	@Option(longName = "module", description = "GWT modules name. default = utgb")
 	String gwtModule = "utgb";
 
 	public UTGBPortableConfig() {
@@ -85,13 +83,7 @@ public class UTGBPortableConfig {
 
 	@Override
 	public String toString() {
-		try {
-			JSONObject json = BeanUtil.toJSONObject(this);
-			return json.toString();
-		}
-		catch (XerialException e) {
-			throw new IllegalStateException(e);
-		}
+		return JSONLens.toJSON(this);
 	}
 
 	public int getPortNumber() {
@@ -113,7 +105,7 @@ public class UTGBPortableConfig {
 	public String getWorkingDir() {
 		return workingDir;
 	}
-	
+
 	public String getGWTModuleName() {
 		return gwtModule;
 	}

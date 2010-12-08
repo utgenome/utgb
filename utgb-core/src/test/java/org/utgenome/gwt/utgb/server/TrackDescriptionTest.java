@@ -39,8 +39,8 @@ import org.utgenome.gwt.utgb.client.bean.track.Option;
 import org.utgenome.gwt.utgb.client.bean.track.Parameter;
 import org.utgenome.gwt.utgb.client.bean.track.Species;
 import org.utgenome.gwt.utgb.client.bean.track.TrackDescription;
+import org.xerial.lens.XMLLens;
 import org.xerial.util.FileResource;
-import org.xerial.util.bean.BeanUtil;
 
 public class TrackDescriptionTest {
 
@@ -55,7 +55,7 @@ public class TrackDescriptionTest {
 	@Test
 	public void beanTest() throws Exception {
 		// create a Track instance from the XML file
-		TrackDescription trackDescription = BeanUtil.createXMLBean(TrackDescription.class, FileResource.open(TrackDescriptionTest.class, "sampletrack.xml"));
+		TrackDescription trackDescription = XMLLens.createXMLBean(TrackDescription.class, FileResource.open(TrackDescriptionTest.class, "sampletrack.xml"));
 		assertEquals("1.0", trackDescription.getRevision());
 		assertEquals("org.utgenome.medaka", trackDescription.getGroup());
 		assertEquals("1.1", trackDescription.getVersion());

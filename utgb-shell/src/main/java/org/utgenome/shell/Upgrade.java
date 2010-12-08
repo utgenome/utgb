@@ -34,7 +34,7 @@ import org.utgenome.config.TrackConfiguration;
 import org.utgenome.config.UTGBConfig;
 import org.utgenome.gwt.utgb.client.view.TrackView;
 import org.utgenome.shell.Create.ScaffoldFileFilter;
-import org.xerial.lens.Lens;
+import org.xerial.lens.XMLLens;
 import org.xerial.silk.SilkWriter;
 import org.xerial.util.FileType;
 import org.xerial.util.StringUtil;
@@ -55,7 +55,7 @@ public class Upgrade extends UTGBShellCommand {
 				_logger.info(String.format("old-track configuration file %s is found", oldConfigXML));
 
 				// convert the old config file to the silk format
-				TrackConfiguration oldConfig = Lens.loadXML(TrackConfiguration.class, new BufferedReader(new FileReader(oldConfigXML)));
+				TrackConfiguration oldConfig = XMLLens.loadXML(TrackConfiguration.class, new BufferedReader(new FileReader(oldConfigXML)));
 				UTGBConfig newConfig = oldConfig.convert();
 				String silk = newConfig.toSilk();
 
@@ -108,7 +108,7 @@ public class Upgrade extends UTGBShellCommand {
 					}
 
 					_logger.info(String.format("generating %s from %s", newViewFile, viewXML));
-					OldViewXML oldView = Lens.loadXML(OldViewXML.class, new FileReader(viewXML));
+					OldViewXML oldView = XMLLens.loadXML(OldViewXML.class, new FileReader(viewXML));
 					TrackView tv = oldView.toTrackView();
 					SilkWriter silk = new SilkWriter(new FileWriter(newViewFile));
 					silk.preamble();

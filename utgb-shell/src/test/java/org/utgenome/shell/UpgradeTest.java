@@ -24,8 +24,7 @@
 //--------------------------------------
 package org.utgenome.shell;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.FileReader;
@@ -34,7 +33,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.utgenome.gwt.utgb.client.view.TrackView;
-import org.xerial.lens.Lens;
+import org.xerial.lens.SilkLens;
 import org.xerial.util.FileResource;
 import org.xerial.util.FileUtil;
 import org.xerial.util.log.Logger;
@@ -73,7 +72,7 @@ public class UpgradeTest {
 		File newViewFile = new File(appDir, "config/view/oldview.silk");
 		assertTrue(newViewFile.exists());
 
-		TrackView tv = Lens.loadSilk(TrackView.class, new FileReader(newViewFile));
+		TrackView tv = SilkLens.loadSilk(TrackView.class, new FileReader(newViewFile));
 		assertEquals(6, tv.track.size());
 
 	}

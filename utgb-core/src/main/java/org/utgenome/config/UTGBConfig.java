@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.xerial.core.XerialException;
-import org.xerial.lens.Lens;
+import org.xerial.lens.SilkLens;
 
 /**
  * UTGB configuration. This object corresponds to config/{common, default}.silk file.
@@ -57,6 +57,7 @@ public class UTGBConfig {
 		public String user;
 		public String pass;
 
+		@Override
 		public String toString() {
 			return String.format("id:%s, dbms:%s, driver:%s, address:%s", id, dbms, driver, address);
 		}
@@ -105,15 +106,15 @@ public class UTGBConfig {
 	 *             when some syntax error is observed
 	 */
 	public static UTGBConfig parse(URL configResource) throws IOException, XerialException {
-		return Lens.loadSilk(UTGBConfig.class, configResource);
+		return SilkLens.loadSilk(UTGBConfig.class, configResource);
 	}
 
 	public static UTGBConfig parseSilk(String silk) throws XerialException, IOException {
-		return Lens.loadSilk(UTGBConfig.class, new StringReader(silk));
+		return SilkLens.loadSilk(UTGBConfig.class, new StringReader(silk));
 	}
 
 	public String toSilk() {
-		return Lens.toSilk(this);
+		return SilkLens.toSilk(this);
 	}
 
 }

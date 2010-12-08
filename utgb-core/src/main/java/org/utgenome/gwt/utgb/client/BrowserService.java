@@ -27,7 +27,6 @@ package org.utgenome.gwt.utgb.client;
 import java.util.List;
 
 import org.utgenome.gwt.utgb.client.bean.DatabaseEntry;
-import org.utgenome.gwt.utgb.client.bean.track.TrackDescription;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.ChrRange;
 import org.utgenome.gwt.utgb.client.bio.CompactWIGData;
@@ -51,8 +50,6 @@ public interface BrowserService extends RemoteService {
 	public TrackView getTrackView(String viewName) throws UTGBClientException;
 
 	public String getHTTPContent(String url);
-
-	public TrackDescription getTrackDescription(String url);
 
 	public String getDatabaseCatalog(String jdbcAddress);
 

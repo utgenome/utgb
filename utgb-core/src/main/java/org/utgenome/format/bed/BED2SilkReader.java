@@ -31,7 +31,7 @@ import java.io.Writer;
 
 import org.utgenome.UTGBException;
 import org.utgenome.format.FormatConversionReader;
-import org.xerial.lens.Lens;
+import org.xerial.lens.SilkLens;
 
 /**
  * BED2SilkReader read the input BED data, and the user can read it as if it were a Silk format.
@@ -66,7 +66,7 @@ public class BED2SilkReader extends FormatConversionReader {
 
 		try {
 			BED2SilkReader in = new BED2SilkReader(input);
-			Lens.loadSilk(query, in);
+			SilkLens.loadSilk(query, in);
 			return query;
 		}
 		catch (Exception e) {

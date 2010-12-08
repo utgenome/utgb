@@ -27,7 +27,7 @@ package org.utgenome.format.egt;
 import org.utgenome.UTGBException;
 import org.xerial.util.Pair;
 import org.xerial.util.StringUtil;
-import org.xerial.util.xml.XMLGenerator;
+import org.xerial.xml.XMLGenerator;
 
 public class EagyGeneLine {
 	private ParameterMap parameterMap;

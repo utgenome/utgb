@@ -29,8 +29,8 @@ import static org.junit.Assert.fail;
 import java.util.HashSet;
 
 import org.junit.Test;
-import org.xerial.ObjectHandlerBase;
 import org.xerial.util.FileResource;
+import org.xerial.util.ObjectHandlerBase;
 import org.xerial.util.log.Logger;
 
 public class AXTLensTest {

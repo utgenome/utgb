@@ -20,7 +20,8 @@ import org.utgenome.config.OldViewXML;
 import org.utgenome.gwt.utgb.client.view.TrackView;
 import org.utgenome.gwt.utgb.server.WebTrackBase;
 import org.xerial.core.XerialException;
-import org.xerial.lens.Lens;
+import org.xerial.lens.SilkLens;
+import org.xerial.lens.XMLLens;
 import org.xerial.util.log.Logger;
 
 /**
@@ -37,6 +38,7 @@ public class EchoBackView extends WebTrackBase {
 	public EchoBackView() {
 	}
 
+	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd-HHmmss");
@@ -47,11 +49,11 @@ public class EchoBackView extends WebTrackBase {
 
 		try {
 			// convert XML based view file into Silk
-			OldViewXML viewXML = Lens.loadXML(OldViewXML.class, new StringReader(view));
+			OldViewXML viewXML = XMLLens.loadXML(OldViewXML.class, new StringReader(view));
 			TrackView tv = viewXML.toTrackView();
 
 			PrintWriter writer = response.getWriter();
-			writer.append(Lens.toSilk(tv));
+			writer.append(SilkLens.toSilk(tv));
 			writer.flush();
 		}
 		catch (XerialException e) {

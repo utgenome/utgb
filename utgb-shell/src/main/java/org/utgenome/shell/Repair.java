@@ -33,7 +33,7 @@ import java.io.StringWriter;
 import org.utgenome.config.TrackConfiguration;
 import org.utgenome.config.UTGBConfig;
 import org.utgenome.shell.Create.ScaffoldFileFilter;
-import org.xerial.lens.Lens;
+import org.xerial.lens.XMLLens;
 import org.xerial.silk.SilkWriter;
 import org.xerial.util.StringUtil;
 import org.xerial.util.log.Logger;
@@ -80,7 +80,7 @@ public class Repair extends UTGBShellCommand {
 				_logger.info(String.format("old-track configuration file %s is found", oldConfigXML));
 
 				// convert the old config file to the silk format
-				TrackConfiguration oldConfig = Lens.loadXML(TrackConfiguration.class, new BufferedReader(new FileReader(oldConfigXML)));
+				TrackConfiguration oldConfig = XMLLens.loadXML(TrackConfiguration.class, new BufferedReader(new FileReader(oldConfigXML)));
 				UTGBConfig newConfig = oldConfig.convert();
 				String silk = newConfig.toSilk();
 
@@ -141,6 +141,7 @@ public class Repair extends UTGBShellCommand {
 		return "repair";
 	}
 
+	@Override
 	public String getOneLinerDescription() {
 		return "repair or restore template files";
 	}

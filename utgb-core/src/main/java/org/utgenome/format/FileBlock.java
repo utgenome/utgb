@@ -24,7 +24,7 @@ package org.utgenome.format;
 
 import java.io.File;
 
-import org.xerial.lens.Lens;
+import org.xerial.lens.SilkLens;
 
 /**
  * A block in a file
@@ -46,7 +46,7 @@ public class FileBlock {
 
 	@Override
 	public String toString() {
-		return Lens.toSilk(this);
+		return SilkLens.toSilk(this);
 	}
 
 }

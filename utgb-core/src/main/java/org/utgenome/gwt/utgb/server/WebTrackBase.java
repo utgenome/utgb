@@ -41,10 +41,11 @@ import org.xerial.core.XerialException;
 import org.xerial.db.DBException;
 import org.xerial.db.sql.DatabaseAccess;
 import org.xerial.db.sql.SQLExpression;
+import org.xerial.lens.JSONLens;
 import org.xerial.util.FileResource;
+import org.xerial.util.ObjectHandler;
+import org.xerial.util.ObjectHandlerBase;
 import org.xerial.util.StringUtil;
-import org.xerial.util.bean.BeanHandler;
-import org.xerial.util.bean.BeanUtil;
 import org.xerial.util.log.Logger;
 
 /**
@@ -117,16 +118,16 @@ public abstract class WebTrackBase extends RequestHandlerBase {
 	 * @throws UTGBException
 	 * @throws IOException
 	 */
-	public <T> void loadJSON(Reader jsonStream, Class<T> resultClass, BeanHandler<T> resultHandler) throws UTGBException, IOException {
+	public <T> void loadJSON(Reader jsonStream, Class<T> resultClass, ObjectHandler<T> resultHandler) throws UTGBException, IOException {
 		try {
-			BeanUtil.loadJSON(jsonStream, resultClass, resultHandler);
+			JSONLens.loadJSON(resultClass, jsonStream, resultHandler);
 		}
 		catch (XerialException e) {
 			throw new UTGBException(UTGBErrorCode.JSONToObjectMapping, e);
 		}
 	}
 
-	private static class JSONAccumulator<T> implements BeanHandler<T> {
+	private static class JSONAccumulator<T> extends ObjectHandlerBase<T> {
 		private ArrayList<T> result = new ArrayList<T>();
 
 		public void handle(T bean) throws Exception {
@@ -137,9 +138,6 @@ public abstract class WebTrackBase extends RequestHandlerBase {
 			return result;
 		}
 
-		public void handleException(Exception e) throws Exception {
-			_logger.error(e);
-		}
 	}
 
 	/**
@@ -155,7 +153,7 @@ public abstract class WebTrackBase extends RequestHandlerBase {
 	public <T> List<T> loadJSON(Reader jsonStream, Class<T> resultClass) throws UTGBException, IOException {
 		try {
 			JSONAccumulator<T> ja = new JSONAccumulator<T>();
-			BeanUtil.loadJSON(jsonStream, resultClass, ja);
+			JSONLens.loadJSON(resultClass, jsonStream, ja);
 			return ja.getResult();
 		}
 		catch (XerialException e) {

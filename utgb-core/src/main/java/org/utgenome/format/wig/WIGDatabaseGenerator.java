@@ -45,8 +45,8 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.Tree;
 import org.xerial.core.XerialException;
 import org.xerial.db.DBException;
+import org.xerial.lens.Lens;
 import org.xerial.util.StopWatch;
-import org.xerial.util.bean.impl.BeanUtilImpl;
 import org.xerial.util.log.Logger;
 
 /**
@@ -296,7 +296,7 @@ public class WIGDatabaseGenerator {
 			p2.execute();
 		}
 
-		for (WIGHeaderAttribute a : BeanUtilImpl.createBeanFromParseTree(WIGHeaderDescription.class, (Tree) ret.getTree(), WIGParser.tokenNames).attributes) {
+		for (WIGHeaderAttribute a : Lens.loadANTLRParseTree(WIGHeaderDescription.class, (Tree) ret.getTree(), WIGParser.tokenNames).attributes) {
 			if (a.name.equals("start")) {
 				data_start = Integer.parseInt(a.value);
 			}

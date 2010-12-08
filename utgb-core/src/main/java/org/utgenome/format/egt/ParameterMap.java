@@ -27,7 +27,7 @@ package org.utgenome.format.egt;
 import java.util.ArrayList;
 
 import org.xerial.util.Pair;
-import org.xerial.util.xml.XMLGenerator;
+import org.xerial.xml.XMLGenerator;
 
 /**
  * @author leo

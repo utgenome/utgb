@@ -23,7 +23,7 @@
 package org.utgenome.util.sv;
 
 import org.utgenome.gwt.utgb.client.bio.IUPAC;
-import org.xerial.lens.Lens;
+import org.xerial.lens.SilkLens;
 import org.xerial.util.log.Logger;
 
 /**
@@ -132,7 +132,7 @@ public class GeneticVariation {
 
 	@Override
 	public String toString() {
-		return Lens.toSilk(this);
+		return SilkLens.toSilk(this);
 	}
 
 }

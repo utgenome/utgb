@@ -30,7 +30,7 @@ import java.io.File;
 
 import org.junit.Test;
 import org.utgenome.gwt.utgb.client.bio.KeywordSearchResult;
-import org.xerial.lens.Lens;
+import org.xerial.lens.SilkLens;
 import org.xerial.util.FileResource;
 import org.xerial.util.FileUtil;
 import org.xerial.util.log.Logger;
@@ -52,7 +52,7 @@ public class KeywordDBTest {
 		try {
 			db.importFromBED("ce6", FileResource.open(KeywordDBTest.class, "wormbase-keyword.bed"));
 			KeywordSearchResult query = db.query("ce6", "Y74C9A.4b", 1, 10);
-			_logger.info(Lens.toSilk(query));
+			_logger.info(SilkLens.toSilk(query));
 			assertEquals(1, query.count);
 			assertEquals(1, query.result.size());
 
@@ -61,7 +61,7 @@ public class KeywordDBTest {
 			// reopen 
 			db = new KeywordDB(tmpKeywordDB);
 			query = db.query("ce6", "Y74C9A.2", 1, 10);
-			_logger.info(Lens.toSilk(query));
+			_logger.info(SilkLens.toSilk(query));
 			assertEquals("Y74C9A.2", query.result.get(0).name);
 			assertEquals(6, query.count);
 			assertEquals(6, query.result.size());
@@ -95,7 +95,7 @@ public class KeywordDBTest {
 		try {
 			db.importFromTAB("version1.0", FileResource.open(KeywordDBTest.class, "keyword.tab"));
 			KeywordSearchResult query = db.query("version1.0", "ENSORLG00000020021", 1, 10);
-			_logger.info(Lens.toSilk(query));
+			_logger.info(SilkLens.toSilk(query));
 			assertEquals(1, query.count);
 			assertEquals(1, query.result.size());
 

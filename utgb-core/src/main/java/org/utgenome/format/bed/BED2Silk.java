@@ -43,8 +43,8 @@ import org.utgenome.UTGBErrorCode;
 import org.utgenome.UTGBException;
 import org.utgenome.gwt.utgb.client.util.StringUtil;
 import org.xerial.core.XerialException;
+import org.xerial.lens.Lens;
 import org.xerial.silk.SilkWriter;
-import org.xerial.util.bean.impl.BeanUtilImpl;
 import org.xerial.util.log.Logger;
 
 /**
@@ -303,7 +303,7 @@ public class BED2Silk {
 		BEDParser parser = new BEDParser(tokens);
 		BEDParser.description_return ret = parser.description();
 
-		return BeanUtilImpl.createBeanFromParseTree(BEDHeaderDescription.class, (Tree) ret.getTree(), BEDParser.tokenNames);
+		return Lens.loadANTLRParseTree(BEDHeaderDescription.class, (Tree) ret.getTree(), BEDParser.tokenNames);
 	}
 
 	private static String changeRGB2Hex(String rgb) throws NumberFormatException {

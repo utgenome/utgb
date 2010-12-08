@@ -26,7 +26,7 @@ package org.utgenome.format.bed;
 
 import java.io.Serializable;
 
-import org.xerial.lens.Lens;
+import org.xerial.lens.SilkLens;
 
 /**
  * BEDTrack represents a track line in BED files.
@@ -55,6 +55,6 @@ public class BEDTrack implements Serializable {
 
 	@Override
 	public String toString() {
-		return Lens.toSilk(this);
+		return SilkLens.toSilk(this);
 	}
 }

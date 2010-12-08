@@ -22,7 +22,7 @@ import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.DASResult;
 import org.utgenome.gwt.utgb.server.WebTrackBase;
 import org.xerial.core.XerialException;
-import org.xerial.lens.Lens;
+import org.xerial.lens.XMLLens;
 import org.xerial.util.log.Logger;
 
 /**
@@ -86,7 +86,7 @@ public class DASViewer extends WebTrackBase {
 			_logger.debug(String.format("accessing DAS: %s", url));
 
 		try {
-			return Lens.loadXML(DASResult.class, new URL(url));
+			return XMLLens.loadXML(DASResult.class, new URL(url));
 		}
 		catch (MalformedURLException e) {
 			throw new UTGBException(UTGBErrorCode.INVALID_INPUT, e);

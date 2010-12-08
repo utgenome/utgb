@@ -27,7 +27,6 @@ package org.utgenome.gwt.utgb.client;
 import java.util.List;
 
 import org.utgenome.gwt.utgb.client.bean.DatabaseEntry;
-import org.utgenome.gwt.utgb.client.bean.track.TrackDescription;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.ChrRange;
 import org.utgenome.gwt.utgb.client.bio.CompactWIGData;
@@ -50,8 +49,6 @@ public interface BrowserServiceAsync extends RemoteService {
 	public void getTrackView(String viewName, AsyncCallback<TrackView> callback);
 
 	public void getHTTPContent(String url, AsyncCallback<String> callback);
-
-	public void getTrackDescription(String url, AsyncCallback<TrackDescription> callback);
 
 	public void getDatabaseCatalog(String jdbcAddress, AsyncCallback<String> callback);
 

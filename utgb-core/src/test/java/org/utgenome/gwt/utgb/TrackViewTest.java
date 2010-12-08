@@ -33,7 +33,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.utgenome.gwt.utgb.client.view.TrackView;
-import org.xerial.lens.Lens;
+import org.xerial.lens.SilkLens;
 import org.xerial.util.FileResource;
 import org.xerial.util.log.Logger;
 
@@ -58,7 +58,7 @@ public class TrackViewTest {
 
 	@Test
 	public void loadSilk() throws Exception {
-		TrackView v = Lens.loadSilk(TrackView.class, FileResource.find(TrackViewTest.class, "default-view.silk"));
+		TrackView v = SilkLens.loadSilk(TrackView.class, FileResource.find(TrackViewTest.class, "default-view.silk"));
 		assertNotNull(v);
 
 		assertEquals("human:hg19", v.trackGroup.coordinate.ref);
@@ -78,7 +78,7 @@ public class TrackViewTest {
 		assertEquals("org.utgenome.gwt.utgb.client.track.lib.NavigatorTrack", t.class_);
 		assertEquals(true, t.property.containsKey("sequencelist"));
 
-		_logger.info("\n" + Lens.toSilk(v));
+		_logger.info("\n" + SilkLens.toSilk(v));
 
 	}
 

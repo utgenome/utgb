@@ -32,7 +32,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.utgenome.gwt.utgb.client.view.TrackView;
-import org.xerial.lens.Lens;
+import org.xerial.lens.SilkLens;
+import org.xerial.lens.XMLLens;
 import org.xerial.util.FileResource;
 import org.xerial.util.log.Logger;
 
@@ -50,15 +51,15 @@ public class OldViewXMLTest {
 
 	@Test
 	public void load() throws Exception {
-		OldViewXML ov = Lens.loadXML(OldViewXML.class, FileResource.open(OldViewXMLTest.class, "bed.xml"));
+		OldViewXML ov = XMLLens.loadXML(OldViewXML.class, FileResource.open(OldViewXMLTest.class, "bed.xml"));
 
 		TrackView tv = ov.toTrackView();
-		String silk = Lens.toSilk(tv);
+		String silk = SilkLens.toSilk(tv);
 
 		assertTrue(tv.trackGroup.property.containsKey("dbgroup"));
 
-		TrackView tv2 = Lens.loadSilk(TrackView.class, new StringReader(silk));
-		_logger.info(Lens.toSilk(tv2));
+		TrackView tv2 = SilkLens.loadSilk(TrackView.class, new StringReader(silk));
+		_logger.info(SilkLens.toSilk(tv2));
 	}
 
 }

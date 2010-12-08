@@ -45,9 +45,9 @@ import org.utgenome.gwt.utgb.client.canvas.IntervalTree;
 import org.utgenome.util.StandardOutputStream;
 import org.utgenome.util.kmer.KmerIntegerFactory;
 import org.utgenome.util.sv.EnhancedGeneticVariation.MutationPosition;
-import org.xerial.lens.Lens;
-import org.xerial.lens.ObjectHandler;
+import org.xerial.lens.SilkLens;
 import org.xerial.silk.SilkWriter;
+import org.xerial.util.ObjectHandler;
 import org.xerial.util.log.Logger;
 import org.xerial.util.opt.Argument;
 import org.xerial.util.opt.OptionParser;
@@ -109,7 +109,7 @@ public class VariationAnnotator {
 		_logger.info("loading gene information: " + geneBED);
 		Reader bedReader = new BED2SilkReader(new BufferedReader(new FileReader(geneBED)));
 		try {
-			Lens.findFromSilk(bedReader, "gene", BEDGene.class, new ObjectHandler<BEDGene>() {
+			SilkLens.findFromSilk(bedReader, "gene", BEDGene.class, new ObjectHandler<BEDGene>() {
 				public void finish() throws Exception {
 					_logger.info(String.format("loaded %d genes", geneSet.size()));
 				}
@@ -133,7 +133,7 @@ public class VariationAnnotator {
 		// load variation position file
 		// TODO parallelization
 		_logger.info("loading variation data...");
-		Lens.findFromSilk(new BufferedReader(new FileReader(variationPosFile)), "variation", GeneticVariation.class, new ObjectHandler<GeneticVariation>() {
+		SilkLens.findFromSilk(new BufferedReader(new FileReader(variationPosFile)), "variation", GeneticVariation.class, new ObjectHandler<GeneticVariation>() {
 			int count = 0;
 
 			public void finish() throws Exception {

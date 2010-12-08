@@ -32,8 +32,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.utgenome.gwt.utgb.client.track.bean.Result;
 import org.utgenome.gwt.utgb.client.track.bean.SearchResult;
+import org.xerial.lens.JSONLens;
 import org.xerial.util.FileResource;
-import org.xerial.util.bean.BeanUtil;
 
 public class SearchResultTest {
 
@@ -48,7 +48,7 @@ public class SearchResultTest {
 	@Test
 	public void parseTest() throws Exception {
 		SearchResult searchResult = new SearchResult();
-		BeanUtil.populateBeanWithJSON(searchResult, FileResource.open(SearchResultTest.class, "sample_searchresult.json"));
+		JSONLens.loadJSON(searchResult, FileResource.open(SearchResultTest.class, "sample_searchresult.json"));
 
 		List<Result> resultList = searchResult.getResult();
 		Assert.assertEquals(10, resultList.size());

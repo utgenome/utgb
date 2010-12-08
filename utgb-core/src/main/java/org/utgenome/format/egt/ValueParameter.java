@@ -24,7 +24,7 @@
 //--------------------------------------
 package org.utgenome.format.egt;
 
-import org.xerial.util.xml.XMLGenerator;
+import org.xerial.xml.XMLGenerator;
 
 public class ValueParameter implements Parameter {
 	String value;

@@ -34,8 +34,8 @@ import java.util.List;
 
 import org.utgenome.gwt.utgb.client.bio.CytoBand;
 import org.xerial.core.XerialException;
-import org.xerial.lens.Lens;
-import org.xerial.lens.ObjectHandler;
+import org.xerial.lens.SilkLens;
+import org.xerial.util.ObjectHandler;
 
 /**
  * A sequence index to packed FASTA files
@@ -88,7 +88,7 @@ public class CompactFASTAIndex {
 
 	public static List<CompactFASTAIndex> load(Reader indexFile) throws XerialException, IOException {
 		IndexHolder holder = new IndexHolder();
-		Lens.findFromSilk(indexFile, "sequence", CompactFASTAIndex.class, holder);
+		SilkLens.findFromSilk(indexFile, "sequence", CompactFASTAIndex.class, holder);
 
 		return holder.index;
 	}

@@ -47,7 +47,7 @@ import org.xerial.core.XerialException;
 import org.xerial.db.sql.ResultSetHandler;
 import org.xerial.db.sql.SQLExpression;
 import org.xerial.db.sql.sqlite.SQLiteAccess;
-import org.xerial.lens.Lens;
+import org.xerial.lens.SilkLens;
 import org.xerial.util.log.Logger;
 
 /**
@@ -70,7 +70,7 @@ public class BEDDatabase {
 			Connection conn = DriverManager.getConnection("jdbc:sqlite:" + dbName);
 
 			query = new DBBuilder(conn);
-			Lens.loadSilk(query, reader);
+			SilkLens.loadSilk(query, reader);
 
 			query.dispose();
 		}
@@ -176,11 +176,10 @@ public class BEDDatabase {
 				// use db
 				SQLiteAccess dbAccess = new SQLiteAccess(dbInput.getAbsolutePath());
 
-				try
-				{
+				try {
 					String sql = SQLExpression.fillTemplate("select start, end, name, score, strand, cds, exon, color from gene "
 							+ "where coordinate = '$1' and ((start between $2 and $3) or (start <= $2 and end >= $3))", location.chr, sqlEnd, sqlStart);
-	
+
 					if (_logger.isDebugEnabled())
 						_logger.debug(sql);
 
@@ -193,7 +192,7 @@ public class BEDDatabase {
 					});
 				}
 				finally {
-					dbAccess.dispose();	
+					dbAccess.dispose();
 				}
 			}
 			else {
@@ -202,7 +201,7 @@ public class BEDDatabase {
 				try {
 					in = new BED2SilkReader(new FileReader(bedPath));
 					BEDRangeQuery query = new BEDRangeQuery(geneList, location.chr, sqlStart, sqlEnd);
-					Lens.loadSilk(query, in);
+					SilkLens.loadSilk(query, in);
 				}
 				finally {
 					if (in != null)

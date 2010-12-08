@@ -49,7 +49,7 @@ import org.utgenome.config.UTGBConfig.WebAction;
 import org.xerial.core.XerialException;
 import org.xerial.db.DBException;
 import org.xerial.db.sql.DatabaseAccess;
-import org.xerial.lens.Lens;
+import org.xerial.lens.SilkLens;
 import org.xerial.util.log.Logger;
 
 /**
@@ -119,7 +119,7 @@ public class UTGBMaster implements ServletContextListener {
 		;
 		try {
 			_logger.info(String.format("loading %s", configFile));
-			UTGBConfig config = Lens.loadSilk(UTGBConfig.class, new File(projectRootFolder, configFile).toURI().toURL());
+			UTGBConfig config = SilkLens.loadSilk(UTGBConfig.class, new File(projectRootFolder, configFile).toURI().toURL());
 			return config;
 		}
 		catch (XerialException e) {

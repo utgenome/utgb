@@ -28,8 +28,8 @@ import org.utgenome.gwt.utgb.server.util.graphic.GraphicUtil;
 import org.xerial.db.sql.BeanResultHandler;
 import org.xerial.json.JSONWriter;
 import org.xerial.util.log.Logger;
-import org.xerial.util.xml.XMLAttribute;
-import org.xerial.util.xml.XMLGenerator;
+import org.xerial.xml.XMLAttribute;
+import org.xerial.xml.XMLGenerator;
 
 /**
  * SubSequence retrieves a genome sequence of the specified target in the range (start, end) (inclusive)

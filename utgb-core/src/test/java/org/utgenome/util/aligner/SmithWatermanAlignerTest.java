@@ -30,7 +30,7 @@ import org.junit.Test;
 import org.utgenome.format.fasta.CompactACGT;
 import org.utgenome.util.aligner.SmithWatermanAligner.Alignment;
 import org.utgenome.util.aligner.SmithWatermanAligner.Config;
-import org.xerial.lens.Lens;
+import org.xerial.lens.SilkLens;
 import org.xerial.util.log.Logger;
 
 public class SmithWatermanAlignerTest {
@@ -53,7 +53,7 @@ public class SmithWatermanAlignerTest {
 		SmithWatermanAligner sw = new SmithWatermanAligner(conf);
 		Alignment alignment = sw.align("CACGATCAGACCGATACGTCCGA", "CGATCAGAGACCGATA");
 
-		_logger.info(Lens.toSilk(alignment));
+		_logger.info(SilkLens.toSilk(alignment));
 	}
 
 	@Test
@@ -64,7 +64,7 @@ public class SmithWatermanAlignerTest {
 		SmithWatermanAligner sw = new SmithWatermanAligner(conf);
 		Alignment alignment = sw.align("CACGATCAGACCGATACGTCCGA", "ATCTTTCGATCAGAGACCGATAgggcgcg");
 
-		_logger.info(Lens.toSilk(alignment));
+		_logger.info(SilkLens.toSilk(alignment));
 	}
 
 	@Test
@@ -76,7 +76,7 @@ public class SmithWatermanAlignerTest {
 		SmithWatermanAligner sw = new SmithWatermanAligner(conf);
 		Alignment alignment = sw.align(seq, SmithWatermanAligner.wrap("CGATCAGAGACCGATA"));
 
-		_logger.info(Lens.toSilk(alignment));
+		_logger.info(SilkLens.toSilk(alignment));
 	}
 
 }

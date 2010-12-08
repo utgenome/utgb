@@ -33,11 +33,11 @@ import java.util.Properties;
 import org.utgenome.config.UTGBConfig;
 import org.utgenome.shell.UTGBShell.UTGBShellOption;
 import org.xerial.core.XerialException;
-import org.xerial.lens.Lens;
+import org.xerial.lens.SilkLens;
 import org.xerial.util.FileResource;
 import org.xerial.util.log.Logger;
 import org.xerial.util.opt.Usage;
-import org.xerial.util.template.Template;
+import org.xerial.util.text.Template;
 
 /**
  * A common implementation of the UTGBShell's sub commands
@@ -114,7 +114,7 @@ public abstract class UTGBShellCommand implements Comparable<UTGBShellCommand> {
 			throw new UTGBShellException(String.format("Not in the project root folder: configuration file %s not found", getConfigFile()));
 		}
 		try {
-			UTGBConfig config = Lens.loadSilk(UTGBConfig.class, getConfigFile().toURI().toURL());
+			UTGBConfig config = SilkLens.loadSilk(UTGBConfig.class, getConfigFile().toURI().toURL());
 			return config;
 		}
 		catch (XerialException e) {

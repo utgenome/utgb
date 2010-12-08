@@ -28,8 +28,8 @@ import java.io.File;
 import java.io.IOException;
 
 import org.utgenome.config.UTGBConfig;
-import org.xerial.lens.ObjectLens;
 import org.xerial.util.StringUtil;
+import org.xerial.util.lens.ObjectLens;
 import org.xerial.util.log.Logger;
 import org.xerial.util.opt.Argument;
 import org.xerial.util.opt.Option;

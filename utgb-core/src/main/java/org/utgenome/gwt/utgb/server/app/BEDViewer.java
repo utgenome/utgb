@@ -40,7 +40,7 @@ import org.utgenome.graphics.GenomeWindow;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
 import org.utgenome.gwt.utgb.server.WebTrackBase;
-import org.xerial.lens.Lens;
+import org.xerial.lens.SilkLens;
 import org.xerial.util.log.Logger;
 
 /**
@@ -73,7 +73,7 @@ public class BEDViewer extends WebTrackBase implements Serializable {
 
 			if (suffix != null && suffix.equals("silk")) {
 				response.setContentType("text/plain");
-				response.getWriter().print(Lens.toSilk(geneList));
+				response.getWriter().print(SilkLens.toSilk(geneList));
 			}
 			else {
 				GeneCanvas geneCanvas = new GeneCanvas(width, 300, new GenomeWindow(start, end));

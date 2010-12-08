@@ -26,7 +26,7 @@ package org.utgenome.format.keyword;
 
 import org.junit.Test;
 import org.utgenome.format.keyword.GenomeKeywordEntry.KeywordAlias;
-import org.xerial.lens.Lens;
+import org.xerial.lens.SilkLens;
 import org.xerial.util.FileResource;
 import org.xerial.util.log.Logger;
 
@@ -40,7 +40,7 @@ public class KeywordAliasReaderTest {
 		KeywordAliasReader r = new KeywordAliasReader(FileResource.open(KeywordAliasReaderTest.class, "alias-sample.txt"));
 		KeywordAlias ka;
 		while ((ka = r.next()) != null) {
-			_logger.info(Lens.toSilk(ka));
+			_logger.info(SilkLens.toSilk(ka));
 		}
 	}
 

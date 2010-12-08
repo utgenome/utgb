@@ -19,8 +19,8 @@ import org.utgenome.graphics.GeneCanvas;
 import org.utgenome.graphics.GenomeWindow;
 import org.utgenome.gwt.utgb.client.bio.Gene;
 import org.utgenome.gwt.utgb.server.WebTrackBase;
-import org.xerial.util.bean.BeanHandler;
-import org.xerial.util.bean.BeanUtil;
+import org.xerial.lens.JSONLens;
+import org.xerial.util.ObjectHandlerBase;
 import org.xerial.util.log.Logger;
 
 /**
@@ -44,7 +44,7 @@ public class GeneViewer extends WebTrackBase {
 	public GeneViewer() {
 	}
 
-	class GeneRetriever<T> implements BeanHandler<T> {
+	class GeneRetriever<T> extends ObjectHandlerBase<T> {
 		private ArrayList<T> geneList = new ArrayList<T>();
 
 		public GeneRetriever() {
@@ -63,6 +63,7 @@ public class GeneViewer extends WebTrackBase {
 		}
 	}
 
+	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		String refseqURL = String.format("http://utgenome.org/api/refseq/%s/%s/%s:%d-%d/list.json", species, revision, name, start, end);
@@ -73,7 +74,7 @@ public class GeneViewer extends WebTrackBase {
 		GeneRetriever<Gene> geneRetriever = new GeneRetriever<Gene>();
 		try {
 
-			BeanUtil.loadJSON(new InputStreamReader(apiURL.openStream()), Gene.class, geneRetriever);
+			JSONLens.loadJSON(Gene.class, new InputStreamReader(apiURL.openStream()), geneRetriever);
 
 			String actionSuffix = getActionSuffix(request);
 			if (actionSuffix.equals("tab")) {

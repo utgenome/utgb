@@ -25,9 +25,6 @@ package org.utgenome.format.axt;
 import java.io.IOException;
 import java.io.Writer;
 
-import org.utgenome.UTGBErrorCode;
-import org.utgenome.UTGBException;
-
 /**
  * Record in AXT format
  * 
@@ -48,29 +45,6 @@ public class AXTAlignment {
 
 	public String primaryAssembly;
 	public String aligningAssembly;
-
-	public void parseSummaryLine(String summaryLine) throws UTGBException {
-		String[] c = summaryLine.split("[\\s]+");
-
-		if (c.length < 9)
-			throw new UTGBException(UTGBErrorCode.INVALID_FORMAT, summaryLine);
-
-		try {
-			num = Integer.parseInt(c[0]);
-			s_chr = c[1];
-			s_start = Integer.parseInt(c[2]);
-			s_end = Integer.parseInt(c[3]);
-			d_chr = c[4];
-			d_start = Integer.parseInt(c[5]);
-			d_end = Integer.parseInt(c[6]);
-			strand = c[7];
-			score = Integer.parseInt(c[8]);
-		}
-		catch (NumberFormatException e) {
-			throw new UTGBException(UTGBErrorCode.INVALID_FORMAT, String.format("%s: %s", e.getMessage(), summaryLine));
-		}
-
-	}
 
 	public void toAXT(Writer out) throws IOException {
 		out.append(Integer.toString(num));
@@ -97,6 +71,34 @@ public class AXTAlignment {
 		out.append(aligningAssembly);
 		out.append("\n");
 		out.append("\n");
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+
+		AXTAlignment other = AXTAlignment.class.cast(obj);
+		if (num != other.num)
+			return false;
+		if (!s_chr.equals(other.s_chr))
+			return false;
+		if (s_start != other.s_start)
+			return false;
+		if (s_end != other.s_end)
+			return false;
+		if (!d_chr.equals(other.d_chr))
+			return false;
+		if (d_start != other.d_start)
+			return false;
+		if (d_end != other.d_end)
+			return false;
+		if (!primaryAssembly.equals(other.primaryAssembly))
+			return false;
+		if (!aligningAssembly.equals(other.aligningAssembly))
+			return false;
+		if (score != other.score)
+			return false;
+
+		return true;
 	}
 
 }

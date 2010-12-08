@@ -35,11 +35,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
-import org.xerial.ObjectHandlerBase;
 import org.xerial.core.XerialException;
-import org.xerial.lens.Lens;
-import org.xerial.lens.ObjectHandler;
+import org.xerial.lens.SilkLens;
 import org.xerial.util.FileResource;
+import org.xerial.util.ObjectHandler;
+import org.xerial.util.ObjectHandlerBase;
 import org.xerial.util.StringUtil;
 import org.xerial.util.log.Logger;
 
@@ -58,65 +58,66 @@ public class SAM2SilkReaderTest {
 	@Test
 	public void toSilkTest() throws Exception {
 
-		Lens.findFromSilk(new SAM2SilkReader(FileResource.open(SAM2SilkReaderTest.class, "chr21.sam")), "record", SAMRead.class, new ObjectHandler<SAMRead>() {
+		SilkLens.findFromSilk(new SAM2SilkReader(FileResource.open(SAM2SilkReaderTest.class, "chr21.sam")), "record", SAMRead.class,
+				new ObjectHandler<SAMRead>() {
 
-			int count = 0;
+					int count = 0;
 
-			public void finish() throws Exception {
-				assertEquals(2, count);
-			}
+					public void finish() throws Exception {
+						assertEquals(2, count);
+					}
 
-			public void init() throws Exception {
+					public void init() throws Exception {
 
-			}
+					}
 
-			public void handle(SAMRead input) throws Exception {
+					public void handle(SAMRead input) throws Exception {
 
-				// read_28833_29006_6945	99	chr21	28833	20	10M1D25M	=	28993	195	AGCTTAGCTAGCTACCTATATCTTGGTCTTGGCCG	<<<<<<<<<<<<<<<<<<<<<:<9/,&,22;;<<<	MF:i:130	Nm:i:1	H0:i:0	H1:i:0	RG:Z:L1
-				// read_28701_28881_323b	147	chr21	28834	30	35M	=	28701	-168	ACCTATATCTTGGCCTTGGCCGATGCGGCCTTGCA	<<<<<;<<<<7;:<<<6;<<<<<<<<<<<<7<<<<	MF:i:18	Nm:i:0	H0:i:1	H1:i:0	RG:Z:L2
+						// read_28833_29006_6945	99	chr21	28833	20	10M1D25M	=	28993	195	AGCTTAGCTAGCTACCTATATCTTGGTCTTGGCCG	<<<<<<<<<<<<<<<<<<<<<:<9/,&,22;;<<<	MF:i:130	Nm:i:1	H0:i:0	H1:i:0	RG:Z:L1
+						// read_28701_28881_323b	147	chr21	28834	30	35M	=	28701	-168	ACCTATATCTTGGCCTTGGCCGATGCGGCCTTGCA	<<<<<;<<<<7;:<<<6;<<<<<<<<<<<<7<<<<	MF:i:18	Nm:i:0	H0:i:1	H1:i:0	RG:Z:L2
 
-				if ("read_28833_29006_6945".equals(input.qname)) {
-					assertEquals(99, input.flag);
-					assertEquals("chr21", input.rname);
-					assertEquals(28833, input.getStart());
-					assertEquals(28869, input.getEnd());
-					assertEquals("10M1D25M", input.cigar);
-					assertNull(input.mrnm); // when mrnm == null
-					assertEquals(28993, input.mStart);
-					assertEquals(195, input.iSize);
-					assertEquals("AGCTTAGCTAGCTACCTATATCTTGGTCTTGGCCG", input.seq);
-					assertEquals("<<<<<<<<<<<<<<<<<<<<<:<9/,&,22;;<<<", input.qual);
-					assertEquals(5, input.tag.size());
-					assertEquals(130, input.tag.getInt("MF"));
-					assertEquals(1, input.tag.getInt("NM"));
-					assertEquals(0, input.tag.getInt("H0"));
-					assertEquals(0, input.tag.getInt("H1"));
-					assertEquals("L1", input.tag.get("RG"));
-					count++;
-				}
-				else if ("read_28701_28881_323b".equals(input.qname)) {
-					assertEquals(147, input.flag);
-					assertEquals("chr21", input.rname);
-					assertEquals(28834, input.getStart());
-					assertEquals(28869, input.getEnd());
-					assertEquals("35M", input.cigar);
-					assertNull(input.mrnm); // when mrnm == null
-					assertEquals(28701, input.mStart);
-					assertEquals(-168, input.iSize);
-					assertEquals("ACCTATATCTTGGCCTTGGCCGATGCGGCCTTGCA", input.seq);
-					assertEquals("<<<<<;<<<<7;:<<<6;<<<<<<<<<<<<7<<<<", input.qual);
-					assertEquals(5, input.tag.size());
-					assertEquals(18, input.tag.getInt("MF"));
-					assertEquals(0, input.tag.getInt("NM"));
-					assertEquals(1, input.tag.getInt("H0"));
-					assertEquals(0, input.tag.getInt("H1"));
-					assertEquals("L2", input.tag.get("RG"));
-					count++;
-				}
+						if ("read_28833_29006_6945".equals(input.qname)) {
+							assertEquals(99, input.flag);
+							assertEquals("chr21", input.rname);
+							assertEquals(28833, input.getStart());
+							assertEquals(28869, input.getEnd());
+							assertEquals("10M1D25M", input.cigar);
+							assertNull(input.mrnm); // when mrnm == null
+							assertEquals(28993, input.mStart);
+							assertEquals(195, input.iSize);
+							assertEquals("AGCTTAGCTAGCTACCTATATCTTGGTCTTGGCCG", input.seq);
+							assertEquals("<<<<<<<<<<<<<<<<<<<<<:<9/,&,22;;<<<", input.qual);
+							assertEquals(5, input.tag.size());
+							assertEquals(130, input.tag.getInt("MF"));
+							assertEquals(1, input.tag.getInt("NM"));
+							assertEquals(0, input.tag.getInt("H0"));
+							assertEquals(0, input.tag.getInt("H1"));
+							assertEquals("L1", input.tag.get("RG"));
+							count++;
+						}
+						else if ("read_28701_28881_323b".equals(input.qname)) {
+							assertEquals(147, input.flag);
+							assertEquals("chr21", input.rname);
+							assertEquals(28834, input.getStart());
+							assertEquals(28869, input.getEnd());
+							assertEquals("35M", input.cigar);
+							assertNull(input.mrnm); // when mrnm == null
+							assertEquals(28701, input.mStart);
+							assertEquals(-168, input.iSize);
+							assertEquals("ACCTATATCTTGGCCTTGGCCGATGCGGCCTTGCA", input.seq);
+							assertEquals("<<<<<;<<<<7;:<<<6;<<<<<<<<<<<<7<<<<", input.qual);
+							assertEquals(5, input.tag.size());
+							assertEquals(18, input.tag.getInt("MF"));
+							assertEquals(0, input.tag.getInt("NM"));
+							assertEquals(1, input.tag.getInt("H0"));
+							assertEquals(0, input.tag.getInt("H1"));
+							assertEquals("L2", input.tag.get("RG"));
+							count++;
+						}
 
-				_logger.info(Lens.toSilk(input));
-			}
-		});
+						_logger.info(SilkLens.toSilk(input));
+					}
+				});
 	}
 
 	@Test
@@ -131,10 +132,10 @@ public class SAM2SilkReaderTest {
 		String silk = w.toString();
 		_logger.info(silk);
 
-		Lens.findFromSilk(new SAM2SilkReader(FileResource.open(SAM2SilkReaderTest.class, "bss-align.sam")), "record", SAMRead.class,
+		SilkLens.findFromSilk(new SAM2SilkReader(FileResource.open(SAM2SilkReaderTest.class, "bss-align.sam")), "record", SAMRead.class,
 				new ObjectHandlerBase<SAMRead>() {
 					public void handle(SAMRead input) throws Exception {
-						_logger.info(Lens.toSilk(input));
+						_logger.info(SilkLens.toSilk(input));
 					}
 				});
 	}

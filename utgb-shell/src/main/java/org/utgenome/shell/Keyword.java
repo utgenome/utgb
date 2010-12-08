@@ -37,7 +37,7 @@ import org.utgenome.format.keyword.KeywordDB;
 import org.utgenome.gwt.utgb.client.bio.KeywordSearchResult;
 import org.utgenome.shell.Import.FileType;
 import org.utgenome.util.StandardInputStream;
-import org.xerial.lens.Lens;
+import org.xerial.lens.SilkLens;
 import org.xerial.util.StopWatch;
 import org.xerial.util.log.Logger;
 import org.xerial.util.opt.Argument;
@@ -150,7 +150,7 @@ public class Keyword extends UTGBShellCommand {
 				break;
 			case SEARCH:
 				KeywordSearchResult query = db.query(ref, input, page, pageSize);
-				System.out.println(Lens.toSilk(query));
+				System.out.println(SilkLens.toSilk(query));
 				break;
 			}
 

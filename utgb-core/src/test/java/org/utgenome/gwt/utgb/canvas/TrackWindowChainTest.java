@@ -32,7 +32,7 @@ import org.junit.Test;
 import org.utgenome.gwt.utgb.client.canvas.TrackWindowChain;
 import org.utgenome.gwt.utgb.client.canvas.TrackWindowChain.WindowUpdateInfo;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
-import org.xerial.lens.Lens;
+import org.xerial.lens.SilkLens;
 import org.xerial.util.log.Logger;
 
 public class TrackWindowChainTest {
@@ -66,35 +66,35 @@ public class TrackWindowChainTest {
 		TrackWindowChain chain = new TrackWindowChain();
 		TrackWindow view = new TrackWindow(800, 1, 1001);
 		WindowUpdateInfo update = chain.setViewWindow(view);
-		_logger.debug(String.format("view: %s\n%s", view.toString(), Lens.toSilk(update)));
+		_logger.debug(String.format("view: %s\n%s", view.toString(), SilkLens.toSilk(update)));
 		verifyChain(view, chain);
 
 		update = chain.setViewWindow(view = view.scroll(500));
-		_logger.debug(String.format("view: %s\n%s", view.toString(), Lens.toSilk(update)));
+		_logger.debug(String.format("view: %s\n%s", view.toString(), SilkLens.toSilk(update)));
 		verifyChain(view, chain);
 
 		update = chain.setViewWindow(view = view.scroll(500));
-		_logger.debug(String.format("view: %s\n%s", view.toString(), Lens.toSilk(update)));
+		_logger.debug(String.format("view: %s\n%s", view.toString(), SilkLens.toSilk(update)));
 		verifyChain(view, chain);
 
 		update = chain.setViewWindow(view = view.scroll(500));
-		_logger.debug(String.format("view: %s\n%s", view.toString(), Lens.toSilk(update)));
+		_logger.debug(String.format("view: %s\n%s", view.toString(), SilkLens.toSilk(update)));
 		verifyChain(view, chain);
 
 		update = chain.setViewWindow(view = view.scroll(-500));
-		_logger.debug(String.format("view: %s\n%s", view.toString(), Lens.toSilk(update)));
+		_logger.debug(String.format("view: %s\n%s", view.toString(), SilkLens.toSilk(update)));
 		verifyChain(view, chain);
 
 		update = chain.setViewWindow(view = view.scroll(1000));
-		_logger.debug(String.format("view: %s\n%s", view.toString(), Lens.toSilk(update)));
+		_logger.debug(String.format("view: %s\n%s", view.toString(), SilkLens.toSilk(update)));
 		verifyChain(view, chain);
 
-		_logger.debug(String.format("view: %s\n%s", view.toString(), Lens.toSilk(update)));
+		_logger.debug(String.format("view: %s\n%s", view.toString(), SilkLens.toSilk(update)));
 		update = chain.setViewWindow(view = view.scroll(3000));
 		verifyChain(view, chain);
 
 		update = chain.setViewWindow(new TrackWindow(view.getPixelWidth(), view.getStartOnGenome() - 1000, view.getEndOnGenome() + 1000));
-		_logger.debug(String.format("view: %s\n%s", view.toString(), Lens.toSilk(update)));
+		_logger.debug(String.format("view: %s\n%s", view.toString(), SilkLens.toSilk(update)));
 		verifyChain(view, chain);
 
 	}

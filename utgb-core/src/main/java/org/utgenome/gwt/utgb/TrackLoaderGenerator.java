@@ -37,7 +37,7 @@ import org.xerial.util.opt.Option;
 import org.xerial.util.opt.OptionParser;
 import org.xerial.util.opt.OptionParserException;
 import org.xerial.util.opt.Usage;
-import org.xerial.util.template.Template;
+import org.xerial.util.text.Template;
 
 public class TrackLoaderGenerator {
 	private static Logger _logger = Logger.getLogger(TrackLoaderGenerator.class);

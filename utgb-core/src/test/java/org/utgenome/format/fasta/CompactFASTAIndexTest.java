@@ -34,7 +34,7 @@ import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.utgenome.gwt.utgb.client.bio.CytoBand;
-import org.xerial.lens.Lens;
+import org.xerial.lens.SilkLens;
 import org.xerial.util.FileResource;
 import org.xerial.util.log.Logger;
 
@@ -59,7 +59,7 @@ public class CompactFASTAIndexTest {
 	public void load() throws Exception {
 		List<CompactFASTAIndex> index = CompactFASTAIndex.load(new FileReader(new File(workDir, "sample.fa.i.silk")));
 		assertEquals(3, index.size());
-		_logger.info(Lens.toSilk(index));
+		_logger.info(SilkLens.toSilk(index));
 
 	}
 

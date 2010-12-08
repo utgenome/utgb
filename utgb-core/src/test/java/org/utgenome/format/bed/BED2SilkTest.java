@@ -30,10 +30,10 @@ import java.io.StringReader;
 
 import org.junit.Test;
 import org.utgenome.gwt.utgb.client.bio.CDS;
-import org.xerial.ObjectHandlerBase;
-import org.xerial.lens.Lens;
-import org.xerial.lens.ObjectHandler;
+import org.xerial.lens.SilkLens;
 import org.xerial.util.FileResource;
+import org.xerial.util.ObjectHandler;
+import org.xerial.util.ObjectHandlerBase;
 import org.xerial.util.log.Logger;
 
 public class BED2SilkTest {
@@ -45,7 +45,7 @@ public class BED2SilkTest {
 		String s = b2s.toSilk();
 		_logger.debug(s);
 
-		Lens.findFromSilk(new StringReader(s), "track", BEDTrack.class, new ObjectHandlerBase<BEDTrack>() {
+		SilkLens.findFromSilk(new StringReader(s), "track", BEDTrack.class, new ObjectHandlerBase<BEDTrack>() {
 
 			public void handle(BEDTrack input) throws Exception {
 				//track name="Item,RGB,Demo2" description="Item RGB demonstration2" visibility=2 itemRgb="On" useScore=1	color=0,128,0 url="http://genome.ucsc.edu/goldenPath/help/clones.html#$$"
@@ -60,7 +60,7 @@ public class BED2SilkTest {
 
 		});
 
-		Lens.findFromSilk(new StringReader(s), "gene", BEDEntry.class, new ObjectHandler<BEDEntry>() {
+		SilkLens.findFromSilk(new StringReader(s), "gene", BEDEntry.class, new ObjectHandler<BEDEntry>() {
 
 			int geneCount = 0;
 
@@ -116,7 +116,7 @@ public class BED2SilkTest {
 		String s = b2s.toSilk();
 		_logger.debug(s);
 
-		Lens.findFromSilk(new StringReader(s), "track", BEDTrack.class, new ObjectHandlerBase<BEDTrack>() {
+		SilkLens.findFromSilk(new StringReader(s), "track", BEDTrack.class, new ObjectHandlerBase<BEDTrack>() {
 
 			public void handle(BEDTrack input) throws Exception {
 				assertEquals("HCT116_H4(K5/8/12/16)_Ac", input.name);
@@ -124,7 +124,7 @@ public class BED2SilkTest {
 
 		});
 
-		Lens.findFromSilk(new StringReader(s), "gene", BEDEntry.class, new ObjectHandler<BEDEntry>() {
+		SilkLens.findFromSilk(new StringReader(s), "gene", BEDEntry.class, new ObjectHandler<BEDEntry>() {
 			int geneCount = 0;
 
 			public void init() throws Exception {
@@ -150,7 +150,7 @@ public class BED2SilkTest {
 		String s = b2s.toSilk();
 		_logger.debug(s);
 
-		Lens.findFromSilk(new StringReader(s), "track", BEDTrack.class, new ObjectHandlerBase<BEDTrack>() {
+		SilkLens.findFromSilk(new StringReader(s), "track", BEDTrack.class, new ObjectHandlerBase<BEDTrack>() {
 
 			public void handle(BEDTrack input) throws Exception {
 				//track name="Item,RGB,Demo2" description="Item RGB demonstration2" visibility=2 itemRgb="On" useScore=1	color=0,128,0 url="http://genome.ucsc.edu/goldenPath/help/clones.html#$$"
@@ -165,7 +165,7 @@ public class BED2SilkTest {
 
 		});
 
-		Lens.findFromSilk(new StringReader(s), "gene", BEDEntry.class, new ObjectHandler<BEDEntry>() {
+		SilkLens.findFromSilk(new StringReader(s), "gene", BEDEntry.class, new ObjectHandler<BEDEntry>() {
 
 			int geneCount = 0;
 

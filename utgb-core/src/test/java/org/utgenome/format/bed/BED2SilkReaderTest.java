@@ -31,7 +31,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.utgenome.gwt.utgb.client.bio.Exon;
-import org.xerial.lens.Lens;
+import org.xerial.lens.SilkLens;
 import org.xerial.util.FileResource;
 import org.xerial.util.log.Logger;
 
@@ -50,13 +50,13 @@ public class BED2SilkReaderTest {
 	@Test
 	public void testGen() throws Exception {
 		BED2SilkReader r = new BED2SilkReader(FileResource.open(BED2SilkReaderTest.class, "sample.bed"));
-		Lens.loadSilk(new BEDQuery() {
+		SilkLens.loadSilk(new BEDQuery() {
 			public void addGene(BEDEntry gene) {
-				_logger.info(Lens.toSilk(gene));
+				_logger.info(SilkLens.toSilk(gene));
 			}
 
 			public void addTrack(BEDTrack track) {
-				_logger.info(Lens.toSilk(track));
+				_logger.info(SilkLens.toSilk(track));
 			}
 
 			public void reportError(Exception e) {
@@ -74,9 +74,9 @@ public class BED2SilkReaderTest {
 
 		BED2SilkReader r = new BED2SilkReader(FileResource.open(BED2SilkReaderTest.class, "exon.bed"));
 
-		Lens.loadSilk(new BEDQuery() {
+		SilkLens.loadSilk(new BEDQuery() {
 			public void addGene(BEDEntry gene) {
-				_logger.info(Lens.toSilk(gene));
+				_logger.info(SilkLens.toSilk(gene));
 
 				for (Exon each : gene.getExon()) {
 					assertTrue(each.getStart() != -1);
@@ -84,7 +84,7 @@ public class BED2SilkReaderTest {
 			}
 
 			public void addTrack(BEDTrack track) {
-				_logger.info(Lens.toSilk(track));
+				_logger.info(SilkLens.toSilk(track));
 			}
 
 			public void reportError(Exception e) {

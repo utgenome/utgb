@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.utgenome.gwt.utgb.server.WebTrackBase;
 import org.utgenome.gwt.utgb.server.app.FontPanel.FontInfo;
-import org.xerial.lens.ObjectLens;
+import org.xerial.lens.JSONLens;
 import org.xerial.util.Pair;
 import org.xerial.util.log.Logger;
 
@@ -32,10 +32,11 @@ public class FontMetric extends WebTrackBase {
 
 	public int fontSize = 10;
 
+	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		Pair<FontInfo, Font> fontInfo = FontPanel.getFontInfo(fontSize);
-		response.getWriter().println(ObjectLens.toJSON(fontInfo.getFirst()));
+		response.getWriter().println(JSONLens.toJSON(fontInfo.getFirst()));
 
 	}
 

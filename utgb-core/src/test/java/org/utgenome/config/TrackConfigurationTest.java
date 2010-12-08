@@ -34,8 +34,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.utgenome.config.UTGBConfig.Database;
+import org.xerial.lens.XMLLens;
 import org.xerial.util.FileResource;
-import org.xerial.util.bean.BeanUtil;
 
 public class TrackConfigurationTest {
 
@@ -49,8 +49,7 @@ public class TrackConfigurationTest {
 
 	@Test
 	public void loadTest() throws Exception, IOException {
-		TrackConfiguration config = BeanUtil
-				.createXMLBean(TrackConfiguration.class, FileResource.open(TrackConfigurationTest.class, "track-config-sample.xml"));
+		TrackConfiguration config = XMLLens.createXMLBean(TrackConfiguration.class, FileResource.open(TrackConfigurationTest.class, "track-config-sample.xml"));
 
 		assertEquals("1.0", config.getVersion());
 		assertEquals("org.utgenome", config.getGroup());
@@ -71,8 +70,7 @@ public class TrackConfigurationTest {
 
 	@Test
 	public void testConvert() throws Exception {
-		TrackConfiguration config = BeanUtil
-				.createXMLBean(TrackConfiguration.class, FileResource.open(TrackConfigurationTest.class, "track-config-sample.xml"));
+		TrackConfiguration config = XMLLens.createXMLBean(TrackConfiguration.class, FileResource.open(TrackConfigurationTest.class, "track-config-sample.xml"));
 
 		UTGBConfig uc = config.convert();
 		assertEquals("1.0", uc.version);

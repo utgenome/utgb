@@ -43,7 +43,7 @@ import org.utgenome.shell.Create.ScaffoldFileFilter;
 import org.xerial.util.FileResource;
 import org.xerial.util.io.VirtualFile;
 import org.xerial.util.log.Logger;
-import org.xerial.util.template.Template;
+import org.xerial.util.text.Template;
 
 /**
  * Scaffold generator

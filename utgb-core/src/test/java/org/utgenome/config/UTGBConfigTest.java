@@ -32,7 +32,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.utgenome.config.UTGBConfig.Database;
 import org.utgenome.config.UTGBConfig.WebAction;
-import org.xerial.lens.Lens;
+import org.xerial.lens.JSONLens;
 import org.xerial.util.FileResource;
 import org.xerial.util.log.Logger;
 
@@ -92,7 +92,7 @@ public class UTGBConfigTest {
 	@Test
 	public void parseTest() throws Exception {
 		UTGBConfig config = UTGBConfig.parse(FileResource.find(UTGBConfigTest.class, "common-sample.silk"));
-		_logger.debug(Lens.toJSON(config));
+		_logger.debug(JSONLens.toJSON(config));
 
 		validate(config);
 	}

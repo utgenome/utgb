@@ -26,11 +26,12 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.utgenome.UTGBErrorCode;
 import org.utgenome.UTGBException;
-import org.xerial.lens.ObjectHandler;
+import org.xerial.util.ObjectHandler;
 import org.xerial.util.StringUtil;
 import org.xerial.util.log.Logger;
 
@@ -50,10 +51,71 @@ public class AXTLens {
 		}
 
 		AXTAlignment result = new AXTAlignment();
-		result.parseSummaryLine(axtBlock.get(0));
+		parseSummaryLine(result, axtBlock.get(0));
 		result.primaryAssembly = axtBlock.get(1);
 		result.aligningAssembly = axtBlock.get(2);
 		return result;
+	}
+
+	public static void parseSummaryLine(AXTAlignment obj, String summaryLine) throws UTGBException {
+		String[] c = summaryLine.split("[\\s]+");
+
+		if (c.length < 9)
+			throw new UTGBException(UTGBErrorCode.INVALID_FORMAT, summaryLine);
+
+		try {
+			obj.num = Integer.parseInt(c[0]);
+			obj.s_chr = c[1];
+			obj.s_start = Integer.parseInt(c[2]);
+			obj.s_end = Integer.parseInt(c[3]);
+			obj.d_chr = c[4];
+			obj.d_start = Integer.parseInt(c[5]);
+			obj.d_end = Integer.parseInt(c[6]);
+			obj.strand = c[7];
+			obj.score = Integer.parseInt(c[8]);
+		}
+		catch (NumberFormatException e) {
+			throw new UTGBException(UTGBErrorCode.INVALID_FORMAT, String.format("%s: %s", e.getMessage(), summaryLine));
+		}
+	}
+
+	private static class AXTStream implements Iterable<AXTAlignment> {
+
+		public AXTStream(BufferedReader in) {
+			// TODO Auto-generated constructor stub
+		}
+
+		public Iterator<AXTAlignment> iterator() {
+			return null;
+		}
+
+	}
+
+	private static class AXTIteator implements Iterator<AXTAlignment> {
+
+		private BufferedReader in;
+
+		public AXTIteator(BufferedReader in) {
+			this.in = in;
+		}
+
+		public boolean hasNext() {
+
+			return false;
+		}
+
+		public AXTAlignment next() {
+
+			return null;
+		}
+
+		public void remove() {
+			throw new UnsupportedOperationException("remove");
+		}
+	}
+
+	public static Iterable<AXTAlignment> lens(BufferedReader in) throws UTGBException {
+		return new AXTStream(in);
 	}
 
 	public static void lens(BufferedReader in, ObjectHandler<AXTAlignment> handler) throws UTGBException {
@@ -108,7 +170,7 @@ public class AXTLens {
 			lens(new BufferedReader(new FileReader(axtFile)), handler);
 		}
 		catch (Exception e) {
-
+			throw UTGBException.convert(e);
 		}
 
 	}
