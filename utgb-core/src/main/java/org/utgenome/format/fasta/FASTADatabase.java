@@ -106,8 +106,7 @@ public class FASTADatabase {
 			db.update("drop table if exists sequence_length");
 			db.update("create table description (id integer primary key not null, description string, fullDesc string)");
 			db.update("create index description_index on description(description)");
-			db
-					.update("create table sequence (description_id integer not null, start integer, end integer, sequence string, primary key (description_id, start))");
+			db.update("create table sequence (description_id integer not null, start integer, end integer, sequence string, primary key (description_id, start))");
 			db.update("create table sequence_length (description_id integer primary_key not null, length integer)");
 
 			stopWatch.reset();
@@ -123,29 +122,50 @@ public class FASTADatabase {
 				String chr = CompactFASTA.pickSequenceName(description);
 				_logger.info("new entry: " + chr);
 
-				db.update(SQLExpression.fillTemplate("insert into description values($1, $2, $3)", count, SQLUtil.singleQuote(chr), SQLUtil
-						.singleQuote(description)));
+				db.update(SQLExpression.fillTemplate("insert into description values($1, $2, $3)", count, SQLUtil.singleQuote(chr),
+						SQLUtil.singleQuote(description)));
 
 				CompressedBuffer buffer = new CompressedBuffer();
 
 				// for each sequence line
 				String seq = null;
 				while ((seq = pullParser.nextSequenceLine()) != null) {
-					int storedLen = buffer.writtenSize();
-					if (storedLen + seq.length() >= SEQUENCE_FRAGMENT_LENGTH) {
-						int remainingSize = SEQUENCE_FRAGMENT_LENGTH - storedLen;
-						buffer.write(seq.substring(0, remainingSize).getBytes());
-
-						end = start + buffer.writtenSize() - 1;
-						insertSequence(db, count, start, end, buffer.toByteArray());
-						start = end + 1;
-
-						buffer.reset();
-						buffer.write(seq.substring(remainingSize).getBytes());
+					final int seqLen = seq.length();
+					for (int cursor = 0; cursor < seqLen;) {
+						final int storedLen = buffer.writtenSize();
+						final int fragmentSize = storedLen + seqLen - cursor;
+						if (fragmentSize > SEQUENCE_FRAGMENT_LENGTH) {
+							int seqEnd = cursor + SEQUENCE_FRAGMENT_LENGTH - storedLen;
+							buffer.write(seq.substring(cursor, seqEnd).getBytes());
+							end = start + buffer.writtenSize() - 1;
+							insertSequence(db, count, start, end, buffer.toByteArray());
+							start = end + 1;
+							buffer.reset();
+							cursor = seqEnd;
+						}
+						else {
+							buffer.write(cursor == 0 ? seq.getBytes() : seq.substring(cursor).getBytes());
+							cursor = seq.length();
+						}
 					}
-					else {
-						buffer.write(seq.getBytes());
-					}
+					//					
+					//					
+					//					if (storedLen + seq.length() >= SEQUENCE_FRAGMENT_LENGTH) {
+					//						
+					//						
+					//						int remainingSize = SEQUENCE_FRAGMENT_LENGTH - storedLen;
+					//						buffer.write(seq.substring(0, remainingSize).getBytes());
+					//
+					//						end = start + buffer.writtenSize() - 1;
+					//						insertSequence(db, count, start, end, buffer.toByteArray());
+					//						start = end + 1;
+					//
+					//						buffer.reset();
+					//						buffer.write(seq.substring(remainingSize).getBytes());
+					//					}
+					//					else {
+					//						buffer.write(seq.getBytes());
+					//					}
 				}
 				if (buffer.writtenSize() > 0) {
 					end = start + buffer.writtenSize() - 1;
@@ -248,14 +268,13 @@ public class FASTADatabase {
 			throw new UTGBException(UTGBErrorCode.MISSING_FILES, "DB file doesn't exist: " + dbFile);
 
 		SQLiteAccess db = null;
-		try
-		{
+		try {
 			try {
 				db = new SQLiteAccess(dbFile.getAbsolutePath());
 				querySequence(db, location, handler);
 			}
 			finally {
-				if(db != null)
+				if (db != null)
 					db.dispose();
 			}
 		}
