@@ -1,8 +1,0 @@
-usage: 
-  sam2wig input.sam > output.wig
-  sam2wig input.sam output.wig
-  
-Generating depth of coverage data in WIG format from a given sam (or bam) file.
-
-
-

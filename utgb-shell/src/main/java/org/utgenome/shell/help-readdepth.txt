@@ -1,0 +1,8 @@
+usage: 
+  readdepth input.bam > output.wig
+  readdepth input.bam output.wig
+  
+Generating depth of coverage data in WIG format from a given bam (with .bam.bai) file.
+
+
+
