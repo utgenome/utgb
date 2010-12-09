@@ -65,6 +65,11 @@ public class GenomeDB implements Serializable {
 	public String path;
 
 	/**
+	 * WIG database path
+	 */
+	public String wigPath;
+
+	/**
 	 * reference sequence name to which this genome DB is associated
 	 */
 	public String ref;
@@ -78,14 +83,14 @@ public class GenomeDB implements Serializable {
 	}
 
 	protected GenomeDB(GenomeDB db) {
-		this(db.type, db.path, db.ref);
+		this(db.type, db.path, db.wigPath, db.ref);
 	}
 
 	public GenomeDB(String path, String refSeq) {
-		this(DBType.AUTO, path, refSeq);
+		this(DBType.AUTO, path, null, refSeq);
 	}
 
-	public GenomeDB(DBType type, String path, String ref) {
+	public GenomeDB(DBType type, String path, String wigPath, String ref) {
 		if (type == null)
 			type = DBType.AUTO;
 		if (path == null)
@@ -95,6 +100,7 @@ public class GenomeDB implements Serializable {
 
 		this.type = type;
 		this.path = path;
+		this.wigPath = wigPath;
 		this.ref = ref;
 	}
 

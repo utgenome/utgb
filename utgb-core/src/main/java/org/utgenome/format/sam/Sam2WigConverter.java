@@ -166,7 +166,7 @@ public class Sam2WigConverter {
 	public void convert(File samOrBam, String chr, int start, int end) throws UTGBException {
 
 		SAMFileReader.setDefaultValidationStringency(ValidationStringency.SILENT);
-		SAMFileReader samReader = new SAMFileReader(samOrBam, new File(samOrBam.getAbsolutePath() + ".bai"));
+		SAMFileReader samReader = new SAMFileReader(samOrBam, SAMReader.getBamIndexFile(samOrBam));
 		SAMRecordCursor cursor = null;
 		try {
 			cursor = new SAMRecordCursor(samReader.queryContained(chr, start, end));

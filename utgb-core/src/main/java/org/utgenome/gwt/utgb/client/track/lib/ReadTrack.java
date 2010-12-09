@@ -171,6 +171,7 @@ public class ReadTrack extends TrackBase {
 	// track configuration parameters
 	private final String CONFIG_DB_TYPE = "dbType";
 	private final String CONFIG_PATH = "path";
+	private final String CONFIG_WIG_PATH = "wig path";
 	private final String CONFIG_LAYOUT = "layout";
 	private final String CONFIG_ONCLICK_ACTION = "onclick.action";
 	private final String CONFIG_ONCLICK_URL = "onclick.url";
@@ -302,6 +303,7 @@ public class ReadTrack extends TrackBase {
 		update(group.getTrackWindow(), true);
 		TrackConfig config = getConfig();
 		config.addConfig("DB Path", new StringType(CONFIG_PATH), "");
+		config.addConfig("WIG DB Path", new StringType(CONFIG_WIG_PATH), "");
 		config.addHiddenConfig(CONFIG_DB_TYPE, "AUTO");
 
 		style.setup(config);
@@ -433,8 +435,13 @@ public class ReadTrack extends TrackBase {
 		}
 	}
 
-	public String getPath() {
+	protected String getPath() {
 		String path = getConfig().getParameter(CONFIG_PATH);
+		return resolvePropertyValues(path);
+	}
+
+	protected String getWIGPath() {
+		String path = getConfig().getParameter(CONFIG_WIG_PATH);
 		return resolvePropertyValues(path);
 	}
 
@@ -446,7 +453,7 @@ public class ReadTrack extends TrackBase {
 	public GenomeDB getGenomeDB() {
 		String ref = getTrackGroupProperty(UTGBProperty.REVISION);
 		String dbType = getConfig().getString("dbType", "AUTO");
-		return new GenomeDB(DBType.valueOf(DBType.class, dbType), getPath(), ref);
+		return new GenomeDB(DBType.valueOf(DBType.class, dbType), getPath(), getWIGPath(), ref);
 	}
 
 	@Override
@@ -458,7 +465,7 @@ public class ReadTrack extends TrackBase {
 			updateClickAction();
 		}
 
-		if (change.containsOneOf(new String[] { CONFIG_PATH, CONFIG_DB_TYPE })) {
+		if (change.containsOneOf(new String[] { CONFIG_PATH, CONFIG_WIG_PATH, CONFIG_DB_TYPE })) {
 			refresh();
 		}
 

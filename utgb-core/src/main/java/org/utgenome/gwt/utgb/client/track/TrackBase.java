@@ -75,6 +75,8 @@ public abstract class TrackBase implements Track {
 	 * @return
 	 */
 	public String resolvePropertyValues(String template) {
+		if (template == null)
+			return null;
 		// replace track group properties
 		TrackWindow w = getTrackWindow();
 		if (template.contains("%start"))
