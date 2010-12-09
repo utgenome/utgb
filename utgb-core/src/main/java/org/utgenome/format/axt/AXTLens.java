@@ -25,12 +25,17 @@ package org.utgenome.format.axt;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.utgenome.UTGBErrorCode;
 import org.utgenome.UTGBException;
+import org.xerial.lens.ObjectStreamHandler;
+import org.xerial.lens.TextFormatLens;
 import org.xerial.util.ObjectHandler;
 import org.xerial.util.StringUtil;
 import org.xerial.util.log.Logger;
@@ -41,7 +46,7 @@ import org.xerial.util.log.Logger;
  * @author leo
  * 
  */
-public class AXTLens {
+public class AXTLens implements TextFormatLens {
 
 	private static Logger _logger = Logger.getLogger(AXTLens.class);
 
@@ -168,6 +173,61 @@ public class AXTLens {
 	public static void lens(File axtFile, ObjectHandler<AXTAlignment> handler) throws UTGBException {
 		try {
 			lens(new BufferedReader(new FileReader(axtFile)), handler);
+		}
+		catch (Exception e) {
+			throw UTGBException.convert(e);
+		}
+
+	}
+
+	private BufferedReader in;
+
+	public AXTLens(BufferedReader in) {
+		this.in = in;
+	}
+
+	public AXTLens(URL axt) throws IOException {
+		in = new BufferedReader(new InputStreamReader(axt.openStream()));
+	}
+
+	public void convert(ObjectStreamHandler handler) throws Exception {
+		try {
+			try {
+				for (;;) {
+					String line = in.readLine();
+					if (line == null)
+						break;
+
+					if (StringUtil.isWhiteSpace(line))
+						continue;
+
+					List<String> axtBlock = new ArrayList<String>(3);
+
+					String header = line;
+					String seq1 = in.readLine();
+					String seq2 = in.readLine();
+
+					if (seq1 == null || seq2 == null) {
+						break;
+					}
+
+					axtBlock.add(line);
+					axtBlock.add(seq1);
+					axtBlock.add(seq2);
+
+					try {
+						AXTAlignment aln = lens(axtBlock);
+						handler.add("axt", aln);
+					}
+					catch (Exception e) {
+						_logger.error(e);
+					}
+				}
+			}
+			finally {
+				if (in != null)
+					in.close();
+			}
 		}
 		catch (Exception e) {
 			throw UTGBException.convert(e);

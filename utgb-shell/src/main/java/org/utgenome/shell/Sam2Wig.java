@@ -57,12 +57,12 @@ public class Sam2Wig extends UTGBShellCommand {
 
 	@Override
 	public String name() {
-		return "sam2wig";
+		return "readdepth";
 	}
 
 	@Override
 	public String getOneLinerDescription() {
-		return "create a WIG file (coverage depth) from a given SAM/BAM file";
+		return "create a WIG file (coverage depth) from a given BAM (with BAI) file";
 	}
 
 }

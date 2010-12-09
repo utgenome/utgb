@@ -25,14 +25,21 @@ package org.utgenome.format.sam;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Collection;
+import java.util.Iterator;
 
+import net.sf.samtools.SAMFileHeader;
 import net.sf.samtools.SAMFileReader;
 import net.sf.samtools.SAMFileReader.ValidationStringency;
 import net.sf.samtools.SAMRecord;
 import net.sf.samtools.SAMRecordIterator;
+import net.sf.samtools.SAMSequenceRecord;
 
+import org.utgenome.UTGBException;
 import org.utgenome.gwt.utgb.client.bio.Interval;
+import org.utgenome.gwt.utgb.client.bio.OnGenome;
+import org.utgenome.gwt.utgb.client.bio.OnGenomeDataVisitor;
+import org.utgenome.util.ReadDepth;
+import org.utgenome.util.ReadDepth.DepthOutput;
 import org.xerial.util.ArrayDeque;
 import org.xerial.util.Deque;
 import org.xerial.util.log.Logger;
@@ -50,11 +57,135 @@ public class Sam2WigConverter {
 	private Deque<Interval> readSetInStartOrder = new ArrayDeque<Interval>();
 	private String currentChr = null;
 	private int sweepLine = 1;
+
+	/**
+	 * Convert the input SAM file records into WIG format of read depth
+	 * 
+	 * @param samOrBam
+	 * @param out
+	 * @throws IOException
+	 * @throws UTGBException
+	 */
+	public void convert(File samOrBam, Writer out) throws UTGBException {
+		try {
+			this.reporter = new CoverageWriter(out);
+			SAMFileReader.setDefaultValidationStringency(ValidationStringency.SILENT);
+			SAMFileReader samReader = new SAMFileReader(samOrBam);
+
+			try {
+				// for each chromosome
+				SAMFileHeader fileHeader = samReader.getFileHeader();
+				for (SAMSequenceRecord each : fileHeader.getSequenceDictionary().getSequences()) {
+					String chr = each.getSequenceName();
+					_logger.info("processing " + chr);
+					convert(samOrBam, chr, 1, each.getSequenceLength());
+				}
+			}
+			finally {
+				samReader.close();
+				this.reporter.flush();
+			}
+		}
+		catch (IOException e) {
+			throw UTGBException.convert(e);
+		}
+		_logger.info("done.");
+	}
+
+	/**
+	 * Iterator of SAMRecord
+	 * 
+	 * @author leo
+	 * 
+	 */
+	public static class SAMRecordCursor implements Iterator<OnGenome> {
+
+		private static class SAMRecordWrap extends Interval {
+
+			private static final long serialVersionUID = 1L;
+			final SAMRecord read;
+
+			public SAMRecordWrap(SAMRecord read) {
+				super(read.getAlignmentStart(), read.getAlignmentEnd() + 1);
+				this.read = read;
+			}
+
+			@Override
+			public String getName() {
+				return read.getReadName();
+			}
+
+			@Override
+			public void accept(OnGenomeDataVisitor visitor) {
+				visitor.visitInterval(this);
+			}
+
+		}
+
+		private final Deque<SAMRecord> queue = new ArrayDeque<SAMRecord>();
+		private final SAMRecordIterator cursor;
+
+		public SAMRecordCursor(SAMRecordIterator cursor) {
+			this.cursor = cursor;
+		}
+
+		public boolean hasNext() {
+			if (!queue.isEmpty())
+				return true;
+
+			for (; cursor.hasNext();) {
+				SAMRecord next = cursor.next();
+				if (next.getReadUnmappedFlag()) {
+					continue;
+				}
+				queue.add(next);
+				return true;
+			}
+
+			return false;
+		}
+
+		public OnGenome next() {
+			if (hasNext())
+				return new SAMRecordWrap(queue.pollFirst());
+
+			return null;
+		}
+
+		public void remove() {
+			throw new UnsupportedOperationException("remove");
+
+		}
+
+		public void close() {
+			cursor.close();
+		}
+
+	}
+
+	public void convert(File samOrBam, String chr, int start, int end) throws UTGBException {
+
+		SAMFileReader.setDefaultValidationStringency(ValidationStringency.SILENT);
+		SAMFileReader samReader = new SAMFileReader(samOrBam, new File(samOrBam.getAbsolutePath() + ".bai"));
+		SAMRecordCursor cursor = null;
+		try {
+			cursor = new SAMRecordCursor(samReader.queryContained(chr, start, end));
+			reporter.switchChr();
+			ReadDepth.compute(chr, cursor, reporter);
+		}
+		catch (Exception e) {
+			throw UTGBException.convert(e);
+		}
+		finally {
+			if (cursor != null)
+				cursor.close();
+			samReader.close();
+		}
+	}
+
 	private CoverageWriter reporter;
 
-	public static class CoverageWriter {
-		private int skipLength = 0;
-
+	public static class CoverageWriter implements DepthOutput {
 		private enum State {
 			LEADING_ZEROs, AFTER_HEADER
 		}
@@ -69,7 +200,6 @@ public class Sam2WigConverter {
 		}
 
 		public void switchChr() {
-			skipLength = 0;
 			state = State.LEADING_ZEROs;
 		}
 
@@ -82,156 +212,23 @@ public class Sam2WigConverter {
 			this.out.flush();
 		}
 
-		public void report(String chr, int start, int value) throws IOException {
+		public void reportDepth(String chr, int start, int end, int depth) throws IOException {
+
+			// skip leading zeros
 			if (state == State.LEADING_ZEROs) {
-				if (value == 0)
-					skipLength++;
-				else {
+				if (depth == 0)
+					return;
+				else
 					outputHeader(chr, start);
-					skipLength = 0;
-				}
 			}
 
 			// output data entry
-			out.write(Integer.toString(value));
-			out.write("\n");
-		}
-
-	}
-
-	/**
-	 * Convert the input SAM file records into WIG format of read depth
-	 * 
-	 * @param samOrBam
-	 * @param out
-	 * @throws IOException
-	 */
-	public void convert(File samOrBam, Writer out) throws IOException {
-		this.reporter = new CoverageWriter(out);
-		SAMFileReader.setDefaultValidationStringency(ValidationStringency.SILENT);
-		SAMFileReader samReader = new SAMFileReader(samOrBam);
-		try {
-			convert(samReader.iterator());
-			_logger.info("done.");
-		}
-		finally {
-			samReader.close();
-			this.reporter.flush();
-		}
-	}
-
-	public void convert(SAMRecordIterator cursor) throws IOException {
-
-		// map-reduce style code (much simpler if we have a framework to execute MapReduce) 
-		// map
-		//   r: SAMRecord -> ((r.chr, x), 1)  (x = r.start, ..., r.end) 
-		// reduce
-		//   (chr, x), {1, 1, ...}  ->  output ((chr, x), sum of 1s)
-
-		sweepLine = 1;
-		long readCount = 0;
-
-		// assume that SAM reads are sorted in the start order
-		for (; cursor.hasNext();) {
-			readCount++;
-
-			if (readCount != 0 && (readCount % 1000000) == 0) {
-				_logger.info(String.format("processed %,d reads", readCount));
-			}
-
-			SAMRecord read = cursor.next();
-
-			String ref = read.getReferenceName();
-
-			if (currentChr == null || (currentChr != null && !currentChr.equals(ref))) { // moved to the next chromosome
-				// flush the cached reads
-				if (!readSetInStartOrder.isEmpty()) {
-					sweep(readSetInStartOrder, sweepLine, maxReadEnd(readSetInStartOrder));
-				}
-
-				readSetInStartOrder.clear();
-				sweepLine = 1;
-				currentChr = ref;
-				reporter.switchChr();
-				_logger.info(String.format("processing %s", currentChr));
-
-			}
-
-			Interval readInterval = new Interval(read.getAlignmentStart(), read.getAlignmentEnd() + 1);
-			if (sweepLine < readInterval.getStart()) {
-				// we can sweep reads up to sweepEnd
-				int sweepEnd = readInterval.getStart();
-				sweep(readSetInStartOrder, sweepLine, sweepEnd);
-				sweepLine = sweepEnd;
-
-				// remove the reads before the sweep line   
-				for (Interval each : readSetInStartOrder) {
-					if (each.getStart() >= sweepLine)
-						break; // sweep finished
-					if (each.getEnd() <= sweepLine)
-						readSetInStartOrder.removeFirst();
-				}
-			}
-			readSetInStartOrder.add(readInterval);
-		}
-
-		if (!readSetInStartOrder.isEmpty()) {
-			sweep(readSetInStartOrder, sweepLine, maxReadEnd(readSetInStartOrder));
-		}
-
-	}
-
-	public static final int maxReadEnd(Collection<Interval> readSet) {
-		int maxEnd = -1;
-		for (Interval each : readSet) {
-			if (maxEnd < each.getEnd())
-				maxEnd = each.getEnd();
-		}
-		return maxEnd;
-	}
-
-	void sweep(Collection<Interval> readSet, int start, int end) throws IOException {
-		if (start >= end)
-			return;
-
-		int[] coverage = getReadDepth(new Interval(start, end), readSet);
-		for (int i = 0; i < coverage.length; ++i) {
-			reporter.report(currentChr, start + i, coverage[i]);
-		}
-	}
-
-	/**
-	 * Compute the read depth in the specified block
-	 * 
-	 * @param block
-	 * @param readsInBlock
-	 * @return
-	 */
-	public static int[] getReadDepth(Interval block, Collection<Interval> readsInBlock) {
-
-		int offset = block.getStart();
-		final int width = block.length();
-		int[] coverage = new int[width];
-		// initialize the array
-		for (int i = 0; i < coverage.length; ++i)
-			coverage[i] = 0;
-
-		// accumulate coverage depth
-		for (Interval each : readsInBlock) {
-			int posStart = each.getStart() - offset;
-			int posEnd = each.getEnd() - offset;
-
-			if (posStart < 0)
-				posStart = 0;
-			if (posEnd >= width)
-				posEnd = width;
-
-			for (int i = posStart; i < posEnd; i++) {
-				coverage[i]++;
+			for (int i = start; i < end; ++i) {
+				out.write(Integer.toString(depth));
+				out.write("\n");
 			}
 		}
 
-		return coverage;
 	}
 
 }

@@ -75,8 +75,8 @@ public class Import extends UTGBShellCommand {
 	@Option(symbol = "o", longName = "output", varName = "DB FILE NAME", description = "output SQLite DB file name")
 	private String outputFileName;
 
-	@Option(symbol = "w", longName = "overwrite", description = "overwrite existing DB files")
-	private boolean overwriteDB = false;
+	@Option(symbol = "w", longName = "overwrite", description = "overwrite existing DB files (default = true)")
+	private boolean overwriteDB = true;
 
 	@Override
 	public void execute(String[] args) throws Exception {

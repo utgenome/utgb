@@ -35,9 +35,12 @@ public class Sam2WigConverterTest {
 	@Test
 	public void convert() throws Exception {
 
-		File input = FileUtil.createTempFile(new File("target"), "input", ".sam");
+		File input = FileUtil.createTempFile(new File("target"), "input", ".bam");
+		File baiInput = new File(input.getAbsolutePath() + ".bai");
 		input.deleteOnExit();
-		FileUtil.copy(FileResource.openByteStream(Sam2WigConverterTest.class, "coverage.sam"), input);
+		baiInput.deleteOnExit();
+		FileUtil.copy(FileResource.openByteStream(Sam2WigConverterTest.class, "coverage.bam"), input);
+		FileUtil.copy(FileResource.openByteStream(Sam2WigConverterTest.class, "coverage.bam.bai"), baiInput);
 
 		Sam2WigConverter converter = new Sam2WigConverter();
 		converter.convert(input, new OutputStreamWriter(System.err));
@@ -47,9 +50,13 @@ public class Sam2WigConverterTest {
 	@Test
 	public void convert2() throws Exception {
 
-		File input = FileUtil.createTempFile(new File("target"), "input-sorted", ".sam");
+		File input = FileUtil.createTempFile(new File("target"), "input-sorted", ".bam");
+		File baiInput = new File(input.getAbsolutePath() + ".bai");
 		input.deleteOnExit();
-		FileUtil.copy(FileResource.openByteStream(Sam2WigConverterTest.class, "sorted.sam"), input);
+		baiInput.deleteOnExit();
+
+		FileUtil.copy(FileResource.openByteStream(Sam2WigConverterTest.class, "sorted.bam"), input);
+		FileUtil.copy(FileResource.openByteStream(Sam2WigConverterTest.class, "sorted.bam.bai"), baiInput);
 
 		Sam2WigConverter converter = new Sam2WigConverter();
 		converter.convert(input, new OutputStreamWriter(new NullOutputStream()));
