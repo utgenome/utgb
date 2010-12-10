@@ -335,7 +335,7 @@ public class WIGTrack extends TrackBase {
 	@Override
 	public void onChangeTrackGroupProperty(TrackGroupPropertyChange change) {
 
-		if (change.containsOneOf(new String[] { UTGBProperty.TARGET })) {
+		if (change.containsOneOf(new String[] { UTGBProperty.TARGET, UTGBProperty.REVISION, UTGBProperty.SPECIES })) {
 			refresh();
 		}
 	}
