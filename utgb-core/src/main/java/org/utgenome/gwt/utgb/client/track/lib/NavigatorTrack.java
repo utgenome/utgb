@@ -321,10 +321,7 @@ public class NavigatorTrack extends TrackBase {
 		endBox.setWidth("95px");
 		HorizontalPanel hp2 = new HorizontalPanel();
 		hp2.setVerticalAlignment(HorizontalPanel.ALIGN_MIDDLE);
-		hp2.add(new FormLabel("Start"));
-		hp2.add(startBox);
-		hp2.add(new FormLabel("End"));
-		hp2.add(endBox);
+		hp2.add(new FormLabel("Region"));
 
 		Button strandSwitch = new Button("reverse");
 		Style.margin(strandSwitch, Style.LEFT, 2);

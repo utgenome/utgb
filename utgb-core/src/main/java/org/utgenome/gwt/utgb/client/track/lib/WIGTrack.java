@@ -136,6 +136,12 @@ public class WIGTrack extends TrackBase {
 		return buffer.get((frontBufferID + 1) % 2);
 	}
 
+	private void clearBuffer() {
+		for (List<BarGraphCanvas> each : buffer) {
+			clearBuffer(each);
+		}
+	}
+
 	private void clearBuffer(List<BarGraphCanvas> buffer) {
 		for (Widget each : buffer) {
 			each.removeFromParent();
@@ -336,6 +342,9 @@ public class WIGTrack extends TrackBase {
 	public void onChangeTrackGroupProperty(TrackGroupPropertyChange change) {
 
 		if (change.containsOneOf(new String[] { UTGBProperty.TARGET, UTGBProperty.REVISION, UTGBProperty.SPECIES })) {
+
+			chain.clear();
+			clearBuffer();
 			refresh();
 		}
 	}
