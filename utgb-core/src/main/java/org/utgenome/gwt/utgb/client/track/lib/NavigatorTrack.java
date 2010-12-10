@@ -87,8 +87,7 @@ public class NavigatorTrack extends TrackBase {
 	private ListBox speciesBox = new ListBox();
 	private ListBox revisionBox = new ListBox();
 	private TextBox targetBox = new TextBox();
-	private TextBox startBox = new TextBox();
-	private TextBox endBox = new TextBox();
+	private TextBox regionBox = new TextBox();
 	private ArrayList<SequenceInfo> sequenceInfoList = new ArrayList<SequenceInfo>();
 
 	private class PropertyChangeHandler implements ChangeHandler {
@@ -118,32 +117,25 @@ public class NavigatorTrack extends TrackBase {
 						width = 1;
 					}
 
-					int start = StringUtil.toInt(startBox.getText());
-					int end = StringUtil.toInt(endBox.getText());
+					String[] region = regionBox.getText().split("-");
+					if (region.length != 2)
+						return;
 
-					if (prevStart != start) {
-						// start value is updated
-						end = start + width;
-					}
-					else {
-						// end value is updated
-						start = end - width;
-					}
+					int start = StringUtil.toInt(region[0]);
+					int end = StringUtil.toInt(region[1]);
 
 					if (start <= 0) {
 						start = 1;
-						end = start + width;
 					}
 
-					if (end <= 0) {
-						start = 1;
+					if (end <= start) {
 						end = start + width;
 					}
 
 					getTrackGroup().setTrackWindowLocation(start, end);
 				}
 				catch (NumberFormatException ex) {
-					GWT.log("(" + startBox.getText() + ", " + endBox.getText() + ") is invalid range", ex);
+					GWT.log("(" + regionBox.getText() + ") is invalid range", ex);
 				}
 			}
 		}
@@ -297,8 +289,7 @@ public class NavigatorTrack extends TrackBase {
 
 		speciesBox.addChangeHandler(new PropertyChangeHandler(UTGBProperty.SPECIES, speciesBox));
 		revisionBox.addChangeHandler(new PropertyChangeHandler(UTGBProperty.REVISION, revisionBox));
-		startBox.addKeyUpHandler(new SequenceRangeChangeListner());
-		endBox.addKeyUpHandler(new SequenceRangeChangeListner());
+		regionBox.addKeyUpHandler(new SequenceRangeChangeListner());
 		targetBox.addKeyUpHandler(new KeyUpHandler() {
 			public void onKeyUp(KeyUpEvent e) {
 				int keyCode = e.getNativeKeyCode();
@@ -317,11 +308,11 @@ public class NavigatorTrack extends TrackBase {
 		hp.add(new FormLabel("Chr."));
 		hp.add(targetBox);
 		// window locator
-		startBox.setWidth("95px");
-		endBox.setWidth("95px");
+		regionBox.setWidth("160px");
 		HorizontalPanel hp2 = new HorizontalPanel();
 		hp2.setVerticalAlignment(HorizontalPanel.ALIGN_MIDDLE);
 		hp2.add(new FormLabel("Region"));
+		hp2.add(regionBox);
 
 		Button strandSwitch = new Button("reverse");
 		Style.margin(strandSwitch, Style.LEFT, 2);
@@ -435,8 +426,7 @@ public class NavigatorTrack extends TrackBase {
 	}
 
 	public void updateRangeBox() {
-		startBox.setText(StringUtil.formatNumber(getTrackWindow().getStartOnGenome()));
-		endBox.setText(StringUtil.formatNumber(getTrackWindow().getEndOnGenome()));
+		regionBox.setText(StringUtil.formatNumber(getTrackWindow().getStartOnGenome()) + "-" + StringUtil.formatNumber(getTrackWindow().getEndOnGenome()));
 	}
 
 	@Override
@@ -465,8 +455,7 @@ public class NavigatorTrack extends TrackBase {
 	public void setUp(TrackFrame trackFrame, TrackGroup group) {
 		trackFrame.disableClose();
 		TrackWindow w = group.getTrackWindow();
-		startBox.setText(StringUtil.formatNumber(w.getStartOnGenome()));
-		endBox.setText(StringUtil.formatNumber(w.getEndOnGenome()));
+		regionBox.setText(StringUtil.formatNumber(w.getStartOnGenome()) + "-" + StringUtil.formatNumber(w.getEndOnGenome()));
 		targetBox.setText(group.getPropertyReader().getProperty("target", "chr1"));
 
 		retrieveSpeciesList();
