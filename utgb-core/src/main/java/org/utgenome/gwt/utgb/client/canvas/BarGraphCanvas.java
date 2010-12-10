@@ -88,7 +88,7 @@ public class BarGraphCanvas extends Composite {
 	}
 
 	private void setPixelWidth(int width, int height) {
-		int pixelWidthWithSpan = window.convertToPixelLength(window.getSequenceLength() + this.span - 1);
+		int pixelWidthWithSpan = window.convertToPixelLength(window.getSequenceLength() + this.span - 2);
 		canvas.setPixelSize(pixelWidthWithSpan, height);
 		canvas.setCoordSize(pixelWidthWithSpan, height);
 	}
