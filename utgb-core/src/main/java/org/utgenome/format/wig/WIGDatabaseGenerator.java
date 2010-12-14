@@ -36,6 +36,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.zip.DataFormatException;
 import java.util.zip.GZIPOutputStream;
 
@@ -112,11 +113,11 @@ public class WIGDatabaseGenerator {
 			stat.executeUpdate("create table browser (description text)");
 			stat.executeUpdate("create table track (track_id integer, name text, value text)");
 			stat.executeUpdate("create table data (track_id integer, start integer, end integer, min_value real, "
-					+ "max_value real, data_num integer, chrom_starts blob, " + "data_values blob)");
+					+ "max_value real, median real, avg real, data_num integer, chrom_starts blob, " + "data_values blob)");
 
 			PreparedStatement browserInfoInsertQuery = conn.prepareStatement("insert into browser values(?)");
 			PreparedStatement trackInsertQuery = conn.prepareStatement("insert into track values(?, ?, ?)");
-			PreparedStatement dataBlockInsertQuery = conn.prepareStatement("insert into data values(?, ?, ?, ?, ?, ?, ?, ?)");
+			PreparedStatement dataBlockInsertQuery = conn.prepareStatement("insert into data values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 			stopWatch.reset();
 
@@ -231,18 +232,32 @@ public class WIGDatabaseGenerator {
 		out.flush();
 		dataValueBuffer.write(buf.toByteArray());
 
+		// compute median
+		Arrays.sort(tempDataValues);
+		float median = tempDataValues[buffer_count / 2];
+		float sum = 0;
+		for (float each : tempDataValues)
+			sum += each;
+		float avg = sum / buffer_count;
+
+		float min = tempDataValues[0];
+		float max = tempDataValues[tempDataValues.length - 1];
+
 		// insert data line
 		p3.setInt(1, track_id);
 		p3.setLong(2, buffer_start);
 		p3.setLong(3, buffer_end);
-		p3.setFloat(4, buffer_minValue);
-		p3.setFloat(5, buffer_maxValue);
-		p3.setLong(6, buffer_count);
-		p3.setBytes(7, chromStartBuffer.toByteArray());
-		p3.setBytes(8, dataValueBuffer.toByteArray());
+		p3.setFloat(4, min);
+		p3.setFloat(5, max);
+		p3.setFloat(6, median);
+		p3.setFloat(7, avg);
+		p3.setLong(8, buffer_count);
+		p3.setBytes(9, chromStartBuffer.toByteArray());
+		p3.setBytes(10, dataValueBuffer.toByteArray());
 		p3.execute();
 
-		_logger.info(String.format("insert data %d:%d-%d", track_id, buffer_start, buffer_end));
+		_logger.info(String.format("insert data %d:%d-%d (min:%.2f, max:%.2f, median:%.2f, avg:%.2f)", track_id, buffer_start, buffer_end, min, max, median,
+				avg));
 
 		// init variables
 		chromStarts = new int[DATA_SPLIT_UNIT];

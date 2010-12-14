@@ -75,8 +75,8 @@ public class Import extends UTGBShellCommand {
 	@Option(symbol = "o", longName = "output", varName = "DB FILE NAME", description = "output SQLite DB file name")
 	private String outputFileName;
 
-	@Option(symbol = "w", longName = "overwrite", description = "overwrite existing DB files (default = true)")
-	private boolean overwriteDB = true;
+	@Option(symbol = "n", description = "do not overwrite existing DB files (default = false)")
+	private boolean doNotOverwriteDB = false;
 
 	@Override
 	public void execute(String[] args) throws Exception {
@@ -113,7 +113,7 @@ public class Import extends UTGBShellCommand {
 				outputFileName = String.format("%s.sqlite", inputName);
 			}
 			int count = 1;
-			if (!overwriteDB) {
+			if (doNotOverwriteDB) {
 				while (new File(outputFileName).exists()) {
 					if (fileType == FileType.SAM) {
 						outputFileName = org.xerial.util.FileType.replaceFileExt(inputName, String.format("%d.bam", count));
@@ -124,6 +124,7 @@ public class Import extends UTGBShellCommand {
 					count++;
 				}
 			}
+
 		}
 		_logger.info("output file: " + outputFileName);
 

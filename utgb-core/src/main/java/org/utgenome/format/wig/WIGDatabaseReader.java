@@ -140,15 +140,7 @@ public class WIGDatabaseReader {
 		return (getData((end - start), trackId, start, end));
 	}
 
-	public CompactWIGData fillPixelsWithMaxValues(CompactWIGData cwig, int pixelWidth, int trackId, int start, int end) throws SQLException {
-		HashMap<Integer, Float> data = new HashMap<Integer, Float>();
-		HashMap<String, String> track = getTrack(trackId);
-
-		if (start > end) {
-			int tmp = start;
-			start = end;
-			end = tmp;
-		}
+	public CompactWIGData fillPixelsWithMedian(CompactWIGData cwig, int pixelWidth, int trackId, int start, int end) throws SQLException {
 
 		GenomeWindow w = new GenomeWindow(start, end);
 		float[] dataValues = new float[pixelWidth];
@@ -163,21 +155,23 @@ public class WIGDatabaseReader {
 
 		ResultSet rs = null;
 		try {
-			rs = statement.executeQuery(String.format(
-					"select start, end, min_value, max_value from data where track_id=%d and start<=%d and end>=%d order by start", trackId, end, start));
+			rs = statement.executeQuery(String
+					.format("select start, end, min_value, max_value, median from data where track_id=%d and start<=%d and end>=%d order by start", trackId,
+							end, start));
 			while (rs.next()) {
 				int s = rs.getInt("start");
 				int e = rs.getInt("end");
 				float max = rs.getFloat("max_value");
 				float min = rs.getFloat("min_value");
+				float median = rs.getFloat("median");
 
-				st2.resume();
 				int pixelStart = w.getXPosOnWindow(s, pixelWidth);
+				if (pixelStart <= 0)
+					pixelStart = 0;
 				int pixelEnd = w.getXPosOnWindow(e + cwig.getSpan(), pixelWidth);
-				for (int x = pixelStart; x < dataValues.length && x < pixelEnd; ++x) {
-					dataValues[x] = Math.max(dataValues[x], max);
+				for (int x = pixelStart; x < pixelWidth && x < pixelEnd; ++x) {
+					dataValues[x] = median;
 				}
-				st2.stop();
 
 				minInBlock = Math.min(min, minInBlock);
 				maxInBlock = Math.max(max, maxInBlock);
@@ -193,7 +187,6 @@ public class WIGDatabaseReader {
 		cwig.setData(dataValues);
 
 		_logger.debug("Time(all)    : " + st1.getElapsedTime());
-		_logger.debug("Time(archive): " + st2.getElapsedTime());
 		return cwig;
 
 	}
@@ -315,7 +308,7 @@ public class WIGDatabaseReader {
 	public CompactWIGData getCompactWigData(int trackId, int start, int end, int pixelWidth) throws SQLException {
 		WigGraphData wigData = prepareWigData(trackId);
 		CompactWIGData cWig = prepareCompactWigData(wigData, new ChrLoc(null, start, end));
-		fillPixelsWithMaxValues(cWig, pixelWidth, trackId, start, end);
+		fillPixelsWithMedian(cWig, pixelWidth, trackId, start, end);
 		return cWig;
 	}
 
@@ -386,7 +379,7 @@ public class WIGDatabaseReader {
 	public static List<CompactWIGData> getCompactWigDataList(String path, int pixelWidth, ChrLoc location) throws UTGBException, SQLException {
 
 		int numBlocks = location.length() / WIGDatabaseGenerator.DATA_SPLIT_UNIT;
-		if (numBlocks >= (pixelWidth / 10.0)) {
+		if (numBlocks >= pixelWidth) {
 			// use max values in the wig data table
 			_logger.debug(String.format("query wig (path:%s, width:%d, loc:%s)", path, pixelWidth, location));
 			return getRoughCompactWigDataList(path, pixelWidth, location);
