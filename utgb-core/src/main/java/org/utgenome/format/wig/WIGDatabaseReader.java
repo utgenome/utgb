@@ -247,7 +247,8 @@ public class WIGDatabaseReader {
 		cwig.setMaxValue(maxInBlock);
 		cwig.setData(dataValues);
 
-		_logger.debug("Time(all)    : " + st1.getElapsedTime());
+		if (_logger.isTraceEnabled())
+			_logger.trace("Time(all)    : " + st1.getElapsedTime());
 		return cwig;
 
 	}
@@ -349,9 +350,11 @@ public class WIGDatabaseReader {
 
 		rs.close();
 
-		_logger.debug("min: " + minValue + ", max: " + maxValue);
-		_logger.debug("Time(all)    : " + st1.getElapsedTime());
-		_logger.debug("Time(archive): " + st2.getElapsedTime());
+		if (_logger.isTraceEnabled()) {
+			_logger.trace("min: " + minValue + ", max: " + maxValue);
+			_logger.trace("Time(all)    : " + st1.getElapsedTime());
+			_logger.trace("Time(archive): " + st2.getElapsedTime());
+		}
 		return data;
 	}
 
@@ -440,9 +443,15 @@ public class WIGDatabaseReader {
 			SQLException {
 
 		ArrayList<CompactWIGData> cWig = new ArrayList<CompactWIGData>();
+
 		WIGDatabaseReader reader = new WIGDatabaseReader(path, windowFunc);
-		for (int id : reader.getTrackIdList(location.chr)) {
-			cWig.add(reader.getCompactWigData(id, location.start, location.end, pixelWidth));
+		try {
+			for (int id : reader.getTrackIdList(location.chr)) {
+				cWig.add(reader.getCompactWigData(id, location.start, location.end, pixelWidth));
+			}
+		}
+		finally {
+			reader.close();
 		}
 		return cWig;
 	}
