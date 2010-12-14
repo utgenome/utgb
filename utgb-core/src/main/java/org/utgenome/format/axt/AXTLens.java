@@ -36,6 +36,8 @@ import org.utgenome.UTGBErrorCode;
 import org.utgenome.UTGBException;
 import org.xerial.lens.ObjectStreamHandler;
 import org.xerial.lens.TextFormatLens;
+import org.xerial.util.ArrayDeque;
+import org.xerial.util.Deque;
 import org.xerial.util.ObjectHandler;
 import org.xerial.util.StringUtil;
 import org.xerial.util.log.Logger;
@@ -99,17 +101,22 @@ public class AXTLens implements TextFormatLens {
 	private static class AXTIteator implements Iterator<AXTAlignment> {
 
 		private BufferedReader in;
+		private Deque<AXTAlignment> cache = new ArrayDeque<AXTAlignment>();
 
 		public AXTIteator(BufferedReader in) {
 			this.in = in;
 		}
 
 		public boolean hasNext() {
+			if (!cache.isEmpty())
+				return true;
 
 			return false;
 		}
 
 		public AXTAlignment next() {
+			if (hasNext())
+				return cache.pollFirst();
 
 			return null;
 		}

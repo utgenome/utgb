@@ -36,7 +36,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -49,7 +48,6 @@ import org.utgenome.format.fasta.CompactFASTA;
 import org.utgenome.format.keyword.KeywordDB;
 import org.utgenome.format.sam.SAM2SilkReader;
 import org.utgenome.format.wig.WIGDatabaseReader;
-import org.utgenome.graphics.GenomeWindow;
 import org.utgenome.gwt.utgb.client.BrowserService;
 import org.utgenome.gwt.utgb.client.UTGBClientErrorCode;
 import org.utgenome.gwt.utgb.client.UTGBClientException;
@@ -271,38 +269,6 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 		return 0;
 	}
 
-	//	public SearchResult keywordSearch(String species, String revision, String keyword, int numEntriesPerPage, int page) {
-	//
-	//		String keywordSearchURL = "http://utgenome.org/service/utgb-keyword/search";
-	//		keywordSearchURL += String.format("?revision=%s&keyword=%s&page=%d&pagewidth=%d", revision, keyword, page, numEntriesPerPage);
-	//		if (species != null)
-	//			keywordSearchURL += "&species=" + species;
-	//
-	//		_logger.debug(keywordSearchURL);
-	//
-	//		boolean isScaffoldSearch = keyword.toLowerCase().contains("scaffold");
-	//
-	//		try {
-	//			URL url = new URL(keywordSearchURL);
-	//			BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-	//			SearchResult searchResult = new SearchResult();
-	//			BeanUtil.populateBeanWithJSON(searchResult, in);
-	//
-	//			return searchResult;
-	//		}
-	//		catch (MalformedURLException e) {
-	//			_logger.error(e);
-	//		}
-	//		catch (IOException e) {
-	//			_logger.error(e);
-	//		}
-	//		catch (XerialException e) {
-	//			_logger.error(e);
-	//		}
-	//
-	//		return null;
-	//	}
-
 	public KeywordSearchResult keywordSearch(String species, String revision, String keyword, int numEntriesPerPage, int page) throws UTGBClientException {
 
 		File keywordDBFile = new File(WebTrackBase.getProjectRootPath(), "db/keyword.sqlite");
@@ -515,7 +481,7 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 	}
 
 	public List<WigGraphData> getWigDataList(String fileName, int windowWidth, ChrLoc location) {
-		ArrayList<WigGraphData> wigDataList = null;
+		List<WigGraphData> wigDataList = null;
 
 		if (!ReadView.isDescendant(fileName)) {
 			_logger.error("path must be under the project root: " + fileName);
@@ -523,9 +489,7 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 		}
 
 		try {
-			WIGDatabaseReader reader = new WIGDatabaseReader(WebTrackBase.getProjectRootPath() + "/" + fileName);
-			wigDataList = reader.getWigDataList(windowWidth, location.chr, location.start, location.end);
-			reader.close();
+			wigDataList = WIGDatabaseReader.getWigDataList(fileName, windowWidth, location);
 		}
 		catch (Exception e) {
 			_logger.error(e);
@@ -535,57 +499,20 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 		return wigDataList;
 	}
 
-	public static CompactWIGData convertResolution(WigGraphData w, ChrLoc location, int windowWidth) {
-		CompactWIGData cwig = new CompactWIGData();
-		cwig.setTrack(w.getTrack());
-		cwig.setMaxValue(w.getMaxValue());
-		cwig.setMinValue(w.getMinValue());
-		cwig.setBrowser(w.getBrowser());
-		cwig.setTrack_id(w.getTrack_id());
-		cwig.setStart(location.start < location.end ? location.start : location.end);
-		int span = 1;
-		if (w.getTrack().containsKey("span")) {
-			span = Integer.parseInt(w.getTrack().get("span"));
-			cwig.setSpan(span);
-		}
-
-		GenomeWindow window = new GenomeWindow(location.start, location.end);
-
-		float[] pixelWiseGraphData = new float[windowWidth + span];
-
-		Map<Integer, Float> data = w.getData();
-		for (Map.Entry<Integer, Float> each : data.entrySet()) {
-			int xOnGenome = each.getKey();
-			float val = each.getValue();
-
-			int x1 = window.getXPosOnWindow(xOnGenome, windowWidth);
-			int x2 = window.getXPosOnWindow(xOnGenome + span, windowWidth);
-			if (x1 == x2)
-				x2 = x1 + 1;
-
-			if (x1 < 0)
-				x1 = 0;
-
-			for (int i = x1; i < x2 && i < windowWidth + span; ++i) {
-				float current = pixelWiseGraphData[i];
-				float abs = Math.abs(val);
-				if (current < abs) {
-					pixelWiseGraphData[i] = val; // take the max (or min for negative value)
-				}
-			}
-		}
-
-		cwig.setData(pixelWiseGraphData);
-		return cwig;
-	}
-
 	public List<CompactWIGData> getCompactWigDataList(String path, int windowWidth, ChrLoc location) {
 
-		List<WigGraphData> wig = getWigDataList(path, windowWidth, location);
-		ArrayList<CompactWIGData> cWig = new ArrayList<CompactWIGData>();
+		if (!ReadView.isDescendant(path)) {
+			_logger.error("path must be under the project root: " + path);
+			return new ArrayList<CompactWIGData>();
+		}
 
-		for (WigGraphData w : wig) {
-			cWig.add(convertResolution(w, location, windowWidth));
+		List<CompactWIGData> cWig = null;
+		try {
+			cWig = WIGDatabaseReader.getCompactWigDataList(path, windowWidth, location);
+		}
+		catch (Exception e) {
+			_logger.error(e);
+			e.printStackTrace(System.err);
 		}
 
 		return cWig;

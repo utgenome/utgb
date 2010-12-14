@@ -76,7 +76,7 @@ public class WIGDatabaseGenerator {
 	private static float buffer_maxValue = Float.MIN_VALUE;
 	private static float buffer_minValue = Float.MAX_VALUE;
 
-	private static int dataSplitUnit = 100000;
+	public static final int DATA_SPLIT_UNIT = 100000;
 	private static int[] chromStarts;
 	private static float[] dataValues;
 
@@ -89,8 +89,8 @@ public class WIGDatabaseGenerator {
 		dataValueBuffer = new CompressedBuffer();
 
 		int nPoints = 0;
-		chromStarts = new int[dataSplitUnit];
-		dataValues = new float[dataSplitUnit];
+		chromStarts = new int[DATA_SPLIT_UNIT];
+		dataValues = new float[DATA_SPLIT_UNIT];
 
 		String line = null;
 		int lineNum = 1;
@@ -183,7 +183,7 @@ public class WIGDatabaseGenerator {
 					nPoints++;
 					buffer_count++;
 
-					if (buffer_count >= dataSplitUnit) {
+					if (buffer_count >= DATA_SPLIT_UNIT) {
 						insertData(track_id, dataBlockInsertQuery);
 					}
 				}
@@ -245,8 +245,8 @@ public class WIGDatabaseGenerator {
 		_logger.info(String.format("insert data %d:%d-%d", track_id, buffer_start, buffer_end));
 
 		// init variables
-		chromStarts = new int[dataSplitUnit];
-		dataValues = new float[dataSplitUnit];
+		chromStarts = new int[DATA_SPLIT_UNIT];
+		dataValues = new float[DATA_SPLIT_UNIT];
 		isAddTrackId = true;
 		isBufferEmpty = true;
 		chromStartBuffer.reset();
