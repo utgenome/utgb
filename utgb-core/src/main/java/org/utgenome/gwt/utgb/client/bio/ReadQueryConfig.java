@@ -47,13 +47,19 @@ public class ReadQueryConfig implements Serializable {
 	public Layout layout;
 	public int pixelWidth;
 	public int maxmumNumberOfReadsToDisplay = 500;
+	/**
+	 * Path to the WIG db file of the read depth
+	 */
+	public String wigPath;
+	public GraphWindow window = GraphWindow.MAX;
 
 	public ReadQueryConfig() {
 	}
 
-	public ReadQueryConfig(int pixelWidth, boolean hasCanvasSupport, Layout layout, int maxmumNumberOfReadsToDisplay) {
+	public ReadQueryConfig(int pixelWidth, boolean hasCanvasSupport, Layout layout, int maxmumNumberOfReadsToDisplay, String wigPath) {
 		this(pixelWidth, hasCanvasSupport, layout);
 		this.maxmumNumberOfReadsToDisplay = maxmumNumberOfReadsToDisplay;
+		this.wigPath = wigPath;
 	}
 
 	public ReadQueryConfig(int pixelWidth, boolean hasCanvasSupport, Layout layout) {

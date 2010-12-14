@@ -45,6 +45,17 @@ public class CompactWIGData implements GraphData {
 	int start;
 	int span = 1;
 
+	public ReadCoverage toReadCoverage(ChrLoc loc) {
+		int[] coverage = new int[data.length];
+		for (int i = 0; i < data.length; ++i)
+			coverage[i] = (int) data[i];
+		ReadCoverage c = new ReadCoverage(loc.start, loc.end, data.length, coverage);
+		c.minHeight = (int) minValue;
+		c.maxHeight = (int) maxValue;
+		c.pixelWidth = data.length;
+		return c;
+	}
+
 	public int getPixelSize() {
 		return data.length;
 	}

@@ -30,6 +30,7 @@ import org.utgenome.gwt.utgb.client.UTGBEntryPointBase;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.GenomeDB;
 import org.utgenome.gwt.utgb.client.bio.GenomeDB.DBType;
+import org.utgenome.gwt.utgb.client.bio.GraphWindow;
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
 import org.utgenome.gwt.utgb.client.bio.OnGenomeDataVisitorBase;
 import org.utgenome.gwt.utgb.client.bio.ReadCoverage;
@@ -172,6 +173,7 @@ public class ReadTrack extends TrackBase {
 	private final String CONFIG_DB_TYPE = "dbType";
 	private final String CONFIG_PATH = "path";
 	private final String CONFIG_WIG_PATH = "wig path";
+	private final String CONFIG_GRAPH_WINDOW = "window function";
 	private final String CONFIG_LAYOUT = "layout";
 	private final String CONFIG_ONCLICK_ACTION = "onclick.action";
 	private final String CONFIG_ONCLICK_URL = "onclick.url";
@@ -304,6 +306,8 @@ public class ReadTrack extends TrackBase {
 		TrackConfig config = getConfig();
 		config.addConfig("DB Path", new StringType(CONFIG_PATH), "");
 		config.addConfig("WIG DB Path", new StringType(CONFIG_WIG_PATH), "");
+		ValueDomain windowFuncitionTypes = ValueDomain.createNewValueDomain(new String[] { "MAX", "MIN", "MEDIAN", "AVG" });
+		config.addConfig("Window Function", new StringType(CONFIG_GRAPH_WINDOW, windowFuncitionTypes), "MEDIAN");
 		config.addHiddenConfig(CONFIG_DB_TYPE, "AUTO");
 
 		style.setup(config);
@@ -381,7 +385,8 @@ public class ReadTrack extends TrackBase {
 		String chr = getTrackGroupProperty(UTGBProperty.TARGET);
 
 		ReadQueryConfig queryConfig = new ReadQueryConfig(prefetchWindow.getPixelWidth(), BrowserInfo.isCanvasSupported(), Layout.valueOf(Layout.class,
-				style.layout.toUpperCase()), style.numReadsMax);
+				style.layout.toUpperCase()), style.numReadsMax, getWIGPath());
+		queryConfig.window = GraphWindow.valueOf(GraphWindow.class, getConfig().getString(CONFIG_GRAPH_WINDOW, "MEDIAN"));
 
 		getFrame().setNowLoading();
 		getBrowserService().getOnGenomeData(getGenomeDB(), new ChrLoc(chr, prefetchWindow.getStartOnGenome(), prefetchWindow.getEndOnGenome()), queryConfig,
@@ -453,7 +458,7 @@ public class ReadTrack extends TrackBase {
 	public GenomeDB getGenomeDB() {
 		String ref = getTrackGroupProperty(UTGBProperty.REVISION);
 		String dbType = getConfig().getString("dbType", "AUTO");
-		return new GenomeDB(DBType.valueOf(DBType.class, dbType), getPath(), getWIGPath(), ref);
+		return new GenomeDB(DBType.valueOf(DBType.class, dbType), getPath(), ref);
 	}
 
 	@Override
@@ -475,7 +480,7 @@ public class ReadTrack extends TrackBase {
 			refresh();
 		}
 
-		if (change.containsOneOf(new String[] { CONFIG_LAYOUT, ReadDisplayStyle.CONFIG_NUM_READ_MAX })) {
+		if (change.containsOneOf(new String[] { CONFIG_LAYOUT, CONFIG_GRAPH_WINDOW, ReadDisplayStyle.CONFIG_NUM_READ_MAX })) {
 			update(getTrackWindow(), true);
 		}
 	}

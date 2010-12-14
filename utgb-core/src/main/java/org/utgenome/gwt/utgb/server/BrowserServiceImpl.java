@@ -57,6 +57,7 @@ import org.utgenome.gwt.utgb.client.bio.ChrRange;
 import org.utgenome.gwt.utgb.client.bio.CompactWIGData;
 import org.utgenome.gwt.utgb.client.bio.Gene;
 import org.utgenome.gwt.utgb.client.bio.GenomeDB;
+import org.utgenome.gwt.utgb.client.bio.GraphWindow;
 import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.utgenome.gwt.utgb.client.bio.KeywordSearchResult;
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
@@ -489,7 +490,7 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 		}
 
 		try {
-			wigDataList = WIGDatabaseReader.getWigDataList(fileName, windowWidth, location);
+			wigDataList = WIGDatabaseReader.getWigDataList(new File(WebTrackBase.getProjectRootPath(), fileName), windowWidth, location, GraphWindow.MAX);
 		}
 		catch (Exception e) {
 			_logger.error(e);
@@ -508,7 +509,7 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 
 		List<CompactWIGData> cWig = null;
 		try {
-			cWig = WIGDatabaseReader.getCompactWigDataList(path, windowWidth, location);
+			cWig = WIGDatabaseReader.getCompactWigDataList(new File(WebTrackBase.getProjectRootPath(), path), windowWidth, location, GraphWindow.MAX);
 		}
 		catch (Exception e) {
 			_logger.error(e);

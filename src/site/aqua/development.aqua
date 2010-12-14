@@ -48,6 +48,14 @@ export PATH=$HOME/.utgb/bin;$PATH
 ===[./utgb-widget UTGB Widgets]
 * UTGB's User Interface Package
 
+== Remote Debugging of UTGB  (using Eclipse)
+
+Run UTGB with the following JVM_OPT:
+<code>
+ JVM_OPT="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005" utgb server -g -l debug
+</code>
+
+Then, launch a remote debug application in Eclipse, listening port 5005. 
 
 == How to update this documentation?
 

@@ -25,6 +25,7 @@
 package org.utgenome.format.wig;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.sql.Connection;
@@ -39,12 +40,13 @@ import java.util.Map;
 import java.util.zip.DataFormatException;
 import java.util.zip.GZIPInputStream;
 
+import org.utgenome.UTGBErrorCode;
 import org.utgenome.UTGBException;
 import org.utgenome.graphics.GenomeWindow;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.CompactWIGData;
+import org.utgenome.gwt.utgb.client.bio.GraphWindow;
 import org.utgenome.gwt.utgb.client.bio.WigGraphData;
-import org.utgenome.gwt.utgb.server.WebTrackBase;
 import org.xerial.util.StopWatch;
 import org.xerial.util.log.Logger;
 
@@ -64,7 +66,14 @@ public class WIGDatabaseReader {
 	private static float minValue = Float.MAX_VALUE;
 	private static float maxValue = Float.MIN_VALUE;
 
-	public WIGDatabaseReader(String inputFileURL) throws UTGBException {
+	private GraphWindow windowFunc = GraphWindow.MEDIAN;
+
+	public WIGDatabaseReader(File file, GraphWindow windowFunc) throws UTGBException {
+		this(file.toString(), windowFunc);
+	}
+
+	public WIGDatabaseReader(String inputFileURL, GraphWindow windowFunc) throws UTGBException {
+		this.windowFunc = windowFunc;
 		try {
 			Class.forName("org.sqlite.JDBC");
 			connection = DriverManager.getConnection("jdbc:sqlite:" + inputFileURL);
@@ -136,11 +145,60 @@ public class WIGDatabaseReader {
 	}
 
 	public HashMap<Integer, Float> getData(int trackId, int start, int end) throws SQLException, IOException, DataFormatException, NumberFormatException,
-			ClassNotFoundException {
+			ClassNotFoundException, UTGBException {
 		return (getData((end - start), trackId, start, end));
 	}
 
-	public CompactWIGData fillPixelsWithMedian(CompactWIGData cwig, int pixelWidth, int trackId, int start, int end) throws SQLException {
+	private static interface ValueSelecter {
+		public float select(float prev, float max, float min, float avg, float median);
+	}
+
+	public static class MAXSelector implements ValueSelecter {
+		public float select(float prev, float max, float min, float avg, float median) {
+			return Math.max(prev, max);
+		}
+	}
+
+	public static class MINSelector implements ValueSelecter {
+		public float select(float prev, float max, float min, float avg, float median) {
+			return Math.min(prev, min);
+		}
+	}
+
+	public static class MedianSelector implements ValueSelecter {
+		public float select(float prev, float max, float min, float avg, float median) {
+			return Math.max(prev, median);
+		}
+	}
+
+	public static class AvgSelector implements ValueSelecter {
+		public float select(float prev, float max, float min, float avg, float median) {
+			return Math.max(prev, avg);
+		}
+	}
+
+	private ValueSelecter getSelector() throws UTGBException {
+		ValueSelecter selector = null;
+		switch (windowFunc) {
+		case AVG:
+			selector = new AvgSelector();
+			break;
+		case MAX:
+			selector = new MAXSelector();
+			break;
+		case MEDIAN:
+			selector = new MedianSelector();
+			break;
+		case MIN:
+			selector = new MINSelector();
+			break;
+		default:
+			throw new UTGBException(UTGBErrorCode.INVALID_INPUT, "unknown window function: " + windowFunc);
+		}
+		return selector;
+	}
+
+	public CompactWIGData fillPixelsWithMedian(CompactWIGData cwig, int pixelWidth, int trackId, int start, int end) throws SQLException, UTGBException {
 
 		GenomeWindow w = new GenomeWindow(start, end);
 		float[] dataValues = new float[pixelWidth];
@@ -153,24 +211,27 @@ public class WIGDatabaseReader {
 		float minInBlock = Float.MAX_VALUE;
 		float maxInBlock = Float.MIN_VALUE;
 
+		ValueSelecter selector = getSelector();
+
 		ResultSet rs = null;
 		try {
-			rs = statement.executeQuery(String
-					.format("select start, end, min_value, max_value, median from data where track_id=%d and start<=%d and end>=%d order by start", trackId,
-							end, start));
+			rs = statement.executeQuery(String.format(
+					"select start, end, min_value, max_value, median, avg from data where track_id=%d and start<=%d and end>=%d order by start", trackId, end,
+					start));
 			while (rs.next()) {
 				int s = rs.getInt("start");
 				int e = rs.getInt("end");
 				float max = rs.getFloat("max_value");
 				float min = rs.getFloat("min_value");
 				float median = rs.getFloat("median");
+				float avg = rs.getFloat("avg");
 
 				int pixelStart = w.getXPosOnWindow(s, pixelWidth);
 				if (pixelStart <= 0)
 					pixelStart = 0;
 				int pixelEnd = w.getXPosOnWindow(e + cwig.getSpan(), pixelWidth);
 				for (int x = pixelStart; x < pixelWidth && x < pixelEnd; ++x) {
-					dataValues[x] = median;
+					dataValues[x] = selector.select(dataValues[x], max, min, avg, median);
 				}
 
 				minInBlock = Math.min(min, minInBlock);
@@ -192,7 +253,7 @@ public class WIGDatabaseReader {
 	}
 
 	public HashMap<Integer, Float> getData(int windowWidth, int trackId, int start, int end) throws SQLException, IOException, DataFormatException,
-			NumberFormatException, ClassNotFoundException {
+			NumberFormatException, ClassNotFoundException, UTGBException {
 		HashMap<Integer, Float> data = new HashMap<Integer, Float>();
 		HashMap<String, String> track = getTrack(trackId);
 
@@ -211,6 +272,8 @@ public class WIGDatabaseReader {
 		int rough = (int) Math.floor((end - start) / windowWidth);
 		if (rough < 1)
 			rough = 1;
+
+		ValueSelecter selector = getSelector();
 
 		StopWatch st1 = new StopWatch();
 		StopWatch st2 = new StopWatch();
@@ -266,10 +329,15 @@ public class WIGDatabaseReader {
 				if (start <= chromStarts[i] && chromStarts[i] <= end) {
 					if (dataValues[i] != 0.0f) {
 						int chromStart = chromStarts[i] - (chromStarts[i] % rough);
-						if (data.containsKey(chromStart))
-							data.put(chromStart, Math.max(dataValues[i], data.get(chromStart)));
-						else
+						if (data.containsKey(chromStart)) {
+							float prev = data.get(chromStart);
+							float current = dataValues[i];
+							float newValue = selector.select(prev, maxValue, minValue, current, current);
+							data.put(chromStart, newValue);
+						}
+						else {
 							data.put(chromStart, dataValues[i]);
+						}
 					}
 
 					minValue = Math.min(minValue, dataValues[i]);
@@ -287,25 +355,26 @@ public class WIGDatabaseReader {
 		return data;
 	}
 
-	public HashMap<Integer, Float> getData(int trackId) throws NumberFormatException, SQLException, IOException, DataFormatException, ClassNotFoundException {
+	public HashMap<Integer, Float> getData(int trackId) throws NumberFormatException, SQLException, IOException, DataFormatException, ClassNotFoundException,
+			UTGBException {
 		return getData(trackId, 0, Integer.MAX_VALUE);
 	}
 
 	public WigGraphData getWigData(int windowWidth, int trackId, int start, int end) throws SQLException, NumberFormatException, IOException,
-			DataFormatException, ClassNotFoundException {
+			DataFormatException, ClassNotFoundException, UTGBException {
 		WigGraphData wigData = prepareWigData(trackId);
 		wigData.setData(getData(windowWidth, trackId, start, end));
 		return wigData;
 	}
 
 	public WigGraphData getWigData(int trackId, int start, int end) throws SQLException, NumberFormatException, IOException, DataFormatException,
-			ClassNotFoundException {
+			ClassNotFoundException, UTGBException {
 		WigGraphData wigData = prepareWigData(trackId);
 		wigData.setData(getData(trackId, start, end));
 		return wigData;
 	}
 
-	public CompactWIGData getCompactWigData(int trackId, int start, int end, int pixelWidth) throws SQLException {
+	public CompactWIGData getCompactWigData(int trackId, int start, int end, int pixelWidth) throws SQLException, UTGBException {
 		WigGraphData wigData = prepareWigData(trackId);
 		CompactWIGData cWig = prepareCompactWigData(wigData, new ChrLoc(null, start, end));
 		fillPixelsWithMedian(cWig, pixelWidth, trackId, start, end);
@@ -322,12 +391,13 @@ public class WIGDatabaseReader {
 		return wigData;
 	}
 
-	public WigGraphData getWigData(int trackId) throws SQLException, NumberFormatException, IOException, DataFormatException, ClassNotFoundException {
+	public WigGraphData getWigData(int trackId) throws SQLException, NumberFormatException, IOException, DataFormatException, ClassNotFoundException,
+			UTGBException {
 		return getWigData(trackId, 0, Integer.MAX_VALUE);
 	}
 
 	public ArrayList<WigGraphData> getWigDataList(int windowWidth, String chrom, int start, int end) throws SQLException, NumberFormatException, IOException,
-			DataFormatException, ClassNotFoundException {
+			DataFormatException, ClassNotFoundException, UTGBException {
 		ArrayList<WigGraphData> wigDataList = new ArrayList<WigGraphData>();
 
 		for (int id : getTrackIdList(chrom)) {
@@ -338,7 +408,7 @@ public class WIGDatabaseReader {
 	}
 
 	public ArrayList<WigGraphData> getWigDataList(String chrom, int start, int end) throws SQLException, NumberFormatException, IOException,
-			DataFormatException, ClassNotFoundException {
+			DataFormatException, ClassNotFoundException, UTGBException {
 		ArrayList<WigGraphData> wigDataList = new ArrayList<WigGraphData>();
 
 		for (int id : getTrackIdList(chrom)) {
@@ -348,10 +418,10 @@ public class WIGDatabaseReader {
 		return wigDataList;
 	}
 
-	public static List<WigGraphData> getWigDataList(String fileName, int windowWidth, ChrLoc location) throws UTGBException, SQLException {
+	public static List<WigGraphData> getWigDataList(File fileName, int windowWidth, ChrLoc location, GraphWindow windowFunc) throws UTGBException, SQLException {
 		ArrayList<WigGraphData> wigDataList = null;
 
-		WIGDatabaseReader reader = new WIGDatabaseReader(WebTrackBase.getProjectRootPath() + "/" + fileName);
+		WIGDatabaseReader reader = new WIGDatabaseReader(fileName, windowFunc);
 		try {
 			wigDataList = reader.getWigDataList(windowWidth, location.chr, location.start, location.end);
 		}
@@ -366,27 +436,29 @@ public class WIGDatabaseReader {
 		return wigDataList;
 	}
 
-	public static List<CompactWIGData> getRoughCompactWigDataList(String path, int pixelWidth, ChrLoc location) throws UTGBException, SQLException {
+	public static List<CompactWIGData> getRoughCompactWigDataList(File path, int pixelWidth, ChrLoc location, GraphWindow windowFunc) throws UTGBException,
+			SQLException {
 
 		ArrayList<CompactWIGData> cWig = new ArrayList<CompactWIGData>();
-		WIGDatabaseReader reader = new WIGDatabaseReader(WebTrackBase.getProjectRootPath() + "/" + path);
+		WIGDatabaseReader reader = new WIGDatabaseReader(path, windowFunc);
 		for (int id : reader.getTrackIdList(location.chr)) {
 			cWig.add(reader.getCompactWigData(id, location.start, location.end, pixelWidth));
 		}
 		return cWig;
 	}
 
-	public static List<CompactWIGData> getCompactWigDataList(String path, int pixelWidth, ChrLoc location) throws UTGBException, SQLException {
+	public static List<CompactWIGData> getCompactWigDataList(File path, int pixelWidth, ChrLoc location, GraphWindow windowFunc) throws UTGBException,
+			SQLException {
 
 		int numBlocks = location.length() / WIGDatabaseGenerator.DATA_SPLIT_UNIT;
 		if (numBlocks >= pixelWidth) {
 			// use max values in the wig data table
 			_logger.debug(String.format("query wig (path:%s, width:%d, loc:%s)", path, pixelWidth, location));
-			return getRoughCompactWigDataList(path, pixelWidth, location);
+			return getRoughCompactWigDataList(path, pixelWidth, location, windowFunc);
 		}
 		else {
 			ArrayList<CompactWIGData> cWig = new ArrayList<CompactWIGData>();
-			List<WigGraphData> wig = getWigDataList(path, pixelWidth, location);
+			List<WigGraphData> wig = getWigDataList(path, pixelWidth, location, windowFunc);
 			for (WigGraphData w : wig) {
 				cWig.add(WIGDatabaseReader.convertResolution(w, location, pixelWidth));
 			}

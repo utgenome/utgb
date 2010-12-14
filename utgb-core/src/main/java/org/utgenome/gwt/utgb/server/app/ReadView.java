@@ -127,10 +127,17 @@ public class ReadView extends WebTrackBase {
 			switch (dbType) {
 			case BAM: {
 				File bamFile = new File(WebTrackBase.getProjectRootPath(), db.path);
+				if (config.wigPath != null) {
+					config.wigPath = new File(WebTrackBase.getProjectRootPath(), config.wigPath).getAbsolutePath();
+					if (!new File(config.wigPath).exists()) {
+						_logger.warn(String.format("wig database file %s is not found", config.wigPath));
+						config.wigPath = null;
+					}
+				}
 				if (config.layout == Layout.COVERAGE)
-					return SAMReader.depthCoverage(loc, config.pixelWidth, bamFile);
+					return SAMReader.depthCoverage(bamFile, loc, config.pixelWidth, config);
 				else
-					result = SAMReader.overlapQuery(bamFile, loc, config.pixelWidth);
+					result = SAMReader.overlapQuery(bamFile, loc, config.pixelWidth, config);
 			}
 				break;
 			case BED: {
