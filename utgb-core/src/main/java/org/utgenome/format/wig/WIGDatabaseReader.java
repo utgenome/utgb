@@ -149,36 +149,36 @@ public class WIGDatabaseReader {
 		return (getData((end - start), trackId, start, end));
 	}
 
-	private static interface ValueSelecter {
+	private static interface ValueSelector {
 		public float select(float prev, float max, float min, float avg, float median);
 	}
 
-	public static class MAXSelector implements ValueSelecter {
+	public static class MAXSelector implements ValueSelector {
 		public float select(float prev, float max, float min, float avg, float median) {
 			return Math.max(prev, max);
 		}
 	}
 
-	public static class MINSelector implements ValueSelecter {
+	public static class MINSelector implements ValueSelector {
 		public float select(float prev, float max, float min, float avg, float median) {
 			return Math.min(prev, min);
 		}
 	}
 
-	public static class MedianSelector implements ValueSelecter {
+	public static class MedianSelector implements ValueSelector {
 		public float select(float prev, float max, float min, float avg, float median) {
 			return Math.max(prev, median);
 		}
 	}
 
-	public static class AvgSelector implements ValueSelecter {
+	public static class AvgSelector implements ValueSelector {
 		public float select(float prev, float max, float min, float avg, float median) {
 			return Math.max(prev, avg);
 		}
 	}
 
-	private ValueSelecter getSelector() throws UTGBException {
-		ValueSelecter selector = null;
+	private ValueSelector getSelector() throws UTGBException {
+		ValueSelector selector = null;
 		switch (windowFunc) {
 		case AVG:
 			selector = new AvgSelector();
@@ -211,7 +211,7 @@ public class WIGDatabaseReader {
 		float minInBlock = Float.MAX_VALUE;
 		float maxInBlock = Float.MIN_VALUE;
 
-		ValueSelecter selector = getSelector();
+		ValueSelector selector = getSelector();
 
 		ResultSet rs = null;
 		try {
@@ -274,7 +274,7 @@ public class WIGDatabaseReader {
 		if (rough < 1)
 			rough = 1;
 
-		ValueSelecter selector = getSelector();
+		ValueSelector selector = getSelector();
 
 		StopWatch st1 = new StopWatch();
 		StopWatch st2 = new StopWatch();
