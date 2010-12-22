@@ -209,8 +209,8 @@ public class NavigatorTrack extends TrackBase {
 
 		if (windowSize <= MINIMUM_WINDOW_SIZE)
 			windowSize = MINIMUM_WINDOW_SIZE;
-		if (windowSize >= 100000000) // 100M
-			windowSize = 100000000;
+		if (windowSize >= 1000000000) // 1G
+			windowSize = 1000000000;
 
 		int half = windowSize / 2;
 		int remaining = windowSize % 2;
@@ -274,6 +274,7 @@ public class NavigatorTrack extends TrackBase {
 			_panel.add(new ZoomButton("1M", 1000000));
 			_panel.add(new ZoomButton("10M", 10000000));
 			_panel.add(new ZoomButton("100M", 100000000));
+			_panel.add(new ZoomButton("1G", 1000000000));
 			initWidget(_panel);
 		}
 	}

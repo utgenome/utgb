@@ -313,7 +313,7 @@ public class ReadTrack extends TrackBase {
 		style.setup(config);
 
 		ValueDomain actionTypes = ValueDomain.createNewValueDomain(new String[] { "none", "link", "info", "set" });
-		config.addConfig("On Click Action", new StringType(CONFIG_ONCLICK_ACTION, actionTypes), "link");
+		config.addConfig("On Click Action", new StringType(CONFIG_ONCLICK_ACTION, actionTypes), "none");
 		config.addConfig("On Click URL", new StringType(CONFIG_ONCLICK_URL), "http://www.google.com/search?q=%q");
 		config.addConfig("On Click Set (key:value, ...)", new StringType(CONFIG_ONCLICK_P_KEY), "read:%q");
 
