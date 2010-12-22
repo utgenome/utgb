@@ -215,6 +215,9 @@ public class SAMReader {
 			return depthCoverageInWIG(new File(config.wigPath), loc, pixelWidth, config);
 		}
 
+		if (_logger.isDebugEnabled())
+			_logger.debug(String.format("depth coverage: %s - %s", bamFile, loc));
+
 		File baiFile = getBamIndexFile(bamFile);
 		SAMFileReader sam = new SAMFileReader(bamFile, baiFile, false);
 		sam.setValidationStringency(ValidationStringency.SILENT);
@@ -237,6 +240,9 @@ public class SAMReader {
 	public static List<OnGenome> depthCoverageInWIG(File wigFile, ChrLoc loc, int pixelWidth, ReadQueryConfig config) throws UTGBException {
 		try {
 			ArrayList<OnGenome> result = new ArrayList<OnGenome>();
+
+			if (_logger.isDebugEnabled())
+				_logger.debug(String.format("depth coverage: %s - %s", wigFile, loc));
 
 			List<CompactWIGData> wigData = WIGDatabaseReader.getCompactWigDataList(wigFile, pixelWidth, loc, config.window);
 			for (CompactWIGData each : wigData) {

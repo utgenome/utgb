@@ -137,9 +137,8 @@ public class ReadView extends WebTrackBase {
 				if (config.layout == Layout.COVERAGE)
 					return SAMReader.depthCoverage(bamFile, loc, config.pixelWidth, config);
 				else
-					result = SAMReader.overlapQuery(bamFile, loc, config.pixelWidth, config);
+					return SAMReader.overlapQuery(bamFile, loc, config.pixelWidth, config);
 			}
-				break;
 			case BED: {
 				result = BEDDatabase.overlapQuery(new File(getProjectRootPath(), db.path), loc);
 				break;

@@ -460,9 +460,12 @@ public class WIGDatabaseReader {
 			SQLException {
 
 		int numBlocks = location.length() / WIGDatabaseGenerator.DATA_SPLIT_UNIT;
+		if (_logger.isDebugEnabled())
+			_logger.debug(String.format("num blocks: %s in %s", numBlocks, location));
 		if (numBlocks >= pixelWidth) {
 			// use max values in the wig data table
-			_logger.debug(String.format("query wig (path:%s, width:%d, loc:%s)", path, pixelWidth, location));
+			if (_logger.isDebugEnabled())
+				_logger.debug(String.format("query wig (path:%s, width:%d, loc:%s)", path, pixelWidth, location));
 			return getRoughCompactWigDataList(path, pixelWidth, location, windowFunc);
 		}
 		else {
