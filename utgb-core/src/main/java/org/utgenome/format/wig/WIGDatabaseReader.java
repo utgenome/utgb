@@ -495,8 +495,12 @@ public class WIGDatabaseReader {
 	}
 
 	public static CompactWIGData convertResolution(WigGraphData w, ChrLoc location, int windowWidth) {
+
 		CompactWIGData cwig = prepareCompactWigData(w, location);
 		final int span = cwig.getSpan();
+
+		if (_logger.isDebugEnabled())
+			_logger.debug(String.format("convert resolution: loc:%s, window width:%d", location, windowWidth));
 
 		GenomeWindow window = new GenomeWindow(location.start, location.end);
 

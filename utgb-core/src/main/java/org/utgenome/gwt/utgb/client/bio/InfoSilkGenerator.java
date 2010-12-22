@@ -172,8 +172,9 @@ public class InfoSilkGenerator extends OnGenomeDataVisitorBase {
 	@Override
 	public void visitReadCoverage(ReadCoverage readCoverage) {
 		addLine("-name: " + readCoverage.getName());
-		//addLine("-start: " + readCoverage.getStart());
-		//addLine("-length: " + readCoverage.length());
+		addLine("-start: " + readCoverage.getStart());
+		addLine("-end: " + readCoverage.getEnd());
+		addLine("-pixel width: " + readCoverage.pixelWidth);
 	}
 
 	@Override

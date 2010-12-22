@@ -198,7 +198,8 @@ public class ChromosomeMap extends WebTrackBase {
 			// make chromosome rank
 			int rank = 0;
 			for (String each : chrNames) {
-				_logger.debug(rank);
+				if (_logger.isTraceEnabled())
+					_logger.trace(rank);
 				chromWindows.get(each).setRank(rank);
 				rank++;
 			}
