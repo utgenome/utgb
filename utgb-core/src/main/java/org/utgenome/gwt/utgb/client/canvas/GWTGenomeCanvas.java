@@ -961,8 +961,8 @@ public class GWTGenomeCanvas extends TouchableComposite {
 			canvas.setLineWidth(0.1f);
 			canvas.setLineCap("round");
 
-			int x1 = pixelPositionOnWindow(readCoverage.getStart());
-			int x2 = pixelPositionOnWindow(readCoverage.getEnd() + 1);
+			int x1 = pixelPositionOnWindow(trackWindow.getStartOnGenome());
+			int x2 = pixelPositionOnWindow(trackWindow.getEndOnGenome());
 
 			if (x1 < 0)
 				x1 = 0;
@@ -1014,8 +1014,8 @@ public class GWTGenomeCanvas extends TouchableComposite {
 			if (prefetchWindow == null)
 				return;
 
-			double x1 = prefetchWindow.convertToPixelXDouble(readCoverage.getStart());
-			double x2 = prefetchWindow.convertToPixelXDouble(readCoverage.getEnd() + 1);
+			double x1 = prefetchWindow.convertToPixelXDouble(trackWindow.getStartOnGenome());
+			double x2 = prefetchWindow.convertToPixelXDouble(trackWindow.getEndOnGenome() + 1);
 
 			double w = x2 - x1;
 			canvas.scale(trackWindow.getPixelWidth() / w, 1.0f);
@@ -1145,6 +1145,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 		canvas.setCoordSize(width, height);
 		canvas.setPixelWidth(width);
 		canvas.setPixelHeight(height);
+		Style.scaleX(canvas, 1);
 		panel.setPixelSize(width, height);
 		basePanel.setPixelSize(width, height);
 	}
