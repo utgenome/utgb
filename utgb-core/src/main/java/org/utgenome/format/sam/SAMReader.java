@@ -243,18 +243,18 @@ public class SAMReader {
 			ArrayList<OnGenome> result = new ArrayList<OnGenome>();
 
 			if (_logger.isDebugEnabled())
-				_logger.debug(String.format("depth coverage: %s - %s", wigFile, loc));
+				_logger.debug(String.format("depth coverage in WIG: %s - %s", wigFile, loc));
 
 			List<CompactWIGData> wigData = WIGDatabaseReader.getCompactWigDataList(wigFile, pixelWidth, loc, config.window);
 			for (CompactWIGData each : wigData) {
 				ReadCoverage rc = each.toReadCoverage(loc);
 				result.add(rc);
-				if (_logger.isTraceEnabled()) {
+				if (_logger.isDebugEnabled()) {
 					ArrayList<Integer> firstSample = new ArrayList<Integer>();
-					for (int i = 0; i < 10; ++i) {
+					for (int i = 0; i < 10 && i < rc.coverage.length; ++i) {
 						firstSample.add(rc.coverage[i]);
 					}
-					_logger.trace(String.format("wig: %s, loc:%s, depth:[%s]", wigFile, loc, StringUtil.join(firstSample, ", ")));
+					_logger.debug(String.format("wig: %s, loc:%s, depth:[%s]", wigFile, loc, StringUtil.join(firstSample, ", ")));
 				}
 
 			}
