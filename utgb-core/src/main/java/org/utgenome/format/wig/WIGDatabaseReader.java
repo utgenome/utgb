@@ -462,10 +462,10 @@ public class WIGDatabaseReader {
 		int numBlocks = location.length() / WIGDatabaseGenerator.DATA_SPLIT_UNIT;
 		if (_logger.isDebugEnabled())
 			_logger.debug(String.format("num blocks: %s in %s, pixel width: %d", numBlocks, location, pixelWidth));
-		if (numBlocks >= pixelWidth) {
+		if (numBlocks >= 100) {
 			// use max values in the wig data table
 			if (_logger.isDebugEnabled())
-				_logger.debug(String.format("query wig (path:%s, width:%d, loc:%s)", path, pixelWidth, location));
+				_logger.debug(String.format("query wig summary (path:%s, pixel width:%d, loc:%s)", path, pixelWidth, location));
 			return getRoughCompactWigDataList(path, pixelWidth, location, windowFunc);
 		}
 		else {
