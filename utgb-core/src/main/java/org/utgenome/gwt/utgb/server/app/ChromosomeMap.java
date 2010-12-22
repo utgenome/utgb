@@ -258,7 +258,8 @@ public class ChromosomeMap extends WebTrackBase {
 		chrRanges.ranges = new ArrayList<ChrLoc>();
 		chrRanges.maxLength = -1;
 
-		_logger.debug(String.format("%s(%s)", species, revision));
+		if (_logger.isTraceEnabled())
+			_logger.trace(String.format("%s(%s)", species, revision));
 
 		try {
 
@@ -270,8 +271,8 @@ public class ChromosomeMap extends WebTrackBase {
 				chrLoc.start = each.getStart();
 				chrLoc.end = each.getEnd();
 				chrRanges.ranges.add(chrLoc);
-				if (_logger.isDebugEnabled())
-					_logger.debug(String.format("%s:%d-%d", chrLoc.chr, chrLoc.start, chrLoc.end));
+				if (_logger.isTraceEnabled())
+					_logger.trace(String.format("%s:%d-%d", chrLoc.chr, chrLoc.start, chrLoc.end));
 
 				chrRanges.maxLength = Math.max(chrRanges.maxLength, chrLoc.end - chrLoc.start);
 
@@ -283,8 +284,8 @@ public class ChromosomeMap extends WebTrackBase {
 
 				chrRanges.chrNameWidth = Math.max(chrRanges.chrNameWidth, fontMetrics.stringWidth(chrLoc.chr));
 
-				if (_logger.isDebugEnabled())
-					_logger.debug(String.format("max length : %d", chrRanges.maxLength));
+				if (_logger.isTraceEnabled())
+					_logger.trace(String.format("max length : %d", chrRanges.maxLength));
 			}
 		}
 		catch (Exception e) {

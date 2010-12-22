@@ -54,6 +54,7 @@ import org.utgenome.gwt.utgb.client.bio.SAMReadLight;
 import org.utgenome.gwt.utgb.client.bio.SAMReadPair;
 import org.utgenome.gwt.utgb.client.bio.SAMReadPairFragment;
 import org.utgenome.gwt.utgb.client.canvas.IntervalTree;
+import org.xerial.util.StringUtil;
 import org.xerial.util.log.Logger;
 
 /**
@@ -246,7 +247,16 @@ public class SAMReader {
 
 			List<CompactWIGData> wigData = WIGDatabaseReader.getCompactWigDataList(wigFile, pixelWidth, loc, config.window);
 			for (CompactWIGData each : wigData) {
-				result.add(each.toReadCoverage(loc));
+				ReadCoverage rc = each.toReadCoverage(loc);
+				result.add(rc);
+				if (_logger.isTraceEnabled()) {
+					ArrayList<Integer> firstSample = new ArrayList<Integer>();
+					for (int i = 0; i < 10; ++i) {
+						firstSample.add(rc.coverage[i]);
+					}
+					_logger.trace(String.format("wig: %s, loc:%s, depth:[%s]", wigFile, loc, StringUtil.join(firstSample, ", ")));
+				}
+
 			}
 			return result;
 		}
