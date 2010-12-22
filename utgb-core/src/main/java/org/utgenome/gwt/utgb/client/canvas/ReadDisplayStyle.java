@@ -53,7 +53,7 @@ public class ReadDisplayStyle {
 	public boolean showLabels = true;
 	public boolean drawShadow = true;
 	public boolean showBaseQuality = false;
-	public boolean overlapPairedReads = false;
+	public boolean overlapPairedReads = true;
 	public boolean showStrand = true;
 
 	public int numReadsMax = 500;
