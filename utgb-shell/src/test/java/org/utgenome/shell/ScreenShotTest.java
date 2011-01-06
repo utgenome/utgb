@@ -39,8 +39,6 @@ public class ScreenShotTest {
 
 		UTGBShell.runCommand(String.format("screenshot -i %s chr20:25000-50000 --outdir=target", bam.getAbsoluteFile()));
 
-		File queryFile = TestHelper.createTempFileFrom(ScreenShotTest.class, "region.silk");
-		UTGBShell.runCommand(String.format("screenshot -i %s --outdir=target -q %s", bam.getAbsoluteFile(), queryFile.getAbsoluteFile()));
 	}
 
 	@Test

@@ -25,6 +25,8 @@
 package org.utgenome.gwt.utgb.client.canvas;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 
@@ -218,7 +220,7 @@ public class IntervalLayout {
 		return createLocalLayout(geneHeight);
 	}
 
-	private class LayoutGenerator implements PrioritySearchTree.ResultHandler<OnGenome> {
+	private class LayoutGenerator {
 
 		private final int geneHeight;
 
@@ -305,14 +307,30 @@ public class IntervalLayout {
 
 		//int maxYOffset = 0;
 
-		LayoutGenerator layoutGenerator = new LayoutGenerator(geneHeight);
+		List<OnGenome> readsInRange = globalLayout.rangeQuery(w.getStartOnGenome(), Integer.MAX_VALUE, w.getEndOnGenome());
 
+		Collections.sort(readsInRange, new Comparator<OnGenome>() {
+			public int compare(OnGenome o1, OnGenome o2) {
+				int diff = o1.getStart() - o2.getStart();
+				if (diff == 0)
+					return o1.length() - o2.length();
+				else
+					return diff;
+			}
+		});
+
+		LayoutGenerator layoutGenerator = new LayoutGenerator(geneHeight);
 		boolean toContinue = false;
 		do {
 			localLayoutInView.clear();
 			layoutGenerator.reset();
-			globalLayout.rangeQuery(w.getStartOnGenome(), Integer.MAX_VALUE, w.getEndOnGenome(), layoutGenerator);
-			toContinue = layoutGenerator.needRelayout;
+
+			for (OnGenome each : readsInRange) {
+				layoutGenerator.handle(each);
+				toContinue = layoutGenerator.needRelayout;
+				if (!layoutGenerator.toContinue())
+					break;
+			}
 		}
 		while (toContinue);
 
