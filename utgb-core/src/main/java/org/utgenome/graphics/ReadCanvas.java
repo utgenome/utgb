@@ -193,8 +193,10 @@ public class ReadCanvas {
 	}
 
 	public void draw(List<OnGenome> dataSet) {
-	    layout.setAllowOverlapPairedReads(style.overlapPairedReads);
+		layout.setAllowOverlapPairedReads(style.overlapPairedReads);
+		layout.setKeepSpaceForLabels(false);
 		layout.setTrackWindow(new TrackWindow(getPixelWidth(), (int) window.startIndexOnGenome, (int) window.endIndexOnGenome));
+
 		int maxOffset = layout.reset(dataSet, style.geneHeight);
 		final int h = style.geneHeight + style.geneMargin;
 		final int canvasHeight = (maxOffset + 1) * h;

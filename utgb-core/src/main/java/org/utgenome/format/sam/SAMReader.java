@@ -352,18 +352,22 @@ public class SAMReader {
 					boolean foundPair = false;
 					if (read.getFirstOfPairFlag()) {
 						if (mate.getSecondOfPairFlag()) {
-							result.add(new SAMReadPair(rf.newSAMRead(read), rf.newSAMRead(mate)));
 							foundPair = true;
 						}
 					}
 					else {
 						if (mate.getFirstOfPairFlag()) {
-							result.add(new SAMReadPair(rf.newSAMRead(mate), rf.newSAMRead(read)));
 							foundPair = true;
 						}
 					}
 
-					if (!foundPair) {
+					if (foundPair) {
+						if (read.getUnclippedStart() < mate.getUnclippedStart())
+							result.add(new SAMReadPair(rf.newSAMRead(read), rf.newSAMRead(mate)));
+						else
+							result.add(new SAMReadPair(rf.newSAMRead(mate), rf.newSAMRead(read)));
+					}
+					else {
 						// The read names are the same, but they are not mated (error?)
 						result.add(rf.newSAMRead(mate));
 						result.add(rf.newSAMRead(read));

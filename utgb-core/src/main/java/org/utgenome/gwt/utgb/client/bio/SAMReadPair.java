@@ -39,10 +39,7 @@ public class SAMReadPair extends Interval {
 	}
 
 	public SAMReadPair(SAMReadLight first, SAMReadLight second) {
-		super(Math.min(first.unclippedStart, second.unclippedStart), Math.max(first.unclippedEnd, second.unclippedEnd));
-		if (!(first.isFirstRead() && second.isSecondRead())) {
-			throw new IllegalArgumentException("invalid sam read pair:\n" + first + "\n" + second);
-		}
+		super(first.unclippedStart, second.unclippedEnd);
 
 		this.first = first;
 		this.second = second;
