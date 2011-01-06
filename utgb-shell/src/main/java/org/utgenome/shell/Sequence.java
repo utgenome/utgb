@@ -24,11 +24,9 @@
 //--------------------------------------
 package org.utgenome.shell;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.utgenome.format.fasta.CompactFASTA;
 import org.utgenome.format.fasta.GenomeSequence;
+import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.xerial.util.log.Logger;
 import org.xerial.util.opt.Argument;
 
@@ -56,24 +54,10 @@ public class Sequence extends UTGBShellCommand {
 
 		CompactFASTA f = new CompactFASTA(packFilePrefix);
 
-		Pattern p = Pattern.compile("([^:]+)(:([0-9]+)-([0-9]+))?");
-		Matcher m = p.matcher(query);
-		if (!m.matches())
-			throw new UTGBShellException("invalid query format:" + query);
-		String chr = m.group(1);
-		String sStart = m.group(3);
-		String sEnd = m.group(4);
-
-		int start = 0;
-		if (sStart != null)
-			start = Integer.parseInt(sStart) - 1;
-		int end = Integer.MAX_VALUE;
-		if (sEnd != null)
-			end = Integer.parseInt(sEnd);
-
-		GenomeSequence seq = f.getSequence(chr, start, end);
+		ChrLoc loc = RegionQueryExpr.parse(query);
+		GenomeSequence seq = f.getSequence(loc.chr, loc.start - 1, loc.end);
 		if (seq == null) {
-			_logger.warn("no entry found: " + chr);
+			_logger.warn("no entry found: " + loc);
 		}
 
 		int cursor = 0;
