@@ -352,22 +352,18 @@ public class SAMReader {
 					boolean foundPair = false;
 					if (read.getFirstOfPairFlag()) {
 						if (mate.getSecondOfPairFlag()) {
+							result.add(new SAMReadPair(rf.newSAMRead(read), rf.newSAMRead(mate)));
 							foundPair = true;
 						}
 					}
 					else {
 						if (mate.getFirstOfPairFlag()) {
+							result.add(new SAMReadPair(rf.newSAMRead(mate), rf.newSAMRead(read)));
 							foundPair = true;
 						}
 					}
 
-					if (foundPair) {
-						if (read.getUnclippedStart() < mate.getUnclippedStart())
-							result.add(new SAMReadPair(rf.newSAMRead(read), rf.newSAMRead(mate)));
-						else
-							result.add(new SAMReadPair(rf.newSAMRead(mate), rf.newSAMRead(read)));
-					}
-					else {
+					if (!foundPair) {
 						// The read names are the same, but they are not mated (error?)
 						result.add(rf.newSAMRead(mate));
 						result.add(rf.newSAMRead(read));
@@ -398,7 +394,7 @@ public class SAMReader {
 			public int compare(OnGenome o1, OnGenome o2) {
 				int diff = o1.getStart() - o2.getStart();
 				if (diff == 0) {
-					return o1.length() - o2.length();
+					return o2.length() - o1.length();
 				}
 				else
 					return diff;

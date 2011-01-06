@@ -143,16 +143,6 @@ public class IntervalLayout {
 			start = r.unclippedStart;
 			end = r.unclippedEnd;
 
-			//			// preserve space for a gap if exists
-			//			if (r.isPairedRead()) {
-			//				if (r.mStart > r.unclippedEnd) {
-			//					end = r.mStart;
-			//				}
-			//				else if (r.mStart < r.unclippedStart) {
-			//					start = r.mStart;
-			//				}
-			//			}
-
 			isDefined = true;
 		}
 

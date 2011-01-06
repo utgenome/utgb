@@ -280,8 +280,7 @@ public class ReadCanvas {
 		drawGeneRect(region.getStart(), region.getEnd(), y, style.getReadColor(region));
 	}
 
-	public void drawGeneRect(int startOnGenome, int endOnGenome, int y, Color c) {
-
+	public void drawRegion(int startOnGenome, int endOnGenome, int y, Color c, boolean drawShadow) {
 		int x1 = pixelPositionOnCanvas(startOnGenome);
 		int x2 = pixelPositionOnCanvas(endOnGenome);
 
@@ -298,7 +297,7 @@ public class ReadCanvas {
 		if (_logger.isTraceEnabled())
 			_logger.trace(String.format("-gene rect - x:%d, y:%d, width:%d, height:%d, color:%s", x1, y, boxWidth, style.geneHeight, c.toString()));
 
-		if (style.drawShadow) {
+		if (drawShadow) {
 			g.setColor(style.COLOR_SHADOW);
 			//g.setStroke(new BasicStroke(1f));
 
@@ -308,6 +307,12 @@ public class ReadCanvas {
 			g.drawLine(boxWidth, style.geneHeight, boxWidth, 0);
 			g.setTransform(saved);
 		}
+
+	}
+
+	public void drawGeneRect(int startOnGenome, int endOnGenome, int y, Color c) {
+
+		drawRegion(startOnGenome, endOnGenome, y, c, style.drawShadow);
 
 	}
 
@@ -444,8 +449,10 @@ public class ReadCanvas {
 		for (int i = 0; i < seq.length(); i++) {
 			int baseIndex = 8;
 			char base = seq.charAt(i);
+			Color c = style.getBaseColor(base);
 
-			drawBase(base, startOnGenome, y, style.getBaseColor(base));
+			drawRegion(startOnGenome + i, startOnGenome + i + 1, y, c, false);
+			drawBase(base, startOnGenome + i, y, Color.WHITE);
 		}
 
 	}
