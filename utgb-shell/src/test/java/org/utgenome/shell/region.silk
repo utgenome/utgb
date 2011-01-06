@@ -1,0 +1,4 @@
+%silk(version:1.0)
+-region(chr, start, end)|
+chr20	25000	30000
+chr20	30000	35000
