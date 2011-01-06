@@ -132,4 +132,18 @@ public class GenomeDB implements Serializable {
 			return db.type;
 	}
 
+	public static DBType resolveDBType(String path) {
+		if (path.endsWith(".sam"))
+			return DBType.SAM;
+		else if (path.endsWith(".bam"))
+			return DBType.BAM;
+		else if (path.endsWith(".bed"))
+			return DBType.BED;
+		else if (path.endsWith(".fa"))
+			return DBType.FASTA;
+		else if (path.endsWith(".cytoband"))
+			return DBType.CytoBand;
+		return null;
+	}
+
 }

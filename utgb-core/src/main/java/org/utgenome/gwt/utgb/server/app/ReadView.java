@@ -122,25 +122,29 @@ public class ReadView extends WebTrackBase {
 
 	public static List<OnGenome> overlapQuery(GenomeDB db, ChrLoc loc, ReadQueryConfig config) {
 
-		List<OnGenome> result = new ArrayList<OnGenome>();
-		StopWatch sw = new StopWatch();
-		DBType dbType = db.resolveDBType();
-		loc = loc.getLocForPositiveStrand();
-
 		if (!isDescendant(db.path)) {
 			_logger.error("relative path must be used in the path parameter: " + db.path);
-			return result;
+			return new ArrayList<OnGenome>(0);
 		}
+		return overlapQuery(new File(WebTrackBase.getProjectRootPath()), db, loc, config);
+	}
 
+	public static List<OnGenome> overlapQuery(File baseDir, GenomeDB db, ChrLoc loc, ReadQueryConfig config) {
+
+		StopWatch sw = new StopWatch();
+		loc = loc.getLocForPositiveStrand();
+		List<OnGenome> result = new ArrayList<OnGenome>();
 		try {
+
+			DBType dbType = GenomeDB.resolveDBType(db.path);
 			if (dbType == null)
-				throw new UTGBException(UTGBErrorCode.UnknownDBType, "auto detection of DBType failed : " + db);
+				throw new UTGBException(UTGBErrorCode.UnknownDBType, "auto detection of DBType failed : " + db.path);
 
 			switch (dbType) {
 			case BAM: {
-				File bamFile = new File(WebTrackBase.getProjectRootPath(), db.path);
+				File bamFile = new File(db.path);
 				if (config.wigPath != null) {
-					config.wigPath = new File(WebTrackBase.getProjectRootPath(), config.wigPath).getAbsolutePath();
+					config.wigPath = new File(baseDir, config.wigPath).getAbsolutePath();
 					if (!new File(config.wigPath).exists()) {
 						_logger.warn(String.format("wig database file %s is not found", config.wigPath));
 						config.wigPath = null;
@@ -152,7 +156,7 @@ public class ReadView extends WebTrackBase {
 					return SAMReader.overlapQuery(bamFile, loc, config.pixelWidth, config);
 			}
 			case BED: {
-				result = BEDDatabase.overlapQuery(new File(getProjectRootPath(), db.path), loc);
+				result = BEDDatabase.overlapQuery(new File(db.path), loc);
 				break;
 			}
 			case DAS: {
@@ -168,20 +172,8 @@ public class ReadView extends WebTrackBase {
 				}
 				break;
 			}
-				//			case URI: {
-				//				String dataSourceFullURI = db.path;
-				//				dataSourceFullURI.replace("%start", Integer.toString(loc.start));
-				//				dataSourceFullURI.replace("%end", Integer.toString(loc.end));
-				//				dataSourceFullURI.replace("%chr", loc.chr);
-				//				dataSourceFullURI.replace("%ref", db.ref);
-				//
-				//				BufferedReader reader = openURL(dataSourceFullURI, context);
-				//				OnGenomeDataRetriever<Gene> geneRetriever = new OnGenomeDataRetriever<Gene>();
-				//				Lens.findFromJSON(reader, "gene", Gene.class, geneRetriever);
-				//				result = geneRetriever.getResult();
-				//				break;
-				//			}
-
+			default:
+				throw new UTGBException(UTGBErrorCode.INVALID_INPUT, "unknown db type: " + dbType);
 			}
 		}
 		catch (Exception e) {
