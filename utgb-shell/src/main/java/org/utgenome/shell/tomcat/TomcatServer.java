@@ -203,7 +203,7 @@ public class TomcatServer {
 	}
 
 	private ClassLoader getExtensionClassLoader() {
-		ClassLoader cl = this.getClass().getClassLoader();
+		ClassLoader cl = Thread.currentThread().getContextClassLoader();
 		if (cl != null) {
 			ClassLoader parent = cl.getParent();
 			if (parent != null)

@@ -28,7 +28,9 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -49,7 +51,9 @@ import org.utgenome.gwt.utgb.client.bio.SAMReadPairFragment;
 import org.utgenome.gwt.utgb.client.canvas.IntervalLayout;
 import org.utgenome.gwt.utgb.client.canvas.IntervalLayout.LocusLayout;
 import org.utgenome.gwt.utgb.client.canvas.PrioritySearchTree.Visitor;
+import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.server.util.graphic.GraphicUtil;
+import org.xerial.util.log.Logger;
 
 /**
  * For generating {@link BufferedImage} instance of a read layout
@@ -59,6 +63,7 @@ import org.utgenome.gwt.utgb.server.util.graphic.GraphicUtil;
  */
 public class ReadCanvas {
 
+	private static Logger _logger = Logger.getLogger(ReadCanvas.class);
 	private final GenomeWindow window;
 	private BufferedImage image;
 	private Graphics2D g;
@@ -76,7 +81,7 @@ public class ReadCanvas {
 
 		public Color COLOR_GAP = new Color(0x66, 0x66, 0x66);
 		public Color COLOR_PADDING = new Color(0x33, 0x33, 0x66);
-		public Color COLOR_SHADOW = new Color(30, 30, 30, 0.6f);
+		public Color COLOR_SHADOW = new Color(30, 30, 30, (int) (255 * 0.6f));
 
 		public Color COLOR_READ_DEFAULT = new Color(0xCC, 0xCC, 0xCC);
 		public Color COLOR_FORWARD_STRAND = new Color(0xd8, 0x00, 0x67);
@@ -89,16 +94,11 @@ public class ReadCanvas {
 
 		private HashMap<Character, Color> colorTable = new HashMap<Character, Color>();
 
-		private static final String DEFAULT_COLOR_A = "50B6E8";
-		private static final String DEFAULT_COLOR_C = "E7846E";
-		private static final String DEFAULT_COLOR_G = "84AB51";
-		private static final String DEFAULT_COLOR_T = "FFA930";
-		private static final String DEFAULT_COLOR_N = "EEEEEE";
-		public String colorA = DEFAULT_COLOR_A;
-		public String colorC = DEFAULT_COLOR_C;
-		public String colorG = DEFAULT_COLOR_G;
-		public String colorT = DEFAULT_COLOR_T;
-		public String colorN = DEFAULT_COLOR_N;
+		private String colorA = "50B6E8";
+		private String colorC = "E7846E";
+		private String colorG = "84AB51";
+		private String colorT = "FFA930";
+		public String colorN = "EEEEEE";
 		public int repeatColorAlpha = 50;
 
 		{
@@ -114,6 +114,11 @@ public class ReadCanvas {
 			colorTable.put('N', GraphicUtil.parseColor(colorN));
 		}
 
+		public void setBaseColor(char base, Color c) {
+			colorTable.put(Character.toUpperCase(base), c);
+			colorTable.put(Character.toLowerCase(base), new Color(c.getRed(), c.getGreen(), c.getBlue(), repeatColorAlpha));
+		}
+
 		public Color getBaseColor(char base) {
 			if (colorTable.containsKey(base))
 				return colorTable.get(base);
@@ -126,7 +131,10 @@ public class ReadCanvas {
 			if (SAMReadLight.class.isAssignableFrom(g.getClass())) {
 				return getSAMReadColor(SAMReadLight.class.cast(g));
 			}
+			return getReadColor_internal(g);
+		}
 
+		private Color getReadColor_internal(OnGenome g) {
 			if (showStrand) {
 				if (g instanceof Interval) {
 					Interval r = (Interval) g;
@@ -138,13 +146,13 @@ public class ReadCanvas {
 
 		public Color getClippedReadColor(OnGenome g) {
 			Color c = getReadColor(g);
-			return new Color(c.getRed(), c.getGreen(), c.getBlue(), clippedRegionAlpha);
+			return new Color(c.getRed(), c.getGreen(), c.getBlue(), (int) (255 * clippedRegionAlpha));
 		}
 
 		private Color getSAMReadColor(SAMReadLight r) {
 			if (r.isPairedRead()) {
 				if (r.isMappedInProperPair())
-					return getReadColor(r);
+					return getReadColor_internal(r);
 				else
 					return r.isSense() ? COLOR_WIRED_READ_F : COLOR_WIRED_READ_R;
 			}
@@ -155,10 +163,15 @@ public class ReadCanvas {
 
 	}
 
-	private DrawStyle style = new DrawStyle();
+	private DrawStyle style;
 
 	public ReadCanvas(int width, int height, GenomeWindow window) {
+		this(width, height, window, new DrawStyle());
+	}
+
+	public ReadCanvas(int width, int height, GenomeWindow window, DrawStyle style) {
 		this.window = window;
+		this.style = style;
 		setPixelSize(width, height);
 	}
 
@@ -175,8 +188,13 @@ public class ReadCanvas {
 		ImageIO.write(image, "png", out);
 	}
 
+	public void toPNG(File out) throws IOException {
+		ImageIO.write(image, "png", out);
+	}
+
 	public void draw(List<OnGenome> dataSet) {
-		int maxOffset = layout.createLocalLayout(style.geneHeight);
+		layout.setTrackWindow(new TrackWindow(getPixelWidth(), (int) window.startIndexOnGenome, (int) window.endIndexOnGenome));
+		int maxOffset = layout.reset(dataSet, style.geneHeight);
 		final int h = style.geneHeight + style.geneMargin;
 		final int canvasHeight = (maxOffset + 1) * h;
 		setPixelSize(image.getWidth(), canvasHeight);
@@ -190,6 +208,10 @@ public class ReadCanvas {
 		});
 	}
 
+	private int getReadHeight() {
+		return style.geneHeight + style.geneMargin;
+	}
+
 	private class ReadPainter extends OnGenomeDataVisitorBase {
 		private LocusLayout currentLayout;
 
@@ -198,11 +220,11 @@ public class ReadCanvas {
 		}
 
 		public int getYPos() {
-			return currentLayout.scaledHeight(style.geneHeight);
+			return currentLayout.scaledHeight(getReadHeight());
 		}
 
 		public int getYPos(int y) {
-			return LocusLayout.scaledHeight(y, style.geneHeight);
+			return LocusLayout.scaledHeight(y, getReadHeight());
 		}
 
 		@Override
@@ -264,21 +286,30 @@ public class ReadCanvas {
 		if (boxWidth <= 0)
 			boxWidth = 1;
 
+		AffineTransform saved = g.getTransform();
 		g.translate(x1, y);
 		g.setColor(c);
 		g.fillRect(0, 0, boxWidth, style.geneHeight);
+		g.setTransform(saved);
+
+		if (_logger.isTraceEnabled())
+			_logger.trace(String.format("-gene rect - x:%d, y:%d, width:%d, height:%d, color:%s", x1, y, boxWidth, style.geneHeight, c.toString()));
 
 		if (style.drawShadow) {
 			g.setColor(style.COLOR_SHADOW);
-			g.setStroke(new BasicStroke(0.5f));
+			//g.setStroke(new BasicStroke(1f));
 
+			saved = g.getTransform();
 			g.translate(x1, y);
 			g.drawLine(1, style.geneHeight, boxWidth, style.geneHeight);
 			g.drawLine(boxWidth, style.geneHeight, boxWidth, 0);
+			g.setTransform(saved);
 		}
+
 	}
 
 	public void drawPadding(int startOnGenome, int endOnGenome, int y, Color c) {
+
 		g.setColor(c);
 		g.setStroke(new BasicStroke(0.5f));
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -325,7 +356,6 @@ public class ReadCanvas {
 				for (int cigarIndex = 0; cigarIndex < cigar.size(); cigarIndex++) {
 					CIGAR.Element e = cigar.get(cigarIndex);
 					int readEnd = readStart + e.length;
-					int x1 = pixelPositionOnCanvas(readStart);
 					switch (e.type) {
 					case Deletions:
 						// ref : AAAAAA
@@ -338,7 +368,7 @@ public class ReadCanvas {
 						// read: AAAAAA
 						// cigar: 3I3M
 						if (r.getSequence() != null)
-							postponed.add(new PostponedInsertion(x1, r.getSequence().substring(seqIndex, seqIndex + e.length)));
+							postponed.add(new PostponedInsertion(readStart, r.getSequence().substring(seqIndex, seqIndex + e.length)));
 						readEnd = readStart;
 						seqIndex += e.length;
 						break;

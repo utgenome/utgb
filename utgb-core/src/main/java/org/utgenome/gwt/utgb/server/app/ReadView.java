@@ -24,6 +24,7 @@ import org.utgenome.UTGBException;
 import org.utgenome.format.bed.BEDDatabase;
 import org.utgenome.format.sam.SAMReader;
 import org.utgenome.graphics.GenomeWindow;
+import org.utgenome.graphics.ReadCanvas;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.DASLocation;
 import org.utgenome.gwt.utgb.client.bio.DASResult;
@@ -31,8 +32,6 @@ import org.utgenome.gwt.utgb.client.bio.DASResult.DASFeature;
 import org.utgenome.gwt.utgb.client.bio.GenomeDB;
 import org.utgenome.gwt.utgb.client.bio.GenomeDB.DBType;
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
-import org.utgenome.gwt.utgb.client.bio.Read;
-import org.utgenome.gwt.utgb.client.bio.Read.ReadType;
 import org.utgenome.gwt.utgb.client.bio.ReadCoverage;
 import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig;
 import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig.Layout;
@@ -65,7 +64,6 @@ public class ReadView extends WebTrackBase {
 
 	// resource ID
 	public String path;
-	public Read.ReadType type = ReadType.SAM;
 
 	public static boolean isDescendant(String targetPath) {
 
@@ -95,17 +93,31 @@ public class ReadView extends WebTrackBase {
 		if (start == -1 || end == -1 || chr == null)
 			return;
 
-		List<OnGenome> result = overlapQuery(new GenomeDB(path, ref), new ChrLoc(chr, start, end), new ReadQueryConfig(width, useCanvas, layout));
+		String suffix = getActionSuffix(request);
+		_logger.info("suffix: " + suffix);
+		if ("png".equals(suffix)) {
+			response.setContentType("image/png");
+			ReadQueryConfig config = new ReadQueryConfig(width, useCanvas, layout);
+			config.maxmumNumberOfReadsToDisplay = Integer.MAX_VALUE;
+			List<OnGenome> result = overlapQuery(new GenomeDB(path, ref), new ChrLoc(chr, start, end), config);
 
-		response.setContentType("text/html");
-
-		// output the result in Silk format
-		SilkWriter w = new SilkWriter(response.getWriter());
-		w.preamble();
-		for (OnGenome each : result) {
-			w.leafObject("entry", each);
+			ReadCanvas canvas = new ReadCanvas(width, 100, new GenomeWindow(start, end));
+			canvas.draw(result);
+			canvas.toPNG(response.getOutputStream());
 		}
-		w.endDocument();
+		else {
+			List<OnGenome> result = overlapQuery(new GenomeDB(path, ref), new ChrLoc(chr, start, end), new ReadQueryConfig(width, useCanvas, layout));
+
+			response.setContentType("text/html");
+
+			// output the result in Silk format
+			SilkWriter w = new SilkWriter(response.getWriter());
+			w.preamble();
+			for (OnGenome each : result) {
+				w.leafObject("entry", each);
+			}
+			w.endDocument();
+		}
 	}
 
 	public static List<OnGenome> overlapQuery(GenomeDB db, ChrLoc loc, ReadQueryConfig config) {

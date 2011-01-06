@@ -214,7 +214,7 @@ public class IntervalLayout {
 	 * @param geneHeight
 	 *            * @return
 	 */
-	<T extends OnGenome> void reset(List<T> intervalList, int geneHeight) {
+	public <T extends OnGenome> int reset(List<T> intervalList, int geneHeight) {
 
 		globalLayout.clear();
 		IntervalRetriever ir = new IntervalRetriever();
@@ -225,7 +225,7 @@ public class IntervalLayout {
 				continue;
 			globalLayout.insert(l, ir.end, ir.start);
 		}
-		createLocalLayout(geneHeight);
+		return createLocalLayout(geneHeight);
 	}
 
 	private class LayoutGenerator implements PrioritySearchTree.ResultHandler<OnGenome> {

@@ -52,6 +52,12 @@ public class TestHelper {
 		return tmp;
 	}
 
+	public static <T> File createTempFileFrom(Class<T> referenceClass, String srcFileName, File output) throws IOException {
+		FileUtil.copy(FileResource.openByteStream(referenceClass, srcFileName), output);
+		output.deleteOnExit();
+		return output;
+	}
+
 	public static <T> File createTempDir() throws IOException {
 		File tmp = FileUtil.createTempDir(new File("target"), "tempdir");
 		return tmp;
