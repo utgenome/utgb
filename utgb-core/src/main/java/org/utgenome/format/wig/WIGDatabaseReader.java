@@ -329,7 +329,7 @@ public class WIGDatabaseReader {
 			for (i = 0; i < nDatas; i++) {
 				if (start <= chromStarts[i] && chromStarts[i] <= end) {
 					if (dataValues[i] != 0.0f) {
-						int chromStart = chromStarts[i] - (chromStarts[i] % rough);
+						int chromStart = chromStarts[i]; // - (chromStarts[i] % rough);
 						if (data.containsKey(chromStart)) {
 							float prev = data.get(chromStart);
 							float current = dataValues[i];
@@ -505,6 +505,8 @@ public class WIGDatabaseReader {
 		GenomeWindow window = new GenomeWindow(location.start, location.end);
 
 		float[] pixelWiseGraphData = new float[windowWidth + span];
+		for (int i = 0; i < pixelWiseGraphData.length; ++i)
+			pixelWiseGraphData[i] = 0;
 
 		Map<Integer, Float> data = w.getData();
 		for (Map.Entry<Integer, Float> each : data.entrySet()) {

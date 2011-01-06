@@ -49,6 +49,11 @@ public class Sequence extends WebTrackBase {
 	private static final String DEFAULT_COLOR_G = "84AB51";
 	private static final String DEFAULT_COLOR_T = "FFA930";
 	private static final String DEFAULT_COLOR_N = "EEEEEE";
+	public String colorA = DEFAULT_COLOR_A;
+	public String colorC = DEFAULT_COLOR_C;
+	public String colorG = DEFAULT_COLOR_G;
+	public String colorT = DEFAULT_COLOR_T;
+	public String colorN = DEFAULT_COLOR_N;
 
 	public String dbGroup = "org/utgenome/leo/genome";
 	public String species = "human";
@@ -58,12 +63,6 @@ public class Sequence extends WebTrackBase {
 	public String name = "chr1";
 	public int width = DEFAULT_WIDTH;
 	public String path = null;
-
-	public String colorA = DEFAULT_COLOR_A;
-	public String colorC = DEFAULT_COLOR_C;
-	public String colorG = DEFAULT_COLOR_G;
-	public String colorT = DEFAULT_COLOR_T;
-	public String colorN = DEFAULT_COLOR_N;
 
 	public Sequence() {
 	}

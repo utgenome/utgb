@@ -30,6 +30,13 @@ import org.utgenome.gwt.utgb.client.track.TrackGroup;
 /**
  * Reference sequence track
  * 
+ * <pre>
+ * -track
+ *  -class: RefSeqTrack
+ *  -property
+ *    -path: db/genome/%species-%ref.sqlite
+ * </pre>
+ * 
  * @author leo
  * 
  */

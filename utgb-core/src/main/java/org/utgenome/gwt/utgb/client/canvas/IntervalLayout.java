@@ -311,7 +311,7 @@ public class IntervalLayout {
 	 * @param geneHeight
 	 *            * @return
 	 */
-	<T extends OnGenome> int createLocalLayout(final int geneHeight) {
+	public <T extends OnGenome> int createLocalLayout(final int geneHeight) {
 
 		//int maxYOffset = 0;
 

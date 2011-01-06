@@ -61,6 +61,13 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * ChromosomeMapTrack is for visualizing Chromosome Map.
  * 
+ * <pre>
+ * -track
+ *  -class: ChromosomeMapTrack
+ * 
+ * 
+ * </pre>
+ * 
  * @author yoshimura
  * 
  */

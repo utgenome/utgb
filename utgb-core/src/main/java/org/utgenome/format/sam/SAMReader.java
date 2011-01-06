@@ -254,7 +254,7 @@ public class SAMReader {
 					for (int i = 0; i < 10 && i < rc.coverage.length; ++i) {
 						firstSample.add(rc.coverage[i]);
 					}
-					_logger.debug(String.format("wig: %s, loc:%s, depth:[%s]", wigFile, loc, StringUtil.join(firstSample, ", ")));
+					_logger.debug(String.format("wig: %s, loc:%s, depth:[%s, ...]", wigFile, loc, StringUtil.join(firstSample, ", ")));
 				}
 
 			}
