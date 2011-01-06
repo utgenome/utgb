@@ -37,7 +37,7 @@ public class ReadCanvasTest {
 
 	@Test
 	public void draw() throws Exception {
-		GenomeWindow w = new GenomeWindow(9500, 10300);
+		GenomeWindow w = new GenomeWindow(9500, 12000);
 		DrawStyle style = new DrawStyle();
 		style.geneHeight = 2;
 		ReadCanvas canvas = new ReadCanvas(700, 100, w, style);
