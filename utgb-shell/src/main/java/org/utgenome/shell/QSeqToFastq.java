@@ -45,10 +45,13 @@ public class QSeqToFastq extends UTGBShellCommand {
 	@Argument(index = 1, name = "output")
 	private String output = "-";
 
+	@Option(longName = "nofilter", description = "do not apply quality filter (default: false)")
+	private boolean disableQualityFilter = false;
+
 	@Override
 	public void execute(String[] args) throws Exception {
 
-		QSeqToFASTQ converter = readGroup == null ? new QSeqToFASTQ() : new QSeqToFASTQ(readGroup);
+		QSeqToFASTQ converter = readGroup == null ? new QSeqToFASTQ(disableQualityFilter) : new QSeqToFASTQ(readGroup, disableQualityFilter);
 
 		boolean closeIn = false;
 		boolean closeOut = false;

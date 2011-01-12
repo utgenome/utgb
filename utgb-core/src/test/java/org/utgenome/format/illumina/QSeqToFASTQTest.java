@@ -44,7 +44,7 @@ public class QSeqToFASTQTest {
 		StringWriter buf = new StringWriter();
 
 		final String prefix = "HG0001SE:L8";
-		QSeqToFASTQ converter = new QSeqToFASTQ(prefix);
+		QSeqToFASTQ converter = new QSeqToFASTQ(prefix, true);
 		converter.convert(FileResource.open(QSeqToFASTQTest.class, "qseq_sample.txt"), buf);
 		_logger.info(buf.toString());
 
@@ -54,6 +54,24 @@ public class QSeqToFASTQTest {
 			assertTrue(read.seqname.startsWith(prefix));
 		}
 		assertEquals(4, readCount);
+
+	}
+
+	@Test
+	public void filter() throws Exception {
+		StringWriter buf = new StringWriter();
+
+		final String prefix = "HG0001SE:L8";
+		QSeqToFASTQ converter = new QSeqToFASTQ(prefix, false);
+		converter.convert(FileResource.open(QSeqToFASTQTest.class, "qseq_sample.txt"), buf);
+		_logger.info(buf.toString());
+
+		int readCount = 0;
+		FastqReader fr = new FastqReader(new StringReader(buf.toString()));
+		for (FastqRead read; (read = fr.next()) != null; readCount++) {
+			assertTrue(read.seqname.startsWith(prefix));
+		}
+		assertEquals(2, readCount);
 
 	}
 }

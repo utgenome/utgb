@@ -119,6 +119,12 @@ public class IntervalLayout {
 		return activeData;
 	}
 
+	/**
+	 * Retrieves the interval (x1, x2) and the height of OnGenome objects
+	 * 
+	 * @author leo
+	 * 
+	 */
 	public static class IntervalRetriever extends OnGenomeDataVisitorBase {
 
 		public boolean allowPEOverlap = false;

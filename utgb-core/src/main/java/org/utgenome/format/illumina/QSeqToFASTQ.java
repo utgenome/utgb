@@ -43,12 +43,15 @@ public class QSeqToFASTQ {
 
 	private String readGroup = null;
 	private int readCount = 0;
+	private boolean disableQualityFilter = false;
 
-	public QSeqToFASTQ() {
+	public QSeqToFASTQ(boolean disableQualityFilter) {
+		this.disableQualityFilter = disableQualityFilter;
 	}
 
-	public QSeqToFASTQ(String readGroup) {
+	public QSeqToFASTQ(String readGroup, boolean disableQualityFilter) {
 		this.readGroup = readGroup;
+		this.disableQualityFilter = disableQualityFilter;
 	}
 
 	public FastqRead convertToFastq(String line) throws UTGBException {
@@ -60,9 +63,13 @@ public class QSeqToFASTQ {
 			throw new UTGBException(UTGBErrorCode.PARSE_ERROR, "insufficient number of columns: " + line);
 		}
 
-		final String qfilter = (c[10] == "1") ? "Y" : "N";
+		final String qfilter = (c[10].equals("1")) ? "Y" : "N";
 
 		readCount++;
+
+		if (!disableQualityFilter && "N".equals(qfilter)) {
+			return null;
+		}
 
 		// name, lane, x, y, pair?
 		String readName;
@@ -97,7 +104,8 @@ public class QSeqToFASTQ {
 		for (String line; (line = illuminaSequenceFile.readLine()) != null; lineCount++) {
 			try {
 				FastqRead r = convertToFastq(line);
-				output.write(r.toFASTQString());
+				if (r != null)
+					output.write(r.toFASTQString());
 			}
 			catch (Exception e) {
 				_logger.warn(String.format("line %d: %s", lineCount, e));
