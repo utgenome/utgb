@@ -145,11 +145,13 @@ public class ReadView extends WebTrackBase {
 				File bamFile = new File(db.path);
 				if (config.wigPath != null) {
 					config.wigPath = new File(baseDir, config.wigPath).getAbsolutePath();
-					if (!new File(config.wigPath).exists()) {
+					File wigDB = new File(config.wigPath.trim());
+					if (!(wigDB.exists() && wigDB.isFile())) {
 						_logger.warn(String.format("wig database file %s is not found", config.wigPath));
 						config.wigPath = null;
 					}
 				}
+
 				if (config.layout == Layout.COVERAGE)
 					return SAMReader.depthCoverage(bamFile, loc, config.pixelWidth, config);
 				else

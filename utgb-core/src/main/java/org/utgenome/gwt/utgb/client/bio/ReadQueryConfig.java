@@ -59,7 +59,8 @@ public class ReadQueryConfig implements Serializable {
 	public ReadQueryConfig(int pixelWidth, boolean hasCanvasSupport, Layout layout, int maxmumNumberOfReadsToDisplay, String wigPath) {
 		this(pixelWidth, hasCanvasSupport, layout);
 		this.maxmumNumberOfReadsToDisplay = maxmumNumberOfReadsToDisplay;
-		this.wigPath = wigPath;
+		if (wigPath != null && wigPath.trim().length() != 0)
+			this.wigPath = wigPath;
 	}
 
 	public ReadQueryConfig(int pixelWidth, boolean hasCanvasSupport, Layout layout) {
