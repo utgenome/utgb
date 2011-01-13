@@ -59,7 +59,7 @@ public class QSeqToFastqTest {
 			assertTrue(read.seqname.startsWith(prefix));
 		}
 
-		assertEquals(4, readCount);
+		assertEquals(2, readCount);
 
 	}
 }
