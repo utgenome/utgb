@@ -169,7 +169,7 @@ public class Sam2WigConverter {
 		SAMFileReader samReader = new SAMFileReader(samOrBam, SAMReader.getBamIndexFile(samOrBam));
 		SAMRecordCursor cursor = null;
 		try {
-			cursor = new SAMRecordCursor(samReader.queryContained(chr, start, end));
+			cursor = new SAMRecordCursor(samReader.queryOverlapping(chr, start, end));
 			reporter.switchChr();
 			ReadDepth.compute(chr, cursor, reporter);
 		}

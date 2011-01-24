@@ -93,7 +93,8 @@ public class ReadDepth {
 				boundary.poll();
 			}
 
-			reportDepth(chr, startCursor, start, currentDepth);
+			if (startCursor < start)
+				reportDepth(chr, startCursor, start, currentDepth);
 			startCursor = start;
 			currentDepth++;
 		}
