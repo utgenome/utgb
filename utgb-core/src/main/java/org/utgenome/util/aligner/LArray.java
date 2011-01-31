@@ -25,7 +25,7 @@ package org.utgenome.util.aligner;
 import java.util.ArrayList;
 
 /**
- * array allowing the size more than 2GB
+ * Array capable to store more than 2G (2 x 1024 x 1024 x 1024) entries
  * 
  * @author leo
  * 
@@ -58,17 +58,17 @@ public class LArray implements RandomAccess {
 	}
 
 	public int get(long index) {
-		int container = (int) (size >> 31);
-		int remainder = (int) size & 0x7FFFFFFF;
+		int container = (int) (index >> 31);
+		int remainder = (int) index & 0x7FFFFFFF;
 
 		return array.get(container)[remainder];
 	}
 
-	public void set(long index, int value) {
-		int container = (int) (size >> 31);
-		int remainder = (int) size & 0x7FFFFFFF;
+	public void set(long index, int uintValue) {
+		int container = (int) (index >> 31);
+		int remainder = (int) index & 0x7FFFFFFF;
 
-		array.get(container)[remainder] = value;
+		array.get(container)[remainder] = uintValue;
 	}
 
 }
