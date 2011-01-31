@@ -9,6 +9,11 @@
 
 == Release Notes
 
+* {b|January 31st, 2011} UTGB Toolkit 1.5.0 released.
+** WIG database format update (You need to reconstruct wig databases using utgb import)
+** Added utgb snapshot command to create PNG images of tracks
+** Includes several minor bug fixes and dependent library upgrades.
+
 * {b|December 2nd, 2010} UTGB Toolkit 1.4.10 released.
 ** Improved the BAM drawing performance.
 
