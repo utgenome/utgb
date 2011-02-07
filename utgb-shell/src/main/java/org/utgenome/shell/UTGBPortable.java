@@ -225,6 +225,7 @@ public class UTGBPortable implements TomcatServerLauncher {
 	 */
 	public void startTomcatServer(UTGBPortableConfig utgbPortableConfig) throws XerialException {
 		switch (serverStatus) {
+		case ERROR:
 		case STOPPED:
 			// create a new instance of the TomcatServer
 			TomcatServerConfiguration tomcatConfig = new TomcatServerConfiguration();
@@ -243,7 +244,12 @@ public class UTGBPortable implements TomcatServerLauncher {
 			catch (Exception e) {
 				_logger.error(e);
 				serverStatus = ServerStatus.ERROR;
-				threadPool.shutdownNow();
+				if (!config.useGUI) {
+					threadPool.shutdownNow();
+				}
+				else {
+					stopTomcatServer(config);
+				}
 			}
 
 			break;
@@ -259,6 +265,7 @@ public class UTGBPortable implements TomcatServerLauncher {
 		switch (serverStatus) {
 		case STOPPED:
 			break;
+		case ERROR:
 		case STARTED:
 			try {
 				for (ServerListener listener : listenerList)

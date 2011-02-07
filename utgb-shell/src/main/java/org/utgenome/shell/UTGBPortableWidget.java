@@ -260,6 +260,14 @@ public class UTGBPortableWidget extends JFrame implements ServerListener {
 		}
 
 		public void onPushStop() {
+			updateButtonOnStop();
+
+			setStatus(MessageType.INFO, "stopping the web server...");
+			if (launcher != null)
+				launcher.stopTomcatServer(config);
+		}
+
+		public void updateButtonOnStop() {
 			startButton.setEnabled(true);
 			stopButton.setEnabled(false);
 			restartButton.setEnabled(false);
@@ -267,10 +275,6 @@ public class UTGBPortableWidget extends JFrame implements ServerListener {
 
 			portNumberField.setEditable(true);
 			contextPathField.setEditable(true);
-
-			setStatus(MessageType.INFO, "stopping the web server...");
-			if (launcher != null)
-				launcher.stopTomcatServer(config);
 		}
 
 		public void onPushRestart() {
@@ -424,6 +428,7 @@ public class UTGBPortableWidget extends JFrame implements ServerListener {
 
 	public void afterStop() {
 		setStatus(MessageType.INFO, "The web server has terminated.");
+		serverLaunchPanel.updateButtonOnStop();
 	}
 
 	public void beforeStop() {
