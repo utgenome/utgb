@@ -41,6 +41,7 @@ install: $(ARCHIVE)
 	tar xvfz $< -C "$(INSTALL_DIR)"
 	ln -sfn "utgb-toolkit-$(VERSION)" "$(INSTALL_DIR)/current"
 	ln -sf "../$(PROG)/current/bin/$(PROG)" "$(PREFIX)/bin/$(PROG)"
+	ln -sf "../$(PROG)/current/bin/$(PROG)-debug" "$(PREFIX)/bin/$(PROG)-debug"
 
 test: 
 	$(MVN) test

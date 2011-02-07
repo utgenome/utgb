@@ -292,7 +292,7 @@ public class TomcatServer {
 
 			// releaseTomcatResources();
 
-			throw new XerialException(XerialErrorCode.INVALID_STATE, e);
+			throw new XerialException(XerialErrorCode.INVALID_STATE, m);
 		}
 
 	}

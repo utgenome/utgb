@@ -28,8 +28,10 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.JFrame;
@@ -175,7 +177,7 @@ public class UTGBPortable implements TomcatServerLauncher {
 
 		// wait until Ctrl+C terminates the program
 		try {
-			while (!Thread.currentThread().isInterrupted()) {
+			while (!Thread.currentThread().isInterrupted() && serverStatus != ServerStatus.ERROR) {
 				Thread.sleep(1000L);
 			}
 		}
@@ -185,13 +187,13 @@ public class UTGBPortable implements TomcatServerLauncher {
 	}
 
 	private static enum ServerStatus {
-		STOPPED, STARTED
+		STOPPED, STARTED, ERROR
 	}
 
 	private TomcatServer tomcatServer = null;
 	private ServerStatus serverStatus = ServerStatus.STOPPED;
 
-	private class TomcatStarter implements Runnable {
+	private class TomcatStarter implements Callable<ServerStatus> {
 		private UTGBPortableConfig config;
 
 		public TomcatStarter(UTGBPortableConfig config) {
@@ -199,24 +201,20 @@ public class UTGBPortable implements TomcatServerLauncher {
 			_logger.debug("tomcat starter: " + (SwingUtilities.isEventDispatchThread() ? "event dispatch thread" : "normal thread"));
 		}
 
-		public void run() {
-			try {
-				// start the server
-				for (ServerListener listener : listenerList)
-					listener.beforeStart();
-				_logger.debug("before start");
-				tomcatServer.start();
-				tomcatServer.addContext(config.contextPath, new File(config.projectRoot, config.workingDir).getAbsolutePath());
+		public ServerStatus call() throws Exception {
 
-				for (ServerListener listener : listenerList)
-					listener.afterStart();
-			}
-			catch (Exception e) {
-				e.printStackTrace();
-			}
-			finally {
-				serverStatus = ServerStatus.STARTED;
-			}
+			// start the server
+			for (ServerListener listener : listenerList)
+				listener.beforeStart();
+			_logger.debug("before start");
+			tomcatServer.start();
+			serverStatus = ServerStatus.STARTED;
+			tomcatServer.addContext(config.contextPath, new File(config.projectRoot, config.workingDir).getAbsolutePath());
+
+			for (ServerListener listener : listenerList)
+				listener.afterStart();
+
+			return ServerStatus.STARTED;
 		}
 	}
 
@@ -238,7 +236,16 @@ public class UTGBPortable implements TomcatServerLauncher {
 			_logger.info("starting a Tomcat server: \n" + utgbPortableConfig.toString());
 
 			TomcatStarter starter = new TomcatStarter(utgbPortableConfig);
-			threadPool.execute(starter);
+			Future<ServerStatus> future = threadPool.submit(starter);
+			try {
+				serverStatus = future.get();
+			}
+			catch (Exception e) {
+				_logger.error(e);
+				serverStatus = ServerStatus.ERROR;
+				threadPool.shutdownNow();
+			}
+
 			break;
 		case STARTED:
 			break;

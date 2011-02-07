@@ -74,6 +74,7 @@ under the License.
       <outputDirectory>bin</outputDirectory>
       <includes>
         <include>utgb</include>
+        <include>utgb-debug</include>
       </includes>
       <lineEnding>unix</lineEnding>
       <fileMode>0755</fileMode>

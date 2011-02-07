@@ -112,11 +112,18 @@ if $mingw ; then
 fi
 
 
+if [ -z "$UTGB_CONF" ] ; then 
+  UTGB_CONF=utgb.conf
+fi
+
+
+
+
 CLASSWORLDS_LAUNCHER=org.codehaus.plexus.classworlds.launcher.Launcher
 
 exec "$JAVACMD" ${JVM_OPT} \
   -classpath "${UTGB_HOME}"/boot/plexus-classworlds-*.jar \
-  "-Dclassworlds.conf=${UTGB_HOME}/bin/utgb.conf" \
+  "-Dclassworlds.conf=${UTGB_HOME}/bin/${UTGB_CONF}" \
   "-Dutgb.home=${UTGB_HOME}" \
   ${CLASSWORLDS_LAUNCHER} "$@"
 
