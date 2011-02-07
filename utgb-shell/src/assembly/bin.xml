@@ -44,9 +44,11 @@ under the License.
       <excludes>
         <exclude>org.utgenome:utgb-core</exclude>
         <exclude>org.codehaus.plexus:plexus-classworlds</exclude>
+<!-- 
         <exclude>junit:junit</exclude>
         <exclude>log4j:log4j</exclude>
         <exclude>commons-logging:commons-logging-api</exclude>
+        -->        
       </excludes>
     </dependencySet>
   </dependencySets>
