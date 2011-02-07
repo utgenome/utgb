@@ -419,11 +419,11 @@ public class UTGBPortableWidget extends JFrame implements ServerListener {
 	}
 
 	public void afterStart() {
-		setStatus(MessageType.INFO, "The web server started.");
+		setStatus(MessageType.INFO, "The web server has started.");
 	}
 
 	public void afterStop() {
-		setStatus(MessageType.INFO, "The web server terminated.");
+		setStatus(MessageType.INFO, "The web server has terminated.");
 	}
 
 	public void beforeStop() {
