@@ -105,6 +105,13 @@ public abstract class UTGBShellCommand implements Comparable<UTGBShellCommand> {
 			Maven.runMaven(commandLine);
 	}
 
+	public void maven(String commandLine, Properties systemProperties) throws UTGBShellException {
+		if (globalOption.projectDir != null)
+			Maven.runMaven(commandLine, new File(globalOption.projectDir), systemProperties);
+		else
+			Maven.runMaven(commandLine, null, systemProperties);
+	}
+
 	public UTGBConfig loadUTGBConfig() throws UTGBShellException {
 		return loadUTGBConfig(globalOption.projectDir);
 	}

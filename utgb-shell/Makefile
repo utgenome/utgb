@@ -14,38 +14,36 @@
 #   limitations under the License.
 #--------------------------------------------------------------------------
 
-INSTALL = install
-MVN = mvn ${MVN_OPTS}
-PREFIX=${HOME}/.utgb
+INSTALL:=install
+MVN:=mvn ${MVN_OPTS}
+PROG:=utgb
+PREFIX:=${HOME}/local
+INSTALL_DIR:=$(PREFIX)/$(PROG)
 
-ARCHIVE = target/utgb-package.zip
-SCRIPT_DIR = src/main/java/org/utgenome/shell/script
+VERSION:=1.5.1-SNAPSHOT
+ARCHIVE = target/utgb-toolkit-$(VERSION)-bin.tar.gz
 
-JAVA_SRC=$(shell find src/main/java -name '*.java')
+SRC=$(shell find src)
 
 .phony: all install clean package test
-
 
 all: package
 
 package: $(ARCHIVE)
 
-
-$(ARCHIVE): $(JAVA_SRC)
+$(ARCHIVE): $(SRC)
 	$(MVN) package -Dmaven.test.skip=true
 
-install: $(ARCHIVE) $(SCRIPT_DIR)/bin/utgb
-	mkdir -p "$(PREFIX)"
-	unzip -o $(ARCHIVE) -d target
-	cp -rp target/utgb/* "$(PREFIX)"
-	chmod 755 "$(PREFIX)"
-	chmod 755 "$(PREFIX)/bin"
-	rm -rf target/utgb
+
+install: $(ARCHIVE) 
+	mkdir -p "$(INSTALL_DIR)"
+	mkdir -p "$(PREFIX)/bin"
+	tar xvfz $< -C "$(INSTALL_DIR)"
+	ln -sfn "utgb-toolkit-$(VERSION)" "$(INSTALL_DIR)/current"
+	ln -sf "../$(PROG)/current/bin/$(PROG)" "$(PREFIX)/bin/$(PROG)"
 
 test: 
 	$(MVN) test
-
-dist:	
 
 clean:
 	mvn clean

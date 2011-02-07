@@ -24,8 +24,6 @@
 //--------------------------------------
 package org.utgenome.shell;
 
-import static org.junit.Assert.assertNotNull;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,10 +43,10 @@ public class MavenTest {
 		Maven.runMaven("--help");
 	}
 
-	@Test
-	public void extractMaven() throws Exception {
-		String mvnCommand = Maven.getMavenBinary();
-		assertNotNull(mvnCommand);
-	}
+	// @Test
+	// public void extractMaven() throws Exception {
+	// String mvnCommand = Maven.getMavenBinary();
+	// assertNotNull(mvnCommand);
+	// }
 
 }

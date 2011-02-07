@@ -116,7 +116,7 @@ CLASSWORLDS_LAUNCHER=org.codehaus.plexus.classworlds.launcher.Launcher
 
 exec "$JAVACMD" ${JVM_OPT} \
   -classpath "${UTGB_HOME}"/boot/plexus-classworlds-*.jar \
-  "-Dclassworlds.conf=${UTGB_HOME}/bin/utgb.conf" \
+  "-Dclassworlds.conf=${UTGB_HOME}/bin/utgb-eclipse.conf" \
   "-Dutgb.home=${UTGB_HOME}" \
   ${CLASSWORLDS_LAUNCHER} "$@"
 

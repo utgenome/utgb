@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Properties;
 
 import org.utgenome.config.UTGBConfig;
 import org.xerial.util.FileUtil;
@@ -60,7 +61,9 @@ public class Server extends UTGBShellCommand {
 		FileUtil.mkdirs(new File(getProjectRoot(), "war/" + option.gwtModule));
 
 		// copy resources
-		maven(String.format("war:exploded -Dgwt.module=\"%s\"", option.gwtModule));
+		Properties prop = new Properties();
+		prop.setProperty("gwt.module", option.gwtModule);
+		maven("war:exploded", prop);
 
 		UTGBConfig config = loadUTGBConfig();
 		String projectName = config.projectName;
