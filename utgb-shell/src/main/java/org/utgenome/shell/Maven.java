@@ -39,7 +39,6 @@ import java.net.URLConnection;
 import java.util.Date;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.StringTokenizer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -53,6 +52,7 @@ import org.xerial.core.XerialException;
 import org.xerial.lens.SilkLens;
 import org.xerial.silk.SilkWriter;
 import org.xerial.util.FileResource;
+import org.xerial.util.StringUtil;
 import org.xerial.util.io.StandardErrorStream;
 import org.xerial.util.io.StandardOutputStream;
 import org.xerial.util.log.Logger;
@@ -413,11 +413,7 @@ public class Maven extends UTGBShellCommand {
 	}
 
 	public static String[] tokenizeCommandLineArgument(String arg) {
-		StringTokenizer st = new StringTokenizer(arg);
-		String[] cmdarray = new String[st.countTokens()];
-		for (int i = 0; st.hasMoreTokens(); i++)
-			cmdarray[i] = st.nextToken();
-		return cmdarray;
+		return StringUtil.tokenizeCommandLineArgument(arg);
 	}
 
 	@Override
