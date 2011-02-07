@@ -34,54 +34,40 @@ import org.utgenome.gwt.utgb.server.RequestHandlerBase;
 
 /**
  * Request handler that simply returns hello + name
+ * 
  * @author leo
- *
+ * 
  */
-public class Hello extends RequestHandlerBase
-{
-    /**
+public class Hello extends RequestHandlerBase {
+	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= 1L;
+	private static final long serialVersionUID = 1L;
 	private String name = "";
-    private int year = 2005;
-    
-    public Hello()
-    {}
-    
-    public void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-    {
-        response.getWriter().println("Hello! " + name + ": " + year);
-    }
+	private int year = 2011;
 
-    public String getName() 
-    {
-        return name;
-    }
+	public Hello() {
+	}
 
-    public void setName(String name)
-    {
-        this.name = name;
-    }
+	@Override
+	public void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.getWriter().println("Hello World! " + name + ": " + year);
+	}
 
-    public int getYear()
-    {
-        return year;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setYear(int year)
-    {
-        this.year = year;
-    }
-    
-    
+	public void setName(String name) {
+		this.name = name;
+	}
 
+	public int getYear() {
+		return year;
+	}
 
-    
-    
+	public void setYear(int year) {
+		this.year = year;
+	}
 
 }
-
-
-
-
