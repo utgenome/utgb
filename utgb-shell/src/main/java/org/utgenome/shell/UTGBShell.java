@@ -301,12 +301,26 @@ public class UTGBShell {
 	public static String getVersion() {
 		String version = "(unknown)";
 		try {
-			// load the pom.xml file copied as a resource
+			// load the pom.xml file copied as a resource in utgb-core.jar
+			String propertyName = "version";
 			InputStream pomIn = UTGBShell.class.getResourceAsStream("/META-INF/maven/org.utgenome/utgb-core/pom.properties");
-			if (pomIn != null) {
-				Properties prop = new Properties();
-				prop.load(pomIn);
-				version = prop.getProperty("version", version);
+			try {
+				if (pomIn == null) {
+					// If utgb-core is referenced in the workspace scope, use the
+					// utgb-core/src/main/resources/utgb-core.properties, which is created when utgb-core is
+					// compiled
+					pomIn = UTGBShell.class.getResourceAsStream("/org/utgenome/utgb-core.properties");
+					propertyName = "utgb-core-version";
+				}
+				if (pomIn != null) {
+					Properties prop = new Properties();
+					prop.load(pomIn);
+					version = prop.getProperty(propertyName, version);
+				}
+			}
+			finally {
+				if (pomIn != null)
+					pomIn.close();
 			}
 		}
 		catch (IOException e) {

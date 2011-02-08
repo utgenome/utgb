@@ -20,5 +20,5 @@
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="server -g  -d ${workspace_loc:utgb-core}"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="utgb-core"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.maven.ide.eclipse.launchconfig.sourcepathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx512m  -Dloglevel=debug  -Dutgb.env=development -Dclassworlds.conf=c:/Users/leo/local/utgb/utgb-toolkit-1.5.1-SNAPSHOT/bin/utgb.conf -Dutgb.home=c:/Users/leo/local/utgb/utgb-toolkit-1.5.1-SNAPSHOT"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx512m  -Dloglevel=debug  -Dutgb.env=development -Dclassworlds.conf=c:/Users/leo/local/utgb/utgb-toolkit-1.5.1-SNAPSHOT/bin/utgb-eclipse.conf -Dutgb.home=c:/Users/leo/local/utgb/utgb-toolkit-1.5.1-SNAPSHOT"/>
 </launchConfiguration>
