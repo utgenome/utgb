@@ -247,7 +247,7 @@
     <dependency>
       <groupId>org.utgenome.thirdparty</groupId>
       <artifactId>gwt-incubator</artifactId>
-      <version>2.1.0</version>
+      <version>20101117-r1766</version>
     </dependency>
 
     <dependency>
