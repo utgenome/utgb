@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.utgenome</groupId>
+  <artifactId>third-party</artifactId>
+  <name>Third-Party Libraries</name>
+  <version>1.0-SNAPSHOT</version>
+  <description>Third-party libraries for UTGB</description>
+  <packaging>pom</packaging>
+
+  <build>
+	<extensions>
+	  <extension>
+		<groupId>org.apache.maven.wagon</groupId> 
+		<artifactId>wagon-ssh-external</artifactId> 
+		<version>1.0-beta-7</version> 
+	  </extension> 
+	</extensions>
+  </build>
+
+  <distributionManagement>
+    <repository>
+      <id>utgb.scp</id>
+      <name>UTGB Maven Repository</name>
+      <url>scpexe://maven.utgenome.org/home/web/maven.utgenome.org/repository/artifact</url>
+    </repository>
+  </distributionManagement>
+</project>

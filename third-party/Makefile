@@ -4,7 +4,7 @@
 all : deploy
 
 
-DEPLOY_GROUP = -DgroupId=org.utgenome.thirdparty  -Dpackaging=jar -DrepositoryId=utgb.dav -Durl=dav:http://maven.utgenome.org/repository/artifact -Dmaven.test.skip=true 
+DEPLOY_GROUP = -DgroupId=org.utgenome.thirdparty  -Dmaven.test.skip=true  -Dpackaging=jar -DrepositoryId=utgb.scp -Durl=scpexe://maven.utgenome.org/home/web/maven.utgenome.org/repository/artifact
 
 DEPLOY_CMD = mvn deploy:deploy-file  $(DEPLOY_GROUP)
 
@@ -18,7 +18,7 @@ sam:
 picard: sam
 	$(DEPLOY_CMD) -DartifactId=picard -Dversion=$(PICARD_VERSION) -Dfile=lib/picard-$(PICARD_VERSION).jar
 
-GWT_INCUBATOR_VERSION=20100204-r1747
+GWT_INCUBATOR_VERSION=20101117-r1766
 
 gwt-incubator:
 	$(DEPLOY_CMD) -DartifactId=gwt-incubator -Dversion=$(GWT_INCUBATOR_VERSION) -Dfile=lib/gwt-incubator-$(GWT_INCUBATOR_VERSION).jar
