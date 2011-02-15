@@ -99,6 +99,13 @@ public class CompactFASTA {
 		return indexTable.containsKey(chr);
 	}
 
+	public int getSequenceLength(String chr) {
+		if (!indexTable.containsKey(chr))
+			return -1;
+		CompactFASTAIndex index = indexTable.get(chr);
+		return index.length;
+	}
+
 	public static CompactFASTA loadIntoMemory(String fastaFilePrefix) throws XerialException, IOException {
 		return new CompactFASTA(fastaFilePrefix, true);
 	}

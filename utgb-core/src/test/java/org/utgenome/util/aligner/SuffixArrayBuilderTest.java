@@ -70,6 +70,10 @@ public class SuffixArrayBuilderTest {
 			array[(int) index] = value;
 		}
 
+		public long size() {
+			return array.length;
+		}
+
 	}
 
 	@Test

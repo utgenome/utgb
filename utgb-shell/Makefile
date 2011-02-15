@@ -38,6 +38,7 @@ $(ARCHIVE): $(SRC)
 install: $(ARCHIVE) 
 	mkdir -p "$(INSTALL_DIR)"
 	mkdir -p "$(PREFIX)/bin"
+	if [ -d "$(INSTALL_DIR)/current/lib" ]; then rm -rf "$(INSTALL_DIR)/current/lib"; fi
 	tar xvfz $< -C "$(INSTALL_DIR)"
 	ln -sfn "utgb-toolkit-$(VERSION)" "$(INSTALL_DIR)/current"
 	ln -sf "../$(PROG)/current/bin/$(PROG)" "$(PREFIX)/bin/$(PROG)"

@@ -30,6 +30,8 @@ package org.utgenome.util.aligner;
  */
 public interface RandomAccess {
 
+	public long size();
+
 	public int get(long index);
 
 	public void set(long index, int value);

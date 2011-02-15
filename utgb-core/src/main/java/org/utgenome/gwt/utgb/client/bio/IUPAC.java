@@ -98,4 +98,17 @@ public enum IUPAC {
 			return iupac;
 	}
 
+	public static IUPAC encode(char base) {
+		try {
+			return find(String.valueOf(base));
+		}
+		catch (IllegalArgumentException e) {
+			return IUPAC.None;
+		}
+	}
+
+	public static IUPAC decode(byte code) {
+		return acgtToIUPACTable[code & 0x0F];
+	}
+
 }

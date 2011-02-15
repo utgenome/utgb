@@ -40,7 +40,7 @@ public class Sam2WigTest {
 
 		FileUtil.copy(FileResource.openByteStream(Sam2WigTest.class, "test.sam"), in);
 
-		UTGBShell.runCommand(String.format("sam2wig %s %s", in, out));
+		UTGBShell.runCommand(String.format("readdepth %s %s", in, out));
 
 		UTGBShell.runCommand(String.format("import -w %s", out));
 	}

@@ -14,7 +14,7 @@
 #   limitations under the License.
 #--------------------------------------------------------------------------
 
-PREFIX=${HOME}/.utgb
+PREFIX=${HOME}/local
 MVN=mvn
 
 .PHONY: install test release-prepare release-perform clean update-version

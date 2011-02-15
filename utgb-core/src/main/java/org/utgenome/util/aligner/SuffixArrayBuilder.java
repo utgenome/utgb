@@ -62,6 +62,8 @@ public class SuffixArrayBuilder {
 	public static class StringWrapper implements RandomAccess {
 		public final int[] array;
 		public final int K;
+		HashMap<Character, Integer> codeTable = new HashMap<Character, Integer>();
+		char[] codeToChar;
 
 		public StringWrapper(String s) {
 			array = new int[s.length() + 1];
@@ -72,7 +74,7 @@ public class SuffixArrayBuilder {
 				inputDomain.add(ch);
 			}
 			// assign code ID
-			HashMap<Character, Integer> codeTable = new HashMap<Character, Integer>();
+
 			int codeCount = 1;
 			for (char ch : inputDomain) {
 				if (!codeTable.containsKey(ch)) {
@@ -86,6 +88,14 @@ public class SuffixArrayBuilder {
 			}
 			array[s.length()] = 0;
 			this.K = codeTable.size() + 1;
+			codeToChar = new char[K];
+			for (char ch : codeTable.keySet()) {
+				codeToChar[codeTable.get(ch)] = ch;
+			}
+		}
+
+		public char decode(int value) {
+			return codeToChar[value];
 		}
 
 		public int get(long index) {
@@ -94,6 +104,10 @@ public class SuffixArrayBuilder {
 
 		public void set(long index, int value) {
 			array[(int) index] = value;
+		}
+
+		public long size() {
+			return array.length;
 		}
 	}
 
@@ -122,6 +136,10 @@ public class SuffixArrayBuilder {
 				v.add(orig[i]);
 			return StringUtil.join(v, ", ");
 
+		}
+
+		public long size() {
+			return orig.length - offset;
 		}
 	}
 
@@ -158,56 +176,60 @@ public class SuffixArrayBuilder {
 		induceSA_left(SA);
 		induceSA_right(SA);
 
-		// Compact all the sorted subtrings into the first N1 items of SA
-		// 2*n1 must be not larger than N 
-		int N1 = 0;
+		// Compact all the sorted substrings into the first M items of SA
+		// 2*M must be not larger than N 
+		int M = 0;
 		for (int i = 0; i < N; ++i) {
 			if (isLMS(SA[i]))
-				SA[N1++] = SA[i];
+				SA[M++] = SA[i];
 		}
 
-		// init the name array buffer
-		for (int i = N1; i < N; ++i)
+		// Initialize the name array buffer
+		for (int i = M; i < N; ++i)
 			SA[i] = -1;
-		// find the lexicographic names of substrings
+
+		// Find the lexicographic names of substrings
 		int name = 0;
-		int prev = -1;
-		for (int i = 0; i < N1; i++) {
+		int prev = N;
+		int qlen = 0;
+		for (int i = 0; i < M; ++i) {
 			final int pos = SA[i];
-			final int plen = SA[N1 + (pos >> 1)];
-			boolean diff = false;
+			final int plen = SA[M + (pos >> 1)];
+			boolean diff = true;
 
-			for (int d = 0; d < N; ++d) {
-				if (prev == -1 || input.get(pos + d) != input.get(prev + d) || typeLS.get(pos + d) != typeLS.get(prev + d)) {
-					diff = true;
-					break;
+			if ((plen == qlen) && ((prev + plen) < N)) {
+				int d = 0;
+				for (; (d < plen) && input.get(pos + d) == input.get(prev + d); ++d) {
 				}
-				else if (d > 0 && (isLMS(pos + d) || isLMS(prev + d)))
-					break;
+
+				if (d == plen) {
+					diff = false;
+				}
 			}
 
-			if (diff) {
-				name++;
+			if (diff != false) {
+				++name;
 				prev = pos;
+				qlen = plen;
 			}
 
-			SA[N1 + (pos >> 1)] = name - 1;
+			SA[M + (pos >> 1)] = name - 1;
 		}
 
-		for (int i = N - 1, j = N - 1; i >= N1; --i) {
+		for (int i = N - 1, j = N - 1; i >= M; --i) {
 			if (SA[i] >= 0)
 				SA[j--] = SA[i];
 		}
 
 		// Step 2: solve the reduced problem
 		int SA1[] = SA;
-		RandomAccess inputS1 = new SubArray(SA, N - N1);
-		if (name < N1) {
-			new SuffixArrayBuilder(inputS1, N1, name - 1).SAIS(SA1);
+		RandomAccess inputS1 = new SubArray(SA, N - M);
+		if (name < M) {
+			new SuffixArrayBuilder(inputS1, M, name - 1).SAIS(SA1);
 		}
 		else {
 			// Generate the suffix array of inputS1 directory.
-			for (int i = 0; i < N1; i++)
+			for (int i = 0; i < M; i++)
 				SA1[inputS1.get(i)] = i;
 		}
 
@@ -217,14 +239,14 @@ public class SuffixArrayBuilder {
 			if (isLMS(i))
 				inputS1.set(j++, i); // get p1
 		}
-		for (int i = 0; i < N1; ++i) {
+		for (int i = 0; i < M; ++i) {
 			SA1[i] = inputS1.get(SA1[i]);
 		}
 		// init SA[N1 .. N-1]
-		for (int i = N1; i < N; ++i) {
+		for (int i = M; i < N; ++i) {
 			SA[i] = -1;
 		}
-		for (int i = N1 - 1; i >= 0; --i) {
+		for (int i = M - 1; i >= 0; --i) {
 			int j = SA[i];
 			SA[i] = -1;
 			SA[--bucket[input.get(j)]] = j;
