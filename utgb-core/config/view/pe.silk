@@ -1,0 +1,31 @@
+%silk(version:1.0)
+-track group
+  -id: 1
+  -class: org.utgenome.gwt.utgb.client.track.TrackGroup
+  -coordinate
+    -species: c.elegans
+    -ref: ce6
+    -chr: chrI
+    -start: 800
+    -end: 1500
+-track
+  -name: UTGB Navigator
+  -height: 41
+  -pack: true
+  -class: NavigatorTrack
+  -property
+    -sequenceList: [{"species":"c.elegans", "revision":["ce6"]}]
+-track
+  -name: Sequence Overview
+  -pack: true
+  -class: SequenceRulerTrack
+-track
+  -name: Ruler
+  -pack: true
+  -class: RulerTrack
+-track
+  -name: Read
+  -pack: true
+  -class: ReadTrack
+  -property
+    -path: db/pe.bam

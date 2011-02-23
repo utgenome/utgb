@@ -343,14 +343,15 @@ public class SAMReader {
 					}
 
 					// The paired read names must be the same.
-					if (!samReadTable.containsKey(read.getReadName())) {
+					String trimmedReadName = trimPairedEndSuffix(read.getReadName());
+					if (!samReadTable.containsKey(trimmedReadName)) {
 						// new entry
-						samReadTable.put(read.getReadName(), read);
+						samReadTable.put(trimmedReadName, read);
 						continue;
 					}
 
 					// Found a paired-end read set.
-					SAMRecord mate = samReadTable.get(read.getReadName());
+					SAMRecord mate = samReadTable.get(trimmedReadName);
 					boolean foundPair = false;
 					if (read.getFirstOfPairFlag()) {
 						if (mate.getSecondOfPairFlag()) {
@@ -371,7 +372,7 @@ public class SAMReader {
 						result.add(rf.newSAMRead(read));
 					}
 
-					samReadTable.remove(mate.getReadName());
+					samReadTable.remove(trimmedReadName);
 				}
 
 				// add the remaining reads to the results 
