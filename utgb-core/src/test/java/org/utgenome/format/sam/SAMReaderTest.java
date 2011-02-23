@@ -24,6 +24,7 @@
 //--------------------------------------
 package org.utgenome.format.sam;
 
+import static org.junit.Assert.assertEquals;
 import net.sf.samtools.SAMFileReader;
 import net.sf.samtools.SAMRecord;
 
@@ -49,6 +50,16 @@ public class SAMReaderTest {
 		SAMFileReader reader = new SAMFileReader(FileResource.find(SAMReaderTest.class, "chr21.sam").openStream());
 		for (SAMRecord each : reader)
 			_logger.info(each.format());
+	}
+
+	@Test
+	public void trimPairedEndReadNameSuffix() throws Exception {
+
+		assertEquals("read1", SAMReader.trimPairedEndSuffix("read1/1"));
+		assertEquals("read1", SAMReader.trimPairedEndSuffix("read1/2"));
+		assertEquals("read1", SAMReader.trimPairedEndSuffix("read1#1"));
+		assertEquals("read1", SAMReader.trimPairedEndSuffix("read1#2"));
+
 	}
 
 }

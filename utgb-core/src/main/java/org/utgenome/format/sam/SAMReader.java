@@ -33,6 +33,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.sf.samtools.SAMFileReader;
 import net.sf.samtools.SAMFileReader.ValidationStringency;
@@ -406,6 +408,20 @@ public class SAMReader {
 		}
 
 		return result;
+	}
+
+	static Pattern pairedEndSuffixPattern = Pattern.compile("[/#][12]$");
+
+	/**
+	 * Trim /1, /2 suffixes
+	 * 
+	 * @param readNam
+	 * @return
+	 */
+	public static String trimPairedEndSuffix(String readName) {
+		Matcher m = pairedEndSuffixPattern.matcher(readName);
+		return m.replaceFirst("");
+
 	}
 
 }

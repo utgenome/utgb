@@ -128,10 +128,17 @@ public class CompactFASTA {
 	 * @throws UTGBException
 	 */
 	public CompactACGT getSequence(String chr, int start, int end) throws IOException, UTGBException {
+		return getSequence(chr, start, end, false);
+	}
+
+	public CompactACGT getSequence(String chr, int start, int end, boolean isReverse) throws IOException, UTGBException {
 		if (!indexTable.containsKey(chr))
 			return null;
 		CompactFASTAIndex index = indexTable.get(chr);
-		return getSequence(index, start, end);
+		if (isReverse)
+			return getSequence(index, start, end).reverseComplement();
+		else
+			return getSequence(index, start, end);
 	}
 
 	CompactACGT getSequence(CompactFASTAIndex index, int start, int end) throws IOException, UTGBException {
