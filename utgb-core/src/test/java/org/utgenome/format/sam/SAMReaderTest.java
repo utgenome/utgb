@@ -55,6 +55,8 @@ public class SAMReaderTest {
 	@Test
 	public void trimPairedEndReadNameSuffix() throws Exception {
 
+		assertEquals("read1", SAMReader.trimPairedEndSuffix("read1"));
+
 		assertEquals("read1", SAMReader.trimPairedEndSuffix("read1/1"));
 		assertEquals("read1", SAMReader.trimPairedEndSuffix("read1/2"));
 		assertEquals("read1", SAMReader.trimPairedEndSuffix("read1#1"));
