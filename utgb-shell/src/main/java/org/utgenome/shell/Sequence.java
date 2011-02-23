@@ -29,6 +29,7 @@ import org.utgenome.format.fasta.GenomeSequence;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.xerial.util.log.Logger;
 import org.xerial.util.opt.Argument;
+import org.xerial.util.opt.Option;
 
 /**
  * Retrieve the genome sequence from the pack file
@@ -43,6 +44,9 @@ public class Sequence extends UTGBShellCommand {
 	@Argument(index = 0, name = "(ref pac)", required = true)
 	private String packFilePrefix;
 
+	@Option(symbol = "r", description = "reverse complement")
+	private boolean isReverse = false;
+
 	@Argument(index = 1, name = "(chr:start-end)")
 	private String query;
 
@@ -55,7 +59,7 @@ public class Sequence extends UTGBShellCommand {
 		CompactFASTA f = new CompactFASTA(packFilePrefix);
 
 		ChrLoc loc = RegionQueryExpr.parse(query);
-		GenomeSequence seq = f.getSequence(loc.chr, loc.start - 1, loc.end);
+		GenomeSequence seq = f.getSequence(loc.chr, loc.start - 1, loc.end, isReverse);
 		if (seq == null) {
 			_logger.warn("no entry found: " + loc);
 		}
