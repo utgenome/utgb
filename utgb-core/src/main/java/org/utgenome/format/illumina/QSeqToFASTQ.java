@@ -44,6 +44,7 @@ public class QSeqToFASTQ {
 	private String readGroup = null;
 	private int readCount = 0;
 	private boolean disableQualityFilter = false;
+	private String readNameSuffix = "";
 
 	public QSeqToFASTQ(boolean disableQualityFilter) {
 		this.disableQualityFilter = disableQualityFilter;
@@ -52,6 +53,10 @@ public class QSeqToFASTQ {
 	public QSeqToFASTQ(String readGroup, boolean disableQualityFilter) {
 		this.readGroup = readGroup;
 		this.disableQualityFilter = disableQualityFilter;
+	}
+
+	public void setReadNameSuffix(String suffix) {
+		this.readNameSuffix = suffix;
 	}
 
 	public FastqRead convertToFastq(String line) throws UTGBException {
@@ -74,9 +79,9 @@ public class QSeqToFASTQ {
 		// name, lane, x, y, pair?
 		String readName;
 		if (readGroup == null)
-			readName = String.format("%s:%s:%s:%s:%s", c[2], c[3], c[4], c[5], qfilter);
+			readName = String.format("%s:%s:%s:%s:%s%s", c[2], c[3], c[4], c[5], qfilter, readNameSuffix);
 		else
-			readName = String.format("%s.%d", readGroup, readCount);
+			readName = String.format("%s.%d%s", readGroup, readCount, readNameSuffix);
 
 		String seq = c[8];
 		String qual = c[9];

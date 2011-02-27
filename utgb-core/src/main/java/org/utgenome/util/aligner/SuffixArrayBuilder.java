@@ -228,7 +228,7 @@ public class SuffixArrayBuilder {
 			new SuffixArrayBuilder(inputS1, M, name - 1).SAIS(SA1);
 		}
 		else {
-			// Generate the suffix array of inputS1 directory.
+			// Generate the suffix array of inputS1 
 			for (int i = 0; i < M; i++)
 				SA1[inputS1.get(i)] = i;
 		}

@@ -40,6 +40,9 @@ public class QSeqToFastq extends UTGBShellCommand {
 	@Option(symbol = "g", longName = "readgroup", varName = "RG", description = "read group name (e.g., HG0001SE:L3)")
 	private String readGroup;
 
+	@Option(symbol = "s", description = "read name suffix")
+	private String suffix = "";
+
 	@Argument(index = 0, name = "input")
 	private String input = "-";
 	@Argument(index = 1, name = "output")
@@ -52,6 +55,7 @@ public class QSeqToFastq extends UTGBShellCommand {
 	public void execute(String[] args) throws Exception {
 
 		QSeqToFASTQ converter = readGroup == null ? new QSeqToFASTQ(disableQualityFilter) : new QSeqToFASTQ(readGroup, disableQualityFilter);
+		converter.setReadNameSuffix(suffix);
 
 		boolean closeIn = false;
 		boolean closeOut = false;

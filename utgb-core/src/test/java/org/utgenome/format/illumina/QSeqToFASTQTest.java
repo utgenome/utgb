@@ -74,4 +74,25 @@ public class QSeqToFASTQTest {
 		assertEquals(2, readCount);
 
 	}
+
+	@Test
+	public void suffix() throws Exception {
+		StringWriter buf = new StringWriter();
+
+		final String prefix = "HG0001SE:L8";
+		QSeqToFASTQ converter = new QSeqToFASTQ(prefix, false);
+		converter.setReadNameSuffix("/1");
+		converter.convert(FileResource.open(QSeqToFASTQTest.class, "qseq_sample.txt"), buf);
+		_logger.info(buf.toString());
+
+		int readCount = 0;
+		FastqReader fr = new FastqReader(new StringReader(buf.toString()));
+		for (FastqRead read; (read = fr.next()) != null; readCount++) {
+			assertTrue(read.seqname.startsWith(prefix));
+			assertTrue(read.seqname.endsWith("/1"));
+		}
+		assertEquals(2, readCount);
+
+	}
+
 }
