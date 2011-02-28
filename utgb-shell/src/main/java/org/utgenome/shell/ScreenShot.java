@@ -25,7 +25,12 @@
 package org.utgenome.shell;
 
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.LinearGradientPaint;
+import java.awt.RenderingHints;
+import java.awt.geom.GeneralPath;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
@@ -169,15 +174,30 @@ public class ScreenShot extends UTGBShellCommand {
 		else
 			display = SilkLens.loadSilk(TrackDisplay.class, viewFile.toURI().toURL());
 
+		String maxWidthText = null;
 		List<BufferedImage> trackImage = new ArrayList<BufferedImage>();
-
 		for (Track track : display.track) {
 			DB db = track.db;
 			if (db == null || db.path == null) {
 				continue;
 			}
+			if (maxWidthText == null)
+				maxWidthText = track.name;
+			else if (track.name != null && track.name.length() > maxWidthText.length()) {
+				maxWidthText = track.name;
+			}
 
 			trackImage.add(createReadAlignmentImage(loc, db.path));
+		}
+
+		Font f = new Font("Arial", Font.PLAIN, 1);
+		f = f.deriveFont(10f);
+		int maxTextWidth = 30;
+		{
+			BufferedImage tmp = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+			Graphics2D g = (Graphics2D) tmp.getGraphics();
+			g.setFont(f);
+			maxTextWidth = g.getFontMetrics().stringWidth(maxWidthText);
 		}
 
 		// Compute the canvas height
@@ -186,11 +206,16 @@ public class ScreenShot extends UTGBShellCommand {
 			pixelHeight += each.getHeight();
 
 		// Prepare a large canvas
-		BufferedImage image = new BufferedImage(pixelWidth, pixelHeight, BufferedImage.TYPE_INT_ARGB);
+		BufferedImage image = new BufferedImage(maxTextWidth + pixelWidth, pixelHeight, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = (Graphics2D) image.getGraphics();
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setFont(f);
 
 		// background
 		if (backgroundColor != null) {
+			if (!backgroundColor.startsWith("#"))
+				backgroundColor = "#" + backgroundColor;
 			Color bg = Color.decode(backgroundColor);
 			g.setColor(bg);
 			g.fillRect(0, 0, image.getWidth(), image.getHeight());
@@ -199,16 +224,43 @@ public class ScreenShot extends UTGBShellCommand {
 		// Paste track images
 		int yOffset = 0;
 		int yMargin = 1;
-		for (BufferedImage each : trackImage) {
+		int index = 0;
 
+		FontMetrics fs = g.getFontMetrics();
+		int textHeight = fs.getHeight();
+
+		int xOffset = maxTextWidth + 10;
+		for (BufferedImage each : trackImage) {
+			Track t = display.track.get(index);
 			int h = each.getHeight();
 			int w = each.getWidth();
 			_logger.debug(String.format("w:%d, h:%d", w, h));
-			g.drawImage(each, 0, yOffset, w, yOffset + h, 0, 0, w, h, null);
+			g.drawImage(each, xOffset, yOffset, xOffset + w, yOffset + h, 0, 0, w, h, null);
+
+			if (h < 10)
+				h = 10;
+
+			GeneralPath box = new GeneralPath();
+			box.moveTo(0, yOffset);
+			box.lineTo(xOffset - 3, yOffset);
+			box.lineTo(xOffset, textHeight / 2.0 + yOffset);
+			box.lineTo(xOffset - 3, textHeight + yOffset);
+			box.lineTo(0, textHeight + yOffset);
+			box.closePath();
+
+			LinearGradientPaint lg = new LinearGradientPaint(0, yOffset, 0, yOffset + textHeight, new float[] { 0, 0.5f, 1.0f }, new Color[] {
+					Color.decode("#66CCFF"), Color.decode("#3366CC"), Color.decode("#006699") });
+			g.setPaint(lg);
+			g.fill(box);
+
+			g.setColor(Color.white);
+			g.drawString(t.name, 0, yOffset + textHeight - 2f);
+
 			yOffset += h + yMargin;
+			index++;
 		}
 
-		// output the graphics as a PNG file
+		// output the graphics as pa PNG file
 		File outPNG = new File(outputFolder, outFile == null ? String.format("region-%s-%d-%d.png", loc.chr, loc.start, loc.end) : outFile);
 		_logger.info("output " + outPNG);
 		ImageIO.write(image, "PNG", outPNG);

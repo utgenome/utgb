@@ -1,3 +1,19 @@
-usage: screenshot -i (BED/BAM/WIG file) --pixelwidth=500 chr1:1-10000
+usage: screenshot -t (display silk file) --pixelwidth=500 chr1:1-10000
 
-Create a screenshot (PNG file) of the input data in the given range.
+Create a screenshot (PNG file) of tracks within the given range.
+
+Here is an example of the display silk file:
+
+-track 
+ -name: Reference Sequence
+ -db
+  -path: db/hg19.fa
+-track
+ -name: Gene
+ -db
+  -path: db/refGene.bed
+-track
+ -name: Read Alignment
+ -db
+  -path: db/read-alignment.%chr.bam
+

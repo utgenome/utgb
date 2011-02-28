@@ -27,8 +27,10 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.LinearGradientPaint;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -375,6 +377,12 @@ public class ReadCanvas {
 		AffineTransform saved = g.getTransform();
 		g.translate(x1, y);
 		g.setColor(c);
+		if (style.geneHeight > 5) {
+
+			LinearGradientPaint lg = new LinearGradientPaint(new Point2D.Float(0, 0), new Point2D.Float(0, style.geneHeight),
+					new float[] { 0, 0.05f, 0.5f, 1 }, new Color[] { c, Color.WHITE, c, c });
+			g.setPaint(lg);
+		}
 		g.fillRect(0, 0, boxWidth, style.geneHeight);
 		g.setTransform(saved);
 
@@ -560,7 +568,7 @@ public class ReadCanvas {
 		if (fontHeight > style.geneHeight)
 			fontHeight = style.geneHeight;
 
-		if (fontWidth < style.fontWidth - 5) {
+		if (fontWidth < style.fontWidth) {
 			return;
 		}
 
