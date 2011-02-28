@@ -180,9 +180,20 @@ public class ReadCanvas {
 		setPixelSize(width, height);
 	}
 
+	public DrawStyle getStyle() {
+		return style;
+	}
+
+	public void setStyle(DrawStyle style) {
+		this.style = style;
+	}
+
 	public void setPixelSize(int width, int height) {
 		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		g = image.createGraphics();
+
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 	}
 
 	public Graphics2D getGraphics() {
@@ -289,7 +300,7 @@ public class ReadCanvas {
 		@Override
 		public void visitSequence(ReferenceSequence referenceSequence) {
 			_logger.debug("draw :" + SilkLens.toSilk(referenceSequence));
-			drawBases(referenceSequence.start, getYPos(), referenceSequence.sequence, null);
+			drawBases(referenceSequence.getStart(), getYPos(), referenceSequence.sequence, null);
 		}
 	}
 

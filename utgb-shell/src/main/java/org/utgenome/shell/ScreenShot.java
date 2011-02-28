@@ -37,6 +37,7 @@ import javax.imageio.ImageIO;
 
 import org.utgenome.graphics.GenomeWindow;
 import org.utgenome.graphics.ReadCanvas;
+import org.utgenome.graphics.ReadCanvas.DrawStyle;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.GenomeDB;
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
@@ -129,9 +130,9 @@ public class ScreenShot extends UTGBShellCommand {
 
 	}
 
-	public BufferedImage createReadAlignmentImage(ChrLoc loc, String bamPath) {
+	public BufferedImage createReadAlignmentImage(ChrLoc loc, String dbPath) {
 
-		GenomeDB db = new GenomeDB(bamPath, "");
+		GenomeDB db = new GenomeDB(dbPath, "");
 		ReadQueryConfig config = new ReadQueryConfig();
 		config.pixelWidth = pixelWidth;
 		config.maxmumNumberOfReadsToDisplay = Integer.MAX_VALUE;
@@ -140,6 +141,12 @@ public class ScreenShot extends UTGBShellCommand {
 
 		// draw graphics
 		ReadCanvas canvas = new ReadCanvas(pixelWidth, 1, new GenomeWindow(loc.start, loc.end));
+		DrawStyle style = canvas.getStyle();
+		if (!dbPath.endsWith(".bam")) {
+			style.geneHeight = 10;
+			canvas.setStyle(style);
+		}
+
 		canvas.draw(readSet);
 		return canvas.getBufferedImage();
 
