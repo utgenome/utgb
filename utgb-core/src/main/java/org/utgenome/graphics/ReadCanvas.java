@@ -40,11 +40,15 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import org.utgenome.gwt.utgb.client.UTGBClientException;
+import org.utgenome.gwt.utgb.client.bio.CDS;
 import org.utgenome.gwt.utgb.client.bio.CIGAR;
+import org.utgenome.gwt.utgb.client.bio.Exon;
 import org.utgenome.gwt.utgb.client.bio.Gap;
+import org.utgenome.gwt.utgb.client.bio.Gene;
 import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
 import org.utgenome.gwt.utgb.client.bio.OnGenomeDataVisitorBase;
+import org.utgenome.gwt.utgb.client.bio.ReferenceSequence;
 import org.utgenome.gwt.utgb.client.bio.SAMReadLight;
 import org.utgenome.gwt.utgb.client.bio.SAMReadPair;
 import org.utgenome.gwt.utgb.client.bio.SAMReadPairFragment;
@@ -53,6 +57,7 @@ import org.utgenome.gwt.utgb.client.canvas.IntervalLayout.LocusLayout;
 import org.utgenome.gwt.utgb.client.canvas.PrioritySearchTree.Visitor;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.server.util.graphic.GraphicUtil;
+import org.xerial.lens.SilkLens;
 import org.xerial.util.log.Logger;
 
 /**
@@ -184,6 +189,10 @@ public class ReadCanvas {
 		return g;
 	}
 
+	public BufferedImage getBufferedImage() {
+		return image;
+	}
+
 	public void toPNG(OutputStream out) throws IOException {
 		ImageIO.write(image, "png", out);
 	}
@@ -270,10 +279,74 @@ public class ReadCanvas {
 		public void visitGap(Gap p) {
 			drawPadding(p.getStart(), p.getEnd(), getYPos(), style.COLOR_GAP);
 		}
+
+		@Override
+		public void visitGene(Gene g) {
+			drawGene(g, getYPos());
+			//drawLabel(g);
+		}
+
+		@Override
+		public void visitSequence(ReferenceSequence referenceSequence) {
+			_logger.debug("draw :" + SilkLens.toSilk(referenceSequence));
+			drawBases(referenceSequence.start, getYPos(), referenceSequence.sequence, null);
+		}
 	}
 
 	private int pixelPositionOnCanvas(int indexOnGenome) {
 		return window.pixelPositionOnWindow(indexOnGenome, image.getWidth());
+	}
+
+	public void drawGene(Gene gene, int y) {
+
+		Color geneColor = style.getReadColor(gene);
+		if (gene.getExon() == null || gene.getExon().isEmpty()) {
+			drawGeneRect(gene.getStart(), gene.getEnd(), y, geneColor);
+			return;
+		}
+
+		for (Exon e : gene.getExon()) {
+			drawGeneRect(e.getStart(), e.getEnd(), y, geneColor);
+
+			// draw UTR region
+			if (gene.getCDS() != null && !gene.getCDS().isEmpty()) {
+				CDS cds = gene.getCDS().get(0);
+				if (e.getStart() <= cds.getEnd() && e.getEnd() >= cds.getStart()) {
+					int cdsStart = (e.getStart() <= cds.getStart()) ? cds.getStart() : e.getStart();
+					int cdsEnd = (e.getEnd() <= cds.getEnd()) ? e.getEnd() : cds.getEnd();
+					drawGeneRect(cdsStart, cdsEnd, y, style.getClippedReadColor(gene));
+				}
+			}
+		}
+
+		// draw the arrow between exons
+		g.setColor(geneColor);
+		int arrowHeight = (int) (style.geneHeight / 2.0);
+
+		for (int i = 0; i < gene.getExon().size() - 1; i++) {
+			Exon prev = gene.getExon(i);
+			Exon next = gene.getExon(i + 1);
+
+			int x1 = pixelPositionOnCanvas(prev.getEnd());
+			int x2 = pixelPositionOnCanvas(next.getStart());
+			int yAxis = (int) (y + (style.geneHeight / 2.0f));
+
+			g.drawLine(x1, yAxis, x2, yAxis);
+
+			for (int x = x1; x + 4 <= x2; x += 5) {
+				g.translate(x + 2.0f, y + arrowHeight);
+				if (!gene.isSense())
+					g.rotate(Math.PI);
+
+				g.drawLine(-2, -arrowHeight + 1, 1, 0);
+				g.drawLine(1, 0, -2, arrowHeight - 1);
+
+				g.rotate(0);
+				g.translate(0, 0);
+			}
+
+		}
+
 	}
 
 	public void drawRegion(OnGenome region, int y) {

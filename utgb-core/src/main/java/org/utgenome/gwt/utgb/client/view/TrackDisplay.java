@@ -38,7 +38,7 @@ public class TrackDisplay {
 
 	public static class Track {
 		public String name;
-		public List<DB> db;
+		public DB db;
 	}
 
 	public List<Track> track;

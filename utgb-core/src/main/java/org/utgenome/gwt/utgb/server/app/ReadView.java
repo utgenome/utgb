@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.utgenome.UTGBErrorCode;
 import org.utgenome.UTGBException;
 import org.utgenome.format.bed.BEDDatabase;
+import org.utgenome.format.fasta.FASTADatabase;
 import org.utgenome.format.sam.SAMReader;
 import org.utgenome.graphics.GenomeWindow;
 import org.utgenome.graphics.ReadCanvas;
@@ -159,6 +160,10 @@ public class ReadView extends WebTrackBase {
 			}
 			case BED: {
 				result = BEDDatabase.overlapQuery(new File(db.path), loc);
+				break;
+			}
+			case FASTA: {
+				result.add(FASTADatabase.querySequence(new File(db.path), loc));
 				break;
 			}
 			case DAS: {

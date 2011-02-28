@@ -24,11 +24,16 @@
 //--------------------------------------
 package org.utgenome.shell;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.imageio.ImageIO;
 
 import org.utgenome.graphics.GenomeWindow;
 import org.utgenome.graphics.ReadCanvas;
@@ -36,6 +41,9 @@ import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.GenomeDB;
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
 import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig;
+import org.utgenome.gwt.utgb.client.view.TrackDisplay;
+import org.utgenome.gwt.utgb.client.view.TrackDisplay.DB;
+import org.utgenome.gwt.utgb.client.view.TrackDisplay.Track;
 import org.utgenome.gwt.utgb.server.app.ReadView;
 import org.xerial.lens.SilkLens;
 import org.xerial.util.ObjectHandler;
@@ -68,6 +76,12 @@ public class ScreenShot extends UTGBShellCommand {
 	@Option(longName = "pixelwidth", description = "pixel width. default=1000")
 	private int pixelWidth = 1000;
 
+	@Option(longName = "view", description = "view definition file")
+	private File viewFile;
+
+	@Option(symbol = "b", description = "background color in #FFFFFF format. default= transparent")
+	private String backgroundColor;
+
 	@Argument(index = 0, name = "query")
 	private String query;
 
@@ -83,15 +97,14 @@ public class ScreenShot extends UTGBShellCommand {
 				outputFolder.mkdirs();
 			}
 		}
-
-		if (readFile == null) {
-			throw new UTGBShellException("No read file (-f) is specified");
+		if (readFile == null && viewFile == null) {
+			throw new UTGBShellException("No read file (-f) or view file (--view) is specified");
 		}
 
 		if (query != null) {
 			ChrLoc loc = RegionQueryExpr.parse(query);
 
-			createPNG(loc);
+			createPNG(viewFile, loc);
 			return;
 		}
 
@@ -102,7 +115,7 @@ public class ScreenShot extends UTGBShellCommand {
 				}
 
 				public void handle(ChrLoc loc) throws Exception {
-					createPNG(loc);
+					createPNG(viewFile, loc);
 				}
 
 				public void finish() throws Exception {
@@ -116,23 +129,79 @@ public class ScreenShot extends UTGBShellCommand {
 
 	}
 
-	void createPNG(ChrLoc loc) throws IOException {
-		// query read set
-		GenomeDB db = new GenomeDB(readFile, "");
+	public BufferedImage createReadAlignmentImage(ChrLoc loc, String bamPath) {
+
+		GenomeDB db = new GenomeDB(bamPath, "");
 		ReadQueryConfig config = new ReadQueryConfig();
 		config.pixelWidth = pixelWidth;
 		config.maxmumNumberOfReadsToDisplay = Integer.MAX_VALUE;
-		_logger.info(String.format("query: %s, %s", readFile, loc));
+
 		List<OnGenome> readSet = ReadView.overlapQuery(null, db, loc, config);
 
 		// draw graphics
 		ReadCanvas canvas = new ReadCanvas(pixelWidth, 1, new GenomeWindow(loc.start, loc.end));
 		canvas.draw(readSet);
+		return canvas.getBufferedImage();
+
+	}
+
+	void createPNG(File viewFile, ChrLoc loc) throws Exception {
+		_logger.info(String.format("query: %s", loc));
+		TrackDisplay display;
+		if (viewFile == null) {
+			display = new TrackDisplay();
+			Track t = new Track();
+			t.name = "";
+			t.db = new DB();
+			t.db.path = readFile;
+			display.track.add(t);
+		}
+		else
+			display = SilkLens.loadSilk(TrackDisplay.class, viewFile.toURI().toURL());
+
+		List<BufferedImage> trackImage = new ArrayList<BufferedImage>();
+
+		for (Track track : display.track) {
+			DB db = track.db;
+			if (db == null || db.path == null) {
+				continue;
+			}
+
+			trackImage.add(createReadAlignmentImage(loc, db.path));
+		}
+
+		// Compute the canvas height
+		int pixelHeight = 0;
+		for (BufferedImage each : trackImage)
+			pixelHeight += each.getHeight();
+
+		// Prepare a large canvas
+		BufferedImage image = new BufferedImage(pixelWidth, pixelHeight, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = (Graphics2D) image.getGraphics();
+
+		// background
+		if (backgroundColor != null) {
+			Color bg = Color.decode(backgroundColor);
+			g.setColor(bg);
+			g.fillRect(0, 0, image.getWidth(), image.getHeight());
+		}
+
+		// Paste track images
+		int yOffset = 0;
+		for (BufferedImage each : trackImage) {
+
+			int h = each.getHeight();
+			int w = each.getWidth();
+			_logger.debug(String.format("w:%d, h:%d", w, h));
+			g.drawImage(each, 0, yOffset, w, yOffset + h, 0, 0, w, h, null);
+			yOffset += h;
+		}
 
 		// output the graphics as a PNG file
 		File outPNG = new File(outputFolder, outFile == null ? String.format("region-%s-%d-%d.png", loc.chr, loc.start, loc.end) : outFile);
 		_logger.info("output " + outPNG);
-		canvas.toPNG(outPNG);
+		ImageIO.write(image, "PNG", outPNG);
+
 	}
 
 	@Override

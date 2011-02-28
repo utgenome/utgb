@@ -41,6 +41,12 @@ public class ReferenceSequence implements OnGenome {
 	public ReferenceSequence() {
 	}
 
+	public ReferenceSequence(int start, String name, String sequence) {
+		this.start = start;
+		this.name = name;
+		this.sequence = sequence;
+	}
+
 	public void accept(OnGenomeDataVisitor visitor) {
 		visitor.visitSequence(this);
 	}

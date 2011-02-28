@@ -43,13 +43,11 @@ public class TrackDisplayTest {
 		assertEquals(2, display.track.size());
 		Track t = display.track.get(0);
 		assertEquals("Reference Sequence", t.name);
-		assertEquals(1, t.db.size());
-		DB db = t.db.get(0);
+		DB db = t.db;
 		assertEquals("db/screenshot/hg19.fa", db.path);
 
 		t = display.track.get(1);
-		assertEquals(1, t.db.size());
-		db = t.db.get(0);
+		db = t.db;
 		assertEquals("db/screenshot/sample.%chr.bam", db.path);
 	}
 

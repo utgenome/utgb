@@ -16,7 +16,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.io.Reader;
+import java.io.StringWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.zip.GZIPInputStream;
@@ -25,6 +27,8 @@ import java.util.zip.GZIPOutputStream;
 import org.utgenome.UTGBErrorCode;
 import org.utgenome.UTGBException;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
+import org.utgenome.gwt.utgb.client.bio.ReferenceSequence;
+import org.utgenome.gwt.utgb.server.app.Sequence.SequenceRetrieverBase;
 import org.xerial.db.DBException;
 import org.xerial.db.sql.BeanResultHandler;
 import org.xerial.db.sql.PreparedStatementHandler;
@@ -282,6 +286,47 @@ public class FASTADatabase {
 			throw UTGBException.convert(e);
 		}
 
+	}
+
+	public static class TextOutput extends SequenceRetrieverBase {
+		private final PrintWriter writer;
+
+		public TextOutput(PrintWriter writer, int start, int end, boolean isReverseStrand) {
+			super(start, end, isReverseStrand);
+			this.writer = writer;
+		}
+
+		@Override
+		public void output(String subSequence) {
+			writer.print(subSequence);
+		}
+
+	}
+
+	public static ReferenceSequence querySequence(File fastaFile, ChrLoc location) throws UTGBException {
+
+		SQLiteAccess db = null;
+		try {
+			try {
+				File dbFile = new File(fastaFile.getPath() + ".sqlite");
+				if (!dbFile.exists())
+					throw new UTGBException(UTGBErrorCode.MISSING_FILES, dbFile + " is not found");
+
+				StringWriter seq = new StringWriter();
+				PrintWriter out = new PrintWriter(seq);
+				TextOutput textRetriever = new TextOutput(out, location.viewStart(), location.viewEnd(), location.isAntiSense());
+				db = new SQLiteAccess(dbFile.getAbsolutePath());
+				querySequence(db, location, textRetriever);
+				return new ReferenceSequence(location.viewStart(), location.toString(), seq.toString());
+			}
+			finally {
+				if (db != null)
+					db.dispose();
+			}
+		}
+		catch (Exception e) {
+			throw UTGBException.convert(e);
+		}
 	}
 
 	public static void querySequence(SQLiteAccess db, ChrLoc location, BeanResultHandler<NSeq> handler) throws UTGBException {
