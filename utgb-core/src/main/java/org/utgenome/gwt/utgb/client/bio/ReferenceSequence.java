@@ -30,11 +30,10 @@ package org.utgenome.gwt.utgb.client.bio;
  * @author leo
  * 
  */
-public class ReferenceSequence implements OnGenome {
+public class ReferenceSequence extends Interval {
 
 	private static final long serialVersionUID = 1L;
 
-	public int start;
 	public String name;
 	public String sequence;
 
@@ -42,31 +41,19 @@ public class ReferenceSequence implements OnGenome {
 	}
 
 	public ReferenceSequence(int start, String name, String sequence) {
-		this.start = start;
+		super(start, sequence != null ? start + sequence.length() : start);
 		this.name = name;
 		this.sequence = sequence;
 	}
 
+	@Override
 	public void accept(OnGenomeDataVisitor visitor) {
 		visitor.visitSequence(this);
 	}
 
-	public int getStart() {
-		return start;
-	}
-
-	public int getEnd() {
-		if (sequence == null)
-			return start;
-		else
-			return start + sequence.length();
-	}
-
+	@Override
 	public String getName() {
 		return this.name;
 	}
 
-	public int length() {
-		return sequence != null ? sequence.length() : 0;
-	}
 }

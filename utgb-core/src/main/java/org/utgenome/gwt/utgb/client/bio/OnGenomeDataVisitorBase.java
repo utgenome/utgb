@@ -62,7 +62,7 @@ public class OnGenomeDataVisitorBase implements OnGenomeDataVisitor {
 	}
 
 	public void visitSequence(ReferenceSequence referenceSequence) {
-
+		visitInterval(referenceSequence);
 	}
 
 	public void visitGraph(GraphData graph) {
