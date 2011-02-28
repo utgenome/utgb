@@ -1,0 +1,8 @@
+-track
+ -name: Reference Sequence
+ -db
+  -path: db/screenshot/hg19.fa
+-track
+ -name: Sample1
+ -db
+  -path: db/screenshot/sample.%chr.bam
