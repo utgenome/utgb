@@ -341,8 +341,6 @@ public class IntervalLayout {
 		while (toContinue);
 
 		int maxYOffset = layoutGenerator.maxYOffset;
-		if (maxYOffset <= 0)
-			maxYOffset = 1;
 
 		hasEnoughHeightForLabels = layoutGenerator.showLabelsFlag;
 		return maxYOffset;

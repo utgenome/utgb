@@ -47,19 +47,19 @@ public class GenomeWindow {
 
 	public int pixelPositionOnWindow(long indexOnGenome, int windowWidth) {
 		double v = (indexOnGenome - startIndexOnGenome) * (double) windowWidth;
-		double v2 = v / (double) (endIndexOnGenome - startIndexOnGenome);
+		double v2 = v / (endIndexOnGenome - startIndexOnGenome + 1);
 		return (int) v2;
 	}
 
 	public int calcGenomePosition(int xOnWindow, int windowWidth) {
 		if (startIndexOnGenome <= endIndexOnGenome) {
 			double genomeLengthPerBit = (double) (endIndexOnGenome - startIndexOnGenome) / (double) windowWidth;
-			return (int) (startIndexOnGenome + (double) xOnWindow * genomeLengthPerBit);
+			return (int) (startIndexOnGenome + xOnWindow * genomeLengthPerBit);
 		}
 		else {
 			// reverse strand
 			double genomeLengthPerBit = (double) (startIndexOnGenome - endIndexOnGenome) / (double) windowWidth;
-			return (int) (endIndexOnGenome + (double) (windowWidth - xOnWindow) * genomeLengthPerBit);
+			return (int) (endIndexOnGenome + (windowWidth - xOnWindow) * genomeLengthPerBit);
 		}
 	}
 
@@ -73,7 +73,7 @@ public class GenomeWindow {
 		if (isReverse)
 			v = canvasWidth - v;
 
-		double v2 = v / (double) range;
+		double v2 = v / range;
 		return (int) v2;
 	}
 

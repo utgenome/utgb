@@ -77,7 +77,7 @@ public class ScreenShot extends UTGBShellCommand {
 	@Option(longName = "pixelwidth", description = "pixel width. default=1000")
 	private int pixelWidth = 1000;
 
-	@Option(longName = "view", description = "view definition file")
+	@Option(longName = "t", description = "track display defintion file (.silk)")
 	private File viewFile;
 
 	@Option(symbol = "b", description = "background color in #FFFFFF format. default= transparent")
@@ -145,7 +145,9 @@ public class ScreenShot extends UTGBShellCommand {
 		if (!dbPath.endsWith(".bam")) {
 			style.geneHeight = 10;
 			style.geneMargin = 2;
+			style.showLabels = true;
 			canvas.setStyle(style);
+
 		}
 
 		canvas.draw(readSet);

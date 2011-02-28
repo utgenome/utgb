@@ -81,6 +81,7 @@ public class ReadCanvas {
 		public boolean overlapPairedReads = true;
 		public boolean showStrand = true;
 		public boolean drawShadow = true;
+		public boolean showLabels = false;
 		public int fontWidth = 10;
 		public float clippedRegionAlpha = 0.2f;
 
@@ -215,7 +216,7 @@ public class ReadCanvas {
 
 	public void draw(List<OnGenome> dataSet) {
 		layout.setAllowOverlapPairedReads(style.overlapPairedReads);
-		layout.setKeepSpaceForLabels(false);
+		layout.setKeepSpaceForLabels(style.showLabels);
 		layout.setTrackWindow(new TrackWindow(getPixelWidth(), (int) window.startIndexOnGenome, (int) window.endIndexOnGenome));
 
 		int maxOffset = layout.reset(dataSet, style.geneHeight);
@@ -295,7 +296,7 @@ public class ReadCanvas {
 		@Override
 		public void visitGene(Gene g) {
 			drawGene(g, getYPos());
-			//drawLabel(g);
+			drawLabel(g, getYPos());
 		}
 
 		@Override
@@ -521,7 +522,7 @@ public class ReadCanvas {
 	public void drawBases(int startOnGenome, int y, String seq, String qual) {
 
 		Font f = new Font("SansSerif", Font.PLAIN, 1);
-		f = f.deriveFont(style.fontWidth);
+		f = f.deriveFont((float) style.fontWidth);
 		g.setFont(f);
 
 		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
@@ -542,7 +543,11 @@ public class ReadCanvas {
 		return image.getWidth();
 	}
 
-	public void drawBase(char base, long startIndexOnGenome, int yOffset, Color color) {
+	public void drawBase(char base, int startIndexOnGenome, int yOffset, Color color) {
+		if (style.geneHeight < style.fontWidth) {
+			return;
+		}
+
 		int start = window.getXPosOnWindow(startIndexOnGenome, getPixelWidth());
 		int end = window.getXPosOnWindow(startIndexOnGenome + 1, getPixelWidth());
 		int drawStart;
@@ -551,12 +556,46 @@ public class ReadCanvas {
 		g.setColor(color);
 		FontMetrics fontMetrics = g.getFontMetrics();
 		int fontWidth = fontMetrics.stringWidth(b);
+		int fontHeight = fontMetrics.getHeight();
+		if (fontHeight > style.geneHeight)
+			fontHeight = style.geneHeight;
 
-		drawStart = (int) (start + (end - start) / 2.0f - fontWidth / 2.0f);
-		if (drawStart < 0)
-			drawStart = end;
+		if (fontWidth < style.fontWidth - 5) {
+			return;
+		}
 
-		g.drawString(b, drawStart, yOffset);
+		drawStart = (int) (start + (end - start - fontWidth) / 2.0f);
+
+		g.drawString(b, drawStart, yOffset + fontHeight - 1);
+	}
+
+	public void drawLabel(OnGenome region, int yOffset) {
+		if (!style.showLabels)
+			return;
+
+		int start = pixelPositionOnCanvas(region.getStart());
+		int end = pixelPositionOnCanvas(region.getEnd());
+
+		int drawStart;
+
+		Font f = new Font("Arial", Font.PLAIN, 1);
+		f = f.deriveFont((float) style.fontWidth);
+		g.setFont(f);
+
+		FontMetrics fontMetrics = g.getFontMetrics();
+		int textWidth = fontMetrics.stringWidth(region.getName());
+		int textHeight = fontMetrics.getHeight();
+		if (textHeight > style.geneHeight)
+			textHeight = style.geneHeight;
+
+		g.setColor(style.getReadColor(region));
+		drawStart = (start - textWidth) - 1;
+		if (drawStart < 0) {
+			drawStart = end + 1;
+		}
+
+		g.drawString(region.getName(), drawStart, yOffset + textHeight - 1);
+
 	}
 
 }
