@@ -160,6 +160,11 @@ public class ScreenShot extends UTGBShellCommand {
 
 	}
 
+	public String replaceVariable(String path, ChrLoc loc) {
+		path = path.replaceAll("%chr", loc.chr);
+		return path;
+	}
+
 	void createPNG(File viewFile, ChrLoc loc) throws Exception {
 		_logger.info(String.format("query: %s", loc));
 		TrackDisplay display;
@@ -187,7 +192,7 @@ public class ScreenShot extends UTGBShellCommand {
 				maxWidthText = track.name;
 			}
 
-			trackImage.add(createReadAlignmentImage(loc, db.path));
+			trackImage.add(createReadAlignmentImage(loc, replaceVariable(db.path, loc)));
 		}
 
 		Font f = new Font("Arial", Font.PLAIN, 1);

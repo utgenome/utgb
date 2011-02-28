@@ -117,12 +117,16 @@ public class NavigatorTrack extends TrackBase {
 						width = 1;
 					}
 
+					int start, end;
 					String[] region = regionBox.getText().split("-");
-					if (region.length != 2)
-						return;
-
-					int start = StringUtil.toInt(region[0]);
-					int end = StringUtil.toInt(region[1]);
+					if (region.length != 2) {
+						start = StringUtil.toInt(regionBox.getText());
+						end = start + width;
+					}
+					else {
+						start = StringUtil.toInt(region[0]);
+						end = StringUtil.toInt(region[1]);
+					}
 
 					if (start <= 0) {
 						start = 1;
