@@ -144,6 +144,7 @@ public class ScreenShot extends UTGBShellCommand {
 		DrawStyle style = canvas.getStyle();
 		if (!dbPath.endsWith(".bam")) {
 			style.geneHeight = 10;
+			style.geneMargin = 2;
 			canvas.setStyle(style);
 		}
 
@@ -195,13 +196,14 @@ public class ScreenShot extends UTGBShellCommand {
 
 		// Paste track images
 		int yOffset = 0;
+		int yMargin = 1;
 		for (BufferedImage each : trackImage) {
 
 			int h = each.getHeight();
 			int w = each.getWidth();
 			_logger.debug(String.format("w:%d, h:%d", w, h));
 			g.drawImage(each, 0, yOffset, w, yOffset + h, 0, 0, w, h, null);
-			yOffset += h;
+			yOffset += h + yMargin;
 		}
 
 		// output the graphics as a PNG file

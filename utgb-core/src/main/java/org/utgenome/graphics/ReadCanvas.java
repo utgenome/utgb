@@ -194,6 +194,7 @@ public class ReadCanvas {
 
 		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setStroke(new BasicStroke(0.5f));
 	}
 
 	public Graphics2D getGraphics() {
@@ -317,7 +318,7 @@ public class ReadCanvas {
 		}
 
 		for (Exon e : gene.getExon()) {
-			drawGeneRect(e.getStart(), e.getEnd(), y, geneColor);
+			drawGeneRect(e.getStart(), e.getEnd(), y, style.getClippedReadColor(gene));
 
 			// draw UTR region
 			if (gene.getCDS() != null && !gene.getCDS().isEmpty()) {
@@ -325,7 +326,7 @@ public class ReadCanvas {
 				if (e.getStart() <= cds.getEnd() && e.getEnd() >= cds.getStart()) {
 					int cdsStart = (e.getStart() <= cds.getStart()) ? cds.getStart() : e.getStart();
 					int cdsEnd = (e.getEnd() <= cds.getEnd()) ? e.getEnd() : cds.getEnd();
-					drawGeneRect(cdsStart, cdsEnd, y, style.getClippedReadColor(gene));
+					drawGeneRect(cdsStart, cdsEnd, y, geneColor);
 				}
 			}
 		}
@@ -337,7 +338,6 @@ public class ReadCanvas {
 		for (int i = 0; i < gene.getExon().size() - 1; i++) {
 			Exon prev = gene.getExon(i);
 			Exon next = gene.getExon(i + 1);
-
 			int x1 = pixelPositionOnCanvas(prev.getEnd());
 			int x2 = pixelPositionOnCanvas(next.getStart());
 			int yAxis = (int) (y + (style.geneHeight / 2.0f));
@@ -345,15 +345,14 @@ public class ReadCanvas {
 			g.drawLine(x1, yAxis, x2, yAxis);
 
 			for (int x = x1; x + 4 <= x2; x += 5) {
-				g.translate(x + 2.0f, y + arrowHeight);
-				if (!gene.isSense())
-					g.rotate(Math.PI);
-
-				g.drawLine(-2, -arrowHeight + 1, 1, 0);
-				g.drawLine(1, 0, -2, arrowHeight - 1);
-
-				g.rotate(0);
-				g.translate(0, 0);
+				if (gene.isSense()) {
+					g.drawLine(x, y + 1, x + 3, y + arrowHeight);
+					g.drawLine(x + 3, y + arrowHeight, x, y + 2 * arrowHeight - 1);
+				}
+				else {
+					g.drawLine(x + 3, y + 1, x, y + arrowHeight);
+					g.drawLine(x, y + arrowHeight, x + 3, y + 2 * arrowHeight - 1);
+				}
 			}
 
 		}
@@ -395,9 +394,7 @@ public class ReadCanvas {
 	}
 
 	public void drawGeneRect(int startOnGenome, int endOnGenome, int y, Color c) {
-
 		drawRegion(startOnGenome, endOnGenome, y, c, style.drawShadow);
-
 	}
 
 	public void drawPadding(int startOnGenome, int endOnGenome, int y, Color c) {
