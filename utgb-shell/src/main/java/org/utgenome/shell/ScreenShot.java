@@ -82,7 +82,7 @@ public class ScreenShot extends UTGBShellCommand {
 	@Option(longName = "pixelwidth", description = "pixel width. default=1000")
 	private int pixelWidth = 1000;
 
-	@Option(longName = "t", description = "track display defintion file (.silk)")
+	@Option(symbol = "t", description = "track display defintion file (.silk)")
 	private File viewFile;
 
 	@Option(symbol = "b", description = "background color in #FFFFFF format. default= transparent")
