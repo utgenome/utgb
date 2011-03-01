@@ -40,7 +40,7 @@ public class QSeqToFastq extends UTGBShellCommand {
 	@Option(symbol = "g", longName = "readgroup", varName = "RG", description = "read group name (e.g., HG0001SE:L3)")
 	private String readGroup;
 
-	@Option(symbol = "s", description = "read name suffix")
+	@Option(symbol = "s", description = "read name suffix (e.g., /1 or /2 for paired-end runs")
 	private String suffix = "";
 
 	@Argument(index = 0, name = "input")
