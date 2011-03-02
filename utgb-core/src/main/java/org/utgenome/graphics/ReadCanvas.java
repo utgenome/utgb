@@ -551,6 +551,12 @@ public class ReadCanvas {
 		return image.getWidth();
 	}
 
+	public void drawRuler() {
+		long s = window.startIndexOnGenome;
+		long e = window.endIndexOnGenome;
+
+	}
+
 	public void drawBase(char base, int startIndexOnGenome, int yOffset, Color color) {
 		if (style.geneHeight < style.fontWidth) {
 			return;

@@ -29,6 +29,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
+import org.xerial.util.log.Logger;
+
 /**
  * Priority search tree for efficient 2D search
  * 
@@ -36,6 +38,8 @@ import java.util.Stack;
  * 
  */
 public class PrioritySearchTree<E> implements Iterable<E> {
+
+	private static Logger _logger = Logger.getLogger(PrioritySearchTree.class);
 
 	public class Node {
 		public E elem;
@@ -113,7 +117,7 @@ public class PrioritySearchTree<E> implements Iterable<E> {
 		}
 
 		public E next() {
-			if (nodeStack.isEmpty())
+			if (!hasNext())
 				return null;
 
 			Node nextNode = nodeStack.pop();
@@ -121,7 +125,6 @@ public class PrioritySearchTree<E> implements Iterable<E> {
 				nodeStack.push(nextNode.right);
 			if (nextNode.left != null)
 				nodeStack.push(nextNode.left);
-
 			return nextNode.elem;
 		}
 
@@ -211,7 +214,7 @@ public class PrioritySearchTree<E> implements Iterable<E> {
 
 	boolean rangeQuery_internal(Node currentNode, QueryBox queryBox, int rangeX1, int rangeX2, ResultHandler<E> resultHandler) {
 		boolean toContinue = resultHandler.toContinue();
-		if (!toContinue)
+		if (!toContinue || rangeX1 >= rangeX2)
 			return false;
 
 		if (currentNode != null) {
@@ -264,21 +267,27 @@ public class PrioritySearchTree<E> implements Iterable<E> {
 	}
 
 	Node insert_internal(Node currentNode, Node insertNode, int lowerRangeOfX, int upperRangeOfX) {
-		if (currentNode == null) {
-			// empty leaf is found. Insert the new node here
-			currentNode = insertNode;
-			currentNode.splitX = (lowerRangeOfX + upperRangeOfX) / 2;
-			nodeCount++;
-		}
-		else {
-			if (insertNode.y < currentNode.y) {
-				currentNode.swap(insertNode);
+		try {
+			if (currentNode == null) {
+				// empty leaf is found. Insert the new node here
+				currentNode = insertNode;
+				currentNode.splitX = (lowerRangeOfX + upperRangeOfX) / 2;
+				nodeCount++;
 			}
+			else {
+				if (insertNode.y < currentNode.y) {
+					currentNode.swap(insertNode);
+				}
 
-			if (insertNode.x < currentNode.splitX)
-				currentNode.left = insert_internal(currentNode.left, insertNode, lowerRangeOfX, currentNode.splitX);
-			else
-				currentNode.right = insert_internal(currentNode.right, insertNode, currentNode.splitX, upperRangeOfX);
+				if (insertNode.x < currentNode.splitX)
+					currentNode.left = insert_internal(currentNode.left, insertNode, lowerRangeOfX, currentNode.splitX);
+				else
+					currentNode.right = insert_internal(currentNode.right, insertNode, currentNode.splitX, upperRangeOfX);
+			}
+		}
+		catch (StackOverflowError e) {
+			_logger.error(String.format("current:%s, insert node:%d, x lower:%d, x upper:%d", currentNode.elem, insertNode.elem, lowerRangeOfX, upperRangeOfX));
+			throw new IllegalStateException(e.getMessage());
 		}
 
 		return currentNode;
