@@ -29,6 +29,7 @@ import java.util.List;
 
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.CompactWIGData;
+import org.utgenome.gwt.utgb.client.bio.GraphWindow;
 import org.utgenome.gwt.utgb.client.canvas.BarGraphCanvas;
 import org.utgenome.gwt.utgb.client.canvas.GWTGraphCanvas.GraphStyle;
 import org.utgenome.gwt.utgb.client.canvas.GraphScale;
@@ -211,7 +212,8 @@ public class WIGTrack extends TrackBase {
 			int s = queryWindow.getStartOnGenome();
 			int e = queryWindow.getEndOnGenome();
 			ChrLoc l = new ChrLoc(getTrackGroupProperty(UTGBProperty.TARGET), s, e);
-			getBrowserService().getCompactWigDataList(filePath, queryWindow.getPixelWidth(), l, new AsyncCallback<List<CompactWIGData>>() {
+			GraphWindow w = GraphWindow.valueOf(GraphWindow.class, getConfig().getString(GraphStyle.CONFIG_GRAPH_WINDOW, "MAX"));
+			getBrowserService().getCompactWigDataList(filePath, queryWindow.getPixelWidth(), l, w, new AsyncCallback<List<CompactWIGData>>() {
 				public void onFailure(Throwable e) {
 					error("failed to retrieve wig data: " + e.getMessage());
 					clearBackgroundGraph(queryWindow);
@@ -342,7 +344,6 @@ public class WIGTrack extends TrackBase {
 	public void onChangeTrackGroupProperty(TrackGroupPropertyChange change) {
 
 		if (change.containsOneOf(new String[] { UTGBProperty.TARGET, UTGBProperty.REVISION, UTGBProperty.SPECIES })) {
-
 			chain.clear();
 			clearBuffer();
 			refresh();

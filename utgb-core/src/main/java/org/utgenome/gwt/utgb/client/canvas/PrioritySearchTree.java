@@ -29,8 +29,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
-import org.xerial.util.log.Logger;
-
 /**
  * Priority search tree for efficient 2D search
  * 
@@ -38,8 +36,6 @@ import org.xerial.util.log.Logger;
  * 
  */
 public class PrioritySearchTree<E> implements Iterable<E> {
-
-	private static Logger _logger = Logger.getLogger(PrioritySearchTree.class);
 
 	public class Node {
 		public E elem;
@@ -286,7 +282,6 @@ public class PrioritySearchTree<E> implements Iterable<E> {
 			}
 		}
 		catch (StackOverflowError e) {
-			_logger.error(String.format("current:%s, insert node:%d, x lower:%d, x upper:%d", currentNode.elem, insertNode.elem, lowerRangeOfX, upperRangeOfX));
 			throw new IllegalStateException(e.getMessage());
 		}
 

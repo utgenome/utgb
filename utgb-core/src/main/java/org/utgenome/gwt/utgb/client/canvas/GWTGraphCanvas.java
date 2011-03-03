@@ -31,6 +31,8 @@ import java.util.List;
 import org.utgenome.gwt.utgb.client.UTGBEntryPointBase;
 import org.utgenome.gwt.utgb.client.bio.CompactWIGData;
 import org.utgenome.gwt.utgb.client.canvas.GWTGenomeCanvas.DragPoint;
+import org.utgenome.gwt.utgb.client.db.ValueDomain;
+import org.utgenome.gwt.utgb.client.db.datatype.StringType;
 import org.utgenome.gwt.utgb.client.track.TrackConfig;
 import org.utgenome.gwt.utgb.client.track.TrackWindow;
 import org.utgenome.gwt.utgb.client.util.Optional;
@@ -148,6 +150,7 @@ public class GWTGraphCanvas extends Composite {
 		public float logBase = 2.0f;
 
 		public final static String CONFIG_TRACK_HEIGHT = "trackHeight";
+		public final static String CONFIG_GRAPH_WINDOW = "window function";
 		private final static String CONFIG_MAX_VALUE = "maxValue";
 		private final static String CONFIG_MIN_VALUE = "minValue";
 		private final static String CONFIG_AUTO_SCALE = "autoScale";
@@ -200,6 +203,8 @@ public class GWTGraphCanvas extends Composite {
 		 * @param config
 		 */
 		public void setup(TrackConfig config) {
+			ValueDomain windowFuncitionTypes = ValueDomain.createNewValueDomain(new String[] { "MAX", "MIN", "MEDIAN", "AVG" });
+			config.addConfig("Window Function", new StringType(CONFIG_GRAPH_WINDOW, windowFuncitionTypes), "MAX");
 			config.addConfigDouble("Y Max", CONFIG_MAX_VALUE, maxValue);
 			config.addConfigDouble("Y Min", CONFIG_MIN_VALUE, minValue);
 			config.addConfigBoolean("Auto Scale", CONFIG_AUTO_SCALE, autoScale);

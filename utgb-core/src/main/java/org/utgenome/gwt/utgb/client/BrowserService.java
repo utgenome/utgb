@@ -31,6 +31,7 @@ import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.ChrRange;
 import org.utgenome.gwt.utgb.client.bio.CompactWIGData;
 import org.utgenome.gwt.utgb.client.bio.GenomeDB;
+import org.utgenome.gwt.utgb.client.bio.GraphWindow;
 import org.utgenome.gwt.utgb.client.bio.KeywordSearchResult;
 import org.utgenome.gwt.utgb.client.bio.OnGenome;
 import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig;
@@ -75,7 +76,7 @@ public interface BrowserService extends RemoteService {
 
 	public List<WigGraphData> getWigDataList(String fileName, int windowWidth, ChrLoc location);
 
-	public List<CompactWIGData> getCompactWigDataList(String fileName, int windowWidth, ChrLoc location);
+	public List<CompactWIGData> getCompactWigDataList(String fileName, int windowWidth, ChrLoc location, GraphWindow window);
 
 	public List<SAMRead> getSAMReadList(String readFileName, String refSeqFileName);
 

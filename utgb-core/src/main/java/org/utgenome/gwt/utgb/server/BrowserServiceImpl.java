@@ -500,7 +500,7 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 		return wigDataList;
 	}
 
-	public List<CompactWIGData> getCompactWigDataList(String path, int windowWidth, ChrLoc location) {
+	public List<CompactWIGData> getCompactWigDataList(String path, int windowWidth, ChrLoc location, GraphWindow window) {
 
 		if (!ReadView.isDescendant(path)) {
 			_logger.error("path must be under the project root: " + path);
@@ -509,7 +509,7 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 
 		List<CompactWIGData> cWig = null;
 		try {
-			cWig = WIGDatabaseReader.getCompactWigDataList(new File(WebTrackBase.getProjectRootPath(), path), windowWidth, location, GraphWindow.MAX);
+			cWig = WIGDatabaseReader.getCompactWigDataList(new File(WebTrackBase.getProjectRootPath(), path), windowWidth, location, window);
 		}
 		catch (Exception e) {
 			_logger.error(e);
