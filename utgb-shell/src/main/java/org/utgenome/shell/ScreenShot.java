@@ -198,17 +198,20 @@ public class ScreenShot extends UTGBShellCommand {
 		Font f = new Font("Arial", Font.PLAIN, 1);
 		f = f.deriveFont(10f);
 		int maxTextWidth = 30;
+		int textHeight = 10;
 		{
 			BufferedImage tmp = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 			Graphics2D g = (Graphics2D) tmp.getGraphics();
 			g.setFont(f);
 			maxTextWidth = g.getFontMetrics().stringWidth(maxWidthText);
+			textHeight = g.getFontMetrics().getHeight();
 		}
 
 		// Compute the canvas height
+		final int minTrackHeight = textHeight;
 		int pixelHeight = 0;
 		for (BufferedImage each : trackImage)
-			pixelHeight += each.getHeight();
+			pixelHeight += Math.max(each.getHeight(), 10);
 
 		// Prepare a large canvas
 		BufferedImage image = new BufferedImage(maxTextWidth + pixelWidth, pixelHeight, BufferedImage.TYPE_INT_ARGB);
@@ -232,7 +235,6 @@ public class ScreenShot extends UTGBShellCommand {
 		int index = 0;
 
 		FontMetrics fs = g.getFontMetrics();
-		int textHeight = fs.getHeight();
 
 		int xOffset = maxTextWidth + 10;
 		for (BufferedImage each : trackImage) {
@@ -242,8 +244,8 @@ public class ScreenShot extends UTGBShellCommand {
 			_logger.debug(String.format("w:%d, h:%d", w, h));
 			g.drawImage(each, xOffset, yOffset, xOffset + w, yOffset + h, 0, 0, w, h, null);
 
-			if (h < 10)
-				h = 10;
+			if (h < minTrackHeight)
+				h = minTrackHeight;
 
 			GeneralPath box = new GeneralPath();
 			box.moveTo(0, yOffset);
