@@ -49,6 +49,7 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -248,7 +249,7 @@ public class TrackConfig extends PopupPanel {
 				// resize();
 
 				_layoutPanel.setStyleName("form");
-				_layoutPanel.setVerticalAlignment(DockPanel.ALIGN_MIDDLE);
+				_layoutPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 
 				_layoutPanel.add(_label, DockPanel.WEST);
 				_layoutPanel.add(_form, DockPanel.CENTER);

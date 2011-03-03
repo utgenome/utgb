@@ -37,8 +37,8 @@ import org.utgenome.gwt.utgb.client.util.xml.XMLUtil;
 import org.utgenome.gwt.utgb.client.util.xml.XMLWriter;
 import org.utgenome.gwt.utgb.client.view.TrackView;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
 
 /**
  * {@link TrackBase} is a base class that supports to implement your own {@link Track}s.
@@ -186,7 +186,7 @@ public abstract class TrackBase implements Track {
 		TrackBase.this.draw();
 		//TrackBase.this.draw();
 		//getFrame().onUpdateTrackWidget();
-		DeferredCommand.addCommand(new Command() {
+		Scheduler.get().scheduleDeferred(new Command() {
 			public void execute() {
 				getFrame().onUpdateTrackWidget();
 

@@ -325,8 +325,10 @@ public class WIGTrack extends TrackBase {
 	@Override
 	public void onChangeTrackConfig(TrackConfigChange change) {
 
-		if (change.contains(CONFIG_PATH)) {
+		if (change.containsOneOf(new String[] { CONFIG_PATH, GraphStyle.CONFIG_GRAPH_WINDOW })) {
 			needToUpdateStyle = true;
+			chain.clear();
+			clearBuffer();
 			refresh();
 		}
 		else {

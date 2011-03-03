@@ -263,26 +263,21 @@ public class PrioritySearchTree<E> implements Iterable<E> {
 	}
 
 	Node insert_internal(Node currentNode, Node insertNode, int lowerRangeOfX, int upperRangeOfX) {
-		try {
-			if (currentNode == null) {
-				// empty leaf is found. Insert the new node here
-				currentNode = insertNode;
-				currentNode.splitX = (lowerRangeOfX + upperRangeOfX) / 2;
-				nodeCount++;
-			}
-			else {
-				if (insertNode.y < currentNode.y) {
-					currentNode.swap(insertNode);
-				}
-
-				if (insertNode.x < currentNode.splitX)
-					currentNode.left = insert_internal(currentNode.left, insertNode, lowerRangeOfX, currentNode.splitX);
-				else
-					currentNode.right = insert_internal(currentNode.right, insertNode, currentNode.splitX, upperRangeOfX);
-			}
+		if (currentNode == null) {
+			// empty leaf is found. Insert the new node here
+			currentNode = insertNode;
+			currentNode.splitX = (lowerRangeOfX + upperRangeOfX) / 2;
+			nodeCount++;
 		}
-		catch (StackOverflowError e) {
-			throw new IllegalStateException(e.getMessage());
+		else {
+			if (insertNode.y < currentNode.y) {
+				currentNode.swap(insertNode);
+			}
+
+			if (insertNode.x < currentNode.splitX)
+				currentNode.left = insert_internal(currentNode.left, insertNode, lowerRangeOfX, currentNode.splitX);
+			else
+				currentNode.right = insert_internal(currentNode.right, insertNode, currentNode.splitX, upperRangeOfX);
 		}
 
 		return currentNode;
