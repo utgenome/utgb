@@ -42,6 +42,6 @@ public class Sam2WigTest {
 
 		UTGBShell.runCommand(String.format("readdepth %s %s", bam, out));
 
-		UTGBShell.runCommand(String.format("import -w %s", out));
+		UTGBShell.runCommand(String.format("import -t wig %s", out));
 	}
 }
