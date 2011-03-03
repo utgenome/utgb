@@ -22,6 +22,7 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.view;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,6 +42,6 @@ public class TrackDisplay {
 		public DB db;
 	}
 
-	public List<Track> track;
+	public List<Track> track = new ArrayList<Track>();
 
 }

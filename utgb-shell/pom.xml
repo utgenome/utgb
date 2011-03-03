@@ -15,7 +15,7 @@
 
   <properties>
     <tomcat.version>6.0.29</tomcat.version>
-    <maven.version>3.0-beta-1</maven.version>
+    <maven.version>3.0.2</maven.version>
   </properties>
 
   <build>
@@ -36,7 +36,7 @@
         <version>2.6</version>
         <configuration>
           <additionalClasspathElements>
-            <additionalClasspathElement>${basedir}/${project.build.outputDirectory}</additionalClasspathElement>
+            <additionalClasspathElement>${project.build.outputDirectory}</additionalClasspathElement>
           </additionalClasspathElements>
         </configuration>
       </plugin>

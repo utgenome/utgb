@@ -28,6 +28,7 @@ import java.io.File;
 
 import org.junit.Test;
 import org.utgenome.shell.ProjectGenerator.ProjectInfo;
+import org.utgenome.util.TestHelper;
 import org.xerial.util.FileResource;
 import org.xerial.util.FileUtil;
 
@@ -59,8 +60,8 @@ public class KeywordTest {
 		ProjectInfo tmpProject = ProjectGenerator.createTemporatyProject();
 
 		// import keywords in BED file
-		File sam = File.createTempFile("keyword", ".sam");
-		FileUtil.copy(FileResource.openByteStream(KeywordTest.class, "sample.sam"), sam);
+
+		File sam = TestHelper.createTempFileFrom(KeywordTest.class, "sample.sam");
 		UTGBShell.runCommand(new String[] { "-d", tmpProject.projectRoot, "keyword", "import", "-r", "HG18", sam.getAbsolutePath() });
 
 		// try keyword search
@@ -73,8 +74,7 @@ public class KeywordTest {
 		ProjectInfo tmpProject = ProjectGenerator.createTemporatyProject();
 
 		// import keywords in BED file
-		File bam = File.createTempFile("keyword", ".sam");
-		FileUtil.copy(FileResource.openByteStream(KeywordTest.class, "sample.bam"), bam);
+		File bam = TestHelper.createTempFileFrom(KeywordTest.class, "sample.bam");
 		UTGBShell.runCommand(new String[] { "-d", tmpProject.projectRoot, "keyword", "import", "-r", "HG18", bam.getAbsolutePath() });
 
 		// try keyword search

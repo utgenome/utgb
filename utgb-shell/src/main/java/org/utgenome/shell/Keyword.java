@@ -112,8 +112,8 @@ public class Keyword extends UTGBShellCommand {
 					finally {
 						r.close();
 					}
-				}
 					break;
+				}
 				case SAM:
 				case BAM: {
 					InputStream in = getInputFileStream();

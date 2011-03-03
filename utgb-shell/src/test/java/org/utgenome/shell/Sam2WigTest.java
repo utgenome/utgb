@@ -27,7 +27,7 @@ package org.utgenome.shell;
 import java.io.File;
 
 import org.junit.Test;
-import org.xerial.util.FileResource;
+import org.utgenome.util.TestHelper;
 import org.xerial.util.FileUtil;
 
 public class Sam2WigTest {
@@ -35,12 +35,12 @@ public class Sam2WigTest {
 	@Test
 	public void convert() throws Exception {
 		File work = new File("target");
-		File in = FileUtil.createTempFile(work, "input", ".sam");
+
+		File bam = TestHelper.createTempFileFrom(Sam2WigTest.class, "sample.bam");
+		File bai = TestHelper.createTempFileFrom(Sam2WigTest.class, "sample.bam.bai", new File(bam + ".bai"));
 		File out = FileUtil.createTempFile(work, "output", ".wig");
 
-		FileUtil.copy(FileResource.openByteStream(Sam2WigTest.class, "test.sam"), in);
-
-		UTGBShell.runCommand(String.format("readdepth %s %s", in, out));
+		UTGBShell.runCommand(String.format("readdepth %s %s", bam, out));
 
 		UTGBShell.runCommand(String.format("import -w %s", out));
 	}
