@@ -37,8 +37,9 @@
         <version>2.7.2</version>
         <configuration>
           <additionalClasspathElements>
-            <additionalClasspathElement>${basedir}/src/main/resources</additionalClasspathElement>
+            <additionalClasspathElement>${basedir}/${project.build.outputDirectory}</additionalClasspathElement>
           </additionalClasspathElements>
+		  <forkMode>always</forkMode>
         </configuration>
       </plugin>
 
