@@ -210,7 +210,7 @@ public class PrioritySearchTree<E> implements Iterable<E> {
 
 	boolean rangeQuery_internal(Node currentNode, QueryBox queryBox, int rangeX1, int rangeX2, ResultHandler<E> resultHandler) {
 		boolean toContinue = resultHandler.toContinue();
-		if (!toContinue || rangeX1 >= rangeX2)
+		if (!toContinue || rangeX1 > rangeX2)
 			return false;
 
 		if (currentNode != null) {
