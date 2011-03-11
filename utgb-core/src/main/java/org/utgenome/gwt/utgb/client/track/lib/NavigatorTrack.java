@@ -120,8 +120,9 @@ public class NavigatorTrack extends TrackBase {
 					int start, end;
 					String[] region = regionBox.getText().split("-");
 					if (region.length != 2) {
-						start = StringUtil.toInt(regionBox.getText());
-						end = start + width;
+						int pos = StringUtil.toInt(regionBox.getText());
+						start = pos - (width / 2);
+						end = pos + (width / 2);
 					}
 					else {
 						start = StringUtil.toInt(region[0]);
@@ -136,6 +137,10 @@ public class NavigatorTrack extends TrackBase {
 						end = start + width;
 					}
 
+					String prevChr = NavigatorTrack.this.getTrackGroupProperty(UTGBProperty.TARGET);
+					if (prevChr == null || !prevChr.equals(targetBox.getText())) {
+						NavigatorTrack.this.setTrackGroupProperty(UTGBProperty.TARGET, targetBox.getText());
+					}
 					getTrackGroup().setTrackWindowLocation(start, end);
 				}
 				catch (NumberFormatException ex) {
