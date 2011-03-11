@@ -33,6 +33,10 @@ package org.utgenome.gwt.utgb.client.bio;
  */
 public class OnGenomeDataVisitorBase implements OnGenomeDataVisitor {
 
+	public void visitDefault(OnGenome g) {
+
+	}
+
 	public void visitGap(Gap p) {
 		visitInterval(p);
 	}

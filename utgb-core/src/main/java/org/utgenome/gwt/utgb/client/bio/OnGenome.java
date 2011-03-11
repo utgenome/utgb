@@ -48,6 +48,10 @@ public interface OnGenome extends Serializable {
 	 */
 	public int getEnd();
 
+	public boolean isSense();
+
+	public boolean isAntiSense();
+
 	/**
 	 * return the length of the data
 	 * 

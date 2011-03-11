@@ -32,6 +32,8 @@ package org.utgenome.gwt.utgb.client.bio;
  */
 public interface OnGenomeDataVisitor {
 
+	public void visitDefault(OnGenome g);
+
 	public void visitInterval(Interval interval);
 
 	public void visitRead(Read r);

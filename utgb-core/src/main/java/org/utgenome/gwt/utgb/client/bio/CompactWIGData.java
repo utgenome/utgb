@@ -172,4 +172,14 @@ public class CompactWIGData implements GraphData {
 		return 0;
 	}
 
+	public boolean isSense() {
+		// TODO distinguish sense/anti-sense
+		return true;
+	}
+
+	public boolean isAntiSense() {
+		// TODO distinguish sense/anti-sense
+		return false;
+	}
+
 }
