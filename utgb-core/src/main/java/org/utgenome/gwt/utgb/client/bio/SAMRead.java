@@ -40,7 +40,6 @@ public class SAMRead extends SAMReadLight {
 	public int mapq; // Mapping Quality
 	public String mrnm; // mate reference name
 	public int mStart; // mate start (new parameter!) 
-	public int iSize;
 	public String seq;
 	public String qual;
 	public Properties tag;

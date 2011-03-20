@@ -39,6 +39,7 @@ public class SAMReadLight extends Interval {
 	public int unclippedStart;
 	public int unclippedEnd;
 	public String cigar;
+	public int iSize;
 
 	public SAMReadLight() {
 

@@ -53,7 +53,7 @@ import org.xerial.util.log.Logger;
 /**
  * Generating SQLite database of WIG data
  * 
- * @author yoshimur
+ * @author yoshimura
  * 
  */
 public class WIGDatabaseGenerator {
@@ -195,6 +195,7 @@ public class WIGDatabaseGenerator {
 				insertData(track_id, dataBlockInsertQuery);
 			}
 
+			// create indexes
 			stat.executeUpdate("create index track_index on track (name, value)");
 			stat.executeUpdate("create index data_index on data (track_id, start)");
 

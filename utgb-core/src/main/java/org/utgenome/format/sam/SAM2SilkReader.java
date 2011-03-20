@@ -123,6 +123,7 @@ public class SAM2SilkReader extends FormatConversionReader {
 			read.cigar = record.getCigarString();
 			read.unclippedStart = record.getUnclippedStart();
 			read.unclippedEnd = record.getUnclippedEnd() + 1;
+			read.iSize = record.getInferredInsertSize();
 		}
 		return read;
 	}
