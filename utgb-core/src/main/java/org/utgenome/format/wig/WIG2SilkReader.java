@@ -25,96 +25,52 @@
 package org.utgenome.format.wig;
 
 import java.io.IOException;
-import java.io.PipedReader;
-import java.io.PipedWriter;
 import java.io.PrintWriter;
 import java.io.Reader;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.io.Writer;
 
 import org.utgenome.UTGBException;
+import org.utgenome.format.FormatConversionReader;
 import org.xerial.util.log.Logger;
 
-public class WIG2SilkReader extends Reader
-{
+/**
+ * Stream reader of the WIG data converted to Silk
+ * 
+ * @author leo
+ * 
+ */
+public class WIG2SilkReader extends FormatConversionReader {
 
-    private static Logger _logger = Logger.getLogger(WIG2SilkReader.class);
+	private static Logger _logger = Logger.getLogger(WIG2SilkReader.class);
 
-    private final Reader wigReader;
-    private ExecutorService threadPool;
+	public WIG2SilkReader(Reader wigReader) throws IOException {
+		super(wigReader, new PipeWorker(wigReader));
+	}
 
-    private final PipedWriter pipeOut;
-    private final PipedReader pipeIn;
+	private static class PipeWorker extends PipeConsumer {
 
-    private boolean hasStarted = false;
+		private final WIG2Silk wig2silk;
 
-    public WIG2SilkReader(Reader wigReader) throws IOException
-    {
-        this.wigReader = wigReader;
+		public PipeWorker(Reader in) throws IOException {
+			wig2silk = new WIG2Silk(in);
+		}
 
-        pipeOut = new PipedWriter();
-        pipeIn = new PipedReader(pipeOut);
+		@Override
+		public void consume(Reader in, Writer out) throws Exception {
+			if (out == null)
+				return;
+			try {
+				wig2silk.toSilk(new PrintWriter(out));
+				out.close();
+			}
+			catch (IOException e) {
+				_logger.error(e);
+			}
+			catch (UTGBException e) {
+				_logger.error(e);
+			}
+		}
 
-    }
-
-    private static class PipeWorker implements Runnable
-    {
-
-        private final WIG2Silk wig2silk;
-        private final PrintWriter out;
-
-        public PipeWorker(Reader in, PrintWriter out) throws IOException
-        {
-            wig2silk = new WIG2Silk(in);
-            this.out = out;
-        }
-
-        public void run()
-        {
-            if (out == null)
-                return;
-            try
-            {
-                wig2silk.toSilk(out);
-                out.close();
-            }
-            catch (IOException e)
-            {
-                _logger.error(e);
-            }
-            catch (UTGBException e)
-            {
-                _logger.error(e);
-            }
-        }
-
-    }
-
-    @Override
-    public void close() throws IOException
-    {
-        pipeIn.close();
-        wigReader.close();
-    }
-
-    @Override
-    public int read(char[] cbuf, int off, int len) throws IOException
-    {
-
-        if (!hasStarted)
-        {
-            threadPool = Executors.newFixedThreadPool(1);
-            threadPool.submit(new PipeWorker(wigReader, new PrintWriter(pipeOut)));
-            hasStarted = true;
-        }
-
-        int ret = pipeIn.read(cbuf, off, len);
-
-        if (ret == -1)
-        {
-            threadPool.shutdownNow();
-        }
-        return ret;
-    }
+	}
 
 }

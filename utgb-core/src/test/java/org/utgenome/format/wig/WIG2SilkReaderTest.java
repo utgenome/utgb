@@ -24,35 +24,28 @@
 //--------------------------------------
 package org.utgenome.format.wig;
 
-import java.io.File;
-import java.io.FileReader;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.utgenome.format.bed.BED2SilkReader;
-import org.utgenome.format.wig.WIG2SilkReader;
+import org.xerial.util.FileResource;
 
-public class WIG2SilkReaderTest
-{
+public class WIG2SilkReaderTest {
 
-    @Before
-    public void setUp() throws Exception
-    {}
+	@Before
+	public void setUp() throws Exception {
+	}
 
-    @After
-    public void tearDown() throws Exception
-    {}
+	@After
+	public void tearDown() throws Exception {
+	}
 
-    @Test
-    public void testGen() throws Exception
-    {
-		File input = new File("db/sample.wig");
-		WIG2SilkReader in = new WIG2SilkReader(new FileReader(input));
+	@Test
+	public void testGen() throws Exception {
+		WIG2SilkReader in = new WIG2SilkReader(FileResource.open(WIG2SilkReaderTest.class, "sample.wig"));
 		char[] cbuf = new char[1000];
 		int nCbufs;
-		while((nCbufs = in.read(cbuf, 0, 1000))!=-1){
+		while ((nCbufs = in.read(cbuf, 0, 1000)) != -1) {
 			System.out.print(String.valueOf(cbuf, 0, nCbufs));
 		}
-    }
+	}
 }
