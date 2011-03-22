@@ -36,6 +36,7 @@ import org.xerial.core.XerialException;
 import org.xerial.lens.SilkLens;
 import org.xerial.util.FileResource;
 import org.xerial.util.log.Logger;
+import org.xerial.util.opt.Command;
 import org.xerial.util.opt.Usage;
 import org.xerial.util.text.Template;
 
@@ -46,7 +47,7 @@ import org.xerial.util.text.Template;
  * 
  */
 @Usage(templatePath = "org/utgenome/shell/help.template")
-public abstract class UTGBShellCommand implements Comparable<UTGBShellCommand> {
+public abstract class UTGBShellCommand implements Command, Comparable<UTGBShellCommand> {
 	private static Logger _logger = Logger.getLogger(UTGBShell.class);
 	public static final String APP_FOLDER = "app";
 	public static final String SRC_FOLDER = "src/main/java";
@@ -63,6 +64,10 @@ public abstract class UTGBShellCommand implements Comparable<UTGBShellCommand> {
 	}
 
 	public abstract void execute(String[] args) throws Exception;
+
+	public String getOneLineDescription() {
+		return getOneLinerDescription();
+	}
 
 	public abstract String getOneLinerDescription();
 

@@ -28,6 +28,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -42,6 +43,7 @@ import org.xerial.util.log.LogLevel;
 import org.xerial.util.log.Logger;
 import org.xerial.util.log.SimpleLogWriter;
 import org.xerial.util.opt.Argument;
+import org.xerial.util.opt.Command;
 import org.xerial.util.opt.Option;
 import org.xerial.util.opt.OptionParser;
 import org.xerial.util.opt.OptionParserException;
@@ -59,18 +61,22 @@ public class UTGBShell {
 
 	private static Logger _logger = Logger.getLogger(UTGBShell.class);
 
-	private static TreeMap<String, UTGBShellCommand> subCommandTable = new TreeMap<String, UTGBShellCommand>();
+	private static TreeMap<String, Command> subCommandTable = new TreeMap<String, Command>();
 
 	/**
 	 * search sub commands from the this package (org.utgenome.shell)
 	 */
 	static void findSubCommands() {
 		String shellPackage = UTGBShell.class.getPackage().getName();
-		List<VirtualFile> classFileList = FileResource.listResources(shellPackage, new ResourceFilter() {
-			public boolean accept(String resourcePath) {
-				return resourcePath.endsWith(".class");
-			}
-		});
+		List<VirtualFile> classFileList = new ArrayList<VirtualFile>();
+		for (String p : new String[] { shellPackage, "org.utgenome.core.cui" }) {
+			classFileList.addAll(FileResource.listResources(p, new ResourceFilter() {
+				public boolean accept(String resourcePath) {
+					return resourcePath.endsWith(".class");
+				}
+			}));
+		}
+
 		for (VirtualFile vf : classFileList) {
 			String logicalPath = vf.getLogicalPath();
 			int dot = logicalPath.lastIndexOf(".");
@@ -79,9 +85,9 @@ public class UTGBShell {
 			String className = shellPackage + "." + logicalPath.substring(0, dot).replaceAll("/", ".");
 			try {
 				Class<?> c = Class.forName(className, false, UTGBShell.class.getClassLoader());
-				if (!Modifier.isAbstract(c.getModifiers()) && UTGBShellCommand.class.isAssignableFrom(c)) {
+				if (!Modifier.isAbstract(c.getModifiers()) && Command.class.isAssignableFrom(c)) {
 					// found a sub command class
-					UTGBShellCommand subCommand = (UTGBShellCommand) c.newInstance();
+					Command subCommand = (Command) c.newInstance();
 					if (subCommand == null)
 						continue;
 					subCommandTable.put(subCommand.name(), subCommand);
@@ -168,7 +174,7 @@ public class UTGBShell {
 
 		if (opt.subCommand != null) {
 			// go to sub command processing
-			UTGBShellCommand subCommand = subCommandTable.get(opt.subCommand);
+			Command subCommand = subCommandTable.get(opt.subCommand);
 
 			if (subCommand != null) {
 				// Use the specified option holder for binding command-line parameters. If no option holder is
@@ -189,7 +195,12 @@ public class UTGBShell {
 					}
 					else {
 						// copy the rest of the command line arguments
-						subCommand.execute(opt, subCommandArgumetns);
+						if (UTGBShellCommand.class.isAssignableFrom(subCommand.getClass())) {
+							UTGBShellCommand c = UTGBShellCommand.class.cast(subCommand);
+							c.execute(opt, subCommandArgumetns);
+						}
+						else
+							subCommand.execute(subCommandArgumetns);
 						return;
 					}
 				}
@@ -216,8 +227,8 @@ public class UTGBShell {
 				// list all sub commands
 				System.out.println("[sub commands]");
 				for (String subCommandName : subCommandTable.keySet()) {
-					UTGBShellCommand sc = subCommandTable.get(subCommandName);
-					System.out.format("  %-15s\t%s", subCommandName, sc.getOneLinerDescription());
+					Command sc = subCommandTable.get(subCommandName);
+					System.out.format("  %-15s\t%s", subCommandName, sc.getOneLineDescription());
 					System.out.println();
 				}
 				return;
