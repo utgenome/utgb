@@ -15,7 +15,8 @@
 #--------------------------------------------------------------------------
 
 PREFIX=${HOME}/local
-MVN=mvn
+MVN_OPT=
+MVN=mvn $(MVN_OPT)
 
 .PHONY: install test release-prepare release-perform clean update-version
 
