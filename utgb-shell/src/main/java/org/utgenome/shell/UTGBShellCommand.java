@@ -41,7 +41,7 @@ import org.xerial.util.opt.Usage;
 import org.xerial.util.text.Template;
 
 /**
- * A common implementation of the UTGBShell's sub commands
+ * A base implementation of the UTGBShell's sub commands
  * 
  * @author leo
  * 
