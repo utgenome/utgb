@@ -132,21 +132,18 @@ public class WIG2Silk {
 					StringBuffer sb = new StringBuffer("\n-track(");
 					sb = readHeaderLine(sb, line);
 					out.println(sb.toString());
-					out.flush();
 				}
 				else if (line.startsWith("variableStep")) {
 					StringBuffer sb = new StringBuffer(" -coordinate(stepType:variable, ");
 					sb = readHeaderLine(sb, line);
 					sb.append("\n  -data(start, value)|");
 					out.println(sb.toString());
-					out.flush();
 				}
 				else if (line.startsWith("fixedStep")) {
 					StringBuffer sb = new StringBuffer(" -coordinate(stepType:fixed, ");
 					sb = readHeaderLine(sb, line);
 					sb.append("\n  -data(value)|");
 					out.println(sb.toString());
-					out.flush();
 				}
 				else {
 					String[] lineValues = readWIGLine(line, lineNum);
@@ -154,8 +151,9 @@ public class WIG2Silk {
 					for (String value : lineValues) {
 						sb.append(value + "\t");
 					}
-					out.println(sb.toString().trim());
-					out.flush();
+					String tabData = sb.toString().trim();
+					if (tabData.length() > 0)
+						out.println(tabData);
 				}
 			}
 			catch (RecognitionException e) {
@@ -164,6 +162,10 @@ public class WIG2Silk {
 			catch (XerialException e) {
 				throw new UTGBException(String.format("line %d: %s", lineNum, e));
 			}
+			finally {
+				out.flush();
+			}
+
 		}
 	}
 
