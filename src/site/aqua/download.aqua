@@ -9,6 +9,13 @@
 
 == Release Notes
 
+* {b|March 22th, 2011} UTGB Toolkit 1.5.1 released.
+** Improved the compilation and installation time by using ClassWorld launcher instead of packaging the all dependent libraries into one-jar file.
+** Update the {b|utgb screenshot} command to take the screenshot for multiple tracks
+** Upgraded to GWT2.1.0
+** {b|utgb qseq2fastq} now supports read names with suffixes for paired-end reads, e.g. "/1", "/2" etc.
+** Several minor bug fixes.
+
 * {b|January 31st, 2011} UTGB Toolkit 1.5.0 released.
 ** WIG database format update (You need to reconstruct wig databases using utgb import)
 ** Added utgb snapshot command to create PNG images of tracks
