@@ -190,11 +190,6 @@ public class DrawHistogram extends UTGBCommandBase {
 	}
 
 	@Override
-	public Object getOptionHolder() {
-		return this;
-	}
-
-	@Override
 	public void execute(String[] args) throws Exception {
 		execute();
 	}
