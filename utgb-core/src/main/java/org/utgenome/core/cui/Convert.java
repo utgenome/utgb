@@ -25,28 +25,32 @@ package org.utgenome.core.cui;
 import java.net.URL;
 
 import org.xerial.util.log.Logger;
-import org.xerial.util.opt.Command;
 
-public class Convert implements Command {
+public class Convert extends UTGBCommandBase {
 
 	private static Logger _logger = Logger.getLogger(Convert.class);
 
+	@Override
 	public String name() {
 		return "convert";
 	}
 
+	@Override
 	public String getOneLineDescription() {
 		return "text format converter";
 	}
 
+	@Override
 	public Object getOptionHolder() {
 		return this;
 	}
 
+	@Override
 	public URL getHelpMessageResource() {
 		return null;
 	}
 
+	@Override
 	public void execute(String[] args) throws Exception {
 		_logger.info("convert");
 

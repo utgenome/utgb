@@ -16,36 +16,27 @@
 //--------------------------------------
 // utgb-core Project
 //
-// UTGBCommandBase.java
+// UTGBShellCommandBase.java
 // Since: 2011/03/23
 //
 //--------------------------------------
-package org.utgenome.core.cui;
+package org.utgenome.shell;
 
-import java.net.URL;
-
-import org.xerial.util.FileResource;
-import org.xerial.util.opt.Command;
+import org.utgenome.core.cui.UTGBCommandBase;
+import org.utgenome.shell.UTGBShell.UTGBShellOption;
 import org.xerial.util.opt.GlobalCommandOption;
 
-public abstract class UTGBCommandBase implements Command {
+public abstract class UTGBShellCommandBase extends UTGBCommandBase {
 
-	public Object getOptionHolder() {
-		return this;
-	}
+	protected UTGBShellOption globalOption = new UTGBShellOption();
 
-	public URL getHelpMessageResource() {
-		return FileResource.find(this.getClass().getPackage(), String.format("help-%s.txt", name()));
-	}
+	@Override
+	public void execute(GlobalCommandOption opt, String[] args) throws Exception {
+		if (UTGBShellOption.class.isAssignableFrom(opt.getClass())) {
+			this.globalOption = UTGBShellOption.class.cast(opt);
+		}
 
-	public abstract void execute(String[] args) throws Exception;
-
-	public void execute(GlobalCommandOption globalOption, String[] args) throws Exception {
 		execute(args);
 	}
-
-	public abstract String getOneLineDescription();
-
-	public abstract String name();
 
 }

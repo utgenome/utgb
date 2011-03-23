@@ -32,6 +32,7 @@ import java.util.Set;
 import org.xerial.util.log.LogLevel;
 import org.xerial.util.log.Logger;
 import org.xerial.util.log.SimpleLogWriter;
+import org.xerial.util.opt.Command;
 import org.xerial.util.opt.CommandHelpMessage;
 import org.xerial.util.opt.CommandLauncher;
 import org.xerial.util.opt.CommandLauncherEventHandler;
@@ -114,6 +115,9 @@ public class UTGBShell {
 				if (opt.logLevel != null)
 					Logger.getRootLogger().setLogLevel(opt.logLevel);
 				Logger.getRootLogger().setLogWriter(new SimpleLogWriter(System.err));
+			}
+
+			public void beforeLaunchSubCommand(Command subCommand, GlobalCommandOption opt) {
 
 			}
 		});

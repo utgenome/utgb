@@ -47,34 +47,37 @@ import org.xerial.util.text.Template;
  * 
  */
 @Usage(templatePath = "org/utgenome/shell/help.template")
-public abstract class UTGBShellCommand implements Command, Comparable<Command> {
+public abstract class UTGBShellCommand extends UTGBShellCommandBase implements Comparable<Command> {
 	private static Logger _logger = Logger.getLogger(UTGBShell.class);
 	public static final String APP_FOLDER = "app";
 	public static final String SRC_FOLDER = "src/main/java";
 	public static final String WEBAPP_FOLDER = "src/main/webapp";
 	public static final String EXPLODED_WEBAPP_DIR = "target/utgb";
 
-	protected UTGBShellOption globalOption = new UTGBShellOption();
-
+	@Override
 	public abstract String name();
 
-	public void execute(UTGBShellOption globalOption, String[] args) throws Exception {
-		this.globalOption = globalOption;
+	public void execute(UTGBShellOption opt, String[] args) throws Exception {
+		super.globalOption = opt;
 		execute(args);
 	}
 
+	@Override
 	public abstract void execute(String[] args) throws Exception;
 
+	@Override
 	public URL getHelpMessageResource() {
 		return FileResource.find(this.getClass().getPackage(), String.format("help-%s.txt", name()));
 	}
 
+	@Override
 	public String getOneLineDescription() {
 		return getOneLinerDescription();
 	}
 
 	public abstract String getOneLinerDescription();
 
+	@Override
 	public Object getOptionHolder() {
 		return this;
 	};
