@@ -1,0 +1,8 @@
+usage: draw-hist [option] (input data)
+
+Draw a histogram of the input data sequences (int or float values) in PNG format.
+
+[usage example]
+* Drawing insert size distribution histogram from SAM file
+ awk '{if($9!=0){if($9 > 0) { print $9 } else { print -$9}}}' input.sam | utgb draw-hist --x2 1000
+

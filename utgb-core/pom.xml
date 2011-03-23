@@ -279,6 +279,13 @@
       <version>0.9.5</version>
     </dependency>
     -->
+    <dependency>
+      <groupId>jfree</groupId>
+      <artifactId>jfreechart</artifactId>
+      <version>1.0.12</version>
+      <type>jar</type>
+      <scope>compile</scope>
+    </dependency>
 
   </dependencies>
 </project>
