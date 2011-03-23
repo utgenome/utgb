@@ -1,0 +1,4 @@
+usage: read-stat (bam files...) 
+
+Compute the alignmenet statistics of the input BAM files, including 
+the number of reads, mapping rate, uniquely/repeatedly mapped rate, etc.
