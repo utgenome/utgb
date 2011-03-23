@@ -49,6 +49,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.zip.GZIPInputStream;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -57,7 +58,6 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
@@ -70,6 +70,8 @@ import javax.swing.border.TitledBorder;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.StyledDocument;
 
+import org.apache.tools.tar.TarEntry;
+import org.apache.tools.tar.TarInputStream;
 import org.xerial.lens.Lens;
 import org.xerial.util.FileResource;
 import org.xerial.util.FileResource.FileInJarArchive;
@@ -140,6 +142,7 @@ public class UTGBInstaller {
 			super(title);
 		}
 
+		@Override
 		public Insets getBorderInsets(Component c) {
 			return getBorderInsets(c, new Insets(0, 0, 0, 0));
 		}
@@ -404,39 +407,39 @@ public class UTGBInstaller {
 		public void getTheLatestVersionOfUTGBToolkit() {
 
 			final String mavenRepository = "http://maven.utgenome.org/repository/artifact/org/utgenome/utgb-shell/";
-			final String libPath = "lib/utgb-shell-standalone.jar";
+
 			try {
 
 				MavenMetadata m = Lens.loadXML(MavenMetadata.class, new URL(mavenRepository + "maven-metadata.xml"));
 
-				URL jarPath = new URL(mavenRepository + m.getStandaloneJAR());
-				URLConnection conn = jarPath.openConnection();
+				URL archivePath = new URL(mavenRepository + m.getTarGZPackage());
+				URLConnection conn = archivePath.openConnection();
 				long releaseDate = conn.getLastModified();
 
-				File localJAR = new File(installationFolder, libPath);
+				//				final String libPath = "lib/utgb-shell-standalone.jar";
+				//				File localJAR = new File(installationFolder, libPath);
 
-				boolean needsDownload = true;
-				if (localJAR.exists()) {
-					needsDownload = localJAR.lastModified() < releaseDate;
+				//				boolean needsDownload = true;
+				//				if (localJAR.exists()) {
+				//					needsDownload = localJAR.lastModified() < releaseDate;
+				//				}
+				//
+				//				if (!needsDownload) {
+				//					int ret = JOptionPane.showConfirmDialog(f, "UTGB Toolkit is already installed. Reinstall?", "UTGB Installer", JOptionPane.YES_NO_OPTION,
+				//							JOptionPane.QUESTION_MESSAGE);
+				//
+				//					if (ret != JOptionPane.YES_OPTION)
+				//						return;
+				//				}
+				//				else {
+				//					_logger.info(String.format("new version %s is available.", m.release));
+				//				}
 
-				}
-
-				if (!needsDownload) {
-					int ret = JOptionPane.showConfirmDialog(f, "UTGB Toolkit is already installed. Reinstall?", "UTGB Installer", JOptionPane.YES_NO_OPTION,
-							JOptionPane.QUESTION_MESSAGE);
-
-					if (ret != JOptionPane.YES_OPTION)
-						return;
-				}
-				else {
-					_logger.info(String.format("new version %s is available.", m.release));
-				}
-
-				{
-					File parentFolder = localJAR.getParentFile();
-					if (!parentFolder.exists())
-						parentFolder.mkdirs();
-				}
+				//				{
+				//					File parentFolder = localJAR.getParentFile();
+				//					if (!parentFolder.exists())
+				//						parentFolder.mkdirs();
+				//				}
 
 				// Download the jar file
 				int jarSize = conn.getContentLength();
@@ -447,7 +450,8 @@ public class UTGBInstaller {
 				boolean success = false;
 				try {
 					_logger.info(String.format("Downloading UTGB Toolkit verison %s ...", m.release));
-					File tmp = File.createTempFile(localJAR.getName(), ".download.tmp");
+					File localToolkitArchive = new File(installationFolder, String.format("utgb-shell-%s-bin.tar.gz", m.release));
+					File tmp = File.createTempFile(localToolkitArchive.getName(), ".download.tmp");
 					tmp.deleteOnExit();
 
 					FileOutputStream fout = new FileOutputStream(tmp);
@@ -468,10 +472,26 @@ public class UTGBInstaller {
 					progressBar.setValue(0);
 					progressBar.setStringPainted(false);
 
-					copyFile(new BufferedInputStream(new FileInputStream(tmp)), localJAR);
+					//					// copy bin/utgb, bin/utgb.bat
+					//					copyScaffoldFromJar(localToolkitArchive, "org/utgenome/shell/script/", installationFolder);
 
-					// copy bin/utgb, bin/utgb.bat
-					copyScaffoldFromJar(localJAR, "org/utgenome/shell/script/", installationFolder);
+					// Extract archive
+					TarInputStream tarIn = new TarInputStream(new GZIPInputStream(new BufferedInputStream(new FileInputStream(tmp))));
+					try {
+						for (TarEntry entry; (entry = tarIn.getNextEntry()) != null;) {
+							File f = entry.getFile();
+							if (f.isDirectory()) {
+								new File(installationFolder, f.getPath()).mkdirs();
+								continue;
+							}
+
+							//copyFile(new InputStreamReader(tarIn), entry., dest)
+
+						}
+					}
+					finally {
+						tarIn.close();
+					}
 
 					// chmod script files
 					String[] files = new String[] { "bin/utgb", "bin/utgb.bat" };
@@ -537,8 +557,8 @@ public class UTGBInstaller {
 			public ArrayList<String> version = new ArrayList<String>();
 		}
 
-		public String getStandaloneJAR() {
-			return String.format("%s/%s-%s-standalone.jar", release, artifactID, release);
+		public String getTarGZPackage() {
+			return String.format("%s/%s-%s-bin.tar.gz", release, artifactID, release);
 		}
 	}
 

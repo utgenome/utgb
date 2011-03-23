@@ -44,6 +44,7 @@ import org.apache.catalina.startup.HostConfig;
 import org.xerial.core.XerialErrorCode;
 import org.xerial.core.XerialException;
 import org.xerial.util.FileResource;
+import org.xerial.util.ResourceFilter;
 import org.xerial.util.io.VirtualFile;
 import org.xerial.util.log.Logger;
 import org.xerial.util.opt.Option;
@@ -360,7 +361,11 @@ public class TomcatServer {
 		String scaffoldPackage = "org.utgenome.shell.tomcat.scaffold";
 		// Package.getPackage(scaffoldPackage);
 		ClassLoader cl = TomcatServer.class.getClassLoader();
-		List<VirtualFile> tomcatResources = FileResource.listResources(scaffoldPackage, cl);
+		List<VirtualFile> tomcatResources = FileResource.listResources(cl, scaffoldPackage, new ResourceFilter() {
+			public boolean accept(String resourcePath) {
+				return true;
+			}
+		});
 
 		if (tomcatResources.size() <= 0)
 			throw new IllegalStateException(scaffoldPackage + " is not found");
