@@ -24,7 +24,7 @@
 //--------------------------------------
 package org.utgenome.shell;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.Set;
 
@@ -61,4 +61,11 @@ public class UTGBShellTest {
 			UTGBShell.runCommand(new String[] { eachCommand, "--help" });
 		}
 	}
+
+	@Test
+	public void externalCommand() throws Exception {
+		Set<String> commandSet = UTGBShell.getSubCommandNameSet();
+		assertTrue(commandSet.contains("convert"));
+	}
+
 }

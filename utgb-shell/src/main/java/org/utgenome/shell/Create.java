@@ -54,6 +54,9 @@ public class Create extends UTGBShellCommand {
 	@Option(symbol = "g", longName = "group", varName = "GROUP_NAME", description = "specify the maven group name of this project. default = org.utgenome.track")
 	private String group = "org.utgenome.track";
 
+	@Option(symbol = "y", description = "(non-interactive mode) answer yes to all questions")
+	public boolean answerYes = false;
+
 	public static enum OverwriteMode {
 		INTERACTIVE, YES_TO_ALL, NO_TO_ALL
 	}
@@ -87,6 +90,10 @@ public class Create extends UTGBShellCommand {
 
 			outputFolder = outputFolder + projectName;
 		}
+
+		// -y option
+		if (answerYes)
+			ScaffoldGenerator.overwriteMode = OverwriteMode.YES_TO_ALL;
 
 		UTGBConfig config = new UTGBConfig();
 		config.projectName = projectName;

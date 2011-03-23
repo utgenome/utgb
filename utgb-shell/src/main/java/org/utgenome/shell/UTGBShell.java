@@ -24,28 +24,20 @@
 //--------------------------------------
 package org.utgenome.shell;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 import java.util.Set;
-import java.util.TreeMap;
 
 import org.utgenome.shell.Create.OverwriteMode;
-import org.xerial.util.FileResource;
-import org.xerial.util.ResourceFilter;
-import org.xerial.util.StringUtil;
-import org.xerial.util.io.VirtualFile;
 import org.xerial.util.log.LogLevel;
 import org.xerial.util.log.Logger;
 import org.xerial.util.log.SimpleLogWriter;
-import org.xerial.util.opt.Argument;
-import org.xerial.util.opt.Command;
+import org.xerial.util.opt.CommandHelpMessage;
+import org.xerial.util.opt.CommandLauncher;
+import org.xerial.util.opt.CommandLauncherEventHandler;
+import org.xerial.util.opt.GlobalCommandOption;
 import org.xerial.util.opt.Option;
-import org.xerial.util.opt.OptionParser;
 import org.xerial.util.opt.OptionParserException;
 
 /**
@@ -61,67 +53,7 @@ public class UTGBShell {
 
 	private static Logger _logger = Logger.getLogger(UTGBShell.class);
 
-	private static TreeMap<String, Command> subCommandTable = new TreeMap<String, Command>();
-
-	/**
-	 * search sub commands from the this package (org.utgenome.shell)
-	 */
-	static void findSubCommands() {
-		String shellPackage = UTGBShell.class.getPackage().getName();
-		List<VirtualFile> classFileList = new ArrayList<VirtualFile>();
-		for (String p : new String[] { shellPackage, "org.utgenome.core.cui" }) {
-			classFileList.addAll(FileResource.listResources(p, new ResourceFilter() {
-				public boolean accept(String resourcePath) {
-					return resourcePath.endsWith(".class");
-				}
-			}));
-		}
-
-		for (VirtualFile vf : classFileList) {
-			String logicalPath = vf.getLogicalPath();
-			int dot = logicalPath.lastIndexOf(".");
-			if (dot <= 0)
-				continue;
-			String className = shellPackage + "." + logicalPath.substring(0, dot).replaceAll("/", ".");
-			try {
-				Class<?> c = Class.forName(className, false, UTGBShell.class.getClassLoader());
-				if (!Modifier.isAbstract(c.getModifiers()) && Command.class.isAssignableFrom(c)) {
-					// found a sub command class
-					Command subCommand = (Command) c.newInstance();
-					if (subCommand == null)
-						continue;
-					subCommandTable.put(subCommand.name(), subCommand);
-				}
-			}
-			catch (ClassNotFoundException e) {
-				continue;
-			}
-			catch (InstantiationException e) {
-				_logger.error(e);
-			}
-			catch (IllegalAccessException e) {
-				_logger.error(e);
-			}
-		}
-	}
-
-	static {
-		// search for the all available sub commands
-		findSubCommands();
-
-		// System.setProperty("com.apple.eawt.CocoaComponent.CompatibilityMode", "false");
-	}
-
-	public static class UTGBShellOption {
-
-		@Option(symbol = "h", longName = "help", description = "display help message")
-		private boolean displayHelp = false;
-
-		@Option(symbol = "v", longName = "version", description = "display version")
-		private boolean displayVersion = false;
-
-		@Argument(index = 0, required = false)
-		private String subCommand = null;
+	public static class UTGBShellOption extends GlobalCommandOption {
 
 		@Option(symbol = "l", longName = "loglevel", description = "set log level: TRACE, DEBUG, INFO(default), WARN, ERROR, FATAL")
 		private LogLevel logLevel = null;
@@ -138,7 +70,8 @@ public class UTGBShell {
 	}
 
 	public static Set<String> getSubCommandNameSet() {
-		return subCommandTable.keySet();
+		CommandLauncher l = createCommandLauncher(new UTGBShellOption());
+		return l.getCommandNameSet();
 	}
 
 	/**
@@ -155,94 +88,46 @@ public class UTGBShell {
 		runCommand(opt, argLine.split("[\\s]+"));
 	}
 
-	public static void runCommand(UTGBShellOption opt, String[] args) throws Exception {
+	private static CommandLauncher createCommandLauncher(final UTGBShellOption opt) {
+		// Prepare the command launcher
+		CommandLauncher launcher = new CommandLauncher();
+		CommandHelpMessage message = new CommandHelpMessage();
+		// Set the default help message
+		message.defaultHeader = getProgramInfo();
+		message.defaultMessage = "type --help for a list of the available sub commands.";
+		launcher.setMessage(message);
+		// Set the global command options
+		launcher.setGlobalCommandOption(opt);
 
-		OptionParser optionParser = new OptionParser(opt);
-		optionParser.setIgnoreUnknownOption(true);
+		// Load commands (implementation of the org.xerial.util.opt.Command) in the specified packages
+		launcher.addCommandsIn("org.utgenome.core.cui");
+		launcher.addCommandsIn("org.utgenome.shell");
 
-		optionParser.parse(args);
-		String[] subCommandArgumetns = optionParser.getUnusedArguments();
+		return launcher;
+	}
 
-		if (opt.logLevel != null)
-			Logger.getRootLogger().setLogLevel(opt.logLevel);
+	public static void runCommand(final UTGBShellOption opt, String[] args) throws Exception {
 
-		Logger.getRootLogger().setLogWriter(new SimpleLogWriter(System.err));
+		// Prepare the command launcher
+		CommandLauncher launcher = createCommandLauncher(opt);
 
-		if (opt.answerYes) {
-			ScaffoldGenerator.overwriteMode = OverwriteMode.YES_TO_ALL;
-		}
+		// Set the event handler
+		launcher.addEventHandler(new CommandLauncherEventHandler() {
+			public void afterReadingGlobalOptions(GlobalCommandOption o) {
+				// Set the log level
+				if (opt.logLevel != null)
+					Logger.getRootLogger().setLogLevel(opt.logLevel);
+				Logger.getRootLogger().setLogWriter(new SimpleLogWriter(System.err));
 
-		if (opt.subCommand != null) {
-			// go to sub command processing
-			Command subCommand = subCommandTable.get(opt.subCommand);
-
-			if (subCommand != null) {
-				// Use the specified option holder for binding command-line parameters. If no option holder is
-				// given, use the sub command instance itself.
-				Object optionHolder = subCommand.getOptionHolder();
-				if (optionHolder == null)
-					optionHolder = subCommand;
-
-				OptionParser subCommandParser = new OptionParser(optionHolder);
-				subCommandParser.setIgnoreUnknownOption(true);
-				try {
-					subCommandParser.parse(subCommandArgumetns);
-					if (opt.displayHelp) {
-						String helpFile = String.format("help-%s.txt", subCommand.name());
-						System.out.println(loadUsage(helpFile));
-						subCommandParser.printUsage();
-						return;
-					}
-					else {
-						// copy the rest of the command line arguments
-						if (UTGBShellCommand.class.isAssignableFrom(subCommand.getClass())) {
-							UTGBShellCommand c = UTGBShellCommand.class.cast(subCommand);
-							c.execute(opt, subCommandArgumetns);
-						}
-						else
-							subCommand.execute(subCommandArgumetns);
-						return;
-					}
-				}
-				catch (OptionParserException e) {
-					System.err.println(e.getMessage());
-					return;
-				}
+				// Set -y option
+				if (opt.answerYes)
+					ScaffoldGenerator.overwriteMode = OverwriteMode.YES_TO_ALL;
 
 			}
-			else {
-				System.err.println("unknown subcommand: " + opt.subCommand);
-			}
-		}
-		else {
-			if (opt.displayHelp) {
-				// display help message
-				System.out.println(getProgramInfo());
-				BufferedReader helpReader = FileResource.open(UTGBShell.class, "help-message.txt");
-				String line;
-				while ((line = helpReader.readLine()) != null)
-					System.out.println(line);
-				// list command line options
-				optionParser.printUsage();
-				// list all sub commands
-				System.out.println("[sub commands]");
-				for (String subCommandName : subCommandTable.keySet()) {
-					Command sc = subCommandTable.get(subCommandName);
-					System.out.format("  %-15s\t%s", subCommandName, sc.getOneLineDescription());
-					System.out.println();
-				}
-				return;
-			}
-			if (opt.displayVersion) {
-				System.out.println(getProgramInfo());
-				return;
-			}
-		}
+		});
 
-		// display a short help message
-		System.out.println(getProgramInfo());
-		System.out.println("type --help for a list of the available sub commands.");
-
+		// Launch the command
+		launcher.execute(args);
 	}
 
 	/**
@@ -282,26 +167,6 @@ public class UTGBShell {
 		catch (Error e) {
 			e.printStackTrace(System.err);
 			System.exit(1); // return error code
-		}
-	}
-
-	public static String loadUsage(String helpFileName) {
-		// display help messages
-		StringBuilder out = new StringBuilder();
-		try {
-			BufferedReader reader = FileResource.open(Create.class, helpFileName);
-			String line;
-			if (reader == null)
-				return "";
-			while ((line = reader.readLine()) != null) {
-				out.append(line);
-				out.append(StringUtil.NEW_LINE);
-			}
-			return out.toString();
-		}
-		catch (IOException e) {
-			_logger.warn(String.format("%s is not found in the org.utgenome.shell package", helpFileName));
-			return "";
 		}
 	}
 

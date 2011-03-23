@@ -21,11 +21,9 @@ PREFIX:=${HOME}/local
 INSTALL_DIR:=$(PREFIX)/$(PROG)
 
 # Read the version number from the pom.xml. The last grep is for removing log messages
-VERSION:=$(shell $(MVN) help:evaluate -Dexpression="project.version" | grep -v "^\[")
+VERSION:=$(shell $(MVN) -o help:evaluate -Dexpression="project.version" | grep -v "^\[")
 ARCHIVE = target/utgb-toolkit-$(VERSION)-bin.tar.gz
 
-version:
-	echo $(VERSION)
 
 SRC=$(shell find src)
 

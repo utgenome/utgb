@@ -47,7 +47,7 @@ import org.xerial.util.text.Template;
  * 
  */
 @Usage(templatePath = "org/utgenome/shell/help.template")
-public abstract class UTGBShellCommand implements Command, Comparable<UTGBShellCommand> {
+public abstract class UTGBShellCommand implements Command, Comparable<Command> {
 	private static Logger _logger = Logger.getLogger(UTGBShell.class);
 	public static final String APP_FOLDER = "app";
 	public static final String SRC_FOLDER = "src/main/java";
@@ -65,6 +65,10 @@ public abstract class UTGBShellCommand implements Command, Comparable<UTGBShellC
 
 	public abstract void execute(String[] args) throws Exception;
 
+	public URL getHelpMessageResource() {
+		return FileResource.find(this.getClass().getPackage(), String.format("help-%s.txt", name()));
+	}
+
 	public String getOneLineDescription() {
 		return getOneLinerDescription();
 	}
@@ -72,7 +76,7 @@ public abstract class UTGBShellCommand implements Command, Comparable<UTGBShellC
 	public abstract String getOneLinerDescription();
 
 	public Object getOptionHolder() {
-		return null;
+		return this;
 	};
 
 	public File getProjectRoot() {
@@ -137,7 +141,7 @@ public abstract class UTGBShellCommand implements Command, Comparable<UTGBShellC
 		}
 	}
 
-	public int compareTo(UTGBShellCommand o) {
+	public int compareTo(Command o) {
 		return name().compareTo(o.name());
 	}
 

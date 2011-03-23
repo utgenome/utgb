@@ -26,6 +26,7 @@ package org.utgenome.shell;
 
 import org.xerial.lens.JSONLens;
 import org.xerial.util.opt.Option;
+import org.xerial.util.opt.Usage;
 
 /**
  * The configuration parameters of the UTGBPortable
@@ -33,6 +34,7 @@ import org.xerial.util.opt.Option;
  * @author leo
  * 
  */
+@Usage(templatePath = "org/utgenome/shell/help.template")
 public class UTGBPortableConfig {
 
 	@Option(symbol = "p", longName = "port", varName = "PORT_NUMBER", description = "specify the port number of the local web server (default = 8989)")
@@ -56,9 +58,6 @@ public class UTGBPortableConfig {
 
 	@Option(symbol = "g", description = "launch in GUI mode")
 	boolean useGUI = false;
-
-	@Option(symbol = "h", longName = "help", description = "display help message")
-	boolean displayHelp = false;
 
 	@Option(longName = "module", description = "GWT modules name. default = utgb")
 	String gwtModule = "utgb";
@@ -120,10 +119,6 @@ public class UTGBPortableConfig {
 
 	public boolean isUseGUI() {
 		return useGUI;
-	}
-
-	public boolean isDisplayHelp() {
-		return displayHelp;
 	}
 
 }
