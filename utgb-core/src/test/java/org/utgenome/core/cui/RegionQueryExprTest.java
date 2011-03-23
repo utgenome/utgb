@@ -16,38 +16,37 @@
 //--------------------------------------
 // utgb-shell Project
 //
-// RegionQueryExpr.java
+// RegionQueryExprTest.java
 // Since: 2011/01/06
 //
 // $URL$ 
 // $Author$
 //--------------------------------------
-package org.utgenome.shell;
+package org.utgenome.core.cui;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import static org.junit.Assert.assertEquals;
 
+import org.junit.Test;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
+import org.utgenome.shell.UTGBShellException;
+import org.xerial.util.log.Logger;
 
-public class RegionQueryExpr {
+public class RegionQueryExprTest {
+	private static Logger _logger = Logger.getLogger(RegionQueryExprTest.class);
 
-	private static Pattern p = Pattern.compile("([^:]+)(:([0-9]+)-([0-9]+))?");
+	public void verify(String chr, int s, int e) throws UTGBShellException {
+		String expr = String.format("%s:%,d-%,d", chr, s, e);
+		_logger.trace(expr);
+		ChrLoc loc = RegionQueryExpr.parse(expr);
+		assertEquals(chr, loc.chr);
+		assertEquals(s, loc.start);
+		assertEquals(e, loc.end);
+	}
 
-	public static ChrLoc parse(String expr) throws UTGBShellException {
-		Matcher m = p.matcher(expr.replaceAll(",", "")); // remove comma
-		if (!m.matches())
-			throw new UTGBShellException("invalid query format:" + expr);
-		String chr = m.group(1);
-		String sStart = m.group(3);
-		String sEnd = m.group(4);
-
-		int start = 0;
-		if (sStart != null)
-			start = Integer.parseInt(sStart);
-		int end = Integer.MAX_VALUE;
-		if (sEnd != null)
-			end = Integer.parseInt(sEnd);
-
-		return new ChrLoc(chr, start, end);
+	@Test
+	public void parse() throws Exception {
+		verify("chr1", 1, 1000);
+		verify("chr1", 10000000, 2000000000);
+		verify("chr3", 100000, 2000000);
 	}
 }

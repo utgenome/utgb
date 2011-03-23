@@ -24,6 +24,7 @@
 //--------------------------------------
 package org.utgenome.shell;
 
+import org.utgenome.core.cui.RegionQueryExpr;
 import org.utgenome.format.fasta.CompactFASTA;
 import org.utgenome.format.fasta.GenomeSequence;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
