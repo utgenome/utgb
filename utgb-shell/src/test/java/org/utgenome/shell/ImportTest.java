@@ -72,7 +72,7 @@ public class ImportTest {
 
 		FileUtil.copy(FileResource.openByteStream(ImportTest.class, "test.sam"), tmpSAM);
 		// File tmpBAM = FileUtil.createTempFile(new File("target"), "sample", ".bam");
-		UTGBShell.runCommand(new String[] { "import", "-w", tmpSAM.getAbsolutePath() });
+		UTGBShell.runCommand(new String[] { "import", tmpSAM.getAbsolutePath() });
 
 		// assertTrue(bam.exists());
 		// assertTrue(bai.exists());
@@ -92,7 +92,7 @@ public class ImportTest {
 
 		FileUtil.copy(FileResource.openByteStream(ImportTest.class, "sample.sam"), tmpSAM);
 		// File tmpBAM = FileUtil.createTempFile(new File("target"), "sample", ".bam");
-		UTGBShell.runCommand(new String[] { "import", "-w", tmpSAM.getAbsolutePath() });
+		UTGBShell.runCommand(new String[] { "import", tmpSAM.getAbsolutePath() });
 
 		// assertTrue(bam.exists());
 		// assertTrue(bai.exists());

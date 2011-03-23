@@ -32,6 +32,7 @@ import java.io.StringWriter;
 
 import org.utgenome.config.TrackConfiguration;
 import org.utgenome.config.UTGBConfig;
+import org.utgenome.shell.Create.OverwriteMode;
 import org.utgenome.shell.Create.ScaffoldFileFilter;
 import org.xerial.lens.XMLLens;
 import org.xerial.silk.SilkWriter;
@@ -52,6 +53,9 @@ public class Repair extends UTGBShellCommand {
 	@Option(symbol = "f", longName = "filepath", varName = "PATH", description = "repair the specified file/folder only")
 	private String repairTargetPath = null;
 
+	@Option(symbol = "y", description = "overwrite existing files without asking")
+	private boolean yesToAll = false;
+
 	private ScaffoldFileFilter scaffoldFilter = new Create.CreateAllScaffoldFileFilter();
 
 	@Argument(index = 0)
@@ -64,6 +68,9 @@ public class Repair extends UTGBShellCommand {
 
 	@Override
 	public void execute(String[] args) throws Exception {
+
+		if (yesToAll)
+			ScaffoldGenerator.overwriteMode = OverwriteMode.YES_TO_ALL;
 
 		if (repairTargetPath != null) {
 			scaffoldFilter = new Create.ScaffoldFileFilter() {
