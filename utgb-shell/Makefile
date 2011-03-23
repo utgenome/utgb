@@ -21,9 +21,8 @@ PREFIX:=${HOME}/local
 INSTALL_DIR:=$(PREFIX)/$(PROG)
 
 # Read the version number from the pom.xml. The last grep is for removing log messages
-VERSION:=$(shell $(MVN) -o help:evaluate -Dexpression="project.version" | grep -v "^\[")
+VERSION:=$(shell java -jar lib/silk-weaver.jar find "project(artifactId, version)" pom.xml | grep utgb-shell | cut -f 2)
 ARCHIVE = target/utgb-toolkit-$(VERSION)-bin.tar.gz
-
 
 SRC=$(shell find src)
 
