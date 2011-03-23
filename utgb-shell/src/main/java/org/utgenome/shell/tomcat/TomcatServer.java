@@ -226,12 +226,14 @@ public class TomcatServer {
 		embeddedTomcat = new Embedded();
 		embeddedTomcat.setAwait(true);
 		embeddedTomcat.setCatalinaBase(configuration.getCatalinaBase());
+		// embeddedTomcat.setRealm(new MemoryRealm());
 
 		// Create an engine
 		tomcatEngine = embeddedTomcat.createEngine();
+		ClassLoader cl = TomcatServer.class.getClassLoader();
+		tomcatEngine.setParentClassLoader(cl);
 		tomcatEngine.setName("utgb");
 		tomcatEngine.setDefaultHost("localhost");
-		tomcatEngine.setParentClassLoader(getExtensionClassLoader());
 
 		// Create a default virtual host
 		String appBase = configuration.getCatalinaBase() + "/webapps";
@@ -240,6 +242,7 @@ public class TomcatServer {
 
 		// Hook up a host config to search for and pull in webapps.
 		HostConfig hostConfig = new HostConfig();
+		hostConfig.setUnpackWARs(true);
 		tomcatHost.addLifecycleListener(hostConfig);
 
 		// Tell the engine about the host
@@ -307,7 +310,13 @@ public class TomcatServer {
 
 		_logger.debug("deploy: contextPath=" + contextPath + ", docBase=" + docBase);
 
+		// Prepare webapp loader
+		// WebappLoader loader = new WebappLoader(getExtensionClassLoader());
+
+		// Create a new webapp context
 		Context context = embeddedTomcat.createContext(contextPath, docBase);
+		// context.setLoader(loader);
+		context.setReloadable(true);
 		// load the META-INF/context.xml
 		context.setConfigFile(docBase + "/META-INF/context.xml");
 		tomcatHost.addChild(context);
@@ -348,10 +357,13 @@ public class TomcatServer {
 		// create the base folder for the scaffold
 		File tomcatBase = new File(catalinaBase);
 
-		List<VirtualFile> tomcatResources = FileResource.listResources("org.utgenome.shell.tomcat.scaffold");
+		String scaffoldPackage = "org.utgenome.shell.tomcat.scaffold";
+		// Package.getPackage(scaffoldPackage);
+		ClassLoader cl = TomcatServer.class.getClassLoader();
+		List<VirtualFile> tomcatResources = FileResource.listResources(scaffoldPackage, cl);
 
 		if (tomcatResources.size() <= 0)
-			throw new IllegalStateException("org.utgenome.shell.tomcat.scaffold is not found");
+			throw new IllegalStateException(scaffoldPackage + " is not found");
 
 		// sync scaffoldDir with tomcatBase
 		for (VirtualFile vf : tomcatResources) {
