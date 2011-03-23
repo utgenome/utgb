@@ -140,7 +140,7 @@ public class ScaffoldGenerator {
 
 		// create the base folder for the scaffold
 		File outputFolder = new File(outputDir);
-		List<VirtualFile> scaffoldResourcesList = FileResource.listResources(inputResourcePacakge);
+		List<VirtualFile> scaffoldResourcesList = FileResource.listResources(inputResourcePacakge, ScaffoldGenerator.class.getClassLoader());
 		// remove duplicates from resources
 		ArrayList<VirtualFile> scaffoldResources = new ArrayList<VirtualFile>();
 		{

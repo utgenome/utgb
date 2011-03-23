@@ -73,6 +73,8 @@ public class ServerTest {
 	public void compile() throws Exception {
 		// UTGBShell.main(new String[] { "gwt", "-d", new File(tmpDir, appName).getAbsolutePath() });
 
+		ClassLoader cl = Thread.currentThread().getContextClassLoader();
+
 		UTGBShell.runCommand(new String[] { "action", "-d", temporatyProject.projectRoot, "hello" });
 		UTGBShell.runCommand(new String[] { "compile", "-d", temporatyProject.projectRoot });
 	}
@@ -80,6 +82,8 @@ public class ServerTest {
 	@Test
 	public void server() throws Exception {
 		// UTGBShell.main(new String[] { "gwt", "-d", new File(tmpDir, appName).getAbsolutePath() });
+
+		ClassLoader cl = Thread.currentThread().getContextClassLoader();
 
 		UTGBShell.runCommand(new String[] { "action", "-d", temporatyProject.projectRoot, "hello" });
 		UTGBShell.runCommand(new String[] { "compile", "-d", temporatyProject.projectRoot });

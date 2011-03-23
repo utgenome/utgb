@@ -365,8 +365,9 @@ public class Maven extends UTGBShellCommand {
 
 	public static int runMaven(String[] args, File workingDir, Properties systemProperties) throws UTGBShellException {
 
+		// Preserve the context class loader
+		ClassLoader cl = Thread.currentThread().getContextClassLoader();
 		try {
-
 			// add the hook for killing the Maven process when ctrl+C is pressed
 			Runtime.getRuntime().addShutdownHook(new Thread() {
 				@Override
@@ -405,10 +406,12 @@ public class Maven extends UTGBShellCommand {
 				if (prevSystemProperties != null)
 					System.setProperties(prevSystemProperties);
 			}
-
 		}
 		catch (Exception e) {
 			throw new UTGBShellException(e);
+		}
+		finally {
+			Thread.currentThread().setContextClassLoader(cl);
 		}
 	}
 
