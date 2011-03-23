@@ -189,6 +189,8 @@ public class DrawHistogram extends UTGBCommandBase {
 		return "draw a histogram";
 	}
 
+
+
 	@Override
 	public void execute(String[] args) throws Exception {
 		execute();
