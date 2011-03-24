@@ -24,19 +24,12 @@
 //--------------------------------------
 package org.utgenome.shell;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.Date;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
@@ -45,13 +38,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.maven.cli.MavenCli;
-import org.apache.tools.bzip2.CBZip2InputStream;
-import org.apache.tools.tar.TarEntry;
-import org.apache.tools.tar.TarInputStream;
-import org.xerial.core.XerialException;
-import org.xerial.lens.SilkLens;
-import org.xerial.silk.SilkWriter;
-import org.xerial.util.FileResource;
 import org.xerial.util.StringUtil;
 import org.xerial.util.io.StandardErrorStream;
 import org.xerial.util.io.StandardOutputStream;
@@ -66,7 +52,6 @@ import org.xerial.util.log.Logger;
 public class Maven extends UTGBShellCommand {
 
 	private static Logger _logger = Logger.getLogger(Maven.class);
-
 
 	public static void runMaven(String arg) throws UTGBShellException {
 		runMaven(tokenizeCommandLineArgument(arg));
