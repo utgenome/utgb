@@ -8,8 +8,14 @@
 ** Downloadable archive for manual installation is also available from here: http://maven.utgenome.org/repository/artifact/org/utgenome/utgb-shell/
 
 == Release Notes
+* {b|March 24th, 2011} UTGB Toolkit 1.5.4 released.
+** Includes several bug fixes for version 1.5.1 
+** Added {b|utgb read-stat} command for obtaining simple stats for BAM files
+** Added {b|utgb draw-hist} command for drawing histogram from the input data stream
+** Fixes installation problems in Windows
+** UTGB Installer now supports installation of the older versions.
 
-* {b|March 22th, 2011} UTGB Toolkit 1.5.1 released.
+* {b|March 22nd, 2011} UTGB Toolkit 1.5.1 released.
 ** Improved the compilation and installation time by using ClassWorld launcher instead of packaging the all dependent libraries into one-jar file.
 ** Update the {b|utgb screenshot} command to take the screenshot for multiple tracks
 ** Upgraded to GWT2.1.0
