@@ -34,14 +34,15 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
@@ -398,9 +399,8 @@ public class UTGBInstaller {
 		 * 
 		 * <ol>
 		 * <li>Check the latest version of the utgb-shell by reading maven-metadata.xml.
-		 * <li>Download the latest version to the $HOME/.utgb/lib folder if the latest jar file is newer than the
-		 * locally installed one.
-		 * <li>
+		 * <li>Download the latest version tar.gz archive to the $HOME/.utgb/ folder
+		 * <li>Unpac the tar.gz archive to the installation folder
 		 * </ol>
 		 * 
 		 */
@@ -409,41 +409,15 @@ public class UTGBInstaller {
 			final String mavenRepository = "http://maven.utgenome.org/repository/artifact/org/utgenome/utgb-shell/";
 
 			try {
-
 				MavenMetadata m = Lens.loadXML(MavenMetadata.class, new URL(mavenRepository + "maven-metadata.xml"));
 
 				URL archivePath = new URL(mavenRepository + m.getTarGZPackage());
 				URLConnection conn = archivePath.openConnection();
 				long releaseDate = conn.getLastModified();
 
-				//				final String libPath = "lib/utgb-shell-standalone.jar";
-				//				File localJAR = new File(installationFolder, libPath);
-
-				//				boolean needsDownload = true;
-				//				if (localJAR.exists()) {
-				//					needsDownload = localJAR.lastModified() < releaseDate;
-				//				}
-				//
-				//				if (!needsDownload) {
-				//					int ret = JOptionPane.showConfirmDialog(f, "UTGB Toolkit is already installed. Reinstall?", "UTGB Installer", JOptionPane.YES_NO_OPTION,
-				//							JOptionPane.QUESTION_MESSAGE);
-				//
-				//					if (ret != JOptionPane.YES_OPTION)
-				//						return;
-				//				}
-				//				else {
-				//					_logger.info(String.format("new version %s is available.", m.release));
-				//				}
-
-				//				{
-				//					File parentFolder = localJAR.getParentFile();
-				//					if (!parentFolder.exists())
-				//						parentFolder.mkdirs();
-				//				}
-
-				// Download the jar file
-				int jarSize = conn.getContentLength();
-				progressBar.setMaximum(jarSize);
+				// Download the tar.gz archive file
+				int archiveSize = conn.getContentLength();
+				progressBar.setMaximum(archiveSize);
 				progressBar.setValue(0);
 				progressBar.setStringPainted(true);
 
@@ -451,11 +425,10 @@ public class UTGBInstaller {
 				try {
 					_logger.info(String.format("Downloading UTGB Toolkit verison %s ...", m.release));
 					File localToolkitArchive = new File(installationFolder, String.format("utgb-shell-%s-bin.tar.gz", m.release));
-					File tmp = File.createTempFile(localToolkitArchive.getName(), ".download.tmp");
-					tmp.deleteOnExit();
+					File tmpArchive = File.createTempFile(localToolkitArchive.getName(), ".download.tmp");
+					tmpArchive.deleteOnExit();
 
-					FileOutputStream fout = new FileOutputStream(tmp);
-
+					FileOutputStream fout = new FileOutputStream(tmpArchive);
 					BufferedInputStream reader = new BufferedInputStream(conn.getInputStream());
 					byte[] buf = new byte[8192];
 					int readBytes = 0;
@@ -463,51 +436,33 @@ public class UTGBInstaller {
 					while ((readBytes = reader.read(buf)) != -1) {
 						readTotal += readBytes;
 						fout.write(buf, 0, readBytes);
-
 						progressBar.setValue(readTotal);
 					}
 					fout.close();
 					success = true;
-					_logger.info("Downloaded " + jarSize + " bytes");
+					_logger.info("Downloaded " + archiveSize + " bytes");
 					progressBar.setValue(0);
 					progressBar.setStringPainted(false);
 
-					//					// copy bin/utgb, bin/utgb.bat
-					//					copyScaffoldFromJar(localToolkitArchive, "org/utgenome/shell/script/", installationFolder);
-
 					// Extract archive
-					TarInputStream tarIn = new TarInputStream(new GZIPInputStream(new BufferedInputStream(new FileInputStream(tmp))));
-					try {
-						for (TarEntry entry; (entry = tarIn.getNextEntry()) != null;) {
-							File f = entry.getFile();
-							if (f.isDirectory()) {
-								new File(installationFolder, f.getPath()).mkdirs();
-								continue;
-							}
+					extractTarGZ(tmpArchive.toURI().toURL(), new File(installationFolder));
 
-							//copyFile(new InputStreamReader(tarIn), entry., dest)
-
-						}
-					}
-					finally {
-						tarIn.close();
-					}
-
-					// chmod script files
-					String[] files = new String[] { "bin/utgb", "bin/utgb.bat" };
-					File binFolder = new File(installationFolder, "bin");
-					if (!binFolder.exists())
-						binFolder.mkdirs();
-
-					for (String f : files) {
-						File target = new File(installationFolder, f);
-						// chmod +x
-						if (!System.getProperty("os.name").contains("Windows")) {
-							try {
-								Runtime.getRuntime().exec(new String[] { "chmod", "755", target.getAbsolutePath() }).waitFor();
-							}
-							catch (Throwable e) {
-								throw new Exception(e);
+					// Add executable permission to the script files in bin folder
+					{
+						String[] files = new String[] { "bin/utgb", "bin/utgb.bat" };
+						File binFolder = new File(installationFolder, "bin");
+						if (!binFolder.exists())
+							mkdirs(binFolder);
+						for (String f : files) {
+							File target = new File(installationFolder, f);
+							// chmod +x
+							if (!System.getProperty("os.name").contains("Windows")) {
+								try {
+									Runtime.getRuntime().exec(new String[] { "chmod", "755", target.getAbsolutePath() }).waitFor();
+								}
+								catch (Throwable e) {
+									throw new Exception(e);
+								}
 							}
 						}
 					}
@@ -643,6 +598,52 @@ public class UTGBInstaller {
 		writer.flush();
 		writer.close();
 		_logger.info("create a file: " + getPath(dest));
+
+	}
+
+	public static void extractTarGZ(URL tarArchive, File outputFolder) throws IOException {
+
+		TarInputStream tis = new TarInputStream(new GZIPInputStream(new BufferedInputStream(tarArchive.openStream())));
+		try {
+			TarEntry nextEntry = null;
+			while ((nextEntry = tis.getNextEntry()) != null) {
+				int mode = nextEntry.getMode();
+				String name = nextEntry.getName();
+				Date modTime = nextEntry.getModTime();
+
+				File extractedFile = new File(outputFolder, name);
+
+				if (extractedFile.exists() && extractedFile.lastModified() == modTime.getTime())
+					continue;
+
+				if (!nextEntry.isDirectory()) {
+					_logger.info(String.format("extracted %s into %s", name, outputFolder.getPath()));
+
+					File parent = extractedFile.getParentFile();
+					if (parent != null && !parent.exists())
+						mkdirs(parent);
+
+					BufferedOutputStream fo = new BufferedOutputStream(new FileOutputStream(extractedFile));
+					try {
+						tis.copyEntryContents(fo);
+					}
+					finally {
+						fo.close();
+					}
+
+				}
+				else {
+					// is directory
+					if (!extractedFile.exists())
+						mkdirs(extractedFile);
+				}
+
+				extractedFile.setLastModified(modTime.getTime());
+			}
+		}
+		finally {
+			tis.close();
+		}
 
 	}
 
