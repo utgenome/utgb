@@ -12,7 +12,7 @@
   <groupId>org.utgenome</groupId>
   <artifactId>utgb-installer</artifactId>
   <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
   <name>UTGB Installer</name>
   <description>UTGB Toolkit Installer for Java Web Start</description>
 
