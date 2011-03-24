@@ -483,6 +483,9 @@ public class UTGBInstaller {
 					progressBar.setValue(0);
 					progressBar.setStringPainted(false);
 
+					// Clean the lib folder before the installation
+					rmdir(new File(installationFolder, "lib"));
+
 					// Extract archive
 					extractTarGZ(tmpArchive.toURI().toURL(), new File(installationFolder), String.format("utgb-toolkit-%s/", version));
 
@@ -710,6 +713,20 @@ public class UTGBInstaller {
 		writer.close();
 		_logger.info("create a file: " + getPath(dest));
 
+	}
+
+	public static void rmdir(File path) {
+		if (path.exists()) {
+			_logger.info("rmdir " + path);
+			for (File each : path.listFiles()) {
+				if (each.isDirectory())
+					rmdir(each);
+				else {
+					each.delete();
+				}
+			}
+		}
+		path.delete();
 	}
 
 	public static void extractTarGZ(URL tarArchive, File outputFolder, String prefixToRemove) throws IOException {
