@@ -65,12 +65,12 @@ goto error
 :chkMHome
 if not "%UTGB_HOME%"=="" goto valMHome
 
-if "%OS%"=="Windows_NT" SET UTGB_HOME=%~dp0\..
+if "%OS%"=="Windows_NT" SET UTGB_HOME=%~dp0..
 if not "%UTGB_HOME%"=="" goto valMHome
 
 echo.
 echo ERROR: UTGB_HOME not found in your environment.
-echo Please set the M2_HOME variable in your environment to match the
+echo Please set the UTGB_HOME variable in your environment to match the
 echo location of the UTGB installation
 echo.
 goto error
@@ -95,6 +95,7 @@ if NOT "%OS%"=="Windows_NT" goto Win9xArg
 
 @REM -- 4NT shell
 if "%@eval[2+2]" == "4" goto 4NTArgs
+
 
 @REM -- Regular WinNT shell
 set UTGB_CMD_LINE_ARGS=%*
@@ -122,10 +123,20 @@ SET UTGB_JAVA_EXE="%JAVA_HOME%\bin\java.exe"
 @REM -- 4NT shell
 if "%@eval[2+2]" == "4" goto 4NTCWJars
 
+@REM -- Regular WinNT shell
+for %%i in ("%UTGB_HOME%"\boot\plexus-classworlds-*) do set CLASSWORLDS_JAR="%%i"
+goto runm2
+
+@REM The 4NT Shell from jp software
+:4NTCWJars
+for %%i in ("%UTGB_HOME%\boot\plexus-classworlds-*") do set CLASSWORLDS_JAR="%%i"
+goto runm2
+
 
 @REM Start UTGB
 :runm2
-%UTGB_JAVA_EXE% -jar %UTGB_HOME%\lib\utgb-shell-standalone.jar %UTGB_CMD_LINE_ARGS%
+SET CMDLINE=%UTGB_JAVA_EXE% %JVM_OPT% -classpath %CLASSWORLDS_JAR% -Dclassworlds.conf="%UTGB_HOME%\bin\utgb.conf" -Dutgb.home="%UTGB_HOME%" org.codehaus.plexus.classworlds.launcher.Launcher  %UTGB_CMD_LINE_ARGS%
+%CMDLINE%
 if ERRORLEVEL 1 goto error
 goto end
 
@@ -141,6 +152,7 @@ if "%OS%"=="Windows_NT" goto endNT
 @REM before we started - at least we don't leave any baggage around
 set UTGB_JAVA_EXE=
 set UTGB_CMD_LINE_ARGS=
+set CMDLINE=
 goto postExec
 
 :endNT

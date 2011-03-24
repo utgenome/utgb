@@ -191,7 +191,11 @@ public class UTGBInstaller {
 			if (versionPullDownList == null)
 				return mavenMetaData.release;
 			else {
-				return (String) versionPullDownList.getSelectedItem();
+				String v = (String) versionPullDownList.getSelectedItem();
+				if (v == null)
+					return mavenMetaData.release;
+				else
+					return v;
 			}
 		}
 
@@ -615,7 +619,7 @@ public class UTGBInstaller {
 
 			public void addVersion(String v) {
 				Version ver = new Version(v);
-				final Version thresholdVersion = new Version("1.5.0");
+				final Version thresholdVersion = new Version("1.5.4");
 				if (ver.compareTo(thresholdVersion) >= 0) {
 					version.add(ver);
 				}
