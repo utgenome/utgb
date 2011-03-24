@@ -236,7 +236,7 @@ public class UTGBInstaller {
 					versionArray[index--] = each.orig;
 				}
 				versionPullDownList = new JComboBox(versionArray);
-				versionPullDownList.setPreferredSize(new Dimension(150, 15));
+				versionPullDownList.setPreferredSize(new Dimension(150, 20));
 
 				versionSelectorPanel.add(new JLabel("version: "));
 				versionSelectorPanel.add(versionPullDownList);
