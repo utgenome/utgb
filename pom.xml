@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.utgenome</groupId>
   <artifactId>utgb-toolkit</artifactId>
@@ -7,7 +8,7 @@
   <version>1.5.4-SNAPSHOT</version>
   <description>The University of Tokyo Genome Browser (UTGB) Toolkit</description>
   <packaging>pom</packaging>
- 
+
   <modules>
     <module>utgb-themes</module>
     <module>utgb-core</module>
@@ -18,7 +19,7 @@
     <gwt.version>2.2.0</gwt.version>
     <sqlite-jdbc.version>3.7.2</sqlite-jdbc.version>
   </properties>
-  
+
   <inceptionYear>2007</inceptionYear>
 
   <url>http://utgenome.org/</url>
@@ -51,8 +52,8 @@
       <subscribe>http://groups.google.com/group/utgb/subscribe?hl=en</subscribe>
       <post>http://groups.google.com/group/utgb/post?hl=en</post>
       <archive>http://groups.google.com/group/utgb?hl=en</archive>
-    </mailingList>  
- </mailingLists>
+    </mailingList>
+  </mailingLists>
 
   <licenses>
     <license>
@@ -89,7 +90,7 @@
       <name>Jun Yoshimura</name>
       <organization>University of Tokyo</organization>
       <roles>
-	<role>Researcher</role>
+        <role>Researcher</role>
       </roles>
       <timezone>+9</timezone>
     </developer>
@@ -98,8 +99,8 @@
       <name>Koichiro Higasa</name>
       <organization>University of Tokyo</organization>
       <roles>
-	<role>Researcher</role>
-	<role>Tester</role>
+        <role>Researcher</role>
+        <role>Tester</role>
       </roles>
       <timezone>+9</timezone>
     </developer>
@@ -108,7 +109,7 @@
       <name>Hiroshi Minoshima</name>
       <organization>University of Tokyo</organization>
       <roles>
-	<role>Tester</role>
+        <role>Tester</role>
       </roles>
       <timezone>+9</timezone>
     </developer>
@@ -145,7 +146,7 @@
       <name>Shinichi Morishita</name>
       <organization>University of Tokyo</organization>
       <roles>
-	<role>Project Manager</role>
+        <role>Project Manager</role>
       </roles>
       <timezone>+9</timezone>
     </contributor>
@@ -161,7 +162,7 @@
       <name>Yukinobu Nagayasu</name>
       <organization>University of Tokyo</organization>
       <roles>
-	<role>Alumni</role>
+        <role>Alumni</role>
       </roles>
       <timezone>+9</timezone>
     </contributor>
@@ -190,26 +191,26 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
-		<version>2.4</version>
+        <version>2.4</version>
         <configuration>
           <encoding>UTF-8</encoding>
         </configuration>
       </plugin>
-	  
+
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-	<version>2.0.2</version>
+        <version>2.0.2</version>
         <configuration>
-	  <!-- Use JDK 1.5 until Java6 for Mac OS X is released -->
+          <!-- Use JDK 1.5 until Java6 for Mac OS X is released -->
           <source>1.5</source>
           <target>1.5</target>
         </configuration>
       </plugin>
 
       <plugin>
-		<groupId>org.apache.maven.plugins</groupId>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-eclipse-plugin</artifactId>
-		<version>2.8</version>
+        <version>2.8</version>
         <configuration>
           <useProjectReferences>false</useProjectReferences>
           <downloadSources>true</downloadSources>
@@ -221,10 +222,10 @@
       <!-- tag directory -->
       <plugin>
         <artifactId>maven-release-plugin</artifactId>
-		<version>2.1</version>
+        <version>2.1</version>
         <configuration>
-		  <autoVersionSubmodules>true</autoVersionSubmodules>
-		  <preparationGoals>clean install</preparationGoals>
+          <autoVersionSubmodules>true</autoVersionSubmodules>
+          <preparationGoals>clean install</preparationGoals>
           <goals>deploy</goals>
           <connectionUrl>scm:hg:https://utgb.googlecode.com/hg/</connectionUrl>
         </configuration>
@@ -233,7 +234,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
-		<version>2.0-beta-7</version>
+        <version>2.0-beta-7</version>
         <dependencies>
           <dependency>
             <groupId>org.xerial.maven</groupId>
@@ -246,14 +247,21 @@
 
     </plugins>
 
-	<!-- necessary for deploying artifacts via scp -->
-	<extensions>
-	  <extension>
-		<groupId>org.apache.maven.wagon</groupId> 
-		<artifactId>wagon-ssh-external</artifactId> 
-		<version>1.0-beta-7</version> 
-	  </extension> 
-	</extensions>
+
+    <extensions>
+      <!-- necessary for deploying artifacts via scp -->
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh-external</artifactId>
+        <version>1.0-beta-7</version>
+      </extension>
+      <!-- necessary for deploying artifacts via http -->
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-http</artifactId>
+        <version>1.0-beta-7</version>
+      </extension>
+    </extensions>
 
   </build>
 
@@ -281,35 +289,31 @@
         <configuration>
           <doctitle>UTGB Toolkit ${project.version}</doctitle>
           <locale>en_US</locale>
-<!--          <stylesheetfile>${basedir}/javadoc.css</stylesheetfile> -->
+          <!-- <stylesheetfile>${basedir}/javadoc.css</stylesheetfile> -->
           <bottom><![CDATA[<a rel="license" href="http://creativecommons.org/licenses/by-sa/2.1/jp/"><img alt="Creative Commons License" border="0" src="http://creativecommons.org/images/public/somerights20.gif" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/2.1/jp/">Creative Commons Attribution-ShareAlike 2.1 Japan License</a>.<!--<rdf:RDF xmlns="http://web.resource.org/cc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"><Work rdf:about=""><dc:date>2005</dc:date><dc:rights><Agent><dc:title>utgenome org.</dc:title></Agent></dc:rights><license rdf:resource="http://creativecommons.org/licenses/by-sa/2.1/jp/" /></Work><License rdf:about="http://creativecommons.org/licenses/by-sa/2.1/jp/"><permits rdf:resource="http://web.resource.org/cc/Reproduction" /><permits rdf:resource="http://web.resource.org/cc/Distribution" /><requires rdf:resource="http://web.resource.org/cc/Notice" /><requires rdf:resource="http://web.resource.org/cc/Attribution" /><permits rdf:resource="http://web.resource.org/cc/DerivativeWorks" /><requires rdf:resource="http://web.resource.org/cc/ShareAlike" /></License></rdf:RDF>-->]]></bottom>
         </configuration>
       </plugin>
 
-	<plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jxr-plugin</artifactId>
-	  <version>2.1</version>
-	  <configuration>
-            <aggregate>true</aggregate>
-          </configuration>
-	</plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>2.1</version>
+        <configuration>
+          <aggregate>true</aggregate>
+        </configuration>
+      </plugin>
 
-  <!--
-	<plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-changelog-plugin</artifactId>
-	</plugin>
-   -->
+      <!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-changelog-plugin</artifactId> 
+        </plugin> -->
 
-	<plugin>
-	  <groupId>org.apache.maven.plugins</groupId>
-	  <artifactId>maven-surefire-report-plugin</artifactId>
-	  <version>2.5</version>
-	  <configuration>
-        <aggregate>true</aggregate>
-	  </configuration>
-	</plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>2.5</version>
+        <configuration>
+          <aggregate>true</aggregate>
+        </configuration>
+      </plugin>
     </plugins>
   </reporting>
 
@@ -402,22 +406,22 @@
   <profiles>
     <profile>
       <id>hudson</id>
-     <distributionManagement>
-       <repository>
-        <id>utgb.local</id>
-        <name>UTGB Maven Repository</name>
-        <url>file:///home/web/maven.utgenome.org/repository/artifact</url>
-       </repository>
-       <snapshotRepository>
-        <id>utgb.local</id>
-        <name>UTGB Maven Snapshot Repository</name>
-        <url>file:///home/web/maven.utgenome.org/repository/snapshot</url>
-       <uniqueVersion>false</uniqueVersion>
-       </snapshotRepository>
-       <site>
-         <id>utgb.local</id>
-         <url>file:///home/web/maven.utgenome.org/repository/site/utgb</url>
-       </site>
+      <distributionManagement>
+        <repository>
+          <id>utgb.local</id>
+          <name>UTGB Maven Repository</name>
+          <url>file:///home/web/maven.utgenome.org/repository/artifact</url>
+        </repository>
+        <snapshotRepository>
+          <id>utgb.local</id>
+          <name>UTGB Maven Snapshot Repository</name>
+          <url>file:///home/web/maven.utgenome.org/repository/snapshot</url>
+          <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>
+        <site>
+          <id>utgb.local</id>
+          <url>file:///home/web/maven.utgenome.org/repository/site/utgb</url>
+        </site>
       </distributionManagement>
     </profile>
   </profiles>

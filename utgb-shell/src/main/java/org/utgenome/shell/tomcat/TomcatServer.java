@@ -313,6 +313,8 @@ public class TomcatServer {
 
 		// Prepare webapp loader
 		// WebappLoader loader = new WebappLoader(getExtensionClassLoader());
+		// loader.setReloadable(true);
+		// loader.addRepository("WEB-INF/lib");
 
 		// Create a new webapp context
 		Context context = embeddedTomcat.createContext(contextPath, docBase);
