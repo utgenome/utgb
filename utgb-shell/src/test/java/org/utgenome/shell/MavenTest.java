@@ -24,6 +24,8 @@
 //--------------------------------------
 package org.utgenome.shell;
 
+import static org.junit.Assert.*;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,13 +42,9 @@ public class MavenTest {
 
 	@Test
 	public void testRunMaven() throws UTGBShellException {
+		ClassLoader cl = Thread.currentThread().getContextClassLoader();
 		Maven.runMaven("--help");
+		assertEquals(cl, Thread.currentThread().getContextClassLoader());
 	}
-
-	// @Test
-	// public void extractMaven() throws Exception {
-	// String mvnCommand = Maven.getMavenBinary();
-	// assertNotNull(mvnCommand);
-	// }
 
 }
