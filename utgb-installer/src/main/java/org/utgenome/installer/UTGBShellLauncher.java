@@ -24,11 +24,11 @@
 //--------------------------------------
 package org.utgenome.installer;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 
-import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.classworlds.launcher.Launcher;
-import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.xerial.util.log.Logger;
 
 public class UTGBShellLauncher {
@@ -36,8 +36,6 @@ public class UTGBShellLauncher {
 	private static Logger _logger = Logger.getLogger(UTGBShellLauncher.class);
 
 	private File utgbHome = new File(System.getProperty("user.home"), ".utgb");
-	private ClassWorld classWorld = new ClassWorld();
-	private ClassRealm utgbRealm = null;
 
 	public UTGBShellLauncher() {
 	}
@@ -47,24 +45,19 @@ public class UTGBShellLauncher {
 	}
 
 	public void launchUTGBShell(String[] args) throws Exception {
-		File utgbShellJAR = new File(utgbHome, "lib/utgb-shell-standalone.jar");
-
-		ClassLoader cl = Thread.currentThread().getContextClassLoader();
-		ClassLoader pcl = cl.getParent();
-
-		if (utgbRealm == null) {
-			// use the parent class loader 
-			utgbRealm = classWorld.newRealm("utgb", pcl);
-		}
-
-		utgbRealm.addURL(utgbShellJAR.toURI().toURL());
-		utgbRealm.importFrom(cl, "org.codehaus.plexus.classworlds");
 
 		Launcher launcher = new Launcher();
-		launcher.setWorld(classWorld);
-		launcher.setAppMain("org.utgenome.shell.UTGBShell", "utgb");
+
+		File utgbClassWorldConf = new File(utgbHome, "bin/utgb.conf");
+		BufferedInputStream conf = new BufferedInputStream(new FileInputStream(utgbClassWorldConf));
+		try {
+			launcher.configure(conf);
+		}
+		finally {
+			conf.close();
+		}
 
 		launcher.launch(args);
-
 	}
+
 }

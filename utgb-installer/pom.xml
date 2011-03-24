@@ -1,10 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<!--
   <parent>
     <groupId>org.utgenome</groupId>
     <artifactId>utgb-parent</artifactId>
     <version>1.3.1</version>
   </parent>
+-->
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.utgenome</groupId>
@@ -15,7 +17,6 @@
   <description>UTGB Toolkit Installer for Java Web Start</description>
 
   <properties>
-    <revision>$Revision: 2538 $</revision>
     <staging.dir>${project.build.directory}/staging</staging.dir>
   </properties>
 
@@ -46,6 +47,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
+		<version>1.4</version>
         <configuration>
           <transformers>
             <transformer
@@ -72,11 +74,13 @@
 
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
+		<version>2.3.1</version>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-jarsigner-plugin</artifactId>
+		<version>1.2</version>
         <configuration>
-          <archive>
-            <index>true</index>
-            <compress>true</compress>
-          </archive>
           <alias>${ks.alias}</alias>
           <keystore>${ks.keystore}</keystore>
           <storepass>${ks.storepass}</storepass>
@@ -95,7 +99,6 @@
           </execution>
         </executions>
       </plugin>
-
 
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -127,6 +130,21 @@
 
     </plugins>
 
+    <extensions>
+      <!-- necessary for deploying artifacts via scp -->
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh-external</artifactId>
+        <version>1.0-beta-7</version>
+      </extension>
+      <!-- necessary for deploying artifacts via http -->
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-http</artifactId>
+        <version>1.0-beta-7</version>
+      </extension>
+    </extensions>
+
   </build>
 
   <repositories>
@@ -137,6 +155,23 @@
     </repository>
   </repositories>
 
+  <distributionManagement>
+    <repository>
+      <id>utgb.scp</id>
+      <name>UTGB Maven Repository</name>
+      <url>scpexe://maven.utgenome.org/home/web/maven.utgenome.org/repository/artifact</url>
+    </repository>
+    <snapshotRepository>
+      <id>utgb.scp</id>
+      <name>UTGB Maven Snapshot Repository</name>
+      <url>scpexe://maven.utgenome.org/home/web/maven.utgenome.org/repository/snapshot</url>
+      <uniqueVersion>false</uniqueVersion>
+    </snapshotRepository>
+    <site>
+      <id>utgb.scp</id>
+      <url>scpexe://maven.utgenome.org/home/web/maven.utgeonme.org/repository/site/utgb</url>
+    </site>
+  </distributionManagement>
 
   <dependencies>
     <dependency>
