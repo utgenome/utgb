@@ -46,16 +46,19 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
+import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -155,6 +158,9 @@ public class UTGBInstaller {
 		}
 	}
 
+	private MavenMetadata mavenMetaData;
+	private final String mavenRepository = "http://maven.utgenome.org/repository/artifact/org/utgenome/utgb-shell/";
+
 	class GUIPanel {
 
 		final JFrame f = new JFrame();
@@ -168,7 +174,25 @@ public class UTGBInstaller {
 		private ExecutorService exec = Executors.newFixedThreadPool(1);
 
 		public GUIPanel() {
+			// Download maven meta data
+			try {
+				mavenMetaData = Lens.loadXML(MavenMetadata.class, new URL(mavenRepository + "maven-metadata.xml"));
+			}
+			catch (Exception e) {
+				_logger.error(e);
+			}
+
 			buildGUI();
+		}
+
+		JComboBox versionPullDownList;
+
+		public String getSelectedUTGBVersion() {
+			if (versionPullDownList == null)
+				return mavenMetaData.release;
+			else {
+				return (String) versionPullDownList.getSelectedItem();
+			}
 		}
 
 		public JPanel buildInstallPanel() {
@@ -177,6 +201,7 @@ public class UTGBInstaller {
 			final JButton next = new JButton("Install >");
 			final JLabel iLabel = new JLabel(installationFolder);
 
+			// Installation folder selector
 			JPanel iPanel = new JPanel();
 			iPanel.setLayout(new BoxLayout(iPanel, BoxLayout.LINE_AXIS));
 			iPanel.setBorder(new CustomTitledBorder("UTGB Installation Path"));
@@ -185,7 +210,6 @@ public class UTGBInstaller {
 			iLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 			iButton.setMnemonic('C');
 			iButton.addActionListener(new ActionListener() {
-
 				public void actionPerformed(ActionEvent e) {
 					JFileChooser chooser = new JFileChooser(installationFolder);
 					chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -202,6 +226,22 @@ public class UTGBInstaller {
 			iPanel.add(iButton);
 			iButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
 
+			// version selector
+			JPanel versionSelectorPanel = new JPanel();
+			{
+				versionSelectorPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+				String[] versionArray = new String[mavenMetaData.versions.version.size()];
+				int index = versionArray.length - 1;
+				for (Version each : mavenMetaData.versions.getVersion()) {
+					versionArray[index--] = each.orig;
+				}
+				versionPullDownList = new JComboBox(versionArray);
+				versionPullDownList.setPreferredSize(new Dimension(150, 15));
+
+				versionSelectorPanel.add(new JLabel("version: "));
+				versionSelectorPanel.add(versionPullDownList);
+			}
+
 			// next, cancel button
 			JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 			next.setMnemonic('I');
@@ -210,7 +250,7 @@ public class UTGBInstaller {
 					next.setEnabled(false);
 					exec.submit(new Runnable() {
 						public void run() {
-							getTheLatestVersionOfUTGBToolkit();
+							getTheLatestVersionOfUTGBToolkit(GUIPanel.this.getSelectedUTGBVersion());
 						}
 					});
 					next.setEnabled(true);
@@ -230,6 +270,7 @@ public class UTGBInstaller {
 			JPanel installPanel = new JPanel();
 			installPanel.setLayout(new BoxLayout(installPanel, BoxLayout.Y_AXIS));
 			installPanel.add(iPanel);
+			installPanel.add(versionSelectorPanel);
 			installPanel.add(buttonPanel);
 
 			return installPanel;
@@ -403,15 +444,13 @@ public class UTGBInstaller {
 		 * <li>Unpac the tar.gz archive to the installation folder
 		 * </ol>
 		 * 
+		 * @param version
+		 * 
 		 */
-		public void getTheLatestVersionOfUTGBToolkit() {
-
-			final String mavenRepository = "http://maven.utgenome.org/repository/artifact/org/utgenome/utgb-shell/";
+		public void getTheLatestVersionOfUTGBToolkit(String version) {
 
 			try {
-				MavenMetadata m = Lens.loadXML(MavenMetadata.class, new URL(mavenRepository + "maven-metadata.xml"));
-
-				URL archivePath = new URL(mavenRepository + m.getTarGZPackage());
+				URL archivePath = new URL(mavenRepository + mavenMetaData.getTarGZPackage(version));
 				URLConnection conn = archivePath.openConnection();
 				long releaseDate = conn.getLastModified();
 
@@ -423,8 +462,8 @@ public class UTGBInstaller {
 
 				boolean success = false;
 				try {
-					_logger.info(String.format("Downloading UTGB Toolkit verison %s ...", m.release));
-					File localToolkitArchive = new File(installationFolder, String.format("utgb-shell-%s-bin.tar.gz", m.release));
+					_logger.info(String.format("Downloading UTGB Toolkit verison %s ...", version));
+					File localToolkitArchive = new File(installationFolder, String.format("utgb-shell-%s-bin.tar.gz", version));
 					File tmpArchive = File.createTempFile(localToolkitArchive.getName(), ".download.tmp");
 					tmpArchive.deleteOnExit();
 
@@ -440,12 +479,12 @@ public class UTGBInstaller {
 					}
 					fout.close();
 					success = true;
-					_logger.info("Downloaded " + archiveSize + " bytes");
+					_logger.info(String.format("Downloaded %,d bytes", archiveSize));
 					progressBar.setValue(0);
 					progressBar.setStringPainted(false);
 
 					// Extract archive
-					extractTarGZ(tmpArchive.toURI().toURL(), new File(installationFolder));
+					extractTarGZ(tmpArchive.toURI().toURL(), new File(installationFolder), String.format("utgb-toolkit-%s/", version));
 
 					// Add executable permission to the script files in bin folder
 					{
@@ -501,6 +540,66 @@ public class UTGBInstaller {
 		}
 	}
 
+	private static class Version implements Comparable<Version> {
+		public final String orig;
+		private String suffix;
+		private List<Integer> version = new ArrayList<Integer>();
+
+		public Version(String v) {
+			this.orig = v;
+
+			// Extract suffix e.g. SNAPSHOT, alpha, ...
+			String[] v1 = v.split("-");
+			if (v1.length > 1) {
+				StringBuilder s = new StringBuilder();
+				for (int i = 1; i < v1.length; ++i) {
+					s.append(v1[i]);
+				}
+				suffix = s.toString();
+			}
+
+			// prefix e.g. 1.5.2
+			String[] p1 = v.split("\\.");
+			for (String each : p1) {
+				try {
+					int ver = Integer.parseInt(each);
+					version.add(ver);
+				}
+				catch (NumberFormatException e) {
+					version.add(Integer.MAX_VALUE);
+				}
+			}
+		}
+
+		public int compareTo(Version o) {
+
+			for (int c1 = 0, c2 = 0; c1 < version.size() && c2 < o.version.size(); c1++, c2++) {
+				int v1 = version.get(c1);
+				int v2 = o.version.get(c2);
+				if (v1 == v2)
+					continue;
+				else
+					return v1 - v2;
+			}
+			int versionLenDiff = version.size() - o.version.size();
+			if (versionLenDiff != 0)
+				return versionLenDiff;
+
+			if (suffix == null) {
+				if (o.suffix == null)
+					return 0;
+				else
+					return -1;
+			}
+			else {
+				if (o.suffix == null)
+					return 1;
+				else
+					return suffix.compareTo(o.suffix);
+			}
+		}
+	}
+
 	private static class MavenMetadata {
 		public String groupID;
 		public String artifactID;
@@ -509,11 +608,23 @@ public class UTGBInstaller {
 		public Versions versions = new Versions();
 
 		public static class Versions {
-			public ArrayList<String> version = new ArrayList<String>();
+			private TreeSet<Version> version = new TreeSet<Version>();
+
+			public void addVersion(String v) {
+				Version ver = new Version(v);
+				final Version thresholdVersion = new Version("1.5.0");
+				if (ver.compareTo(thresholdVersion) >= 0) {
+					version.add(ver);
+				}
+			}
+
+			public TreeSet<Version> getVersion() {
+				return version;
+			}
 		}
 
-		public String getTarGZPackage() {
-			return String.format("%s/%s-%s-bin.tar.gz", release, artifactID, release);
+		public String getTarGZPackage(String version) {
+			return String.format("%s/%s-%s-bin.tar.gz", version, artifactID, version);
 		}
 	}
 
@@ -601,23 +712,23 @@ public class UTGBInstaller {
 
 	}
 
-	public static void extractTarGZ(URL tarArchive, File outputFolder) throws IOException {
+	public static void extractTarGZ(URL tarArchive, File outputFolder, String prefixToRemove) throws IOException {
 
 		TarInputStream tis = new TarInputStream(new GZIPInputStream(new BufferedInputStream(tarArchive.openStream())));
 		try {
 			TarEntry nextEntry = null;
 			while ((nextEntry = tis.getNextEntry()) != null) {
 				int mode = nextEntry.getMode();
-				String name = nextEntry.getName();
+				String name = nextEntry.getName().replaceFirst("^" + Pattern.quote(prefixToRemove), "");
 				Date modTime = nextEntry.getModTime();
 
 				File extractedFile = new File(outputFolder, name);
 
-				if (extractedFile.exists() && extractedFile.lastModified() == modTime.getTime())
-					continue;
+				//				if (extractedFile.exists() && extractedFile.lastModified() == modTime.getTime())
+				//					continue;
 
 				if (!nextEntry.isDirectory()) {
-					_logger.info(String.format("extracted %s into %s", name, outputFolder.getPath()));
+					_logger.info(String.format("extracted %s", name));
 
 					File parent = extractedFile.getParentFile();
 					if (parent != null && !parent.exists())
