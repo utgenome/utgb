@@ -92,7 +92,7 @@ public class Snappy extends UTGBCommandBase {
 
 		if (!decompression) {
 			// compression
-			readFully(in, new SnappyOutputStream(out));
+			readFully(in, new SnappyOutputStream(out, 4 * 1024 * 1024)); // 4MB block size
 		}
 		else {
 			// decompression
