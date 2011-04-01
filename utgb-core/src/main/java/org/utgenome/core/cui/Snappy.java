@@ -65,7 +65,6 @@ public class Snappy extends UTGBCommandBase {
 	@Override
 	public void execute(String[] args) throws Exception {
 
-		String outputFileName = null;
 		InputStream in = null;
 		if (input == null || "-".equals(input)) {
 			_logger.info("use STDIN");
@@ -104,7 +103,7 @@ public class Snappy extends UTGBCommandBase {
 
 	void readFully(InputStream in, OutputStream out) throws IOException {
 		try {
-			byte[] buf = new byte[8192];
+			byte[] buf = new byte[16 * 1024 * 1024]; // 16MB
 			for (int readBytes = 0; (readBytes = in.read(buf)) != -1;) {
 				out.write(buf, 0, readBytes);
 			}
