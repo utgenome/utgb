@@ -62,6 +62,9 @@ public class Snappy extends UTGBCommandBase {
 	@Option(symbol = "o", description = "output file name")
 	private String outputFileName;
 
+	@Option(symbol = "b", description = "block size in MB (default 4MB)")
+	private int blockSizeInMB = 4;
+
 	@Override
 	public void execute(String[] args) throws Exception {
 
@@ -92,7 +95,7 @@ public class Snappy extends UTGBCommandBase {
 
 		if (!decompression) {
 			// compression
-			readFully(in, new SnappyOutputStream(out, 4 * 1024 * 1024)); // 4MB block size
+			readFully(in, new SnappyOutputStream(out, blockSizeInMB * 1024 * 1024)); // 4MB block size
 		}
 		else {
 			// decompression
