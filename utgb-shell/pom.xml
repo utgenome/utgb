@@ -15,7 +15,7 @@
 
   <properties>
     <tomcat.version>6.0.29</tomcat.version>
-    <maven.version>3.0.2</maven.version>
+    <maven.version>3.0.3</maven.version>
   </properties>
 
   <build>

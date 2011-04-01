@@ -81,11 +81,11 @@ public class ReadStat extends UTGBCommandBase {
 		}
 
 		public String getUniquelyMapppedRate() {
-			return String.format("%.2f%%", (double) numUnique / numRead * 100.0);
+			return String.format("%.2f%%", (double) numUnique / numMapped * 100.0);
 		}
 
 		public String getRepeatMappedRate() {
-			return String.format("%.2f%%", (double) numRepeat / numRead * 100.0);
+			return String.format("%.2f%%", (double) numRepeat / numMapped * 100.0);
 		}
 
 		public void add(ReadAlignmentStat other) {

@@ -33,7 +33,7 @@ import java.io.Writer;
 import net.sf.samtools.SAMFileReader;
 import net.sf.samtools.SAMRecord;
 import net.sf.samtools.SAMRecord.SAMTagAndValue;
-import net.sf.samtools.util.CloseableIterator;
+import net.sf.samtools.SAMRecordIterator;
 
 import org.apache.tools.ant.util.ReaderInputStream;
 import org.utgenome.format.FormatConversionReader;
@@ -41,6 +41,7 @@ import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.bio.SAMReadLight;
 import org.utgenome.gwt.utgb.client.util.Properties;
 import org.xerial.silk.SilkWriter;
+import org.xerial.util.log.Logger;
 
 /**
  * Reader for converting SAM into Silk
@@ -49,6 +50,8 @@ import org.xerial.silk.SilkWriter;
  * 
  */
 public class SAM2SilkReader extends FormatConversionReader {
+
+	private static Logger _logger = Logger.getLogger(SAM2SilkReader.class);
 
 	public SAM2SilkReader(InputStream input) throws IOException {
 		super(input, new Converter());
@@ -65,14 +68,24 @@ public class SAM2SilkReader extends FormatConversionReader {
 			if (out == null)
 				return;
 
-			SAMFileReader samReader = new SAMFileReader(in);
+			SAMFileReader samReader = new SAMFileReader(in, true);
 
+			long readCount = 1;
 			SilkWriter w = new SilkWriter(out);
 			w.preamble();
 			w.preamble("schema record(qname, flag, rname, start, end, mapq, cigar, mrnm, mpos, isize, seq, qual, tag, vtype, tag*)");
-			for (CloseableIterator<SAMRecord> it = samReader.iterator(); it.hasNext();) {
-				SAMRecord rec = it.next();
-				toSilk(rec, w);
+			SAMRecordIterator it = samReader.iterator();
+			try {
+				for (; it.hasNext(); readCount++) {
+					if (readCount % 1000000 == 0) {
+						_logger.info(String.format("%,d reads processed", readCount));
+					}
+					SAMRecord rec = it.next();
+					toSilk(rec, w);
+				}
+			}
+			finally {
+				it.close();
 			}
 
 		}
