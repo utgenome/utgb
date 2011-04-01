@@ -75,7 +75,9 @@ public class Snappy extends UTGBCommandBase {
 			useStdout = true;
 		}
 		else {
-			in = new BufferedInputStream(new FileInputStream(input));
+			in = new FileInputStream(input);
+			if (decompression)
+				in = new BufferedInputStream(in, 4 * 1024 * 1024);
 			if (outputFileName == null) {
 				if (decompression && !input.endsWith(".snappy"))
 					throw new UTGBShellException("input file name does not end with .snappy. Use -o option to specify the output file name");
@@ -90,7 +92,8 @@ public class Snappy extends UTGBCommandBase {
 		}
 		else {
 			_logger.info("output to " + outputFileName);
-			out = new BufferedOutputStream(new FileOutputStream(outputFileName));
+			out = new FileOutputStream(outputFileName);
+			out = new BufferedOutputStream(out, 4 * 1024 * 1024);
 		}
 
 		if (!decompression) {
@@ -106,7 +109,7 @@ public class Snappy extends UTGBCommandBase {
 
 	void readFully(InputStream in, OutputStream out) throws IOException {
 		try {
-			byte[] buf = new byte[16 * 1024 * 1024]; // 16MB
+			byte[] buf = new byte[blockSizeInMB * 1024 * 1024]; // 16MB
 			for (int readBytes = 0; (readBytes = in.read(buf)) != -1;) {
 				out.write(buf, 0, readBytes);
 			}
