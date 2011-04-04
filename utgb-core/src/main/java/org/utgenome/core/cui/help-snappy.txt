@@ -24,11 +24,11 @@ When no file or file name is -, read the standard input.
  $ utgb snappy -x hello.txt.snappy -o hello2.txt
  (Using another output file name)
 
- $ utgb snappy -x hello.txt.snappy -c 
+ $ utgb snappy -c -x hello.txt.snappy 
  (Output the decompressed data to STDOUT)
 
 * Compressing/decompressing SAM data
- $ bwa samse ... | utgb snappy -o output.sam.snappy
+ $ bwa samse ... | utgb snappy > output.sam.snappy
  
- $ utgb snappy -cx output.sam.snappy | samtools view ... 
+ $ utgb snappy -c -x output.sam.snappy | samtools view ... 
  
