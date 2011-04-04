@@ -1,0 +1,34 @@
+usage: snappy [option] (input file)
+
+Compress or decompress (-x option) the input data.
+When no file or file name is -, read the standard input.
+
+[usage example]
+* Compress a file
+ $ utgb snappy input.txt
+ (input.txt.snappy is a compressed data)
+ 
+ $ utgb snappy input.txt -o input2.txt.snappy 
+ (Use an alternative output file name)
+ 
+* Compress data from the standard input
+ $ cat hello.txt | utgb snappy > hello.txt.snappy
+
+ $ cat hello.txt | utgb snappy -o hello.txt.snappy
+ (Using -o option is more efficient than using redirection (>) via the shell)
+ 
+* Decompress the data
+ $ utgb snappy -x hello.txt.snappy
+ (hello.txt will be generated)
+ 
+ $ utgb snappy -x hello.txt.snappy -o hello2.txt
+ (Using another output file name)
+
+ $ utgb snappy -x hello.txt.snappy -c 
+ (Output the decompressed data to STDOUT)
+
+* Compressing/decompressing SAM data
+ $ bwa samse ... | utgb snappy -o output.sam.snappy
+ 
+ $ utgb snappy -cx output.sam.snappy | samtools view ... 
+ 
