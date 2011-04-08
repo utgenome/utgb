@@ -24,6 +24,7 @@
 //--------------------------------------
 package org.utgenome.core.cui;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,10 +34,11 @@ import net.sf.samtools.SAMFileReader.ValidationStringency;
 import net.sf.samtools.SAMRecord;
 import net.sf.samtools.SAMRecordIterator;
 
-import org.utgenome.shell.UTGBShellException;
 import org.xerial.lens.SilkLens;
+import org.xerial.util.io.StandardInputStream;
 import org.xerial.util.log.Logger;
 import org.xerial.util.opt.Argument;
+import org.xerial.util.opt.Option;
 
 public class ReadStat extends UTGBCommandBase {
 
@@ -55,8 +57,11 @@ public class ReadStat extends UTGBCommandBase {
 		return this;
 	}
 
-	@Argument
+	@Argument(name = "SAM/BAM files")
 	private List<String> bamFiles = new ArrayList<String>();
+
+	@Option(symbol = "c", description = "Use STDIN for the input")
+	private boolean readSTDIN = false;
 
 	public static class ReadAlignmentStat {
 		public List<String> bamFile = new ArrayList<String>();
@@ -77,15 +82,15 @@ public class ReadStat extends UTGBCommandBase {
 		}
 
 		public String getMappedRate() {
-			return String.format("%.2f%%", (double) numMapped / numRead * 100.0);
+			return String.format("%.3f%%", (double) numMapped / numRead * 100.0);
 		}
 
 		public String getUniquelyMapppedRate() {
-			return String.format("%.2f%%", (double) numUnique / numMapped * 100.0);
+			return String.format("%.3f%%", (double) numUnique / numMapped * 100.0);
 		}
 
 		public String getRepeatMappedRate() {
-			return String.format("%.2f%%", (double) numRepeat / numMapped * 100.0);
+			return String.format("%.3f%%", (double) numRepeat / numMapped * 100.0);
 		}
 
 		public void add(ReadAlignmentStat other) {
@@ -107,16 +112,24 @@ public class ReadStat extends UTGBCommandBase {
 	public void execute(String[] args) throws Exception {
 
 		SAMFileReader.setDefaultValidationStringency(ValidationStringency.SILENT);
-		if (bamFiles.isEmpty())
-			throw new UTGBShellException("no input BAM files");
+		if (bamFiles.isEmpty() && readSTDIN) {
+			_logger.info("Use STDIN for input");
+			bamFiles.add("-");
+		}
 
 		ReadAlignmentStat totalStat = new ReadAlignmentStat();
 
 		for (String bamFile : bamFiles) {
 			ReadAlignmentStat stat = new ReadAlignmentStat(bamFile);
 
-			SAMFileReader in = new SAMFileReader(new File(bamFile), false);
-			_logger.info("reading " + bamFile);
+			SAMFileReader in = null;
+			if (bamFile.equals("-")) {
+				in = new SAMFileReader(new BufferedInputStream(new StandardInputStream()), false);
+			}
+			else {
+				_logger.info("reading " + bamFile);
+				in = new SAMFileReader(new File(bamFile), false);
+			}
 			SAMRecordIterator it = in.iterator();
 
 			try {
