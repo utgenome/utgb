@@ -186,6 +186,9 @@ public class Maven extends UTGBShellCommand {
 
 		// Preserve the context class loader
 		ClassLoader cl = Thread.currentThread().getContextClassLoader();
+		// preserve the current system properties
+		Properties prevSystemProperties = (Properties) System.getProperties().clone();
+
 		try {
 			// add the hook for killing the Maven process when ctrl+C is pressed
 			Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -196,41 +199,32 @@ public class Maven extends UTGBShellCommand {
 			});
 
 			MavenCli maven = new MavenCli();
-
 			if (workingDir == null)
 				workingDir = new File("");
 
-			Properties prevSystemProperties = null;
 			if (systemProperties != null) {
-				// preserve the current system properties
-				prevSystemProperties = (Properties) System.getProperties().clone();
-
 				// add the user-specified system properties
 				for (Object key : systemProperties.keySet()) {
 					System.setProperty(key.toString(), systemProperties.get(key).toString());
 				}
 			}
 
-			try {
-				int returnCode = maven.doMain(args, workingDir.getPath(), new PrintStream(new StandardOutputStream()), new PrintStream(
-						new StandardErrorStream()));
+			int returnCode = maven.doMain(args, workingDir.getPath(), new PrintStream(new StandardOutputStream()), new PrintStream(new StandardErrorStream()));
 
-				if (returnCode != 0)
-					throw new UTGBShellException("error: " + returnCode);
+			if (returnCode != 0)
+				throw new UTGBShellException("error: " + returnCode);
 
-				return returnCode;
-			}
-			finally {
-				// reset the system properties
-				if (prevSystemProperties != null)
-					System.setProperties(prevSystemProperties);
-			}
+			return returnCode;
+
 		}
 		catch (Exception e) {
 			throw new UTGBShellException(e);
 		}
 		finally {
 			Thread.currentThread().setContextClassLoader(cl);
+			// reset the system properties
+			if (prevSystemProperties != null)
+				System.setProperties(prevSystemProperties);
 		}
 	}
 

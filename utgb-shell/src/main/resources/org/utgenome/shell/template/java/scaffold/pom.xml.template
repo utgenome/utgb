@@ -235,21 +235,6 @@
     </plugins>
 
 
-	<extensions>
-	  <!-- necessary for deploying artifacts via scp -->
-	  <extension>
-		<groupId>org.apache.maven.wagon</groupId> 
-		<artifactId>wagon-ssh-external</artifactId> 
-		<version>1.0-beta-7</version> 
-	  </extension> 
-	  <!-- necessary for deploying artifacts via http -->
-	  <extension>
-		<groupId>org.apache.maven.wagon</groupId> 
-		<artifactId>wagon-http</artifactId> 
-		<version>1.0-beta-7</version> 
-	  </extension> 
-	</extensions>
-
   </build>
 
 

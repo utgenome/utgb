@@ -47,4 +47,10 @@ public class MavenTest {
 		assertEquals(cl, Thread.currentThread().getContextClassLoader());
 	}
 
+	@Test
+	public void arg() throws Exception {
+		UTGBShell.runCommand("maven -X help:help");
+
+	}
+
 }
