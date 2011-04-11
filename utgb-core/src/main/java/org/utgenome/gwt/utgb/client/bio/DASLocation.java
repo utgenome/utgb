@@ -44,6 +44,7 @@ public class DASLocation extends GenomeDB {
 
 	public DASLocation(GenomeDB base, String dasType) {
 		super(base);
+		this.type = DBType.DAS;
 		this.dasType = dasType;
 	}
 

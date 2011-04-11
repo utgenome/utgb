@@ -137,7 +137,7 @@ public class ReadView extends WebTrackBase {
 		List<OnGenome> result = new ArrayList<OnGenome>();
 		try {
 
-			DBType dbType = GenomeDB.resolveDBType(db.path);
+			DBType dbType = GenomeDB.resolveDBType(db);
 			if (dbType == null)
 				throw new UTGBException(UTGBErrorCode.UnknownDBType, "auto detection of DBType failed : " + db.path);
 

@@ -115,18 +115,7 @@ public class GenomeDB implements Serializable {
 	 */
 	public static DBType resolveDBType(GenomeDB db) {
 		if (db.type == DBType.AUTO) {
-			if (db.path.endsWith(".sam"))
-				return DBType.SAM;
-			else if (db.path.endsWith(".bam"))
-				return DBType.BAM;
-			else if (db.path.endsWith(".bed"))
-				return DBType.BED;
-			else if (db.path.endsWith(".fa"))
-				return DBType.FASTA;
-			else if (db.path.endsWith(".cytoband"))
-				return DBType.CytoBand;
-
-			return null;
+			return resolveDBType(db.path);
 		}
 		else
 			return db.type;
@@ -139,7 +128,7 @@ public class GenomeDB implements Serializable {
 			return DBType.BAM;
 		else if (path.endsWith(".bed"))
 			return DBType.BED;
-		else if (path.endsWith(".fa"))
+		else if (path.endsWith(".fa") || path.endsWith(".fasta"))
 			return DBType.FASTA;
 		else if (path.endsWith(".cytoband"))
 			return DBType.CytoBand;
