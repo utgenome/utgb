@@ -22,9 +22,21 @@
 //--------------------------------------
 package org.utgenome.core.cui;
 
-import java.net.URL;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
 
+import org.utgenome.format.bed.BED2SilkReader;
+import org.utgenome.format.fastq.FastqToSilkReader;
+import org.utgenome.format.sam.SAM2SilkReader;
+import org.utgenome.format.wig.WIG2SilkReader;
+import org.utgenome.util.StandardOutputStream;
+import org.xerial.util.io.StandardInputStream;
 import org.xerial.util.log.Logger;
+import org.xerial.util.opt.Argument;
 
 public class Convert extends UTGBCommandBase {
 
@@ -40,19 +52,40 @@ public class Convert extends UTGBCommandBase {
 		return "(BETA) text format converter";
 	}
 
-	@Override
-	public Object getOptionHolder() {
-		return this;
-	}
-
-	@Override
-	public URL getHelpMessageResource() {
-		return null;
-	}
+	@Argument
+	private String inputFile;
 
 	@Override
 	public void execute(String[] args) throws Exception {
 		_logger.info("convert");
+
+		InputStream in = "-".equals(inputFile) ? new StandardInputStream() : new BufferedInputStream(new FileInputStream(inputFile));
+
+		OutputStreamWriter out = new OutputStreamWriter(new StandardOutputStream());
+		Reader silkInput = null;
+		if (inputFile.endsWith(".fastq")) {
+			silkInput = new FastqToSilkReader(new InputStreamReader(in));
+		}
+		else if (inputFile.endsWith(".bed")) {
+			silkInput = new BED2SilkReader(new InputStreamReader(in));
+		}
+		else if (inputFile.endsWith(".sam") || inputFile.endsWith(".bam")) {
+			silkInput = new SAM2SilkReader(in);
+		}
+		else if (inputFile.endsWith(".wig")) {
+			silkInput = new WIG2SilkReader(new InputStreamReader(in));
+		}
+		else {
+			return;
+		}
+
+		char[] buf = new char[4 * 1024 * 1024];
+		for (int readBytes = 0; (readBytes = silkInput.read(buf)) != -1;) {
+			out.write(buf, 0, readBytes);
+		}
+
+		out.close();
+		in.close();
 
 	}
 
