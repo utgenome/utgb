@@ -109,4 +109,15 @@ public class PrioritySearchTreeTest {
 		assertTrue(nodeSet.contains("E"));
 	}
 
+	@Test
+	public void sameInterval() throws Exception {
+		PrioritySearchTree<String> t = new PrioritySearchTree<String>();
+		int N = 10000;
+		for (int i = 0; i < N; ++i)
+			t.insert("A", 10, 20);
+
+		List<String> result = t.rangeQuery(0, 100, 30);
+		assertEquals(N, result.size());
+
+	}
 }

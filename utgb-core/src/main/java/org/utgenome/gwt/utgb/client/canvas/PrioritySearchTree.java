@@ -208,31 +208,51 @@ public class PrioritySearchTree<E> implements Iterable<E> {
 
 	}
 
+	private class QueryContext {
+		public final Node node;
+		public final int x1;
+		public final int x2;
+
+		public QueryContext(Node current, int x1, int x2) {
+			this.node = current;
+			this.x1 = x1;
+			this.x2 = x2;
+		}
+
+	}
+
 	boolean rangeQuery_internal(Node currentNode, QueryBox queryBox, int rangeX1, int rangeX2, ResultHandler<E> resultHandler) {
 		boolean toContinue = resultHandler.toContinue();
 		if (!toContinue || rangeX1 > rangeX2)
 			return false;
 
-		if (currentNode != null) {
-			if (currentNode.y <= queryBox.upperY) {
-				// the current node is within the y constraint
-				if (queryBox.x1 <= currentNode.x && currentNode.x <= queryBox.x2) {
+		if (currentNode == null)
+			return toContinue;
+
+		Stack<QueryContext> contextStack = new Stack<QueryContext>();
+		contextStack.add(new QueryContext(currentNode, rangeX1, rangeX2));
+
+		while (toContinue && !contextStack.isEmpty()) {
+			QueryContext context = contextStack.pop();
+			if (context.node.y <= queryBox.upperY) {
+				if (queryBox.x1 <= context.node.x && context.node.x <= queryBox.x2) {
 					// The current node is contained in the query box
-					resultHandler.handle(currentNode.elem);
+					resultHandler.handle(context.node.elem);
 					toContinue = resultHandler.toContinue();
 				}
 
 				// search the descendant nodes
-				int middleX = currentNode.splitX;
+				int middleX = context.node.splitX;
 
-				// search the left tree
-				if (toContinue && queryBox.x1 < middleX) {
-					toContinue = rangeQuery_internal(currentNode.left, queryBox, rangeX1, middleX, resultHandler);
-				}
-
-				// search the right tree
-				if (toContinue && middleX <= queryBox.x2) {
-					toContinue = rangeQuery_internal(currentNode.right, queryBox, middleX, rangeX2, resultHandler);
+				if (toContinue) {
+					// push the right tree context
+					if (context.node.right != null && middleX <= queryBox.x2) {
+						contextStack.push(new QueryContext(context.node.right, middleX, context.x2));
+					}
+					// search the left tree
+					if (context.node.left != null && queryBox.x1 < middleX) {
+						contextStack.push(new QueryContext(context.node.left, context.x1, middleX));
+					}
 				}
 			}
 		}

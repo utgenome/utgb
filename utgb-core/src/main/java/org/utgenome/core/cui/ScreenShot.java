@@ -193,6 +193,7 @@ public class ScreenShot extends UTGBCommandBase {
 				maxWidthText = track.name;
 			}
 
+			_logger.debug("Drawing " + track.name);
 			trackImage.add(createReadAlignmentImage(loc, replaceVariable(db.path, loc)));
 		}
 
@@ -209,10 +210,11 @@ public class ScreenShot extends UTGBCommandBase {
 		}
 
 		// Compute the canvas height
+		final int yMargin = 1;
 		final int minTrackHeight = textHeight;
 		int pixelHeight = 0;
 		for (BufferedImage each : trackImage)
-			pixelHeight += Math.max(each.getHeight(), 10);
+			pixelHeight += Math.max(each.getHeight(), 10) + yMargin;
 
 		// Prepare a large canvas
 		BufferedImage image = new BufferedImage(maxTextWidth + pixelWidth, pixelHeight, BufferedImage.TYPE_INT_ARGB);
@@ -232,7 +234,7 @@ public class ScreenShot extends UTGBCommandBase {
 
 		// Paste track images
 		int yOffset = 0;
-		int yMargin = 1;
+
 		int index = 0;
 
 		FontMetrics fs = g.getFontMetrics();
