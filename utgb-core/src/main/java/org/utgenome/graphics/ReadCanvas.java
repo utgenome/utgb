@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -221,7 +222,12 @@ public class ReadCanvas {
 		layout.setKeepSpaceForLabels(style.showLabels);
 		layout.setTrackWindow(new TrackWindow(getPixelWidth(), (int) window.startIndexOnGenome, (int) window.endIndexOnGenome));
 
+		if (_logger.isDebugEnabled())
+			_logger.debug("Creating a layout");
 		int maxOffset = layout.reset(dataSet, style.geneHeight);
+		if (_logger.isDebugEnabled())
+			_logger.debug("Done.");
+
 		final int h = style.geneHeight + style.geneMargin;
 		final int canvasHeight = (maxOffset + 1) * h;
 		setPixelSize(image.getWidth(), canvasHeight);
@@ -536,13 +542,40 @@ public class ReadCanvas {
 		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
+		boolean drawBase = true;
+		if (style.geneHeight < style.fontWidth - 2) {
+			drawBase = false;
+		}
+		else {
+			// Check whether the pixel length of each character is smaller than pixel width for the range [startOn, startOnGenome+1)
+			int start = window.getXPosOnWindow(startOnGenome, getPixelWidth());
+			int end = window.getXPosOnWindow(startOnGenome + 1, getPixelWidth());
+			int pixelWidth = end - start;
+
+			FontMetrics fontMetrics = g.getFontMetrics();
+			HashSet<Character> checkedChar = new HashSet<Character>();
+			for (int i = 0; i < seq.length(); ++i) {
+				char ch = seq.charAt(i);
+				if (checkedChar.contains(ch))
+					continue;
+
+				checkedChar.add(ch);
+				int textWidth = fontMetrics.stringWidth(Character.toString(ch));
+				if (textWidth > pixelWidth - 2) {
+					drawBase = false;
+					break;
+				}
+			}
+		}
+
 		for (int i = 0; i < seq.length(); i++) {
 			int baseIndex = 8;
 			char base = seq.charAt(i);
 			Color c = style.getBaseColor(base);
 
 			drawRegion(startOnGenome + i, startOnGenome + i + 1, y, c, false);
-			drawBase(base, startOnGenome + i, y, Color.WHITE);
+			if (drawBase)
+				drawBase(base, startOnGenome + i, y, Color.WHITE);
 		}
 
 	}
@@ -558,29 +591,23 @@ public class ReadCanvas {
 	}
 
 	public void drawBase(char base, int startIndexOnGenome, int yOffset, Color color) {
-		if (style.geneHeight < style.fontWidth) {
-			return;
-		}
-
 		int start = window.getXPosOnWindow(startIndexOnGenome, getPixelWidth());
 		int end = window.getXPosOnWindow(startIndexOnGenome + 1, getPixelWidth());
 		int drawStart;
 
+		int pixelWidth = end - start;
+
 		String b = Character.toString(base);
 		g.setColor(color);
 		FontMetrics fontMetrics = g.getFontMetrics();
-		int fontWidth = fontMetrics.stringWidth(b);
-		int fontHeight = fontMetrics.getHeight();
-		if (fontHeight > style.geneHeight)
-			fontHeight = style.geneHeight;
+		int textWidth = fontMetrics.stringWidth(b);
+		int textHeight = fontMetrics.getHeight();
+		if (textHeight > style.geneHeight)
+			textHeight = style.geneHeight;
 
-		if (fontWidth < style.fontWidth) {
-			return;
-		}
+		drawStart = (int) (start + (end - start - textWidth) / 2.0f);
 
-		drawStart = (int) (start + (end - start - fontWidth) / 2.0f);
-
-		g.drawString(b, drawStart, yOffset + fontHeight - 1);
+		g.drawString(b, drawStart, yOffset + textHeight - 1);
 	}
 
 	public void drawLabel(OnGenome region, int yOffset) {

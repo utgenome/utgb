@@ -153,7 +153,6 @@ public class ScreenShot extends UTGBCommandBase {
 			style.geneMargin = 2;
 			style.showLabels = true;
 			canvas.setStyle(style);
-
 		}
 
 		canvas.draw(readSet);
@@ -214,7 +213,7 @@ public class ScreenShot extends UTGBCommandBase {
 		final int minTrackHeight = textHeight;
 		int pixelHeight = 0;
 		for (BufferedImage each : trackImage)
-			pixelHeight += Math.max(each.getHeight(), 10) + yMargin;
+			pixelHeight += Math.max(each.getHeight(), minTrackHeight) + yMargin;
 
 		// Prepare a large canvas
 		BufferedImage image = new BufferedImage(maxTextWidth + pixelWidth, pixelHeight, BufferedImage.TYPE_INT_ARGB);
