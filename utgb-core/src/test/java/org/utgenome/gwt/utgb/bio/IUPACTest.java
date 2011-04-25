@@ -24,10 +24,17 @@ package org.utgenome.gwt.utgb.bio;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.StringWriter;
+import java.util.ArrayList;
+
 import org.junit.Test;
 import org.utgenome.gwt.utgb.client.bio.IUPAC;
+import org.xerial.util.StringUtil;
+import org.xerial.util.log.Logger;
 
 public class IUPACTest {
+
+	private static Logger _logger = Logger.getLogger(IUPACTest.class);
 
 	@Test
 	public void encode() throws Exception {
@@ -74,6 +81,46 @@ public class IUPACTest {
 		assertEquals("T", IUPAC.T.toGenoType());
 		assertEquals("", IUPAC.None.toGenoType());
 		assertEquals("ACT", IUPAC.H.toGenoType());
+	}
+
+	@Test
+	public void complement() throws Exception {
+
+		ArrayList<String> complementList = new ArrayList<String>();
+
+		for (byte i = 0; i < 16; i++) {
+			IUPAC orig = IUPAC.decode(i);
+			String genoType = orig.toGenoType();
+			StringWriter complement = new StringWriter(genoType.length());
+			for (int x = 0; x < genoType.length(); ++x) {
+				char base = genoType.charAt(x);
+				switch (base) {
+				case 'A':
+					complement.append('T');
+					break;
+				case 'C':
+					complement.append('G');
+					break;
+				case 'G':
+					complement.append('C');
+					break;
+				case 'T':
+					complement.append('A');
+					break;
+				default:
+					complement.append(base);
+				}
+			}
+
+			String genoTypeComplement = complement.toString();
+			IUPAC complementCode = IUPAC.toIUPAC(genoTypeComplement);
+			complementList.add(String.format("IUPAC.%s", complementCode));
+
+			assertEquals(complementCode, orig.complement());
+		}
+
+		_logger.trace(StringUtil.join(complementList, ", "));
+
 	}
 
 }

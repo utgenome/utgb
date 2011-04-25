@@ -34,11 +34,14 @@ public enum IUPAC {
 			"G/T", 0x0C), V("A/C/G", 0x07), H("A/C/T", 0x0B), D("A/G/T", 0x0D), B("C/G/T", 0x0E), N("A/C/G/T", 0x0F);
 
 	private final static IUPAC[] acgtToIUPACTable = new IUPAC[16];
+	private final static IUPAC[] complementTable = new IUPAC[] { IUPAC.None, IUPAC.T, IUPAC.G, IUPAC.K, IUPAC.C, IUPAC.Y, IUPAC.S, IUPAC.B, IUPAC.A, IUPAC.W,
+			IUPAC.R, IUPAC.D, IUPAC.M, IUPAC.H, IUPAC.V, IUPAC.N };
 
 	static {
 		for (IUPAC each : IUPAC.values()) {
 			acgtToIUPACTable[each.bitFlag & 0x0F] = each;
 		}
+
 	}
 
 	public final String variation;
@@ -47,6 +50,10 @@ public enum IUPAC {
 	private IUPAC(String variation, int bitFlag) {
 		this.variation = variation;
 		this.bitFlag = bitFlag;
+	}
+
+	public IUPAC complement() {
+		return complementTable[this.bitFlag];
 	}
 
 	/**
