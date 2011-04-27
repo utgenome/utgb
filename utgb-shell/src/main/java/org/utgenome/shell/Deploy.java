@@ -25,6 +25,7 @@
 package org.utgenome.shell;
 
 import java.io.File;
+import java.util.Properties;
 
 import org.utgenome.config.UTGBConfig;
 import org.xerial.util.FileUtil;
@@ -62,16 +63,10 @@ public class Deploy extends UTGBShellCommand {
 		if (!noContextXML)
 			createContextXML(contextPath != null ? contextPath : config.projectName, new File("").getAbsolutePath(), false);
 
-		String prevPath = System.getProperty("path");
-		try {
-			if (contextPath != null)
-				System.setProperty("path", "/" + contextPath);
-			maven("tomcat:deploy -U");
-		}
-		finally {
-			System.setProperty("path", prevPath);
-		}
-
+		Properties prop = new Properties();
+		if (contextPath != null)
+			prop.setProperty("path", contextPath.startsWith("/") ? contextPath : "/" + contextPath);
+		maven("tomcat:deploy -U", prop);
 	}
 
 	@Override
