@@ -221,7 +221,6 @@
         <version>1.1</version>
         <configuration>
           <server>tomcat</server>
-          <url>http://localhost:8080/manager</url>
           <contextFile>${project.build.directory}/utgb/META-INF/context.xml</contextFile>
           <mode>both</mode>
           <ignorePackaging>true</ignorePackaging>
