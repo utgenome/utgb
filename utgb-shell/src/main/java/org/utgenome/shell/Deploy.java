@@ -61,7 +61,17 @@ public class Deploy extends UTGBShellCommand {
 		// generate context.xml file
 		if (!noContextXML)
 			createContextXML(contextPath != null ? contextPath : config.projectName, new File("").getAbsolutePath(), false);
-		maven("tomcat:deploy -U" + (contextPath != null ? " -Dpath=/" + contextPath : ""));
+
+		String prevPath = System.getProperty("path");
+		try {
+			if (contextPath != null)
+				System.setProperty("path", "/" + contextPath);
+			maven("tomcat:deploy -U");
+		}
+		finally {
+			System.setProperty("path", prevPath);
+		}
+
 	}
 
 	@Override
