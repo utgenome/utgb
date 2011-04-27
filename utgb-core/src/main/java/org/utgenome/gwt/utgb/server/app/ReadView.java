@@ -143,7 +143,7 @@ public class ReadView extends WebTrackBase {
 
 			switch (dbType) {
 			case BAM: {
-				File bamFile = new File(db.path);
+				File bamFile = new File(baseDir, db.path);
 				if (config.wigPath != null) {
 					config.wigPath = new File(baseDir, config.wigPath).getAbsolutePath();
 					File wigDB = new File(config.wigPath.trim());
@@ -159,11 +159,11 @@ public class ReadView extends WebTrackBase {
 					return SAMReader.overlapQuery(bamFile, loc, config.pixelWidth, config);
 			}
 			case BED: {
-				result = BEDDatabase.overlapQuery(new File(db.path), loc);
+				result = BEDDatabase.overlapQuery(new File(baseDir, db.path), loc);
 				break;
 			}
 			case FASTA: {
-				result.add(FASTADatabase.querySequence(new File(db.path), loc));
+				result.add(FASTADatabase.querySequence(new File(baseDir, db.path), loc));
 				break;
 			}
 			case DAS: {

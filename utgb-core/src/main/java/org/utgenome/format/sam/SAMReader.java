@@ -56,6 +56,7 @@ import org.utgenome.gwt.utgb.client.bio.SAMReadLight;
 import org.utgenome.gwt.utgb.client.bio.SAMReadPair;
 import org.utgenome.gwt.utgb.client.bio.SAMReadPairFragment;
 import org.utgenome.gwt.utgb.client.canvas.IntervalTree;
+import org.xerial.util.FileType;
 import org.xerial.util.StringUtil;
 import org.xerial.util.log.Logger;
 
@@ -283,6 +284,9 @@ public class SAMReader {
 		}
 
 		File baiFile = getBamIndexFile(bamFile);
+		if (!baiFile.exists()) {
+			baiFile = new File(FileType.replaceFileExt(bamFile.getPath(), "bai"));
+		}
 		SAMFileReader sam = new SAMFileReader(bamFile, baiFile, false);
 		sam.setValidationStringency(ValidationStringency.SILENT);
 

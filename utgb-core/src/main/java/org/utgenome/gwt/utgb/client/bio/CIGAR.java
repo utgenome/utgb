@@ -26,7 +26,6 @@ package org.utgenome.gwt.utgb.client.bio;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.utgenome.gwt.utgb.client.UTGBClientErrorCode;
@@ -38,7 +37,7 @@ import org.utgenome.gwt.utgb.client.UTGBClientException;
  * @author leo
  * 
  */
-public class CIGAR implements Serializable, Iterable<CIGAR.Element> {
+public class CIGAR implements Serializable {
 
 	/**
 	 * 
@@ -86,8 +85,12 @@ public class CIGAR implements Serializable, Iterable<CIGAR.Element> {
 		 * 
 		 */
 		private static final long serialVersionUID = 1L;
-		public final Type type;
-		public final int length;
+		public Type type = Type.Matches;
+		public int length;
+
+		public Element() {
+
+		}
 
 		public Element(Type type, int length) {
 			this.type = type;
@@ -135,7 +138,7 @@ public class CIGAR implements Serializable, Iterable<CIGAR.Element> {
 		return cigar.get(index);
 	}
 
-	public List<Element> getElements() {
+	public List<Element> element() {
 		return cigar;
 	}
 
@@ -176,10 +179,6 @@ public class CIGAR implements Serializable, Iterable<CIGAR.Element> {
 		}
 
 		return result;
-	}
-
-	public Iterator<Element> iterator() {
-		return cigar.iterator();
 	}
 
 }
