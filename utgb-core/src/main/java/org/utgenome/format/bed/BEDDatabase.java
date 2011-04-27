@@ -196,6 +196,7 @@ public class BEDDatabase {
 				}
 			}
 			else {
+				_logger.warn(String.format("SQLite DB %s is not found. Use utgb import to create a BED database", bedPath));
 				// use raw text
 				BED2SilkReader in = null;
 				try {
