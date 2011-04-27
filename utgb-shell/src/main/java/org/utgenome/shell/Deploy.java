@@ -42,6 +42,9 @@ public class Deploy extends UTGBShellCommand {
 	@Option(symbol = "c", longName = "clean", description = "force recompilation of the project (utgb clean, utgb compile), then deploy")
 	boolean forceClean = false;
 
+	@Option(symbol = "m", description = "Tomcat manager url. Default is http://localhost:8080/manager")
+	private String tomcatManager = "http://localhost:8080/manager";
+
 	public Deploy() {
 	}
 
@@ -67,8 +70,10 @@ public class Deploy extends UTGBShellCommand {
 			createContextXML(contextPath, new File("").getAbsolutePath(), false);
 
 		Properties prop = new Properties();
+		prop.setProperty("maven.tomcat.url", tomcatManager);
 		prop.setProperty("maven.tomcat.path", contextPath.startsWith("/") ? contextPath : "/" + contextPath);
 		maven("tomcat:deploy", prop);
+
 	}
 
 	@Override
