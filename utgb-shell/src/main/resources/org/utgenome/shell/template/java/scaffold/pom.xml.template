@@ -222,9 +222,6 @@
         <configuration>
           <server>tomcat</server>
           <url>http://localhost:8080/manager</url>
-          <!-- specify your web application's context path. If the path value is "/myapp",
-          	 your web application is deployed at http://localhost:8080/myapp  -->
-          <path>/$projectName$</path>
           <contextFile>${project.build.directory}/utgb/META-INF/context.xml</contextFile>
           <mode>both</mode>
           <ignorePackaging>true</ignorePackaging>

@@ -19,17 +19,6 @@ Here is an example of settings.xml file:
  </servers>
 </settings>
   
-To change the deploy location, you have to edit pom.xml file in your project folder. In the pom.xml file, 
-there is a plug-in section that denotes Tomcat manager's URL (http://localhost:8080/manager).  
- 
-  <plugin>
-    <groupId>org.codehaus.mojo</groupId>
-    <artifactId>tomcat-maven-plugin</artifactId>
-    <configuration>
-      <server>tomcat</server>
-      <url>http://localhost:8080/manager</url>
-      <path>/myapp</path>
-      <update>true</update>
-    </configuration>
-  </plugin>
+You can change the deploy location (context path) with -p option:   
+$ utgb deploy -p "/myapp"
 

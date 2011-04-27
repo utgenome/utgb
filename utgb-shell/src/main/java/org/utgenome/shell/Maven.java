@@ -200,7 +200,7 @@ public class Maven extends UTGBShellCommand {
 
 			MavenCli maven = new MavenCli();
 			if (workingDir == null)
-				workingDir = new File("");
+				workingDir = new File(".");
 
 			if (systemProperties != null) {
 				// add the user-specified system properties
