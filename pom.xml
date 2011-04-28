@@ -29,8 +29,8 @@
   </issueManagement>
 
   <ciManagement>
-    <system>hudson</system>
-    <url>http://utgenome.org/hudson</url>
+    <system>jenkins</system>
+    <url>http://utgenome.org/jenkins</url>
   </ciManagement>
 
   <mailingLists>
