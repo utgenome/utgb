@@ -1,0 +1,45 @@
+%silk(version:1.0)
+
+# The version number of this configuration file format
+-config(version:1.0)
+
+# project group name (for Maven repository)
+-group:        org.utgenome
+# Name of the project. This name will be used for the web application's context path
+-project name: utgb-precompiled
+# java package to add/search Web Action codes
+-java package:      org.utgenome.precompiled
+
+# Importing additional web actions under the specified java package.
+# Web actions (i.e. java classes) in the specified action package folder will be accessible 
+# by the path (alias)/(web action name)
+-web action(alias: utgb-core, java package: org.utgenome.gwt.utgb.server.app)
+
+# Database locations settings. 
+# Database address for SQLite DB files is relative to the project folder.
+# The specified databases will be accessible from your web action codes by referencing the specified id.
+-database(id:mydb, dbms:sqlite)
+ -address: db/sample.db
+
+## An example setting for using in-memory database of SQLite
+## (update result will be lost when terminating the application)
+#
+#-database(id:test, dbms:sqlite)
+# -address: :memory:  
+
+
+## JDBC connection settings for PostgreSQL
+#-database(id:pg, dbms:postgres)
+# -address: localhost
+# -user:  (user name)
+# -pass:  (password)  
+
+## MySQL database connection example
+#-database(id:mysql-db, dbms:mysql)
+# -driver: com.mysql.jdbc.Driver
+# -jdbc prefix: jdbc:mysql:///
+# -address: mydb
+# -user: (user name)
+# -pass: (password)
+
+

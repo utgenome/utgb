@@ -1,0 +1,45 @@
+-track group
+  -id: 1
+  -class: org.utgenome.gwt.utgb.client.track.TrackGroup
+  -coordinate
+    -species: human
+    -ref: hg19
+    -chr: chr1
+    -start: 1
+    -end: 100000
+-track
+  -name: UTGB Navigator
+  -height: 41
+  -pack: true
+  -class: NavigatorTrack
+  -property
+    -sequenceList: [{"species":"human", "revision":["hg19", "hg18"]},{"species":"medaka", "revision":["version1.0"]}]
+-track
+  -name: Sequence Overview
+  -height: 14
+  -pack: true
+  -class: SequenceRulerTrack
+-track
+  -name: Ruler
+  -height: 14
+  -pack: true
+  -class: RulerTrack
+-track
+  -name: Scale Bar
+  -pack: true
+  -class: ScaleBarTrack
+-track
+  -name: DAS Track
+  -height: 0
+  -pack: true
+  -class: DASTrack
+  -property
+    -path: http://www.ensembl.org/das/Homo_sapiens.NCBI36.transcript/
+    -dasType: refGene
+-track
+  -name: BED Track
+  -height: 0
+  -pack: true
+  -class: ReadTrack
+  -property
+    -path: db/sample.bed
