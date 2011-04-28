@@ -8,6 +8,13 @@
 ** Downloadable archive for manual installation is also available from here: http://maven.utgenome.org/repository/artifact/org/utgenome/utgb-shell/
 
 == Release Notes
+* {b|April 28th, 2011} UTGB Toolkit 1.5.5 released.
+** Fixes a bug when compiling a new UTGB project
+*** Do utgb upgrade in your project
+** Added {b|utgb snappy} command to compress/uncompress files
+** {b|utgb deploy} command now supports deployment to a remote Tomcat server
+** Maven-3.0.3 is embedded in UTGB. {b|utgb maven} can be used instead of installing mvn command.
+
 * {b|March 24th, 2011} UTGB Toolkit 1.5.4 released.
 ** Includes several bug fixes for version 1.5.1 
 ** Added {b|utgb read-stat} command for obtaining simple stats for BAM files
