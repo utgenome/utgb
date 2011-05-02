@@ -73,6 +73,7 @@ public class ReadStat extends UTGBCommandBase {
 		public long numRepeat = 0;
 		public long numAlignedWithSW = 0;
 		public long numMateIsUnmapped = 0;
+		public long numMappedPairs = 0;
 
 		public ReadAlignmentStat() {
 		}
@@ -102,6 +103,7 @@ public class ReadStat extends UTGBCommandBase {
 			numRepeat += other.numRepeat;
 			numAlignedWithSW += other.numAlignedWithSW;
 			numMateIsUnmapped += other.numMateIsUnmapped;
+			numMappedPairs += other.numMappedPairs;
 		}
 
 	}
@@ -168,6 +170,11 @@ public class ReadStat extends UTGBCommandBase {
 						if (read.getMateUnmappedFlag()) {
 							stat.numMateIsUnmapped++;
 						}
+						else {
+							if (read.getFirstOfPairFlag())
+								stat.numMappedPairs++;
+						}
+
 					}
 				}
 			}
