@@ -68,6 +68,7 @@ public class ReadStat extends UTGBCommandBase {
 
 		public long numRead = 0;
 		public long numMapped = 0;
+		public long numPairs = 0;
 		public long numUnmapped = 0;
 		public long numUnique = 0;
 		public long numRepeat = 0;
@@ -98,6 +99,7 @@ public class ReadStat extends UTGBCommandBase {
 			bamFile.addAll(other.bamFile);
 			numRead += other.numRead;
 			numMapped += other.numMapped;
+			numPairs += other.numPairs;
 			numUnmapped += other.numUnmapped;
 			numUnique += other.numUnique;
 			numRepeat += other.numRepeat;
@@ -167,14 +169,23 @@ public class ReadStat extends UTGBCommandBase {
 					}
 
 					if (read.getReadPairedFlag()) {
-						if (read.getMateUnmappedFlag()) {
-							stat.numMateIsUnmapped++;
-						}
-						else {
-							if (read.getFirstOfPairFlag())
-								stat.numMappedPairs++;
-						}
 
+						if (read.getFirstOfPairFlag()) { // Count only for the first-end of a pair
+							stat.numPairs++;
+
+							if (read.getReadUnmappedFlag()) {
+								if (read.getMateUnmappedFlag())
+									stat.numMateIsUnmapped++; // both ends are not mapped
+								else
+									stat.numMateIsUnmapped++; // one-end is not mapped
+							}
+							else {
+								if (read.getMateUnmappedFlag())
+									stat.numMateIsUnmapped++; // one-end is not mapped
+								else
+									stat.numMappedPairs++; // both ends are mapped
+							}
+						}
 					}
 				}
 			}
