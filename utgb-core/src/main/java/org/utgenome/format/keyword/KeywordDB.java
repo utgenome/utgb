@@ -303,7 +303,7 @@ public class KeywordDB {
 
 				public void addGene(BEDEntry gene) {
 					entryCount++;
-					GenomeKeywordEntry e = new GenomeKeywordEntry(ref, gene.coordinate, gene.getName(), gene.getStart(), gene.getEnd());
+					GenomeKeywordEntry e = new GenomeKeywordEntry(ref, gene.chr, gene.getName(), gene.getStart(), gene.getEnd());
 					try {
 						if (entryCount > 0 && (entryCount % 10000 == 0))
 							_logger.info("num entries: " + entryCount);

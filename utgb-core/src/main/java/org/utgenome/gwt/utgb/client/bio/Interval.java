@@ -32,7 +32,7 @@ import java.io.Serializable;
  * @author leo
  * 
  */
-public class Interval implements OnGenome, Comparable<Interval>, Serializable {
+public class Interval implements GenomeRange, Comparable<Interval>, Serializable {
 
 	/**
 	 * 
@@ -129,7 +129,7 @@ public class Interval implements OnGenome, Comparable<Interval>, Serializable {
 		return getEnd() - getStart();
 	}
 
-	public boolean hasOverlap(Interval other) {
+	public boolean hasOverlap(GenomeRange other) {
 		int s1 = getStart();
 		int e1 = getEnd();
 		int s2 = other.getStart();
@@ -177,7 +177,7 @@ public class Interval implements OnGenome, Comparable<Interval>, Serializable {
 		return other.end <= this.start;
 	}
 
-	public void accept(OnGenomeDataVisitor visitor) {
+	public void accept(GenomeRangeVisitor visitor) {
 		visitor.visitInterval(this);
 	}
 

@@ -107,7 +107,7 @@ public class SAMRead extends SAMReadLight {
 	}
 
 	@Override
-	public void accept(OnGenomeDataVisitor visitor) {
+	public void accept(GenomeRangeVisitor visitor) {
 		visitor.visitSAMRead(this);
 	}
 

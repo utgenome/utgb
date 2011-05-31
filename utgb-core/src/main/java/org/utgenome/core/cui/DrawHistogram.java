@@ -80,6 +80,12 @@ public class DrawHistogram extends UTGBCommandBase {
 	@Option(symbol = "o", description = "output file name. default: out.png")
 	private String output = "out.png";
 
+	@Option(longName = "xlabel", description = "X-axis label")
+	private String xLabel;
+
+	@Option(longName = "title", description = "Chart Title")
+	private String title;
+
 	public static void main(String[] args) {
 
 		try {
@@ -146,12 +152,19 @@ public class DrawHistogram extends UTGBCommandBase {
 			dataSet.addSeries("data", value, numBins);
 			JFreeChart chart = ChartFactory.createHistogram(null, null, "Frequency", dataSet, PlotOrientation.VERTICAL, false, false, false);
 
+			if (title != null) {
+				chart.setTitle(title);
+			}
+
 			ValueAxis domainAxis = chart.getXYPlot().getDomainAxis();
 			if (cutOffHead) {
 				domainAxis.setLowerBound(xMin);
 			}
 			if (cutOffTail) {
 				domainAxis.setUpperBound(xMax);
+			}
+			if (xLabel != null) {
+				domainAxis.setLabel(xLabel);
 			}
 
 			if (yLog) {
@@ -188,8 +201,6 @@ public class DrawHistogram extends UTGBCommandBase {
 	public String getOneLineDescription() {
 		return "draw a histogram";
 	}
-
-
 
 	@Override
 	public void execute(String[] args) throws Exception {

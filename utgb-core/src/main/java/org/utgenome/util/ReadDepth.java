@@ -26,7 +26,7 @@ import java.util.Iterator;
 import java.util.PriorityQueue;
 
 import org.utgenome.gwt.utgb.client.bio.Interval;
-import org.utgenome.gwt.utgb.client.bio.OnGenome;
+import org.utgenome.gwt.utgb.client.bio.GenomeRange;
 import org.utgenome.gwt.utgb.client.canvas.IntervalTree;
 import org.xerial.util.log.Logger;
 
@@ -64,14 +64,14 @@ public class ReadDepth {
 	 * @param out
 	 * @throws Exception
 	 */
-	public static void compute(String chr, Iterator<OnGenome> cursor, DepthOutput out) throws Exception {
+	public static void compute(String chr, Iterator<GenomeRange> cursor, DepthOutput out) throws Exception {
 		new ReadDepth(out).computeDepth(chr, cursor);
 	}
 
-	protected void computeDepth(String chr, Iterator<OnGenome> cursor) throws Exception {
+	protected void computeDepth(String chr, Iterator<GenomeRange> cursor) throws Exception {
 
 		for (; cursor.hasNext();) {
-			OnGenome read = cursor.next();
+			GenomeRange read = cursor.next();
 			readCount++;
 
 			if (_logger.isDebugEnabled() && readCount > 0 && (readCount % 10000) == 0) {

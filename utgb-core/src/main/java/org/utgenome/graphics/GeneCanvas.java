@@ -38,7 +38,7 @@ import org.utgenome.gwt.utgb.client.bio.CDS;
 import org.utgenome.gwt.utgb.client.bio.Exon;
 import org.utgenome.gwt.utgb.client.bio.Gene;
 import org.utgenome.gwt.utgb.client.bio.Interval;
-import org.utgenome.gwt.utgb.client.bio.OnGenome;
+import org.utgenome.gwt.utgb.client.bio.GenomeRange;
 import org.utgenome.gwt.utgb.client.bio.Read;
 import org.utgenome.gwt.utgb.client.canvas.PrioritySearchTree;
 import org.utgenome.gwt.utgb.server.app.MethylViewer;
@@ -85,15 +85,15 @@ public class GeneCanvas {
 	}
 
 	public class LocusLayout {
-		private OnGenome gene;
+		private GenomeRange gene;
 		private int yOffset;
 
-		public LocusLayout(OnGenome gene, int yOffset) {
+		public LocusLayout(GenomeRange gene, int yOffset) {
 			this.gene = gene;
 			this.yOffset = yOffset;
 		}
 
-		public OnGenome getLocus() {
+		public GenomeRange getLocus() {
 			return gene;
 		}
 
@@ -115,7 +115,7 @@ public class GeneCanvas {
 		this.gapWidth = gapWidth;
 	}
 
-	<T extends OnGenome> int createLayout(List<T> locusList) {
+	<T extends GenomeRange> int createLayout(List<T> locusList) {
 		int maxYOffset = 0;
 		locusLayout.clear();
 
@@ -126,7 +126,7 @@ public class GeneCanvas {
 		FontMetrics fontMetrics = canvas.getGraphics().getFontMetrics(f);
 		long leftOnGenome = canvas.getGenomeWindow().startIndexOnGenome;
 
-		for (OnGenome l : locusList) {
+		for (GenomeRange l : locusList) {
 
 			int x1 = l.getStart();
 			int x2 = l.getStart() + l.length();
@@ -163,7 +163,7 @@ public class GeneCanvas {
 		return maxYOffset;
 	}
 
-	public <E extends OnGenome> void draw(List<E> geneList) {
+	public <E extends GenomeRange> void draw(List<E> geneList) {
 
 		// create a gene layout
 		int maxOffset = createLayout(geneList);
@@ -182,7 +182,7 @@ public class GeneCanvas {
 
 			public void visit(LocusLayout layout) {
 				layout.yOffset = layout.yOffset * h;
-				OnGenome l = layout.getLocus();
+				GenomeRange l = layout.getLocus();
 				long lx = l.getStart();
 				long lx2 = l.getStart() + l.length();
 
@@ -238,7 +238,7 @@ public class GeneCanvas {
 
 	}
 
-	public void draw(OnGenome locus, int yOffset) {
+	public void draw(GenomeRange locus, int yOffset) {
 		if (Gene.class.isInstance(locus))
 			draw((Gene) locus, yOffset);
 		else
@@ -312,27 +312,27 @@ public class GeneCanvas {
 		ImageIO.write(canvas.getBufferedImage(), "png", out);
 	}
 
-	public Color getExonColor(OnGenome g) {
+	public Color getExonColor(GenomeRange g) {
 		return hexValue2Color(getExonColorText(g), 0.3f);
 	}
 
-	public Color getGeneColor(OnGenome g) {
+	public Color getGeneColor(GenomeRange g) {
 		return hexValue2Color(getExonColorText(g), 0.7f);
 	}
 
-	public Color getGeneColor(OnGenome g, float offset) {
+	public Color getGeneColor(GenomeRange g, float offset) {
 		return hexValue2Color(getExonColorText(g), offset);
 	}
 
-	public Color getCDSColor(OnGenome g) {
+	public Color getCDSColor(GenomeRange g) {
 		return hexValue2Color(getExonColorText(g), 0.5f);
 	}
 
-	public Color getIntronColor(OnGenome g) {
+	public Color getIntronColor(GenomeRange g) {
 		return hexValue2Color(getExonColorText(g), 0.5f);
 	}
 
-	public String getExonColorText(OnGenome g) {
+	public String getExonColorText(GenomeRange g) {
 		if (g instanceof Read) {
 			Read r = (Read) g;
 			if (r.getColor() == null) {

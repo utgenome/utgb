@@ -44,9 +44,9 @@ import org.utgenome.gwt.utgb.client.bio.Gene;
 import org.utgenome.gwt.utgb.client.bio.GraphData;
 import org.utgenome.gwt.utgb.client.bio.InfoSilkGenerator;
 import org.utgenome.gwt.utgb.client.bio.Interval;
-import org.utgenome.gwt.utgb.client.bio.OnGenome;
-import org.utgenome.gwt.utgb.client.bio.OnGenomeDataVisitor;
-import org.utgenome.gwt.utgb.client.bio.OnGenomeDataVisitorBase;
+import org.utgenome.gwt.utgb.client.bio.GenomeRange;
+import org.utgenome.gwt.utgb.client.bio.GenomeRangeVisitor;
+import org.utgenome.gwt.utgb.client.bio.GenomeRangeVisitorBase;
 import org.utgenome.gwt.utgb.client.bio.Read;
 import org.utgenome.gwt.utgb.client.bio.ReadCoverage;
 import org.utgenome.gwt.utgb.client.bio.ReadList;
@@ -125,7 +125,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 
 	static class PopupInfo extends PopupPanel {
 
-		OnGenome locus;
+		GenomeRange locus;
 		private FlexTable infoTable = new FlexTable();
 
 		public PopupInfo() {
@@ -136,7 +136,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 			this.setWidget(infoFrame);
 		}
 
-		public void setLocus(OnGenome g) {
+		public void setLocus(GenomeRange g) {
 			if (this.locus == g)
 				return;
 
@@ -220,7 +220,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 	}
 
 	private boolean startDrag(int clientX, int clientY) {
-		OnGenome g = overlappedInterval(clientX, clientY, 2);
+		GenomeRange g = overlappedInterval(clientX, clientY, 2);
 		if (g != null) {
 			if (clickHandler != null)
 				clickHandler.onClick(clientX, clientY, g);
@@ -239,7 +239,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 
 	private void moveDrag(int clientX, int clientY) {
 		// show readLabels 
-		OnGenome g = overlappedInterval(clientX, clientY, 2);
+		GenomeRange g = overlappedInterval(clientX, clientY, 2);
 		if (g != null) {
 			if (popupLabel.locus != g) {
 
@@ -307,7 +307,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 
 	private Optional<DragPoint> dragStartPoint = new Optional<DragPoint>();
 
-	public void displayInfo(final int clientX, final int clientY, final OnGenome g) {
+	public void displayInfo(final int clientX, final int clientY, final GenomeRange g) {
 		if (popupLabel == null)
 			popupLabel = new PopupInfo();
 
@@ -352,15 +352,15 @@ public class GWTGenomeCanvas extends TouchableComposite {
 	 * @param xBorder
 	 * @return
 	 */
-	private OnGenome overlappedInterval(Event event, int xBorder) {
+	private GenomeRange overlappedInterval(Event event, int xBorder) {
 		return overlappedInterval(getXOnCanvas(event), getYOnCanvas(event), xBorder);
 	}
 
-	private OnGenome overlappedInterval(int clientX, int clientY, int xBorder) {
+	private GenomeRange overlappedInterval(int clientX, int clientY, int xBorder) {
 		int h = getReadHeight();
 		int x = drawPosition(clientX);
 		int y = clientY;
-		OnGenome g = intervalLayout.overlappedInterval(x, y, xBorder, h);
+		GenomeRange g = intervalLayout.overlappedInterval(x, y, xBorder, h);
 		return g;
 	}
 
@@ -547,7 +547,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 	 * @author leo
 	 * 
 	 */
-	class ReadPainter extends OnGenomeDataVisitorBase {
+	class ReadPainter extends GenomeRangeVisitorBase {
 
 		private LocusLayout gl;
 		private int h = getReadHeight();
@@ -660,7 +660,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 
 		}
 
-		private void drawLabel(OnGenome r, int y) {
+		private void drawLabel(GenomeRange r, int y) {
 			if (!intervalLayout.hasEnoughHeightForLabels())
 				return;
 
@@ -714,7 +714,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 			drawPadding(pixelPositionOnWindow(p.getStart()), pixelPositionOnWindow(p.getEnd()), getYPos(), getColor("#666666", 1.0f), true);
 		}
 
-		private void drawLabel(OnGenome r) {
+		private void drawLabel(GenomeRange r) {
 			drawLabel(r, getYPos());
 		}
 
@@ -916,7 +916,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 
 	};
 
-	private class FindMaximumHeight extends OnGenomeDataVisitorBase {
+	private class FindMaximumHeight extends GenomeRangeVisitorBase {
 		int maxHeight = 1;
 
 		@Override
@@ -943,7 +943,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 		}
 	}
 
-	private class CoveragePainter extends OnGenomeDataVisitorBase {
+	private class CoveragePainter extends GenomeRangeVisitorBase {
 
 		private int heigtOfRead = 1;
 		private float scalingFactor = 1.0f;
@@ -994,7 +994,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 		}
 	}
 
-	private class RoughCoveragePainter extends OnGenomeDataVisitorBase {
+	private class RoughCoveragePainter extends GenomeRangeVisitorBase {
 
 		private int heigtOfRead = 1;
 		private float scalingFactor = 1.0f;
@@ -1047,7 +1047,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 
 	private GraphScale scale = new GraphScale();
 
-	public <T extends OnGenome> void drawBlock(ReadCoverage block) {
+	public <T extends GenomeRange> void drawBlock(ReadCoverage block) {
 
 		// compute max height
 		FindMaximumHeight hFinder = new FindMaximumHeight();
@@ -1068,7 +1068,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 		setPixelSize(trackWindow.getPixelWidth(), canvasHeight);
 
 		// draw coverage
-		OnGenomeDataVisitor cPainter;
+		GenomeRangeVisitor cPainter;
 		switch (coverageStyle) {
 		case SMOOTH:
 			cPainter = new CoveragePainter(heightOfRead, scalingFactor);
@@ -1091,7 +1091,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 		panel.add(scale, 0, 0);
 	}
 
-	public void resetData(List<OnGenome> readSet) {
+	public void resetData(List<GenomeRange> readSet) {
 		intervalLayout.reset(readSet, geneHeight);
 		hasCache = true;
 	}
@@ -1162,7 +1162,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 		return style.getReadColor(l, alpha);
 	}
 
-	private static String getExonColorText(OnGenome g) {
+	private static String getExonColorText(GenomeRange g) {
 		final String senseColor = "#d80067";
 		final String antiSenseColor = "#0067d8";
 

@@ -33,7 +33,7 @@ import org.utgenome.gwt.utgb.client.bio.CompactWIGData;
 import org.utgenome.gwt.utgb.client.bio.GenomeDB;
 import org.utgenome.gwt.utgb.client.bio.GraphWindow;
 import org.utgenome.gwt.utgb.client.bio.KeywordSearchResult;
-import org.utgenome.gwt.utgb.client.bio.OnGenome;
+import org.utgenome.gwt.utgb.client.bio.GenomeRange;
 import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig;
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.bio.WigGraphData;
@@ -95,6 +95,6 @@ public interface BrowserService extends RemoteService {
 	 *            browser information
 	 * @return
 	 */
-	public List<OnGenome> getOnGenomeData(GenomeDB db, ChrLoc range, ReadQueryConfig config);
+	public List<GenomeRange> getOnGenomeData(GenomeDB db, ChrLoc range, ReadQueryConfig config);
 
 }

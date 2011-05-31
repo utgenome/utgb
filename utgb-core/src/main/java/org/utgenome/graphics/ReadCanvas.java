@@ -49,8 +49,8 @@ import org.utgenome.gwt.utgb.client.bio.Exon;
 import org.utgenome.gwt.utgb.client.bio.Gap;
 import org.utgenome.gwt.utgb.client.bio.Gene;
 import org.utgenome.gwt.utgb.client.bio.Interval;
-import org.utgenome.gwt.utgb.client.bio.OnGenome;
-import org.utgenome.gwt.utgb.client.bio.OnGenomeDataVisitorBase;
+import org.utgenome.gwt.utgb.client.bio.GenomeRange;
+import org.utgenome.gwt.utgb.client.bio.GenomeRangeVisitorBase;
 import org.utgenome.gwt.utgb.client.bio.ReferenceSequence;
 import org.utgenome.gwt.utgb.client.bio.SAMReadLight;
 import org.utgenome.gwt.utgb.client.bio.SAMReadPair;
@@ -135,7 +135,7 @@ public class ReadCanvas {
 				return Color.white;
 		}
 
-		public Color getReadColor(OnGenome g) {
+		public Color getReadColor(GenomeRange g) {
 
 			if (SAMReadLight.class.isAssignableFrom(g.getClass())) {
 				return getSAMReadColor(SAMReadLight.class.cast(g));
@@ -143,7 +143,7 @@ public class ReadCanvas {
 			return getReadColor_internal(g);
 		}
 
-		private Color getReadColor_internal(OnGenome g) {
+		private Color getReadColor_internal(GenomeRange g) {
 			if (showStrand) {
 				if (g instanceof Interval) {
 					Interval r = (Interval) g;
@@ -153,7 +153,7 @@ public class ReadCanvas {
 			return COLOR_READ_DEFAULT;
 		}
 
-		public Color getClippedReadColor(OnGenome g) {
+		public Color getClippedReadColor(GenomeRange g) {
 			Color c = getReadColor(g);
 			return new Color(c.getRed(), c.getGreen(), c.getBlue(), (int) (255 * clippedRegionAlpha));
 		}
@@ -217,7 +217,7 @@ public class ReadCanvas {
 		ImageIO.write(image, "png", out);
 	}
 
-	public void draw(List<OnGenome> dataSet) {
+	public void draw(List<GenomeRange> dataSet) {
 		layout.setAllowOverlapPairedReads(style.overlapPairedReads);
 		layout.setKeepSpaceForLabels(style.showLabels);
 		layout.setTrackWindow(new TrackWindow(getPixelWidth(), (int) window.startIndexOnGenome, (int) window.endIndexOnGenome));
@@ -245,7 +245,7 @@ public class ReadCanvas {
 		return style.geneHeight + style.geneMargin;
 	}
 
-	private class ReadPainter extends OnGenomeDataVisitorBase {
+	private class ReadPainter extends GenomeRangeVisitorBase {
 		private LocusLayout currentLayout;
 
 		public void setLocusLayout(LocusLayout layout) {
@@ -368,7 +368,7 @@ public class ReadCanvas {
 
 	}
 
-	public void drawRegion(OnGenome region, int y) {
+	public void drawRegion(GenomeRange region, int y) {
 		drawGeneRect(region.getStart(), region.getEnd(), y, style.getReadColor(region));
 	}
 
@@ -610,7 +610,7 @@ public class ReadCanvas {
 		g.drawString(b, drawStart, yOffset + textHeight - 1);
 	}
 
-	public void drawLabel(OnGenome region, int yOffset) {
+	public void drawLabel(GenomeRange region, int yOffset) {
 		if (!style.showLabels)
 			return;
 

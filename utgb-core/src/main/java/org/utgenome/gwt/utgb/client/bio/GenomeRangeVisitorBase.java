@@ -25,15 +25,15 @@
 package org.utgenome.gwt.utgb.client.bio;
 
 /**
- * Refereece implementation of the {@link OnGenomeDataVisitor}. This visitor redirects the visiting event to the parent
+ * Refereece implementation of the {@link GenomeRangeVisitor}. This visitor redirects the visiting event to the parent
  * class of each data type.
  * 
  * @author leo
  * 
  */
-public class OnGenomeDataVisitorBase implements OnGenomeDataVisitor {
+public class GenomeRangeVisitorBase implements GenomeRangeVisitor {
 
-	public void visitDefault(OnGenome g) {
+	public void visitDefault(GenomeRange g) {
 
 	}
 

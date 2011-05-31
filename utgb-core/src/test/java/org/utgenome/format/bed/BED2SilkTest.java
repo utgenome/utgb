@@ -70,7 +70,7 @@ public class BED2SilkTest {
 
 			public void handle(BEDEntry g) throws Exception {
 				if (g.getName().equals("Pos1")) {
-					assertEquals("chr7", g.coordinate);
+					assertEquals("chr7", g.chr);
 					assertEquals(127471197, g.getStart());
 					assertEquals(127472364, g.getEnd());
 					assertEquals('+', g.getStrand());
@@ -85,7 +85,7 @@ public class BED2SilkTest {
 				}
 				else if (g.getName().equals("Pos2")) {
 					//127472363	127473530	Pos2	200	+	127472363	127473530	255,0,0
-					assertEquals("chr7", g.coordinate);
+					assertEquals("chr7", g.chr);
 					assertEquals(127472364, g.getStart());
 					assertEquals(127473531, g.getEnd());
 					assertEquals('+', g.getStrand());
@@ -175,7 +175,7 @@ public class BED2SilkTest {
 
 			public void handle(BEDEntry g) throws Exception {
 				if (g.getName().equals("AF071353.1")) {
-					assertEquals("chrIV", g.coordinate);
+					assertEquals("chrIV", g.chr);
 					assertEquals(17339775, g.getStart());
 					assertEquals(17339830, g.getEnd());
 					assertEquals('-', g.getStrand());
@@ -185,7 +185,7 @@ public class BED2SilkTest {
 					geneCount++;
 				}
 				else if (g.getName().equals("AF071356.1")) {
-					assertEquals("chrV", g.coordinate);
+					assertEquals("chrV", g.chr);
 					assertEquals(15922528, g.getStart());
 					assertEquals(15922545, g.getEnd());
 					assertEquals('+', g.getStrand());

@@ -154,7 +154,7 @@ public class CompactWIGData implements GraphData {
 		return sb.toString();
 	}
 
-	public void accept(OnGenomeDataVisitor visitor) {
+	public void accept(GenomeRangeVisitor visitor) {
 		visitor.visitGraph(this);
 	}
 

@@ -38,7 +38,7 @@ import org.utgenome.format.bed.BEDDatabase;
 import org.utgenome.graphics.GeneCanvas;
 import org.utgenome.graphics.GenomeWindow;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
-import org.utgenome.gwt.utgb.client.bio.OnGenome;
+import org.utgenome.gwt.utgb.client.bio.GenomeRange;
 import org.utgenome.gwt.utgb.server.WebTrackBase;
 import org.xerial.lens.SilkLens;
 import org.xerial.util.log.Logger;
@@ -67,7 +67,7 @@ public class BEDViewer extends WebTrackBase implements Serializable {
 	public void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		try {
-			List<OnGenome> geneList = BEDDatabase.overlapQuery(new File(getProjectRootPath(), fileName), new ChrLoc(name, start, end));
+			List<GenomeRange> geneList = BEDDatabase.overlapQuery(new File(getProjectRootPath(), fileName), new ChrLoc(name, start, end));
 
 			String suffix = getActionSuffix(request);
 

@@ -30,6 +30,6 @@ package org.utgenome.gwt.utgb.client.bio;
  * @author leo
  * 
  */
-public interface GraphData extends OnGenome {
+public interface GraphData extends GenomeRange {
 
 }

@@ -36,7 +36,7 @@ public class BEDGene extends Gene implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public String coordinate;
+	public String chr;
 	public int score = 0;
 
 	public BEDGene() {
@@ -44,7 +44,7 @@ public class BEDGene extends Gene implements Serializable {
 
 	public BEDGene(BEDGene other) {
 		super(other);
-		this.coordinate = other.coordinate;
+		this.chr = other.chr;
 		this.score = other.score;
 	}
 
@@ -53,7 +53,7 @@ public class BEDGene extends Gene implements Serializable {
 	}
 
 	@Override
-	public void accept(OnGenomeDataVisitor visitor) {
+	public void accept(GenomeRangeVisitor visitor) {
 		visitor.visitBEDGene(this);
 	}
 }

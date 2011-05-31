@@ -84,6 +84,11 @@ public class IUPACTest {
 	}
 
 	@Test
+	public void dot() throws Exception {
+		assertEquals(IUPAC.N, IUPAC.encode('.'));
+	}
+
+	@Test
 	public void complement() throws Exception {
 
 		ArrayList<String> complementList = new ArrayList<String>();

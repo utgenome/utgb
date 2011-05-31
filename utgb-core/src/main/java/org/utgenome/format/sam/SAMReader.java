@@ -49,7 +49,7 @@ import org.utgenome.graphics.GenomeWindow;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.CompactWIGData;
 import org.utgenome.gwt.utgb.client.bio.Interval;
-import org.utgenome.gwt.utgb.client.bio.OnGenome;
+import org.utgenome.gwt.utgb.client.bio.GenomeRange;
 import org.utgenome.gwt.utgb.client.bio.ReadCoverage;
 import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig;
 import org.utgenome.gwt.utgb.client.bio.SAMReadLight;
@@ -203,17 +203,17 @@ public class SAMReader {
 
 	}
 
-	public static List<OnGenome> depthCoverage(ChrLoc loc, int pixelWidth, List<SAMRecord> loadedReadSet, CloseableIterator<SAMRecord> cursor) {
+	public static List<GenomeRange> depthCoverage(ChrLoc loc, int pixelWidth, List<SAMRecord> loadedReadSet, CloseableIterator<SAMRecord> cursor) {
 
 		ComputeDepth d = new ComputeDepth(loc, pixelWidth);
 		d.computeDepth(loadedReadSet, cursor);
 
-		List<OnGenome> result = new ArrayList<OnGenome>();
+		List<GenomeRange> result = new ArrayList<GenomeRange>();
 		result.add(new ReadCoverage(loc.start, loc.end, pixelWidth, d.coverage));
 		return result;
 	}
 
-	public static List<OnGenome> depthCoverage(File bamFile, ChrLoc loc, int pixelWidth, ReadQueryConfig config) throws UTGBException {
+	public static List<GenomeRange> depthCoverage(File bamFile, ChrLoc loc, int pixelWidth, ReadQueryConfig config) throws UTGBException {
 
 		if (config.wigPath != null && loc.length() >= 10000) { // 10,000b = 10Kb
 			return depthCoverageInWIG(new File(config.wigPath), loc, pixelWidth, config);
@@ -231,7 +231,7 @@ public class SAMReader {
 		try {
 			ComputeDepth d = new ComputeDepth(loc, pixelWidth);
 			d.computeDepth(it);
-			List<OnGenome> result = new ArrayList<OnGenome>();
+			List<GenomeRange> result = new ArrayList<GenomeRange>();
 			result.add(new ReadCoverage(loc.start, loc.end, pixelWidth, d.coverage));
 			return result;
 		}
@@ -241,9 +241,9 @@ public class SAMReader {
 		}
 	}
 
-	public static List<OnGenome> depthCoverageInWIG(File wigFile, ChrLoc loc, int pixelWidth, ReadQueryConfig config) throws UTGBException {
+	public static List<GenomeRange> depthCoverageInWIG(File wigFile, ChrLoc loc, int pixelWidth, ReadQueryConfig config) throws UTGBException {
 		try {
-			ArrayList<OnGenome> result = new ArrayList<OnGenome>();
+			ArrayList<GenomeRange> result = new ArrayList<GenomeRange>();
 
 			if (_logger.isDebugEnabled())
 				_logger.debug(String.format("depth coverage in WIG: %s - %s", wigFile, loc));
@@ -277,7 +277,7 @@ public class SAMReader {
 	 * @return
 	 * @throws UTGBException
 	 */
-	public static List<OnGenome> overlapQuery(File bamFile, ChrLoc loc, int pixelWidth, ReadQueryConfig config) throws UTGBException {
+	public static List<GenomeRange> overlapQuery(File bamFile, ChrLoc loc, int pixelWidth, ReadQueryConfig config) throws UTGBException {
 
 		if (config.wigPath != null && loc.length() >= 10000) {
 			return depthCoverageInWIG(new File(config.wigPath), loc, pixelWidth, config);
@@ -294,7 +294,7 @@ public class SAMReader {
 			_logger.debug(String.format("query BAM (%s) %s", bamFile, loc));
 
 		int readCount = 0;
-		List<OnGenome> result = new ArrayList<OnGenome>();
+		List<GenomeRange> result = new ArrayList<GenomeRange>();
 		{
 			List<SAMRecord> readSet = new ArrayList<SAMRecord>();
 
@@ -397,8 +397,8 @@ public class SAMReader {
 			_logger.debug(String.format("sorting (%s) %s : %d reads", bamFile.getName(), loc, readCount));
 		}
 
-		Collections.sort(result, new Comparator<OnGenome>() {
-			public int compare(OnGenome o1, OnGenome o2) {
+		Collections.sort(result, new Comparator<GenomeRange>() {
+			public int compare(GenomeRange o1, GenomeRange o2) {
 				int diff = o1.getStart() - o2.getStart();
 				if (diff == 0) {
 					return o2.length() - o1.length();

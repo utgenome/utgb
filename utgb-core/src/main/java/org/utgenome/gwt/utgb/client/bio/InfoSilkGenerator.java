@@ -34,7 +34,7 @@ import java.util.ListIterator;
  * @author leo
  * 
  */
-public class InfoSilkGenerator extends OnGenomeDataVisitorBase {
+public class InfoSilkGenerator extends GenomeRangeVisitorBase {
 
 	public ArrayList<String> lines = new ArrayList<String>();
 

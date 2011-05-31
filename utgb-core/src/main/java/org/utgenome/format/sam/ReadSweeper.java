@@ -25,7 +25,7 @@ package org.utgenome.format.sam;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.utgenome.gwt.utgb.client.bio.OnGenome;
+import org.utgenome.gwt.utgb.client.bio.GenomeRange;
 import org.utgenome.gwt.utgb.client.canvas.IntervalTree;
 import org.xerial.util.log.Logger;
 
@@ -35,7 +35,7 @@ import org.xerial.util.log.Logger;
  * @author leo
  * 
  */
-public class ReadSweeper<T extends OnGenome> {
+public class ReadSweeper<T extends GenomeRange> {
 
 	private static Logger _logger = Logger.getLogger(ReadSweeper.class);
 
@@ -43,7 +43,7 @@ public class ReadSweeper<T extends OnGenome> {
 	private int sweepLine = 1;
 	private long readCount = 0;
 
-	public interface ReadSetHandler<T extends OnGenome> {
+	public interface ReadSetHandler<T extends GenomeRange> {
 		public void handle(int sweepLine, Collection<T> readSet);
 	}
 
@@ -77,7 +77,7 @@ public class ReadSweeper<T extends OnGenome> {
 
 	private int maxReadEnd(Iterable<T> readSet) {
 		int maxEnd = -1;
-		for (OnGenome each : readSet) {
+		for (GenomeRange each : readSet) {
 			if (maxEnd < each.getEnd())
 				maxEnd = each.getEnd();
 		}

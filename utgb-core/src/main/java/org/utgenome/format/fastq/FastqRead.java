@@ -97,9 +97,14 @@ public class FastqRead {
 
 	public String toSilk() {
 		StringWriter w = new StringWriter();
-		SilkWriter sw = new SilkWriter(w);
-		toSilk(sw);
-		sw.flush();
+		w.append("-fastq");
+		w.append("\n -name:");
+		w.append(seqname);
+		w.append("\n -seq :");
+		w.append(seq);
+		w.append("\n -qual:");
+		w.append(qual);
+		w.append("\n");
 		return w.toString();
 	}
 

@@ -68,13 +68,15 @@ public class ReadStat extends UTGBCommandBase {
 
 		public long numRead = 0;
 		public long numMapped = 0;
-		public long numPairs = 0;
 		public long numUnmapped = 0;
 		public long numUnique = 0;
 		public long numRepeat = 0;
 		public long numAlignedWithSW = 0;
-		public long numMateIsUnmapped = 0;
-		public long numMappedPairs = 0;
+
+		public long numPairs = 0;
+		public long numBothEndIsMapped = 0;
+		public long numOneEndIsMapped = 0;
+		public long numBothEndIsUnmapped = 0;
 
 		public ReadAlignmentStat() {
 		}
@@ -99,13 +101,16 @@ public class ReadStat extends UTGBCommandBase {
 			bamFile.addAll(other.bamFile);
 			numRead += other.numRead;
 			numMapped += other.numMapped;
-			numPairs += other.numPairs;
+
 			numUnmapped += other.numUnmapped;
 			numUnique += other.numUnique;
 			numRepeat += other.numRepeat;
 			numAlignedWithSW += other.numAlignedWithSW;
-			numMateIsUnmapped += other.numMateIsUnmapped;
-			numMappedPairs += other.numMappedPairs;
+
+			numPairs += other.numPairs;
+			numBothEndIsMapped += other.numBothEndIsMapped;
+			numOneEndIsMapped += other.numOneEndIsMapped;
+			numBothEndIsUnmapped += other.numBothEndIsUnmapped;
 		}
 
 	}
@@ -175,15 +180,15 @@ public class ReadStat extends UTGBCommandBase {
 
 							if (read.getReadUnmappedFlag()) {
 								if (read.getMateUnmappedFlag())
-									stat.numMateIsUnmapped++; // both ends are not mapped
+									stat.numBothEndIsUnmapped++; // both ends are not mapped
 								else
-									stat.numMateIsUnmapped++; // one-end is not mapped
+									stat.numOneEndIsMapped++; // one-end is not mapped
 							}
 							else {
 								if (read.getMateUnmappedFlag())
-									stat.numMateIsUnmapped++; // one-end is not mapped
+									stat.numOneEndIsMapped++; // one-end is not mapped
 								else
-									stat.numMappedPairs++; // both ends are mapped
+									stat.numBothEndIsMapped++; // both ends are mapped
 							}
 						}
 					}

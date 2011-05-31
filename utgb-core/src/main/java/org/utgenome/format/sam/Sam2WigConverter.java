@@ -36,8 +36,8 @@ import net.sf.samtools.SAMSequenceRecord;
 
 import org.utgenome.UTGBException;
 import org.utgenome.gwt.utgb.client.bio.Interval;
-import org.utgenome.gwt.utgb.client.bio.OnGenome;
-import org.utgenome.gwt.utgb.client.bio.OnGenomeDataVisitor;
+import org.utgenome.gwt.utgb.client.bio.GenomeRange;
+import org.utgenome.gwt.utgb.client.bio.GenomeRangeVisitor;
 import org.utgenome.util.ReadDepth;
 import org.utgenome.util.ReadDepth.DepthOutput;
 import org.xerial.util.ArrayDeque;
@@ -98,7 +98,7 @@ public class Sam2WigConverter {
 	 * @author leo
 	 * 
 	 */
-	public static class SAMRecordCursor implements Iterator<OnGenome> {
+	public static class SAMRecordCursor implements Iterator<GenomeRange> {
 
 		private static class SAMRecordWrap extends Interval {
 
@@ -116,7 +116,7 @@ public class Sam2WigConverter {
 			}
 
 			@Override
-			public void accept(OnGenomeDataVisitor visitor) {
+			public void accept(GenomeRangeVisitor visitor) {
 				visitor.visitInterval(this);
 			}
 
@@ -145,7 +145,7 @@ public class Sam2WigConverter {
 			return false;
 		}
 
-		public OnGenome next() {
+		public GenomeRange next() {
 			if (hasNext())
 				return new SAMRecordWrap(queue.pollFirst());
 

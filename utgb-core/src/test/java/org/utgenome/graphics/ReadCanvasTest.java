@@ -29,7 +29,7 @@ import org.junit.Test;
 import org.utgenome.format.sam.SAMReader;
 import org.utgenome.graphics.ReadCanvas.DrawStyle;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
-import org.utgenome.gwt.utgb.client.bio.OnGenome;
+import org.utgenome.gwt.utgb.client.bio.GenomeRange;
 import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig;
 import org.utgenome.util.TestHelper;
 
@@ -48,7 +48,7 @@ public class ReadCanvasTest {
 		ReadQueryConfig config = new ReadQueryConfig();
 		config.pixelWidth = canvas.getPixelWidth();
 		config.maxmumNumberOfReadsToDisplay = Integer.MAX_VALUE;
-		List<OnGenome> dataSet = SAMReader.overlapQuery(bam, new ChrLoc("chr1", (int) w.startIndexOnGenome, (int) w.endIndexOnGenome), canvas.getPixelWidth(),
+		List<GenomeRange> dataSet = SAMReader.overlapQuery(bam, new ChrLoc("chr1", (int) w.startIndexOnGenome, (int) w.endIndexOnGenome), canvas.getPixelWidth(),
 				config);
 
 		canvas.draw(dataSet);

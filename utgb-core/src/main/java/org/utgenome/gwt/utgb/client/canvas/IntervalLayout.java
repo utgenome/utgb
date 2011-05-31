@@ -31,8 +31,8 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.utgenome.gwt.utgb.client.bio.Interval;
-import org.utgenome.gwt.utgb.client.bio.OnGenome;
-import org.utgenome.gwt.utgb.client.bio.OnGenomeDataVisitorBase;
+import org.utgenome.gwt.utgb.client.bio.GenomeRange;
+import org.utgenome.gwt.utgb.client.bio.GenomeRangeVisitorBase;
 import org.utgenome.gwt.utgb.client.bio.ReadCoverage;
 import org.utgenome.gwt.utgb.client.bio.SAMReadLight;
 import org.utgenome.gwt.utgb.client.bio.SAMReadPair;
@@ -50,22 +50,22 @@ public class IntervalLayout {
 	private boolean keepSpaceForLabels = true;
 	private boolean hasEnoughHeightForLabels = false;
 	private boolean allowPairedReadsOverlaop = true;
-	private PrioritySearchTree<OnGenome> globalLayout = new PrioritySearchTree<OnGenome>();
+	private PrioritySearchTree<GenomeRange> globalLayout = new PrioritySearchTree<GenomeRange>();
 	private PrioritySearchTree<LocusLayout> localLayoutInView = new PrioritySearchTree<LocusLayout>();
 
 	private TrackWindow w;
 
 	public static class LocusLayout {
-		private OnGenome locus;
+		private GenomeRange locus;
 		private int yOffset;
 		private int height = 1;
 
-		public LocusLayout(OnGenome locus, int yOffset) {
+		public LocusLayout(GenomeRange locus, int yOffset) {
 			this.locus = locus;
 			this.yOffset = yOffset;
 		}
 
-		public LocusLayout(OnGenome locus, int yOffset, int height) {
+		public LocusLayout(GenomeRange locus, int yOffset, int height) {
 			this.locus = locus;
 			this.yOffset = yOffset;
 			this.height = height;
@@ -75,7 +75,7 @@ public class IntervalLayout {
 			return height;
 		}
 
-		public OnGenome getLocus() {
+		public GenomeRange getLocus() {
 			return locus;
 		}
 
@@ -100,7 +100,7 @@ public class IntervalLayout {
 		this.w = window;
 	}
 
-	public static int estimiateLabelWidth(OnGenome l, int geneHeight) {
+	public static int estimiateLabelWidth(GenomeRange l, int geneHeight) {
 		String name = l.getName();
 		int labelWidth = name != null ? (int) (name.length() * geneHeight * 0.9) : 0;
 		if (labelWidth > 150)
@@ -108,10 +108,10 @@ public class IntervalLayout {
 		return labelWidth;
 	}
 
-	public List<OnGenome> activeReads() {
-		final ArrayList<OnGenome> activeData = new ArrayList<OnGenome>();
-		globalLayout.depthFirstSearch(new PrioritySearchTree.Visitor<OnGenome>() {
-			public void visit(OnGenome l) {
+	public List<GenomeRange> activeReads() {
+		final ArrayList<GenomeRange> activeData = new ArrayList<GenomeRange>();
+		globalLayout.depthFirstSearch(new PrioritySearchTree.Visitor<GenomeRange>() {
+			public void visit(GenomeRange l) {
 				if (w.overlapWith(l))
 					activeData.add(l);
 			}
@@ -125,7 +125,7 @@ public class IntervalLayout {
 	 * @author leo
 	 * 
 	 */
-	public static class IntervalRetriever extends OnGenomeDataVisitorBase {
+	public static class IntervalRetriever extends GenomeRangeVisitorBase {
 
 		public boolean allowPEOverlap = false;
 		public int start = -1;
@@ -212,11 +212,11 @@ public class IntervalLayout {
 	 * @param geneHeight
 	 *            * @return
 	 */
-	public <T extends OnGenome> int reset(List<T> intervalList, int geneHeight) {
+	public <T extends GenomeRange> int reset(List<T> intervalList, int geneHeight) {
 
 		globalLayout.clear();
 		IntervalRetriever ir = new IntervalRetriever();
-		for (OnGenome l : intervalList) {
+		for (GenomeRange l : intervalList) {
 			ir.clear();
 			l.accept(ir);
 			if (!ir.isDefined)
@@ -252,7 +252,7 @@ public class IntervalLayout {
 			maxYOffset = 0;
 		}
 
-		public void handle(OnGenome l) {
+		public void handle(GenomeRange l) {
 			ir.clear();
 			l.accept(ir);
 			if (!ir.isDefined)
@@ -309,14 +309,14 @@ public class IntervalLayout {
 	 * @param geneHeight
 	 *            * @return
 	 */
-	public <T extends OnGenome> int createLocalLayout(final int geneHeight) {
+	public <T extends GenomeRange> int createLocalLayout(final int geneHeight) {
 
 		//int maxYOffset = 0;
 
-		List<OnGenome> readsInRange = globalLayout.rangeQuery(w.getStartOnGenome(), Integer.MAX_VALUE, w.getEndOnGenome());
+		List<GenomeRange> readsInRange = globalLayout.rangeQuery(w.getStartOnGenome(), Integer.MAX_VALUE, w.getEndOnGenome());
 
-		Collections.sort(readsInRange, new Comparator<OnGenome>() {
-			public int compare(OnGenome o1, OnGenome o2) {
+		Collections.sort(readsInRange, new Comparator<GenomeRange>() {
+			public int compare(GenomeRange o1, GenomeRange o2) {
 				int diff = o1.getStart() - o2.getStart();
 				if (diff == 0)
 					return o1.length() - o2.length();
@@ -331,7 +331,7 @@ public class IntervalLayout {
 			localLayoutInView.clear();
 			layoutGenerator.reset();
 
-			for (OnGenome each : readsInRange) {
+			for (GenomeRange each : readsInRange) {
 				layoutGenerator.handle(each);
 				toContinue = layoutGenerator.needRelayout;
 				if (!layoutGenerator.toContinue())
@@ -372,12 +372,12 @@ public class IntervalLayout {
 	 * @author leo
 	 * 
 	 */
-	private static class PairedEndTargetResolver extends OnGenomeDataVisitorBase {
-		private OnGenome target;
+	private static class PairedEndTargetResolver extends GenomeRangeVisitorBase {
+		private GenomeRange target;
 		private final int start;
 		private final int yOffset;
 
-		public PairedEndTargetResolver(OnGenome g, int start, int yOffset) {
+		public PairedEndTargetResolver(GenomeRange g, int start, int yOffset) {
 			this.target = g;
 			this.start = start;
 			this.yOffset = yOffset;
@@ -400,7 +400,7 @@ public class IntervalLayout {
 
 		}
 
-		public static OnGenome resolve(OnGenome g, int start, int yOffset) {
+		public static GenomeRange resolve(GenomeRange g, int start, int yOffset) {
 			PairedEndTargetResolver pe = new PairedEndTargetResolver(g, start, yOffset);
 			g.accept(pe);
 			return pe.target;
@@ -414,10 +414,10 @@ public class IntervalLayout {
 	 * @param xBorder
 	 * @return
 	 */
-	public OnGenome overlappedInterval(int x, int y, int xBorder, int geneHeight) {
+	public GenomeRange overlappedInterval(int x, int y, int xBorder, int geneHeight) {
 
 		for (LocusLayout gl : localLayoutInView.rangeQuery(x, Integer.MAX_VALUE, x)) {
-			OnGenome g = gl.getLocus();
+			GenomeRange g = gl.getLocus();
 			int y1 = gl.getYOffset() * geneHeight;
 			int y2 = y1 + geneHeight * gl.getHeight();
 

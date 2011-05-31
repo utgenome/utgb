@@ -28,7 +28,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 import org.utgenome.gwt.utgb.client.bio.Interval;
-import org.utgenome.gwt.utgb.client.bio.OnGenome;
+import org.utgenome.gwt.utgb.client.bio.GenomeRange;
 import org.utgenome.util.ReadDepth.DepthOutput;
 import org.xerial.util.log.Logger;
 
@@ -61,7 +61,7 @@ public class ReadDepthTest {
 	@Test
 	public void computeDepth() throws Exception {
 
-		List<OnGenome> l = new ArrayList<OnGenome>();
+		List<GenomeRange> l = new ArrayList<GenomeRange>();
 		l.add(new Interval(1, 3));
 		l.add(new Interval(4, 7));
 		l.add(new Interval(4, 6));

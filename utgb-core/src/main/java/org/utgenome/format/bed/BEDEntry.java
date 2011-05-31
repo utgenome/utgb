@@ -32,8 +32,6 @@ import java.util.StringTokenizer;
 import org.utgenome.gwt.utgb.client.bio.BEDGene;
 import org.utgenome.gwt.utgb.client.bio.CDS;
 import org.utgenome.gwt.utgb.client.bio.Exon;
-import org.utgenome.gwt.utgb.client.bio.Gene;
-import org.utgenome.gwt.utgb.client.bio.OnGenome;
 
 /**
  * Representing each gene line of BED format
@@ -48,7 +46,7 @@ public class BEDEntry extends BEDGene {
 	public static BEDEntry createFromResultSet(String chr, ResultSet rs) throws SQLException {
 
 		BEDEntry gene = new BEDEntry();
-		gene.coordinate = chr;
+		gene.chr = chr;
 		gene.setStart(rs.getInt(1));
 		gene.setEnd(rs.getInt(2));
 
@@ -101,7 +99,7 @@ public class BEDEntry extends BEDGene {
 
 	@Override
 	public String toString() {
-		return String.format("%s: %s:%d-%d\t%s\t%s\t%s\t%s", getName(), coordinate, getStart(), getEnd(), getStrand(), getCDS(), getExon(), getColor());
+		return String.format("%s: %s:%d-%d\t%s\t%s\t%s\t%s", getName(), chr, getStart(), getEnd(), getStrand(), getCDS(), getExon(), getColor());
 
 	}
 

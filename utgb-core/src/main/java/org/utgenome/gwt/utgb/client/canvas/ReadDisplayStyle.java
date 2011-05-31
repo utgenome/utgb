@@ -23,7 +23,7 @@
 package org.utgenome.gwt.utgb.client.canvas;
 
 import org.utgenome.gwt.utgb.client.bio.Interval;
-import org.utgenome.gwt.utgb.client.bio.OnGenome;
+import org.utgenome.gwt.utgb.client.bio.GenomeRange;
 import org.utgenome.gwt.utgb.client.bio.SAMReadLight;
 import org.utgenome.gwt.utgb.client.db.ValueDomain;
 import org.utgenome.gwt.utgb.client.db.datatype.StringType;
@@ -118,7 +118,7 @@ public class ReadDisplayStyle {
 		}
 	}
 
-	public Color getClippedReadColor(OnGenome g) {
+	public Color getClippedReadColor(GenomeRange g) {
 		return ColorUtil.toColor(getReadColorHex(g), clippedRegionAlpha);
 	}
 
@@ -126,7 +126,7 @@ public class ReadDisplayStyle {
 		return ColorUtil.toColor(PADDING_COLOR);
 	}
 
-	private String getReadColorHex(OnGenome g) {
+	private String getReadColorHex(GenomeRange g) {
 		if (showStrand) {
 			if (g instanceof Interval) {
 				Interval r = (Interval) g;
@@ -139,11 +139,11 @@ public class ReadDisplayStyle {
 		return DEFAULT_READ_COLOR;
 	}
 
-	public Color getReadColor(OnGenome g) {
+	public Color getReadColor(GenomeRange g) {
 		return ColorUtil.toColor(getReadColorHex(g));
 	}
 
-	public Color getReadColor(OnGenome g, float alpha) {
+	public Color getReadColor(GenomeRange g, float alpha) {
 		return ColorUtil.toColor(getReadColorHex(g), alpha);
 	}
 

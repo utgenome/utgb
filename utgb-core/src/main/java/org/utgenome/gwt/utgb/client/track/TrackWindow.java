@@ -26,7 +26,7 @@ package org.utgenome.gwt.utgb.client.track;
 
 import java.io.Serializable;
 
-import org.utgenome.gwt.utgb.client.bio.OnGenome;
+import org.utgenome.gwt.utgb.client.bio.GenomeRange;
 
 /**
  * {@link TrackWindow} manages a track-window size and a region on the genome displayed in the window. An instance of
@@ -188,7 +188,7 @@ public class TrackWindow implements Serializable, Comparable<TrackWindow> {
 		return s1 <= s2 && e2 <= e1;
 	}
 
-	public boolean overlapWith(OnGenome g) {
+	public boolean overlapWith(GenomeRange g) {
 		int s1 = getStartOnGenome();
 		int e1 = getEndOnGenome();
 		int s2 = g.getStart();

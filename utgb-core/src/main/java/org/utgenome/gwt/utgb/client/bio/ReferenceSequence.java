@@ -47,7 +47,7 @@ public class ReferenceSequence extends Interval {
 	}
 
 	@Override
-	public void accept(OnGenomeDataVisitor visitor) {
+	public void accept(GenomeRangeVisitor visitor) {
 		visitor.visitSequence(this);
 	}
 

@@ -42,7 +42,7 @@ import java.util.List;
 import org.utgenome.UTGBException;
 import org.utgenome.gwt.utgb.client.bio.BEDGene;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
-import org.utgenome.gwt.utgb.client.bio.OnGenome;
+import org.utgenome.gwt.utgb.client.bio.GenomeRange;
 import org.xerial.core.XerialException;
 import org.xerial.db.sql.ResultSetHandler;
 import org.xerial.db.sql.SQLExpression;
@@ -140,7 +140,7 @@ public class BEDDatabase {
 		public void addGene(BEDEntry gene) {
 			// store gene data to db
 			try {
-				p2.setString(1, gene.coordinate);
+				p2.setString(1, gene.chr);
 				p2.setLong(2, gene.getStart());
 				p2.setLong(3, gene.getEnd());
 				p2.setString(4, gene.getName());
@@ -164,9 +164,9 @@ public class BEDDatabase {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static List<OnGenome> overlapQuery(File bedPath, final ChrLoc location) throws UTGBException {
+	public static List<GenomeRange> overlapQuery(File bedPath, final ChrLoc location) throws UTGBException {
 
-		final ArrayList<OnGenome> geneList = new ArrayList<OnGenome>();
+		final ArrayList<GenomeRange> geneList = new ArrayList<GenomeRange>();
 		int sqlStart = location.end >= location.start ? location.start : location.end;
 		int sqlEnd = location.end >= location.start ? location.end : location.start;
 
@@ -221,9 +221,9 @@ public class BEDDatabase {
 		private String coordinate;
 		private int start;
 		private int end;
-		public List<OnGenome> geneList;
+		public List<GenomeRange> geneList;
 
-		public BEDRangeQuery(List<OnGenome> geneList, String coordinate, int start, int end) {
+		public BEDRangeQuery(List<GenomeRange> geneList, String coordinate, int start, int end) {
 			this.geneList = geneList;
 			this.coordinate = coordinate;
 			this.start = end >= start ? start : end;
@@ -233,7 +233,7 @@ public class BEDDatabase {
 		public BEDTrack track;
 
 		public void addGene(BEDEntry gene) {
-			if (coordinate.equals(gene.coordinate) && (start <= gene.getEnd()) && (end >= gene.getStart())) {
+			if (coordinate.equals(gene.chr) && (start <= gene.getEnd()) && (end >= gene.getStart())) {
 				geneList.add(new BEDGene(gene));
 			}
 		}

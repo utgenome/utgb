@@ -89,7 +89,7 @@ public class Gene extends Read implements Serializable {
 	}
 
 	@Override
-	public void accept(OnGenomeDataVisitor visitor) {
+	public void accept(GenomeRangeVisitor visitor) {
 		visitor.visitGene(this);
 	}
 }

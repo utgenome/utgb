@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------------------
- *  Copyright 2009 utgenome.org
+ *  Copyright 2011 utgenome.org
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,47 +16,38 @@
 //--------------------------------------
 // utgb-core Project
 //
-// OnGenomeDataVisitor.java
-// Since: May 16, 2010
+// ChrInterval.java
+// Since: 2011/05/31
 //
-// $URL$ 
-// $Author$
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.bio;
 
 /**
- * Visitor interface for traversing data mapped onto a genome sequence
+ * Interval in a chromosome
  * 
  * @author leo
  * 
  */
-public interface OnGenomeDataVisitor {
+public class ChrInterval extends Interval {
 
-	public void visitDefault(OnGenome g);
+	private static final long serialVersionUID = 1L;
+	public String chr;
 
-	public void visitInterval(Interval interval);
+	public ChrInterval() {
+	}
 
-	public void visitRead(Read r);
+	public ChrInterval(String chr, Interval interval) {
+		super(interval);
+		this.chr = chr;
+	}
 
-	public void visitGap(Gap p);
+	public ChrInterval(String chr, int start, int end) {
+		super(start, end);
+		this.chr = chr;
+	}
 
-	public void visitGene(Gene g);
-
-	public void visitBEDGene(BEDGene g);
-
-	public void visitSAMRead(SAMRead r);
-
-	public void visitSAMReadLight(SAMReadLight r);
-
-	public void visitSAMReadPair(SAMReadPair pair);
-
-	public void visitSAMReadPairFragment(SAMReadPairFragment fragment);
-
-	public void visitSequence(ReferenceSequence referenceSequence);
-
-	public void visitReadCoverage(ReadCoverage readCoverage);
-
-	public void visitGraph(GraphData graph);
-
-	public void visitReadList(ReadList readList);
+	@Override
+	public String toString() {
+		return chr + ":" + start + "-" + "end";
+	}
 }

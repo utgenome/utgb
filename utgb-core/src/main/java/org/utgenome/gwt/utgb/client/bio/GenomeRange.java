@@ -27,12 +27,12 @@ package org.utgenome.gwt.utgb.client.bio;
 import java.io.Serializable;
 
 /**
- * A common interface for data mapped onto a genome sequence (e.g., Read, Gene, SAMRead, WigGraphData, etc.)
+ * A common interface for interval data mapped onto a genome sequence (e.g., Read, Gene, SAMRead, WigGraphData, etc.)
  * 
  * @author leo
  * 
  */
-public interface OnGenome extends Serializable {
+public interface GenomeRange extends Serializable {
 
 	/**
 	 * return 1-based start position of the data. The interval represents [start, end). ([inclusive, exclusive))
@@ -61,5 +61,5 @@ public interface OnGenome extends Serializable {
 
 	public String getName();
 
-	public void accept(OnGenomeDataVisitor visitor);
+	public void accept(GenomeRangeVisitor visitor);
 }

@@ -38,7 +38,7 @@ public class ReadList extends Interval {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private ArrayList<OnGenome> read = new ArrayList<OnGenome>();
+	private ArrayList<GenomeRange> read = new ArrayList<GenomeRange>();
 
 	private String name;
 
@@ -54,16 +54,16 @@ public class ReadList extends Interval {
 		this.name = name;
 	}
 
-	public void addRead(OnGenome read) {
+	public void addRead(GenomeRange read) {
 		this.read.add(read);
 	}
 
-	public List<OnGenome> getRead() {
+	public List<GenomeRange> getRead() {
 		return this.read;
 	}
 
 	@Override
-	public void accept(OnGenomeDataVisitor visitor) {
+	public void accept(GenomeRangeVisitor visitor) {
 		visitor.visitReadList(this);
 	}
 }

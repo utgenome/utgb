@@ -23,11 +23,13 @@
 package org.utgenome.core.cui;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.util.zip.GZIPInputStream;
 
 import org.utgenome.format.bed.BED2SilkReader;
 import org.utgenome.format.fastq.FastqToSilkReader;
@@ -59,21 +61,28 @@ public class Convert extends UTGBCommandBase {
 	public void execute(String[] args) throws Exception {
 		_logger.info("convert");
 
-		InputStream in = "-".equals(inputFile) ? new StandardInputStream() : new BufferedInputStream(new FileInputStream(inputFile));
+		String prefix = inputFile;
+
+		int bufferSize = 4 * 1024 * 1024;
+		InputStream in = "-".equals(inputFile) ? new StandardInputStream() : new BufferedInputStream(new FileInputStream(inputFile), bufferSize);
+		if (inputFile.endsWith(".gz")) {
+			prefix = inputFile.replaceAll("\\.gz$", "");
+			in = new GZIPInputStream(in);
+		}
 
 		OutputStreamWriter out = new OutputStreamWriter(new StandardOutputStream());
 		Reader silkInput = null;
-		if (inputFile.endsWith(".fastq")) {
-			silkInput = new FastqToSilkReader(new InputStreamReader(in));
+		if (prefix.endsWith(".fastq")) {
+			silkInput = new FastqToSilkReader(new BufferedReader(new InputStreamReader(in)));
 		}
-		else if (inputFile.endsWith(".bed")) {
-			silkInput = new BED2SilkReader(new InputStreamReader(in));
+		else if (prefix.endsWith(".bed")) {
+			silkInput = new BED2SilkReader(new BufferedReader(new InputStreamReader(in)));
 		}
-		else if (inputFile.endsWith(".sam") || inputFile.endsWith(".bam")) {
-			silkInput = new SAM2SilkReader(in);
+		else if (prefix.endsWith(".sam") || inputFile.endsWith(".bam")) {
+			silkInput = new SAM2SilkReader(new BufferedInputStream(in, bufferSize));
 		}
-		else if (inputFile.endsWith(".wig")) {
-			silkInput = new WIG2SilkReader(new InputStreamReader(in));
+		else if (prefix.endsWith(".wig")) {
+			silkInput = new WIG2SilkReader(new BufferedReader(new InputStreamReader(in), bufferSize));
 		}
 		else {
 			return;

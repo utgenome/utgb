@@ -32,7 +32,7 @@ import org.utgenome.gwt.utgb.client.bio.DASResult;
 import org.utgenome.gwt.utgb.client.bio.DASResult.DASFeature;
 import org.utgenome.gwt.utgb.client.bio.GenomeDB;
 import org.utgenome.gwt.utgb.client.bio.GenomeDB.DBType;
-import org.utgenome.gwt.utgb.client.bio.OnGenome;
+import org.utgenome.gwt.utgb.client.bio.GenomeRange;
 import org.utgenome.gwt.utgb.client.bio.ReadCoverage;
 import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig;
 import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig.Layout;
@@ -100,41 +100,41 @@ public class ReadView extends WebTrackBase {
 			response.setContentType("image/png");
 			ReadQueryConfig config = new ReadQueryConfig(width, useCanvas, layout);
 			config.maxmumNumberOfReadsToDisplay = Integer.MAX_VALUE;
-			List<OnGenome> result = overlapQuery(new GenomeDB(path, ref), new ChrLoc(chr, start, end), config);
+			List<GenomeRange> result = overlapQuery(new GenomeDB(path, ref), new ChrLoc(chr, start, end), config);
 
 			ReadCanvas canvas = new ReadCanvas(width, 100, new GenomeWindow(start, end));
 			canvas.draw(result);
 			canvas.toPNG(response.getOutputStream());
 		}
 		else {
-			List<OnGenome> result = overlapQuery(new GenomeDB(path, ref), new ChrLoc(chr, start, end), new ReadQueryConfig(width, useCanvas, layout));
+			List<GenomeRange> result = overlapQuery(new GenomeDB(path, ref), new ChrLoc(chr, start, end), new ReadQueryConfig(width, useCanvas, layout));
 
 			response.setContentType("text/html");
 
 			// output the result in Silk format
 			SilkWriter w = new SilkWriter(response.getWriter());
 			w.preamble();
-			for (OnGenome each : result) {
+			for (GenomeRange each : result) {
 				w.leafObject("entry", each);
 			}
 			w.endDocument();
 		}
 	}
 
-	public static List<OnGenome> overlapQuery(GenomeDB db, ChrLoc loc, ReadQueryConfig config) {
+	public static List<GenomeRange> overlapQuery(GenomeDB db, ChrLoc loc, ReadQueryConfig config) {
 
 		if (!isDescendant(db.path)) {
 			_logger.error("relative path must be used in the path parameter: " + db.path);
-			return new ArrayList<OnGenome>(0);
+			return new ArrayList<GenomeRange>(0);
 		}
 		return overlapQuery(new File(WebTrackBase.getProjectRootPath()), db, loc, config);
 	}
 
-	public static List<OnGenome> overlapQuery(File baseDir, GenomeDB db, ChrLoc loc, ReadQueryConfig config) {
+	public static List<GenomeRange> overlapQuery(File baseDir, GenomeDB db, ChrLoc loc, ReadQueryConfig config) {
 
 		StopWatch sw = new StopWatch();
 		loc = loc.getLocForPositiveStrand();
-		List<OnGenome> result = new ArrayList<OnGenome>();
+		List<GenomeRange> result = new ArrayList<GenomeRange>();
 		try {
 
 			DBType dbType = GenomeDB.resolveDBType(db);
@@ -199,7 +199,7 @@ public class ReadView extends WebTrackBase {
 		return result;
 	}
 
-	public static ReadCoverage computeCoverage(List<OnGenome> readList, int start, int end, int pixelWidth) {
+	public static ReadCoverage computeCoverage(List<GenomeRange> readList, int start, int end, int pixelWidth) {
 
 		int[] coverage = new int[pixelWidth];
 		for (int i = 0; i < coverage.length; ++i)
@@ -211,7 +211,7 @@ public class ReadView extends WebTrackBase {
 		//    --------  ---
 		//      ----    --
 		// 0112233332200332111000 (coverage)
-		for (OnGenome eachRead : readList) {
+		for (GenomeRange eachRead : readList) {
 			int bucketStart = w.getXPosOnWindow(eachRead.getStart(), pixelWidth);
 			int bucketEnd = w.getXPosOnWindow(eachRead.getEnd(), pixelWidth);
 			if (bucketStart < 0)
@@ -230,13 +230,13 @@ public class ReadView extends WebTrackBase {
 		return new ReadCoverage(start, end, pixelWidth, coverage);
 	}
 
-	private static class OnGenomeDataRetriever<T extends OnGenome> extends ObjectHandlerBase<T> {
-		private ArrayList<OnGenome> geneList = new ArrayList<OnGenome>();
+	private static class OnGenomeDataRetriever<T extends GenomeRange> extends ObjectHandlerBase<T> {
+		private ArrayList<GenomeRange> geneList = new ArrayList<GenomeRange>();
 
 		public OnGenomeDataRetriever() {
 		}
 
-		public ArrayList<OnGenome> getResult() {
+		public ArrayList<GenomeRange> getResult() {
 			return geneList;
 		}
 

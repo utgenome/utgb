@@ -16,7 +16,7 @@
 //--------------------------------------
 // utgb-core Project
 //
-// OnGenomeDataSet.java
+// OnGenomeDataVisitor.java
 // Since: May 16, 2010
 //
 // $URL$ 
@@ -24,26 +24,39 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.bio;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * A set of on-genome data used for transferring genome data between server and client (GWT)
+ * Visitor interface for traversing data mapped onto a genome sequence
  * 
  * @author leo
  * 
  */
-public class OnGenomeDataSet implements Serializable {
+public interface GenomeRangeVisitor {
 
-	private static final long serialVersionUID = 1L;
+	public void visitDefault(GenomeRange g);
 
-	public ChrLoc location;
-	public List<OnGenome> read = new ArrayList<OnGenome>();
-	public List<OnGenome> block = new ArrayList<OnGenome>();
+	public void visitInterval(Interval interval);
 
-	public boolean isEmpty() {
-		return read.isEmpty() && block.isEmpty();
-	}
+	public void visitRead(Read r);
 
+	public void visitGap(Gap p);
+
+	public void visitGene(Gene g);
+
+	public void visitBEDGene(BEDGene g);
+
+	public void visitSAMRead(SAMRead r);
+
+	public void visitSAMReadLight(SAMReadLight r);
+
+	public void visitSAMReadPair(SAMReadPair pair);
+
+	public void visitSAMReadPairFragment(SAMReadPairFragment fragment);
+
+	public void visitSequence(ReferenceSequence referenceSequence);
+
+	public void visitReadCoverage(ReadCoverage readCoverage);
+
+	public void visitGraph(GraphData graph);
+
+	public void visitReadList(ReadList readList);
 }

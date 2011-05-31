@@ -110,7 +110,7 @@ public enum IUPAC {
 			return find(String.valueOf(base));
 		}
 		catch (IllegalArgumentException e) {
-			return IUPAC.None;
+			return IUPAC.N;
 		}
 	}
 

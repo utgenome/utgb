@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.utgenome.gwt.utgb.client.bio.OnGenome;
+import org.utgenome.gwt.utgb.client.bio.GenomeRange;
 import org.utgenome.gwt.utgb.client.canvas.PrioritySearchTree.ResultHandler;
 import org.utgenome.gwt.utgb.client.util.Optional;
 
@@ -37,7 +37,7 @@ import org.utgenome.gwt.utgb.client.util.Optional;
  * @author leo
  * 
  */
-public class IntervalTree<T extends OnGenome> extends AbstractCollection<T> {
+public class IntervalTree<T extends GenomeRange> extends AbstractCollection<T> {
 
 	private PrioritySearchTree<T> pst = new PrioritySearchTree<T>();
 
@@ -114,15 +114,15 @@ public class IntervalTree<T extends OnGenome> extends AbstractCollection<T> {
 		pst.rangeQuery(start + 1, Integer.MAX_VALUE, end - 1, handler);
 	}
 
-	public void overlapQuery(OnGenome target, PrioritySearchTree.ResultHandler<T> handler) {
+	public void overlapQuery(GenomeRange target, PrioritySearchTree.ResultHandler<T> handler) {
 		overlapQuery(target.getStart(), target.getEnd(), handler);
 	}
 
-	public List<T> overlapQuery(OnGenome target) {
+	public List<T> overlapQuery(GenomeRange target) {
 		return overlapQuery(target.getStart(), target.getEnd());
 	}
 
-	public T findOverlap(OnGenome target) {
+	public T findOverlap(GenomeRange target) {
 		final Optional<T> result = new Optional<T>();
 		this.overlapQuery(target, new PrioritySearchTree.ResultHandler<T>() {
 

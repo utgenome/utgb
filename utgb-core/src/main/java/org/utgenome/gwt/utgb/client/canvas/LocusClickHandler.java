@@ -24,9 +24,9 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.canvas;
 
-import org.utgenome.gwt.utgb.client.bio.OnGenome;
+import org.utgenome.gwt.utgb.client.bio.GenomeRange;
 
 public interface LocusClickHandler {
 
-	public void onClick(int clientX, int clientY, OnGenome locus);
+	public void onClick(int clientX, int clientY, GenomeRange locus);
 }

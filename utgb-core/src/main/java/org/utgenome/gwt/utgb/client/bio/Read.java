@@ -103,7 +103,7 @@ public class Read extends Interval {
 	}
 
 	@Override
-	public void accept(OnGenomeDataVisitor visitor) {
+	public void accept(GenomeRangeVisitor visitor) {
 		visitor.visitRead(this);
 	}
 

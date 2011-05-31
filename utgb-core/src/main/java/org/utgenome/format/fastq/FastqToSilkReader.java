@@ -27,7 +27,8 @@ import java.io.Reader;
 import java.io.Writer;
 
 import org.utgenome.format.FormatConversionReader;
-import org.xerial.silk.SilkWriter;
+import org.xerial.util.StopWatch;
+import org.xerial.util.log.Logger;
 
 /**
  * Read the FASTQ file input from the given reader as if it were a Silk
@@ -37,16 +38,30 @@ import org.xerial.silk.SilkWriter;
  */
 public class FastqToSilkReader extends FormatConversionReader {
 
+	private static Logger _logger = Logger.getLogger(FastqToSilkReader.class);
+
 	public FastqToSilkReader(Reader fastqInput) throws IOException {
 		super(fastqInput, new PipeConsumer() {
 			@Override
 			public void consume(Reader in, Writer out) throws Exception {
 				FastqReader reader = new FastqReader(in);
-				SilkWriter silk = new SilkWriter(out);
+				StopWatch sw = new StopWatch();
+				int count = 0;
+				int prevCount = 0;
+				double prevTime = sw.getElapsedTime();
 				for (FastqRead read = null; (read = reader.next()) != null;) {
-					read.toSilk(silk);
+					out.append(read.toSilk());
+					count++;
+					if (count % 100000 == 0) {
+						double t = sw.getElapsedTime();
+						double lapTime = t - prevTime;
+						int numReadInLap = count - prevCount;
+						_logger.debug(String.format("processed %,d reads: %.2f sec. %,d reads / sec", count, t, (int) (numReadInLap / lapTime)));
+
+						prevTime = t;
+						prevCount = count;
+					}
 				}
-				silk.flush();
 			}
 		});
 

@@ -63,7 +63,7 @@ public class SAMReadPairFragment extends Interval {
 	}
 
 	@Override
-	public void accept(OnGenomeDataVisitor visitor) {
+	public void accept(GenomeRangeVisitor visitor) {
 		visitor.visitSAMReadPairFragment(this);
 	}
 }

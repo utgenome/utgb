@@ -31,8 +31,8 @@ import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.GenomeDB;
 import org.utgenome.gwt.utgb.client.bio.GenomeDB.DBType;
 import org.utgenome.gwt.utgb.client.bio.GraphWindow;
-import org.utgenome.gwt.utgb.client.bio.OnGenome;
-import org.utgenome.gwt.utgb.client.bio.OnGenomeDataVisitorBase;
+import org.utgenome.gwt.utgb.client.bio.GenomeRange;
+import org.utgenome.gwt.utgb.client.bio.GenomeRangeVisitorBase;
 import org.utgenome.gwt.utgb.client.bio.ReadCoverage;
 import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig;
 import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig.Layout;
@@ -212,7 +212,7 @@ public class ReadTrack extends TrackBase {
 		updateClickAction();
 	}
 
-	public String resolveURL(String urlTemplate, OnGenome locus) {
+	public String resolveURL(String urlTemplate, GenomeRange locus) {
 		String url = urlTemplate;
 		if (url == null)
 			return url;
@@ -248,7 +248,7 @@ public class ReadTrack extends TrackBase {
 		}
 		else if ("link".equals(clickAction)) {
 			geneCanvas.setLocusClickHandler(new LocusClickHandler() {
-				public void onClick(int x, int y, OnGenome locus) {
+				public void onClick(int x, int y, GenomeRange locus) {
 					String url = getConfig().getParameter(CONFIG_ONCLICK_URL);
 					url = resolveURL(url, locus);
 					Window.open(url, "locus", "");
@@ -257,14 +257,14 @@ public class ReadTrack extends TrackBase {
 		}
 		else if ("info".equals(clickAction)) {
 			geneCanvas.setLocusClickHandler(new LocusClickHandler() {
-				public void onClick(int x, int y, OnGenome locus) {
+				public void onClick(int x, int y, GenomeRange locus) {
 					geneCanvas.displayInfo(x, y, locus);
 				}
 			});
 		}
 		else if ("set".equals(clickAction)) {
 			geneCanvas.setLocusClickHandler(new LocusClickHandler() {
-				public void onClick(int clientX, int clientY, OnGenome locus) {
+				public void onClick(int clientX, int clientY, GenomeRange locus) {
 					String key = getConfig().getParameter(CONFIG_ONCLICK_P_KEY);
 					if (key == null)
 						return;
@@ -390,7 +390,7 @@ public class ReadTrack extends TrackBase {
 
 		getFrame().setNowLoading();
 		getBrowserService().getOnGenomeData(getGenomeDB(), new ChrLoc(chr, prefetchWindow.getStartOnGenome(), prefetchWindow.getEndOnGenome()), queryConfig,
-				new AsyncCallback<List<OnGenome>>() {
+				new AsyncCallback<List<GenomeRange>>() {
 
 					public void onFailure(Throwable e) {
 						GWT.log("failed to retrieve gene data", e);
@@ -399,7 +399,7 @@ public class ReadTrack extends TrackBase {
 						getFrame().loadingDone();
 					}
 
-					public void onSuccess(List<OnGenome> dataSet) {
+					public void onSuccess(List<GenomeRange> dataSet) {
 
 						if ("pileup".equals(style.layout) && dataSet.size() > 0 && DataChecker.isReadCoverage(dataSet.get(0))) {
 							needUpdateForGraphicRefinement = true;
@@ -425,10 +425,10 @@ public class ReadTrack extends TrackBase {
 
 	}
 
-	private static class DataChecker extends OnGenomeDataVisitorBase {
+	private static class DataChecker extends GenomeRangeVisitorBase {
 		public boolean flag = false;
 
-		public static boolean isReadCoverage(OnGenome data) {
+		public static boolean isReadCoverage(GenomeRange data) {
 			DataChecker dataChecker = new DataChecker();
 			data.accept(dataChecker);
 			return dataChecker.flag;
