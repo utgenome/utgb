@@ -48,8 +48,8 @@ import org.utgenome.format.wig.WIGDatabaseReader;
 import org.utgenome.graphics.GenomeWindow;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.CompactWIGData;
-import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.utgenome.gwt.utgb.client.bio.GenomeRange;
+import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.utgenome.gwt.utgb.client.bio.ReadCoverage;
 import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig;
 import org.utgenome.gwt.utgb.client.bio.SAMReadLight;
@@ -94,7 +94,12 @@ public class SAMReader {
 
 	public static File getBamIndexFile(File bamFile) {
 		File baiFile = new File(bamFile.getAbsolutePath() + ".bai");
-		return baiFile;
+		if (baiFile.exists())
+			return baiFile;
+		else {
+			baiFile = new File(FileType.replaceFileExt(bamFile.getAbsolutePath(), "bai"));
+			return baiFile;
+		}
 	}
 
 	public static interface SAMReadFactory {

@@ -42,6 +42,7 @@ import org.antlr.runtime.tree.Tree;
 import org.utgenome.UTGBErrorCode;
 import org.utgenome.UTGBException;
 import org.utgenome.gwt.utgb.client.util.StringUtil;
+import org.utgenome.shell.UTGBShellException;
 import org.xerial.core.XerialException;
 import org.xerial.lens.Lens;
 import org.xerial.silk.SilkWriter;
@@ -246,7 +247,7 @@ public class BED2Silk {
 					if (geneCount == 0) {
 						// print gene header line
 						SilkWriter geneNode = out.tabDataSchema("gene");
-						geneNode.attribute("coordinate");
+						geneNode.attribute("chr");
 						geneNode.attribute("start");
 						geneNode.attribute("end");
 						geneNode.attribute("name");
