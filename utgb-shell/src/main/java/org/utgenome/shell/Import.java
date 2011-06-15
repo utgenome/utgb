@@ -145,7 +145,7 @@ public class Import extends UTGBShellCommand {
 				FASTADatabase.main(new String[] { "-o", outputFileName });
 			break;
 		case WIG:
-			WIGDatabaseGenerator.toSQLiteDB(in, outputFileName);
+			new WIGDatabaseGenerator().toSQLiteDB(in, outputFileName);
 			break;
 		case SAM: {
 			_logger.info("creating a BAM file from the input SAM.");
