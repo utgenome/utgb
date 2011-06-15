@@ -59,29 +59,31 @@ import org.xerial.util.log.Logger;
 public class WIGDatabaseGenerator {
 
 	private static Logger _logger = Logger.getLogger(WIGDatabaseGenerator.class);
-	private static StopWatch stopWatch = new StopWatch();
+	private StopWatch stopWatch = new StopWatch();
 
-	private static CompressedBuffer chromStartBuffer;
-	private static CompressedBuffer dataValueBuffer;
+	private CompressedBuffer chromStartBuffer;
+	private CompressedBuffer dataValueBuffer;
 
-	private static int data_start = 0;
-	private static int data_step = 0;
+	private int data_start = 0;
+	private int data_step = 0;
 
-	private static boolean isVariableStep = true;
-	private static boolean isAddTrackId = true;
-	private static boolean isBufferEmpty = true;
+	private boolean isVariableStep = true;
+	private boolean isAddTrackId = true;
+	private boolean isBufferEmpty = true;
 
-	private static int buffer_count = 0;
-	private static long buffer_start = -1;
-	private static long buffer_end = -1;
-	private static float buffer_maxValue = Float.MIN_VALUE;
-	private static float buffer_minValue = Float.MAX_VALUE;
+	private int buffer_count = 0;
+	private long buffer_start = -1;
+	private long buffer_end = -1;
+	private float buffer_maxValue = Float.MIN_VALUE;
+	private float buffer_minValue = Float.MAX_VALUE;
 
 	public static final int DATA_SPLIT_UNIT = 100000;
-	private static int[] chromStarts;
-	private static float[] dataValues;
+	private int[] chromStarts;
+	private float[] dataValues;
 
-	public static void toSQLiteDB(Reader wigInput, String dbName) throws IOException, XerialException {
+	private int nPoints = 0;
+
+	public void toSQLiteDB(Reader wigInput, String dbName) throws IOException, XerialException {
 		BufferedReader reader = new BufferedReader(wigInput);
 
 		int track_id = -1;
@@ -89,7 +91,6 @@ public class WIGDatabaseGenerator {
 		chromStartBuffer = new CompressedBuffer();
 		dataValueBuffer = new CompressedBuffer();
 
-		int nPoints = 0;
 		chromStarts = new int[DATA_SPLIT_UNIT];
 		dataValues = new float[DATA_SPLIT_UNIT];
 
@@ -213,7 +214,7 @@ public class WIGDatabaseGenerator {
 		}
 	}
 
-	private static void insertData(int track_id, PreparedStatement p3) throws SQLException, IOException {
+	private void insertData(int track_id, PreparedStatement p3) throws SQLException, IOException {
 
 		int[] tempChromStarts = new int[buffer_count];
 		float[] tempDataValues = new float[buffer_count];
@@ -288,7 +289,7 @@ public class WIGDatabaseGenerator {
 		p1.execute();
 	}
 
-	private static void readHeaderLine(int track_id, PreparedStatement p2, String line) throws IOException, XerialException, RecognitionException,
+	private void readHeaderLine(int track_id, PreparedStatement p2, String line) throws IOException, XerialException, RecognitionException,
 			NumberFormatException, DBException, SQLException {
 
 		WIGLexer lexer = new WIGLexer(new ANTLRReaderStream(new StringReader(line)));
@@ -315,6 +316,7 @@ public class WIGDatabaseGenerator {
 		for (WIGHeaderAttribute a : Lens.loadANTLRParseTree(WIGHeaderDescription.class, (Tree) ret.getTree(), WIGParser.tokenNames).attributes) {
 			if (a.name.equals("start")) {
 				data_start = Integer.parseInt(a.value);
+				nPoints = 0;
 			}
 			else if (a.name.equals("step")) {
 				data_step = Integer.parseInt(a.value);

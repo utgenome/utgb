@@ -48,6 +48,6 @@ public class ChrInterval extends Interval {
 
 	@Override
 	public String toString() {
-		return chr + ":" + start + "-" + "end";
+		return chr + ":" + start + "-" + end;
 	}
 }
