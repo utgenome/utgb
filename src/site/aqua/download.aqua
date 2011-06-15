@@ -8,6 +8,9 @@
 ** Downloadable archive for manual installation is also available from here: http://maven.utgenome.org/repository/artifact/org/utgenome/utgb-shell/
 
 == Release Notes
+
+* {b|June 15th, 2011} UTGB Toolkit 1.5.6 released.
+** Fixes a corner-case bug when creating WIG database via utgb import.
 * {b|April 28th, 2011} UTGB Toolkit 1.5.5 released.
 ** Fixes a bug when compiling a new UTGB project
 *** Do utgb upgrade in your project
