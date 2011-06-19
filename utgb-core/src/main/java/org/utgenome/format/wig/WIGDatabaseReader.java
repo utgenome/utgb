@@ -370,6 +370,20 @@ public class WIGDatabaseReader {
 		return wigData;
 	}
 
+	//	public float[] getWigData(String chr) throws SQLException {
+	//
+	//		ResultSet rs = statement.executeQuery(String.format(
+	//				"select track_id, max(end) from data where track_id = (select track_id from track where name=\"chrom\" and value=\"%s\")  group by track_id",
+	//				chr));
+	//		if (rs.next()) {
+	//			int trackID = rs.getInt(1);
+	//			int end = rs.getInt(2);
+	//		}
+	//		else
+	//			return null;
+	//
+	//	}
+
 	public WigGraphData getWigData(int trackId, int start, int end) throws SQLException, NumberFormatException, IOException, DataFormatException,
 			ClassNotFoundException, UTGBException {
 		WigGraphData wigData = prepareWigData(trackId);
