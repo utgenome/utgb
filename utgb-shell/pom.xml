@@ -134,6 +134,12 @@
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-jasper</artifactId>
       <version>${tomcat.version}</version>
+      <exclusions>
+      	<exclusion>
+      		<artifactId>ecj</artifactId>
+      		<groupId>org.eclipse.jdt.core.compiler</groupId>
+      	</exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
