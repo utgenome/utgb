@@ -30,6 +30,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.channels.FileChannel;
@@ -321,7 +322,12 @@ public class TomcatServer {
 		// context.setLoader(loader);
 		context.setReloadable(true);
 		// load the META-INF/context.xml
-		context.setConfigFile(docBase + "/META-INF/context.xml");
+		try {
+			context.setConfigFile(new File(docBase, "META-INF/context.xml").toURI().toURL());
+		}
+		catch (MalformedURLException e) {
+			_logger.error(e);
+		}
 		tomcatHost.addChild(context);
 	}
 
