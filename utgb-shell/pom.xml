@@ -122,23 +122,23 @@
     <!-- Tomcat Libraries -->
     <dependency>
       <groupId>org.apache.tomcat</groupId>
-      <artifactId>catalina</artifactId>
+      <artifactId>tomcat-catalina</artifactId>
       <version>${tomcat.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
-      <artifactId>coyote</artifactId>
+      <artifactId>tomcat-coyote</artifactId>
       <version>${tomcat.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
-      <artifactId>jasper</artifactId>
+      <artifactId>tomcat-jasper</artifactId>
       <version>${tomcat.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.tomcat</groupId>
-      <artifactId>el-api</artifactId>
+      <artifactId>tomcat-el-api</artifactId>
       <version>${tomcat.version}</version>
     </dependency>
 
