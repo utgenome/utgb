@@ -148,6 +148,13 @@
       <version>${tomcat.version}</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>tomcat-juli</artifactId>
+      <version>${tomcat.version}</version>
+    </dependency>
+
+
     <!-- ant library contains tar.bz2 extracting utility -->
     <dependency>
       <groupId>org.apache.ant</groupId>
