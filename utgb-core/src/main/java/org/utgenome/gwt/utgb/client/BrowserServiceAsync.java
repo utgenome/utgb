@@ -31,9 +31,9 @@ import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.ChrRange;
 import org.utgenome.gwt.utgb.client.bio.CompactWIGData;
 import org.utgenome.gwt.utgb.client.bio.GenomeDB;
+import org.utgenome.gwt.utgb.client.bio.GenomeRange;
 import org.utgenome.gwt.utgb.client.bio.GraphWindow;
 import org.utgenome.gwt.utgb.client.bio.KeywordSearchResult;
-import org.utgenome.gwt.utgb.client.bio.GenomeRange;
 import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig;
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.bio.WigGraphData;
@@ -41,9 +41,8 @@ import org.utgenome.gwt.utgb.client.track.bean.TrackBean;
 import org.utgenome.gwt.utgb.client.view.TrackView;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.rpc.RemoteService;
 
-public interface BrowserServiceAsync extends RemoteService {
+public interface BrowserServiceAsync {
 
 	public void createTrackView(String silk, AsyncCallback<TrackView> callback);
 

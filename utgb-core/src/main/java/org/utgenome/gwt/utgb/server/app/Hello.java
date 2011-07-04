@@ -51,7 +51,7 @@ public class Hello extends RequestHandlerBase {
 
 	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.getWriter().println("Hello World! " + name + ": " + year);
+		response.getWriter().println("[UTGB] Hello World! " + name + ": " + year);
 	}
 
 	public String getName() {

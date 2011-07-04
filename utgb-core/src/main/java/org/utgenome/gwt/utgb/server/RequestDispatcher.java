@@ -363,7 +363,8 @@ public class RequestDispatcher implements Filter {
 		}
 		else
 			requestURI = removeFirstSlash(req.getServletPath());
-		_logger.trace("request URI: " + requestURI);
+		if (_logger.isTraceEnabled())
+			_logger.trace("request URI: " + requestURI);
 
 		dispatchRequest(new RequestURI(requestURI), req, resp, filterChain);
 	}
