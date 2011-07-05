@@ -38,10 +38,13 @@ import java.util.List;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.Engine;
+import org.apache.catalina.Host;
 import org.apache.catalina.LifecycleException;
-import org.apache.catalina.core.StandardHost;
-import org.apache.catalina.startup.Embedded;
+import org.apache.catalina.connector.Connector;
+import org.apache.catalina.core.StandardContext;
+import org.apache.catalina.startup.ContextConfig;
 import org.apache.catalina.startup.HostConfig;
+import org.apache.catalina.startup.Tomcat;
 import org.xerial.core.XerialErrorCode;
 import org.xerial.core.XerialException;
 import org.xerial.util.FileResource;
@@ -62,9 +65,9 @@ public class TomcatServer {
 	private static Logger _logger = Logger.getLogger(TomcatServer.class);
 
 	private TomcatServerConfiguration configuration;
-	private Embedded embeddedTomcat = null;
+	private Tomcat tomcat = null;
 	private Engine tomcatEngine = null;
-	private StandardHost tomcatHost = null;
+	private Host tomcatHost = null;
 
 	static {
 	}
@@ -224,14 +227,14 @@ public class TomcatServer {
 	 */
 	public void start() throws XerialException {
 
-		// Create an embedded server
-		embeddedTomcat = new Embedded();
-		embeddedTomcat.setAwait(true);
-		embeddedTomcat.setCatalinaBase(configuration.getCatalinaBase());
+		// Create an embedded Tomcat server
+		tomcat = new Tomcat();
+		// embeddedTomcat.setAwait(true);
+		tomcat.setBaseDir(configuration.getCatalinaBase());
 		// embeddedTomcat.setRealm(new MemoryRealm());
 
 		// Create an engine
-		tomcatEngine = embeddedTomcat.createEngine();
+		tomcatEngine = tomcat.getEngine();
 		ClassLoader cl = TomcatServer.class.getClassLoader();
 		tomcatEngine.setParentClassLoader(cl);
 		tomcatEngine.setName("utgb");
@@ -240,36 +243,38 @@ public class TomcatServer {
 		// Create a default virtual host
 		String appBase = configuration.getCatalinaBase() + "/webapps";
 		_logger.debug("appBase: " + appBase);
-		tomcatHost = (StandardHost) embeddedTomcat.createHost("localhost", appBase);
+		tomcatHost = tomcat.getHost();
+		tomcatHost.setAppBase(appBase);
 
 		// Hook up a host config to search for and pull in webapps.
 		HostConfig hostConfig = new HostConfig();
 		hostConfig.setUnpackWARs(true);
+		// Copy META-INF/context.xml
+		hostConfig.setCopyXML(true);
 		tomcatHost.addLifecycleListener(hostConfig);
 
-		// Tell the engine about the host
-		tomcatEngine.addChild(tomcatHost);
-		tomcatEngine.setDefaultHost(tomcatHost.getName());
-
-		// Tell the embedded manager about the engine
-		embeddedTomcat.addEngine(tomcatEngine);
+		// // Tell the engine about the host
+		// tomcatEngine.addChild(tomcatHost);
+		// tomcatEngine.setDefaultHost(tomcatHost.getName());
 
 		// Tell the embedded server about the connector
 		InetAddress nullAddr = null;
-		org.apache.catalina.connector.Connector conn = embeddedTomcat.createConnector(nullAddr, configuration.getPort(), false);
+		tomcat.setPort(configuration.getPort());
+		Connector conn = tomcat.getConnector();
+		conn.setPort(configuration.getPort());
+		conn.setProxyPort(configuration.getAjp13port());
 		conn.setEnableLookups(true);
-		// connector.setProxyPort(configuration.getAjp13port());
-		embeddedTomcat.addConnector(conn);
 
 		// Add AJP13 connector
 		// <Connector port="8009" protocol="AJP/1.3" redirectPort="8443" />
 
 		try {
-			org.apache.catalina.connector.Connector ajp13connector = new org.apache.catalina.connector.Connector("org.apache.jk.server.JkCoyoteHandler");
-			ajp13connector.setPort(configuration.getAjp13port());
-			ajp13connector.setProtocol("AJP/1.3");
-			ajp13connector.setRedirectPort(8443);
-			embeddedTomcat.addConnector(ajp13connector);
+			// org.apache.catalina.connector.Connector ajp13connector = new
+			// org.apache.catalina.connector.Connector("org.apache.jk.server.JkCoyoteHandler");
+			// ajp13connector.setPort(configuration.getAjp13port());
+			// ajp13connector.setProtocol("AJP/1.3");
+			// ajp13connector.setRedirectPort(8443);
+			// embeddedTomcat.addConnector(ajp13connector);
 		}
 		catch (Exception e1) {
 			throw new XerialException(XerialErrorCode.INVALID_STATE, e1);
@@ -287,7 +292,7 @@ public class TomcatServer {
 
 		// start up the tomcat
 		try {
-			embeddedTomcat.start();
+			tomcat.start();
 		}
 		catch (LifecycleException e) {
 			_logger.error(e);
@@ -307,10 +312,10 @@ public class TomcatServer {
 	}
 
 	public void addContext(String contextPath, String docBase) throws XerialException {
-		if (embeddedTomcat == null)
+		if (tomcat == null)
 			throw new XerialException(XerialErrorCode.INVALID_STATE, "tomcat server is not started yet.");
 
-		_logger.debug("deploy: contextPath=" + contextPath + ", docBase=" + docBase);
+		_logger.info("deploy: contextPath=" + contextPath + ", docBase=" + docBase);
 
 		// Prepare webapp loader
 		// WebappLoader loader = new WebappLoader(getExtensionClassLoader());
@@ -318,17 +323,26 @@ public class TomcatServer {
 		// loader.addRepository("WEB-INF/lib");
 
 		// Create a new webapp context
-		Context context = embeddedTomcat.createContext(contextPath, docBase);
-		// context.setLoader(loader);
-		context.setReloadable(true);
+
 		// load the META-INF/context.xml
 		try {
+
+			Context context = new StandardContext();
+			context.setPath(contextPath);
+			context.setName(contextPath);
+			context.setDocBase(docBase);
+			context.setReloadable(true);
 			context.setConfigFile(new File(docBase, "META-INF/context.xml").toURI().toURL());
+			ContextConfig cfg = new ContextConfig();
+			context.addLifecycleListener(cfg);
+			// context.setLoader(loader);
+			tomcat.getHost().addChild(context);
 		}
 		catch (MalformedURLException e) {
 			_logger.error(e);
 		}
-		tomcatHost.addChild(context);
+
+		// tomcatHost.addChild(context);
 	}
 
 	/*
@@ -342,10 +356,10 @@ public class TomcatServer {
 	 *             failed to stop tomcat
 	 */
 	public void stop() throws XerialException {
-		if (embeddedTomcat != null) {
+		if (tomcat != null) {
 			try {
-				embeddedTomcat.stop();
-				embeddedTomcat = null;
+				tomcat.stop();
+				tomcat = null;
 			}
 			catch (LifecycleException e) {
 				throw new XerialException(XerialErrorCode.INVALID_STATE, e);

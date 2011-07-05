@@ -93,15 +93,15 @@ public class Server extends UTGBShellCommand {
 			}
 
 			public void afterStart() {
-				_logger.info("started the server");
+				_logger.info("Started the server");
 			}
 
 			public void afterStop() {
-				_logger.info("stopped the server");
+				_logger.info("Server has teminated");
 			}
 
 			public void beforeStop() {
-				_logger.info("stopping the server");
+				_logger.info("Terminating the server");
 			}
 		});
 		server.start();

@@ -20,7 +20,7 @@
     <gwt.module>$moduleName$</gwt.module>
     <gwt.module.path>$modulePath$</gwt.module.path>
     <sqlite-jdbc.version>3.7.2</sqlite-jdbc.version>
-    <tomcat.version>6.0.26</tomcat.version>
+    <tomcat.version>7.0.16</tomcat.version>
     <gwt.jvmargs></gwt.jvmargs>
   </properties>
 
@@ -274,7 +274,7 @@
 	<!-- Servlet API -->    
     <dependency>
       <groupId>org.apache.tomcat</groupId>
-      <artifactId>servlet-api</artifactId>
+      <artifactId>tomcat-servlet-api</artifactId>
       <version>\${tomcat.version}</version>
       <scope>provided</scope>
     </dependency>
@@ -317,6 +317,7 @@
       <scope>provided</scope>
     </dependency>
 
+	<!--
     <dependency>
       <groupId>postgresql</groupId>
       <artifactId>postgresql</artifactId>
@@ -340,6 +341,7 @@
       <artifactId>hsqldb</artifactId>
       <version>1.8.0.10</version>
     </dependency>
+    -->
         
   </dependencies>
 
