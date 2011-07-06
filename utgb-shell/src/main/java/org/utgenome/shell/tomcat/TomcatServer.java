@@ -29,7 +29,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -40,12 +39,10 @@ import org.apache.catalina.Context;
 import org.apache.catalina.Engine;
 import org.apache.catalina.Host;
 import org.apache.catalina.LifecycleException;
-import org.apache.catalina.connector.Connector;
 import org.apache.catalina.core.AprLifecycleListener;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.core.StandardServer;
 import org.apache.catalina.startup.ContextConfig;
-import org.apache.catalina.startup.HostConfig;
 import org.apache.catalina.startup.Tomcat;
 import org.xerial.core.XerialErrorCode;
 import org.xerial.core.XerialException;
@@ -237,9 +234,9 @@ public class TomcatServer {
 		// Create an engine
 		engine = tomcat.getEngine();
 		ClassLoader cl = Thread.currentThread().getContextClassLoader();
-		// if (cl.getParent() != null)
-		// cl = cl.getParent();
-		// engine.setParentClassLoader(cl);
+		if (cl.getParent() != null)
+			cl = cl.getParent();
+		engine.setParentClassLoader(cl);
 		engine.setName("utgb");
 
 		// Create a default virtual host
@@ -248,22 +245,20 @@ public class TomcatServer {
 
 		host = tomcat.getHost();
 		host.setAppBase(appBase);
-		// Hook up a host config to search for and pull in webapps.
-		HostConfig hostConfig = new HostConfig();
-		hostConfig.setUnpackWARs(true);
-		host.addLifecycleListener(hostConfig);
 
-		// // Tell the engine about the host
-		// tomcatEngine.addChild(tomcatHost);
-		// tomcatEngine.setDefaultHost(tomcatHost.getName());
+		// // Hook up a host config to search for and pull in webapps.
+		// HostConfig hostConfig = new HostConfig();
+		// hostConfig.setUnpackWARs(true);
+		// hostConfig.setDeployXML(true);
+		// host.addLifecycleListener(hostConfig);
 
-		// Tell the embedded server about the connector
-		InetAddress nullAddr = null;
-		tomcat.setPort(configuration.getPort());
-		Connector conn = tomcat.getConnector();
-		conn.setPort(configuration.getPort());
-		conn.setProxyPort(configuration.getAjp13port());
-		conn.setEnableLookups(true);
+		// // Tell the embedded server about the connector
+		// InetAddress nullAddr = null;
+		// tomcat.setPort(configuration.getPort());
+		// Connector conn = tomcat.getConnector();
+		// conn.setPort(configuration.getPort());
+		// conn.setProxyPort(configuration.getAjp13port());
+		// conn.setEnableLookups(true);
 
 		// Add AJP13 connector
 		// <Connector port="8009" protocol="AJP/1.3" redirectPort="8443" />
@@ -318,21 +313,11 @@ public class TomcatServer {
 		if (tomcat == null)
 			throw new XerialException(XerialErrorCode.INVALID_STATE, "tomcat server is not started yet.");
 
-		_logger.info(String.format("JAVA_HOME:%s", System.getenv("JAVA_HOME")));
+		_logger.trace(String.format("JAVA_HOME:%s", System.getenv("JAVA_HOME")));
 		_logger.info("deploy: contextPath=" + contextPath + ", docBase=" + docBase);
 
-		// Prepare webapp loader
-		// WebappLoader loader = new WebappLoader(getExtensionClassLoader());
-		// loader.setReloadable(true);
-		// loader.addRepository("WEB-INF/lib");
-
-		// Create a new webapp context
-
-		// load the META-INF/context.xml
 		try {
-
-			// tomcat.addWebapp(contextPath, docBase);
-
+			// Context context = tomcat.addWebapp(contextPath, docBase);
 			Context context = new StandardContext();
 			context.setPath(contextPath);
 			context.setName(contextPath);
@@ -342,7 +327,6 @@ public class TomcatServer {
 			context.setConfigFile(contextXML);
 			ContextConfig cfg = new ContextConfig();
 			context.addLifecycleListener(cfg);
-			// context.setLoader(loader);
 			tomcat.getHost().addChild(context);
 		}
 		catch (MalformedURLException e) {
