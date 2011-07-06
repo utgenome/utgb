@@ -266,12 +266,11 @@ public class TomcatServer {
 		// <Connector port="8009" protocol="AJP/1.3" redirectPort="8443" />
 
 		try {
-			// org.apache.catalina.connector.Connector ajp13connector = new
-			// org.apache.catalina.connector.Connector("org.apache.jk.server.JkCoyoteHandler");
-			// ajp13connector.setPort(configuration.getAjp13port());
-			// ajp13connector.setProtocol("AJP/1.3");
-			// ajp13connector.setRedirectPort(8443);
-			// embeddedTomcat.addConnector(ajp13connector);
+			//
+			org.apache.catalina.connector.Connector ajp13connector = new Connector("AJP/1.3");
+			ajp13connector.setPort(configuration.getAjp13port());
+			ajp13connector.setRedirectPort(8443);
+			tomcat.getService().addConnector(ajp13connector);
 		}
 		catch (Exception e1) {
 			throw new XerialException(XerialErrorCode.INVALID_STATE, e1);
@@ -333,10 +332,6 @@ public class TomcatServer {
 		}
 
 	}
-
-	/*
-	 * private void releaseTomcatResources() { embeddedTomcat = null; tomcatEngine = null; tomcatHost = null; }
-	 */
 
 	/**
 	 * Stops the tomcat server

@@ -33,9 +33,9 @@ import java.io.File;
  * 
  */
 public class TomcatServerConfiguration {
-	private int port = 8088; // default port number is set to 8088
-	private int ajp13port = 8009; // proxy server
-	private String catalinaBase; // 
+	private int port = 8989; // default port number is set to 8989
+	private int ajp13port = 8990; // proxy server
+	private String catalinaBase; //
 
 	public TomcatServerConfiguration() {
 		String workDir = getSystemProperty("user.dir", "");
