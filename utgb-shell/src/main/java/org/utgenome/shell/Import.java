@@ -39,11 +39,11 @@ import net.sf.samtools.SAMFileWriter;
 import net.sf.samtools.SAMFileWriterFactory;
 import net.sf.samtools.SAMRecord;
 
-import org.apache.tools.ant.util.ReaderInputStream;
 import org.utgenome.format.bed.BEDDatabase;
 import org.utgenome.format.fasta.FASTADatabase;
 import org.utgenome.format.silk.read.ReadDBBuilder;
 import org.utgenome.format.wig.WIGDatabaseGenerator;
+import org.utgenome.shell.util.ReaderInputStream;
 import org.xerial.util.log.Logger;
 import org.xerial.util.opt.Argument;
 import org.xerial.util.opt.Option;

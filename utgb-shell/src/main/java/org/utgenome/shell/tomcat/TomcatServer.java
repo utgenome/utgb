@@ -41,7 +41,10 @@ import org.apache.catalina.Engine;
 import org.apache.catalina.Host;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.connector.Connector;
+import org.apache.catalina.core.AprLifecycleListener;
 import org.apache.catalina.core.StandardContext;
+import org.apache.catalina.core.StandardHost;
+import org.apache.catalina.core.StandardServer;
 import org.apache.catalina.startup.ContextConfig;
 import org.apache.catalina.startup.HostConfig;
 import org.apache.catalina.startup.Tomcat;
@@ -231,6 +234,8 @@ public class TomcatServer {
 		tomcat = new Tomcat();
 		// embeddedTomcat.setAwait(true);
 		tomcat.setBaseDir(configuration.getCatalinaBase());
+		tomcat.setPort(configuration.getPort());
+		tomcat.setHostname("localhost");
 		// embeddedTomcat.setRealm(new MemoryRealm());
 
 		// Create an engine
@@ -238,20 +243,23 @@ public class TomcatServer {
 		ClassLoader cl = TomcatServer.class.getClassLoader();
 		tomcatEngine.setParentClassLoader(cl);
 		tomcatEngine.setName("utgb");
-		tomcatEngine.setDefaultHost("localhost");
 
 		// Create a default virtual host
 		String appBase = configuration.getCatalinaBase() + "/webapps";
 		_logger.debug("appBase: " + appBase);
-		tomcatHost = tomcat.getHost();
-		tomcatHost.setAppBase(appBase);
 
+		tomcatHost = new StandardHost();
+		tomcatHost.setName("localhost");
+		tomcatHost.setAppBase(appBase);
 		// Hook up a host config to search for and pull in webapps.
 		HostConfig hostConfig = new HostConfig();
 		hostConfig.setUnpackWARs(true);
 		// Copy META-INF/context.xml
-		hostConfig.setCopyXML(true);
+		// hostConfig.setCopyXML(true);
+		// hostConfig.setDeployXML(true);
 		tomcatHost.addLifecycleListener(hostConfig);
+		tomcat.setHost(tomcatHost);
+		tomcat.getEngine().addChild(tomcatHost);
 
 		// // Tell the engine about the host
 		// tomcatEngine.addChild(tomcatHost);
@@ -290,6 +298,9 @@ public class TomcatServer {
 		// managerContext.setPrivileged(true);
 		// tomcatHost.addChild(managerContext);
 
+		StandardServer server = (StandardServer) tomcat.getServer();
+		server.addLifecycleListener(new AprLifecycleListener());
+
 		// start up the tomcat
 		try {
 			tomcat.start();
@@ -315,6 +326,7 @@ public class TomcatServer {
 		if (tomcat == null)
 			throw new XerialException(XerialErrorCode.INVALID_STATE, "tomcat server is not started yet.");
 
+		_logger.info(String.format("JAVA_HOME:%s", System.getenv("JAVA_HOME")));
 		_logger.info("deploy: contextPath=" + contextPath + ", docBase=" + docBase);
 
 		// Prepare webapp loader
@@ -332,7 +344,8 @@ public class TomcatServer {
 			context.setName(contextPath);
 			context.setDocBase(docBase);
 			context.setReloadable(true);
-			context.setConfigFile(new File(docBase, "META-INF/context.xml").toURI().toURL());
+			URL contextXML = new File(docBase, "META-INF/context.xml").toURI().toURL();
+			context.setConfigFile(contextXML);
 			ContextConfig cfg = new ContextConfig();
 			context.addLifecycleListener(cfg);
 			// context.setLoader(loader);
@@ -342,7 +355,6 @@ public class TomcatServer {
 			_logger.error(e);
 		}
 
-		// tomcatHost.addChild(context);
 	}
 
 	/*
