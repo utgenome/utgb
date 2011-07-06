@@ -35,11 +35,11 @@ import net.sf.samtools.SAMRecord;
 import net.sf.samtools.SAMRecord.SAMTagAndValue;
 import net.sf.samtools.SAMRecordIterator;
 
-import org.apache.tools.ant.util.ReaderInputStream;
 import org.utgenome.format.FormatConversionReader;
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.bio.SAMReadLight;
 import org.utgenome.gwt.utgb.client.util.Properties;
+import org.utgenome.util.ReaderInputStream;
 import org.xerial.silk.SilkWriter;
 import org.xerial.util.log.Logger;
 

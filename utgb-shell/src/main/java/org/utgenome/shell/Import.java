@@ -43,7 +43,7 @@ import org.utgenome.format.bed.BEDDatabase;
 import org.utgenome.format.fasta.FASTADatabase;
 import org.utgenome.format.silk.read.ReadDBBuilder;
 import org.utgenome.format.wig.WIGDatabaseGenerator;
-import org.utgenome.shell.util.ReaderInputStream;
+import org.utgenome.util.ReaderInputStream;
 import org.xerial.util.log.Logger;
 import org.xerial.util.opt.Argument;
 import org.xerial.util.opt.Option;
