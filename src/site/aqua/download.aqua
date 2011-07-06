@@ -9,6 +9,8 @@
 
 == Release Notes
 
+* {b|July 6th, 2011} UTGB Toolkit 1.5.7 release
+** Migration to Tomcat 7.x 
 * {b|June 15th, 2011} UTGB Toolkit 1.5.6 released.
 ** Fixes a corner-case bug when creating WIG database via utgb import.
 * {b|April 28th, 2011} UTGB Toolkit 1.5.5 released.
