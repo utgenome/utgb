@@ -107,11 +107,11 @@ public class ServerTest {
 			_logger.debug("content-type: " + ct);
 		}
 
-		// {
-		// URLConnection conn2 = actionPage.openConnection();
-		// String ct2 = conn2.getContentType();
-		// _logger.debug("content-type: " + ct2);
-		// }
+		{
+			URLConnection conn2 = actionPage.openConnection();
+			String ct2 = conn2.getContentType();
+			_logger.debug("content-type: " + ct2);
+		}
 
 		es.shutdownNow();
 		es.awaitTermination(1, TimeUnit.SECONDS);

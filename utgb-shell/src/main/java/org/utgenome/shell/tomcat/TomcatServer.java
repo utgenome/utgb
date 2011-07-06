@@ -39,10 +39,12 @@ import org.apache.catalina.Context;
 import org.apache.catalina.Engine;
 import org.apache.catalina.Host;
 import org.apache.catalina.LifecycleException;
+import org.apache.catalina.connector.Connector;
 import org.apache.catalina.core.AprLifecycleListener;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.core.StandardServer;
 import org.apache.catalina.startup.ContextConfig;
+import org.apache.catalina.startup.HostConfig;
 import org.apache.catalina.startup.Tomcat;
 import org.xerial.core.XerialErrorCode;
 import org.xerial.core.XerialException;
@@ -230,6 +232,7 @@ public class TomcatServer {
 		tomcat = new Tomcat();
 		tomcat.setBaseDir(configuration.getCatalinaBase());
 		tomcat.setPort(configuration.getPort());
+		tomcat.enableNaming();
 
 		// Create an engine
 		engine = tomcat.getEngine();
@@ -238,6 +241,7 @@ public class TomcatServer {
 			cl = cl.getParent();
 		engine.setParentClassLoader(cl);
 		engine.setName("utgb");
+		engine.setDefaultHost("localhost");
 
 		// Create a default virtual host
 		String appBase = configuration.getCatalinaBase() + "/webapps";
@@ -246,19 +250,17 @@ public class TomcatServer {
 		host = tomcat.getHost();
 		host.setAppBase(appBase);
 
-		// // Hook up a host config to search for and pull in webapps.
-		// HostConfig hostConfig = new HostConfig();
-		// hostConfig.setUnpackWARs(true);
-		// hostConfig.setDeployXML(true);
-		// host.addLifecycleListener(hostConfig);
+		// Hook up a host config to search for and pull in webapps.
+		HostConfig hostConfig = new HostConfig();
+		hostConfig.setUnpackWARs(true);
+		hostConfig.setDeployXML(true);
+		host.addLifecycleListener(hostConfig);
 
-		// // Tell the embedded server about the connector
-		// InetAddress nullAddr = null;
-		// tomcat.setPort(configuration.getPort());
-		// Connector conn = tomcat.getConnector();
-		// conn.setPort(configuration.getPort());
-		// conn.setProxyPort(configuration.getAjp13port());
-		// conn.setEnableLookups(true);
+		// Tell the embedded server about the connector
+		Connector conn = tomcat.getConnector();
+		conn.setPort(configuration.getPort());
+		conn.setProxyPort(configuration.getAjp13port());
+		conn.setEnableLookups(true);
 
 		// Add AJP13 connector
 		// <Connector port="8009" protocol="AJP/1.3" redirectPort="8443" />
@@ -298,8 +300,6 @@ public class TomcatServer {
 			if (m != null && m.indexOf("already in use") != -1)
 				m = "port " + configuration.getPort() + " is already in use. You probably have another tomcat listening the same port";
 
-			// releaseTomcatResources();
-
 			throw new XerialException(XerialErrorCode.INVALID_STATE, m);
 		}
 
@@ -317,7 +317,6 @@ public class TomcatServer {
 		_logger.info("deploy: contextPath=" + contextPath + ", docBase=" + docBase);
 
 		try {
-			// Context context = tomcat.addWebapp(contextPath, docBase);
 			Context context = new StandardContext();
 			context.setPath(contextPath);
 			context.setName(contextPath);
