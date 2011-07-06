@@ -121,6 +121,22 @@
 
     <!-- Tomcat Libraries -->
     <dependency>
+      <groupId>org.apache.tomcat.embed</groupId>
+      <artifactId>tomcat-embed-core</artifactId>
+      <version>${tomcat.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tomcat.embed</groupId>
+      <artifactId>tomcat-embed-jasper</artifactId>
+      <version>${tomcat.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tomcat.embed</groupId>
+      <artifactId>tomcat-embed-logging-juli</artifactId>
+      <version>${tomcat.version}</version>
+    </dependency>
+    <!-- 
+    <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-catalina</artifactId>
       <version>${tomcat.version}</version>
@@ -154,6 +170,8 @@
       <version>${tomcat.version}</version>
     </dependency>
 
+  -->
+ 
 
     <!-- ant library contains tar.bz2 extracting utility -->
 
@@ -190,5 +208,12 @@
       <version>1.0-beta-7</version>
     </dependency>
 
+    <dependency>
+    	<groupId>org.eclipse.jdt.core.compiler</groupId>
+    	<artifactId>ecj</artifactId>
+    	<version>3.5.1</version>
+    	<type>jar</type>
+    	<scope>compile</scope>
+    </dependency>
   </dependencies>
 </project>
