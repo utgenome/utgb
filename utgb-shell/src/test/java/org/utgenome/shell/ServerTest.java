@@ -100,7 +100,7 @@ public class ServerTest {
 		});
 
 		URL serverPage = new URL("http://localhost:8989/" + temporatyProject.appName + "/utgb-core/roundcircle");
-		URL actionPage = new URL("http://localhost:8989/" + temporatyProject.appName + "/utgb-core/hello");
+		URL actionPage = new URL("http://localhost:8989/" + temporatyProject.appName + "/hello");
 
 		Thread.sleep(8 * 1000);
 

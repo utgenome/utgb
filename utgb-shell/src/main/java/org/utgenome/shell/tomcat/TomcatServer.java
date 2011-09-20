@@ -239,10 +239,10 @@ public class TomcatServer {
 
 		// Create an engine
 		engine = tomcat.getEngine();
-		// ClassLoader cl = Thread.currentThread().getContextClassLoader();
+		ClassLoader cl = Thread.currentThread().getContextClassLoader();
 		// if (cl.getParent() != null)
 		// cl = cl.getParent();
-		// engine.setParentClassLoader(cl);
+		engine.setParentClassLoader(cl);
 		engine.setName("utgb");
 		engine.setDefaultHost("localhost");
 
@@ -262,8 +262,13 @@ public class TomcatServer {
 		// Tell the embedded server about the connector
 		Connector conn = tomcat.getConnector();
 		conn.setPort(configuration.getPort());
-		conn.setProxyPort(configuration.getAjp13port());
+		conn.setRedirectPort(8443);
 		conn.setEnableLookups(true);
+		// tomcat.getService().addConnector(conn);
+
+		// Create a server
+		StandardServer server = (StandardServer) tomcat.getServer();
+		server.addLifecycleListener(new AprLifecycleListener());
 
 		try {
 			// Prepare ajp13 connector
@@ -271,11 +276,6 @@ public class TomcatServer {
 			org.apache.catalina.connector.Connector ajp13connector = new Connector("AJP/1.3");
 			ajp13connector.setPort(configuration.getAjp13port());
 			ajp13connector.setRedirectPort(8443);
-
-			// Crete a server
-			StandardServer server = (StandardServer) tomcat.getServer();
-			server.addLifecycleListener(new AprLifecycleListener());
-
 			// Add AJP13 connector
 			tomcat.getService().addConnector(ajp13connector);
 		}
