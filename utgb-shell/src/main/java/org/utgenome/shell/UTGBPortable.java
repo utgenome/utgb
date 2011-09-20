@@ -182,7 +182,7 @@ public class UTGBPortable implements TomcatServerLauncher {
 			}
 		}
 		catch (InterruptedException e) {
-			e.printStackTrace();
+			_logger.error(e);
 		}
 	}
 

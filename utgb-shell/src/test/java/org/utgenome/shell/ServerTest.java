@@ -24,7 +24,10 @@
 //--------------------------------------
 package org.utgenome.shell;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.concurrent.Callable;
@@ -52,7 +55,7 @@ public class ServerTest {
 
 	@AfterClass
 	public static void tearUp() {
-		// rmdir(new File(temporatyProject.projectRoot));
+		rmdir(new File(temporatyProject.projectRoot));
 	}
 
 	static boolean rmdir(File path) {
@@ -97,7 +100,7 @@ public class ServerTest {
 		});
 
 		URL serverPage = new URL("http://localhost:8989/" + temporatyProject.appName + "/utgb-core/roundcircle");
-		URL actionPage = new URL("http://localhost:8989/" + temporatyProject.appName + "/hello");
+		URL actionPage = new URL("http://localhost:8989/" + temporatyProject.appName + "/utgb-core/hello");
 
 		Thread.sleep(8 * 1000);
 
@@ -106,6 +109,7 @@ public class ServerTest {
 			String ct = conn.getContentType();
 
 			_logger.debug("content-type: " + ct);
+			assertEquals("image/png", ct);
 		}
 
 		{

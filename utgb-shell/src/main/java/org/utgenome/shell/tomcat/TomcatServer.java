@@ -71,7 +71,7 @@ public class TomcatServer {
 	private TomcatServerConfiguration configuration;
 	private Tomcat tomcat = null;
 	private Engine engine = null;
-	private Host host = null;
+	// private Host host = null;
 
 	static {
 	}
@@ -239,28 +239,25 @@ public class TomcatServer {
 
 		// Create an engine
 		engine = tomcat.getEngine();
-		ClassLoader cl = Thread.currentThread().getContextClassLoader();
-		if (cl.getParent() != null)
-			cl = cl.getParent();
-		engine.setParentClassLoader(cl);
+		// ClassLoader cl = Thread.currentThread().getContextClassLoader();
+		// if (cl.getParent() != null)
+		// cl = cl.getParent();
+		// engine.setParentClassLoader(cl);
 		engine.setName("utgb");
 		engine.setDefaultHost("localhost");
 
 		// Create a default virtual host
-		String appBase = configuration.getCatalinaBase() + "/webapps";
-		_logger.debug("appBase: " + appBase);
-
-		host = new StandardHost();
-		host.setName("localhost");
-		host.setAppBase(appBase);
-		tomcat.setHost(host);
-		engine.addChild(host);
+		// String appBase = configuration.getCatalinaBase() + "/webapps";
+		// _logger.debug("appBase: " + appBase);
+		// host = tomcat.getHost();
+		// host.setName("localhost");
+		// host.setAppBase(appBase);
 
 		// Hook up a host config to search for and pull in webapps.
 		HostConfig hostConfig = new HostConfig();
 		hostConfig.setUnpackWARs(true);
 		hostConfig.setDeployXML(true);
-		host.addLifecycleListener(hostConfig);
+		tomcat.getHost().addLifecycleListener(hostConfig);
 
 		// Tell the embedded server about the connector
 		Connector conn = tomcat.getConnector();
@@ -286,22 +283,10 @@ public class TomcatServer {
 			throw new XerialException(XerialErrorCode.INVALID_STATE, e1);
 		}
 
-		// tomcat.getHost().addLifecycleListener(tomcat.getDefaultWebXmlListener());
-
-		// create the ROOT context
-		// Context rootContext = embeddedomcat.createContext("", "ROOT");
-		// tomcatHost.addChild(rootContext);
-
-		// // add manager context
-		// Context managerContext = embeddedTomcat.createContext("/manager",
-		// "manager");
-		// managerContext.setPrivileged(true);
-		// tomcatHost.addChild(managerContext);
-
 		// Start up the Tomcat
 		try {
 			tomcat.start();
-			tomcat.getServer().await();
+			// tomcat.getServer().await();
 		}
 		catch (LifecycleException e) {
 			_logger.error(e);
@@ -335,6 +320,7 @@ public class TomcatServer {
 			context.setConfigFile(contextXML);
 			ContextConfig cfg = new ContextConfig();
 			context.addLifecycleListener(cfg);
+
 			tomcat.getHost().addChild(context);
 		}
 		catch (Exception e) {

@@ -182,6 +182,8 @@ public class Maven extends UTGBShellCommand {
 		return envp;
 	}
 
+	private static boolean addedShutdownHook = false;
+
 	public static int runMaven(String[] args, File workingDir, Properties systemProperties) throws UTGBShellException {
 
 		// Preserve the context class loader
@@ -191,12 +193,15 @@ public class Maven extends UTGBShellCommand {
 
 		try {
 			// add the hook for killing the Maven process when ctrl+C is pressed
-			Runtime.getRuntime().addShutdownHook(new Thread() {
-				@Override
-				public void run() {
-					_logger.debug("shutdown hook is called");
-				}
-			});
+			if (!addedShutdownHook) {
+				addedShutdownHook = true;
+				Runtime.getRuntime().addShutdownHook(new Thread() {
+					@Override
+					public void run() {
+						_logger.debug("shutdown hook is called");
+					}
+				});
+			}
 
 			MavenCli maven = new MavenCli();
 			if (workingDir == null)
