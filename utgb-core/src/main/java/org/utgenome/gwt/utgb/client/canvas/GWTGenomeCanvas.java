@@ -870,6 +870,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 						}
 							break;
 						case HardClip:
+							readEnd -= e.length;
 							break;
 						}
 						readStart = readEnd;
