@@ -240,6 +240,7 @@ public class BED2Silk {
 					for (BEDHeaderAttribute a : track.attributes) {
 						trackNode.leaf(a.name, StringUtil.unquote(a.value));
 					}
+					geneCount = 0;
 				}
 				else {
 					String dataLine = createGeneTSV(line, lineNum);

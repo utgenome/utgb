@@ -52,7 +52,7 @@ public class ServerTest {
 
 	@AfterClass
 	public static void tearUp() {
-		// rmdir(new File(tmpDir, appName));
+		// rmdir(new File(temporatyProject.projectRoot));
 	}
 
 	static boolean rmdir(File path) {
@@ -104,6 +104,7 @@ public class ServerTest {
 		{
 			URLConnection conn = serverPage.openConnection();
 			String ct = conn.getContentType();
+
 			_logger.debug("content-type: " + ct);
 		}
 

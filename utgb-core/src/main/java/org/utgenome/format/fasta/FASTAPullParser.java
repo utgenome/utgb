@@ -35,12 +35,12 @@ import java.io.Reader;
 import java.util.LinkedList;
 import java.util.zip.GZIPInputStream;
 
-import org.apache.tools.tar.TarEntry;
-import org.apache.tools.tar.TarInputStream;
 import org.utgenome.UTGBErrorCode;
 import org.utgenome.UTGBException;
 import org.xerial.util.FileType;
 import org.xerial.util.log.Logger;
+import org.codehaus.plexus.archiver.tar.TarInputStream;
+import org.codehaus.plexus.archiver.tar.TarEntry;
 
 /**
  * A pull parser for FASTA format files

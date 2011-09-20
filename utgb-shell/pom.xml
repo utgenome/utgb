@@ -14,7 +14,7 @@
   <description>A command-line client of UTGB Toolkit.</description>
 
   <properties>
-    <tomcat.version>7.0.16</tomcat.version>
+    <tomcat.version>7.0.21</tomcat.version>
     <maven.version>3.0.3</maven.version>
   </properties>
 
@@ -120,6 +120,7 @@
 
 
     <!-- Tomcat Libraries -->
+
     <dependency>
       <groupId>org.apache.tomcat.embed</groupId>
       <artifactId>tomcat-embed-core</artifactId>
@@ -135,17 +136,20 @@
       <artifactId>tomcat-embed-logging-juli</artifactId>
       <version>${tomcat.version}</version>
     </dependency>
-    <!-- 
+
+
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-catalina</artifactId>
       <version>${tomcat.version}</version>
     </dependency>
+    <!-- 
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-coyote</artifactId>
       <version>${tomcat.version}</version>
     </dependency>
+     -->
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-jasper</artifactId>
@@ -170,7 +174,6 @@
       <version>${tomcat.version}</version>
     </dependency>
 
-  -->
  
 
     <!-- ant library contains tar.bz2 extracting utility -->

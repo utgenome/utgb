@@ -39,10 +39,13 @@ import org.apache.catalina.Context;
 import org.apache.catalina.Engine;
 import org.apache.catalina.Host;
 import org.apache.catalina.LifecycleException;
+import org.apache.catalina.Realm;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.core.AprLifecycleListener;
 import org.apache.catalina.core.StandardContext;
+import org.apache.catalina.core.StandardHost;
 import org.apache.catalina.core.StandardServer;
+import org.apache.catalina.startup.Constants;
 import org.apache.catalina.startup.ContextConfig;
 import org.apache.catalina.startup.HostConfig;
 import org.apache.catalina.startup.Tomcat;
@@ -247,8 +250,11 @@ public class TomcatServer {
 		String appBase = configuration.getCatalinaBase() + "/webapps";
 		_logger.debug("appBase: " + appBase);
 
-		host = tomcat.getHost();
+		host = new StandardHost();
+		host.setName("localhost");
 		host.setAppBase(appBase);
+		tomcat.setHost(host);
+		engine.addChild(host);
 
 		// Hook up a host config to search for and pull in webapps.
 		HostConfig hostConfig = new HostConfig();
@@ -262,22 +268,28 @@ public class TomcatServer {
 		conn.setProxyPort(configuration.getAjp13port());
 		conn.setEnableLookups(true);
 
-		// Add AJP13 connector
-		// <Connector port="8009" protocol="AJP/1.3" redirectPort="8443" />
-
 		try {
-			//
+			// Prepare ajp13 connector
+			// <Connector port="8009" protocol="AJP/1.3" redirectPort="8443" />
 			org.apache.catalina.connector.Connector ajp13connector = new Connector("AJP/1.3");
 			ajp13connector.setPort(configuration.getAjp13port());
 			ajp13connector.setRedirectPort(8443);
+
+			// Crete a server
+			StandardServer server = (StandardServer) tomcat.getServer();
+			server.addLifecycleListener(new AprLifecycleListener());
+
+			// Add AJP13 connector
 			tomcat.getService().addConnector(ajp13connector);
 		}
 		catch (Exception e1) {
 			throw new XerialException(XerialErrorCode.INVALID_STATE, e1);
 		}
 
+		// tomcat.getHost().addLifecycleListener(tomcat.getDefaultWebXmlListener());
+
 		// create the ROOT context
-		// Context rootContext = embeddedTomcat.createContext("", "ROOT");
+		// Context rootContext = embeddedomcat.createContext("", "ROOT");
 		// tomcatHost.addChild(rootContext);
 
 		// // add manager context
@@ -286,12 +298,10 @@ public class TomcatServer {
 		// managerContext.setPrivileged(true);
 		// tomcatHost.addChild(managerContext);
 
-		StandardServer server = (StandardServer) tomcat.getServer();
-		server.addLifecycleListener(new AprLifecycleListener());
-
 		// Start up the Tomcat
 		try {
 			tomcat.start();
+			tomcat.getServer().await();
 		}
 		catch (LifecycleException e) {
 			_logger.error(e);
@@ -327,7 +337,7 @@ public class TomcatServer {
 			context.addLifecycleListener(cfg);
 			tomcat.getHost().addChild(context);
 		}
-		catch (MalformedURLException e) {
+		catch (Exception e) {
 			_logger.error(e);
 		}
 

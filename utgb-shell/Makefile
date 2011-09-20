@@ -35,11 +35,12 @@ package: $(ARCHIVE)
 $(ARCHIVE): $(SRC)
 	$(MVN) package -Dmaven.test.skip=true
 
+UTGB_DIR:="$(INSTALL_DIR)/utgb-toolkit-$(VERSION)"
 
 install: $(ARCHIVE) 
-	mkdir -p "$(INSTALL_DIR)"
+	mkdir -p "$(UTGB_DIR)"
 	mkdir -p "$(PREFIX)/bin"
-	if [ -d "$(INSTALL_DIR)/current/lib" ]; then rm -rf "$(INSTALL_DIR)/current/lib"; fi
+	if [ -d "$(UTGB_DIR)/lib" ]; then rm -rf "$(UTGB_DIR)/lib"; fi
 	tar xvfz $< -C "$(INSTALL_DIR)"
 	ln -sfn "utgb-toolkit-$(VERSION)" "$(INSTALL_DIR)/current"
 	ln -sf "../$(PROG)/current/bin/$(PROG)" "$(PREFIX)/bin/$(PROG)"
