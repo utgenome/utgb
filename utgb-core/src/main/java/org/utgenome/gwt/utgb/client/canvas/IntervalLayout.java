@@ -317,11 +317,11 @@ public class IntervalLayout {
 
 		Collections.sort(readsInRange, new Comparator<GenomeRange>() {
 			public int compare(GenomeRange o1, GenomeRange o2) {
-				int diff = o1.getStart() - o2.getStart();
+				int diff = o2.length() - o1.length();
 				if (diff == 0)
-					return o1.length() - o2.length();
-				else
-					return diff;
+					diff = o1.getStart() - o2.getStart();
+
+				return diff;
 			}
 		});
 

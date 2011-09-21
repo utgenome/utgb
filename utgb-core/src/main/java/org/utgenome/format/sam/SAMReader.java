@@ -404,12 +404,11 @@ public class SAMReader {
 
 		Collections.sort(result, new Comparator<GenomeRange>() {
 			public int compare(GenomeRange o1, GenomeRange o2) {
-				int diff = o1.getStart() - o2.getStart();
+				int diff = o2.length() - o1.length();
 				if (diff == 0) {
-					return o2.length() - o1.length();
+					diff = o1.getStart() - o2.getStart();
 				}
-				else
-					return diff;
+				return diff;
 			}
 		});
 
