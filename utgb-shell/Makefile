@@ -19,12 +19,14 @@ MVN:=mvn ${MVN_OPTS}
 PROG:=utgb
 PREFIX:=${HOME}/local
 INSTALL_DIR:=$(PREFIX)/$(PROG)
+MKDIR:=/bin/mkdir
+
 
 # Read the version number from the pom.xml by using lib/silk-weaver.jar 
 VERSION:=$(shell java -jar lib/silk-weaver.jar find "project(artifactId, version)" pom.xml | grep utgb-shell | cut -f 2)
 ARCHIVE = target/utgb-toolkit-$(VERSION)-bin.tar.gz
 
-SRC=$(shell find src)
+SRC=$(shell /bin/find src)
 
 .phony: all install clean package test
 
@@ -38,8 +40,8 @@ $(ARCHIVE): $(SRC)
 UTGB_DIR:="$(INSTALL_DIR)/utgb-toolkit-$(VERSION)"
 
 install: $(ARCHIVE) 
-	mkdir -p "$(UTGB_DIR)"
-	mkdir -p "$(PREFIX)/bin"
+	$(MKDIR) -p "$(UTGB_DIR)"
+	$(MKDIR) -p "$(PREFIX)/bin"
 	if [ -d "$(UTGB_DIR)/lib" ]; then rm -rf "$(UTGB_DIR)/lib"; fi
 	tar xvfz $< -C "$(INSTALL_DIR)"
 	ln -sfn "utgb-toolkit-$(VERSION)" "$(INSTALL_DIR)/current"
@@ -50,6 +52,6 @@ test:
 	$(MVN) test
 
 clean:
-	mvn clean
+	$(MVN) clean
 
 
