@@ -151,7 +151,7 @@ $ find . -name "*.orig"
 
 === Find directories 
 <code>
-$ find . -t d 
+$ find . -type d 
 </code>
 
 
@@ -396,6 +396,11 @@ hx61
 
 # Do parallel build using hx52, hx53, ..., hx62
 $ gxpc make -k -j 
+
+(To stop the parallel build, type Ctrl+C)
+
+# Quic GXP
+$ gxpc quit
 </code>
 
 
