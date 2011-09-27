@@ -399,7 +399,7 @@ $ gxpc make -k -j
 
 (To stop the parallel build, type Ctrl+C)
 
-# Quic GXP
+# Quit GXP 
 $ gxpc quit
 </code>
 
@@ -410,7 +410,7 @@ See https://supcom.hgc.jp/japanese/utili_info/manual/sge.html
 
 = Running MPI jobs
 
-To run MPI jobs in our cluster, you need to generate a qsub script that specifies working directory (pwd), files to recieve standard output/error stream, commands to use, etc.
+To run MPI jobs in our cluster, you need to generate a qsub script that specifies working directory (pwd), files to recieve standard output/error streams, commands to use, etc.
 
 == An example: finding motif sequences using MPI-MEME 
 
@@ -435,7 +435,7 @@ BIN=/bio/package/meme/meme_4.5.0_openmpi_build/bin/meme_p
 DATA=input.fa
 RES_DIR=result
 
-time $MPI_EXEC -np 64   $BIN $DATA -p 64 -oc $RES_DIR -maxsize 10000000 -dna -nmotifs 30 -mod zoops -minw 3 -maxw 10 
+$MPI_EXEC -np 64   $BIN $DATA -p 64 -oc $RES_DIR -maxsize 10000000 -dna -nmotifs 30 -mod zoops -minw 3 -maxw 10 
 </code>
 
 === Submit MPI jobs
@@ -464,7 +464,7 @@ In order to fully utilize CPU cores in each cluster node, you need to learn thre
 * Java: ThreadExecutor, etc. Book: Java Concurrency in Practice.
 ** http://download.oracle.com/javase/tutorial/essential/concurrency/index.html
 * Scala: Actor
-
+* etc.
 
 = Managing Source Codes
 
