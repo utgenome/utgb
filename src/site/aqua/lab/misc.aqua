@@ -1,0 +1,255 @@
+= Tips for labo members
+
+Written by Taro L. Saito "<leo@xerial.org>"
+
+This document describes the usage of Linux clusters in our laboratory and some tips for managing files, distributed jobs, etc. 
+
+
+== Setup 
+
+First you prepare some Unix, Mac OS X machines or Cygwin (unix emulator in Windows).
+
+= Accessing Servers
+
+== Login to a remote server behind firewall
+Direct login to our cluster is not allowed due to security reasons. When you need to access the cluster nodes from outside of the laboratory, use a login server:
+
+<code>
+$ ssh -t cocoa ssh hx02
+</code>
+
+== Configure .ssh/config
+
+Frequently used settings for ssh can be specified in your "$HOME/.ssh/config" file. 
+<code>
+Host *
+ForwardAgent yes
+TCPKeepAlive yes
+ServerAliveInterval 30
+ServerAliveCountMax 3
+</code>
+
+=== Aliases
+You can add aliases (other names) of host names to simplify the login process:
+
+<code>
+Host hx02
+Hostname hx02.gi.k.u-tokyo.ac.jp
+</code>
+
+Now you can use hx02 instead of the full host name:
+<code>
+$ ssh hx02
+</code>
+
+=== Enabling direct accesses to cluster
+If you want to access hx02 always through cocoa server, use {i|nc} command as follows in "ProxyCommand" option:
+<code>
+Host cocoa-hx02
+Hostname hx02.gi.k.u-tokyo.ac.jp
+ProxyCommand ssh cocoa nc -w 3600 %h %p
+</code>
+
+It enables you to direct login to hx02:
+<code>
+$ ssh cocoa-hx02 
+</code>
+Rdirecting through netcat command is useful. Note that however it is a little bit slow compared to "ssh -t cocoa ssh hx02" method. 
+
+== Browse web pages through proxy
+
+Our university has contracts to subscribe scientific journals. The web sites of nature.com, acm.org, etc. check the IP addresse (133.11.xx.xx, 157.82.xx.xx) to detect whether you belong to an organization subscribing the journal. To use an IP address of the university, you need to access journal web pages through a proxy server. 
+
+Add the local port forward setting to your "$HOME/.ssh/config" file:
+<code>
+Host cocoa-proxy
+Hostname (cocoa's full host name)
+LocalForward 8081 localhost:8080
+</code>
+
+Login to the server with proxy setting:
+<code>
+$ ssh cocoa-proxy
+</code>
+
+Then configure your browser's proxy settings to use the port localhost:8081.
+
+=== Use from command-line
+<code>
+$ ssh -L 8081:localhost:8080 (cocoa) 
+</code>
+
+= Managing Files
+
+== Copy files between servers
+Use {b|scp} or {b|rsync} command:
+<code>
+$ rsync -av (source host):./src_folder (remote host):./dest_folder
+</code>
+It copies the entire {i|src_folder} into {i|dest_folder} at the remote host.
+
+See the difference with the followind command:
+<code>
+$ rsync -av (source host):./src_folder/ (remote host):./dest_folder
+</code>
+This copies files {i|within} src_folder to the destination.
+
+
+== Sync files through a login server
+
+Use {i|e} option:
+<code>
+$ rsync -av -e "ssh cocoa ssh" hx02:./(src_folder) (dest_folder)
+</code>
+
+
+== Extract files from archive files (.tar.gz, tar.bz2)
+Learn the usage of {b|tar}, {b|zip} commands:
+
+=== Lookup contents in the archive
+<code>
+$ tar tvfz (tar.gz file)
+</code>
+
+=== Extract files in tar.gz 
+<code>
+$ tar xvfz (tar.gz file)  
+</code>
+
+=== Extract files in tar.bz2 
+Use {i|j} option instead of {i|x}:
+<code>
+$ tar tvfj (tar.bz2 file)
+$ tar xvfj (tar.gz file)
+</code>
+
+== Copy thousands of files 
+
+Creating files is a slow process because it needs to access the meta data of your file system, which is often slow for network-based file sytem (gluster, NFS, etc.). So copying many files between servers takes a lot of time even if the total data size is small. To save the file creation cost, use tar before sending files: 
+
+* Retrieve files as tar.gz archive from a remote host:
+<code>
+$ ssh hx02 'tar cvfz - (files_to_copy)' > file_archive.tar.gz
+</code>
+
+
+= Managing jobs
+
+== Monitor jobs in the current host
+<code>
+$ top
+top - 11:50:20 up 13 days, 16:06,  1 user,  load average: 0.00, 0.00, 0.00
+Tasks: 215 total,   1 running, 214 sleeping,   0 stopped,   0 zombie
+Cpu(s): 11.8%us,  5.9%sy,  0.0%ni, 82.4%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Mem:  33074068k total, 30945716k used,  2128352k free,       16k buffers
+Swap:  8393920k total,      108k used,  8393812k free, 27730084k cached
+  PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  COMMAND
+16887 leo       16   0  8628 1224  832 R  106  0.0   0:00.08 top
+    1 root      15   0   812  300  244 S    0  0.0   0:03.18 init
+    2 root      10  -5     0    0    0 S    0  0.0   0:00.00 kthreadd
+    3 root      RT  -5     0    0    0 S    0  0.0   0:00.61 migration/0                                              
+</code>
+Type key '{i|1}' to see the CPU usage of each core:
+<code>
+top - 11:52:48 up 13 days, 16:08,  1 user,  load average: 0.03, 0.02, 0.00
+Tasks: 215 total,   1 running, 214 sleeping,   0 stopped,   0 zombie
+Cpu0  :  0.3%us,  0.3%sy,  0.0%ni, 99.3%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu1  :  0.0%us,  0.0%sy,  0.0%ni,100.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu2  :  0.0%us,  0.0%sy,  0.0%ni,100.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu3  :  0.0%us,  0.0%sy,  0.0%ni,100.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu4  :  0.0%us,  2.0%sy,  0.0%ni, 98.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu5  :  0.0%us,  0.0%sy,  0.0%ni,100.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu6  :  0.0%us,  0.0%sy,  0.0%ni,100.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu7  :  0.0%us,  0.0%sy,  0.0%ni,100.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Mem:  33074068k total, 30947240k used,  2126828k free,       16k buffers
+Swap:  8393920k total,      108k used,  8393812k free, 27730084k cached
+</code>
+
+'q' is for quit the top command.
+
+== Monitor jobs in several hosts
+Our cluster has {i|qtop} command to see the CPU usage of each host:
+<code>
+$ qtop
+=== qtop version 1.01 === : [Q]uit, [N]ext, [P]revious, [J]ob, [U]ser       
+HOSTNAME                ARCH         NCPU  LOAD  MEMTOT  MEMUSE  SWAPTO  SWAPUS
+-------------------------------------------------------------------------------
+global                  -               -     -       -       -       -       -
+ax001                   lx24-amd64     24  0.00  504.1G  237.9M    7.8G     0.0
+ax03                    lx24-amd64     48  0.02  252.0G  310.6M    7.8G     0.0
+ax04                    lx24-amd64     48  0.01  252.0G  316.4M    7.8G     0.0
+hx02                    lx24-amd64      8  0.03   31.5G    3.1G    8.0G  108.0K
+hx03                    lx24-amd64      8  0.03   31.5G  771.5M    8.0G     0.0
+hx04                    lx24-amd64      8  0.03   31.5G  335.6M    8.0G     0.0
+hx05                    lx24-amd64      8  0.00   31.5G  774.1M    8.0G     0.0
+hx06                    lx24-amd64      8  0.04   31.5G  364.4M    8.0G     0.0
+hx07                    lx24-amd64      8  0.01   31.5G  356.1M    8.0G     0.0
+hx08                    lx24-amd64      8  0.01   31.5G  360.1M    8.0G     0.0
+hx09                    lx24-amd64      8  0.00   31.5G  364.4M    8.0G     0.0
+hx10                    lx24-amd64      8  0.00   31.5G  374.1M    8.0G     0.0
+hx11                    lx24-amd64      8  0.00   31.5G  305.9M    8.0G     0.0
+hx51                    lx24-amd64     12  0.01   94.6G    1.2G    8.0G     0.0
+hx52                    lx24-amd64     12  0.01   94.6G    1.0G    8.0G     0.0
+</code>
+
+
+= Using GNU Screen
+
+Using [http://www.gnu.org/s/screen/ GNU screen] is a must for managing long-running jobs. Screen is a tool for managing multiple shells in a single window, and also it enables you to leave the ssh login session without terminating the running jobs. 
+
+In default, screen uses Ctrl+A as a prefix of the commands. Here is my "$HOME/.screenrc", which sets Ctrl+T as a defult command key for screen:
+<code>
+terminfo xterm KJ=sjis
+defencoding sjis
+startup_message off
+autodetach on
+vbell off
+
+defflow off
+
+# ^T (Input this character as Ctrl+q, Ctrl+t)
+escape ^T^T
+
+defscrollback 1000000
+
+terminfo xterm* ti=:te=
+caption always "%{= dw} %-w%{=bu dc}%n%f %t%{-}%+w "
+</code>
+
+== Usage
+<code>
+$ screen
+</code>
+
+=== Commands 
+* Create a new window: Ctrl+T, Ctrl+N
+* Move to the next window: Ctrl+T, N
+* Movo to the previous window: Ctrl+T, P
+* Detach the session: Ctrl+T, D 
+* Move freely within the buffer (copy-mode): Ctrl+T, Ctrl+[   (Press ESC for exitting the copy-mode)
+=== Reattach to a session
+<code>
+$ screen -R
+</code>
+
+=== Lookup existing screen sessions
+<code>
+$ screen -list
+</code>
+
+=== Force reattach
+<code>
+$ screen -D -RR
+</code>
+
+
+= Writing Workflows
+
+Makefile is a notebook for bioinformatician. 
+
+<code>
+fd
+</code>
+
+= Managing multi-node jobs with GXP 
+
