@@ -1,13 +1,23 @@
-= Tips for labo members
+= Tips for lab members
 
 Written by Taro L. Saito "<leo@xerial.org>"
 
-This document describes the usage of Linux clusters in our laboratory and some tips for managing files, distributed jobs, etc. 
+This document describes the usage of Linux clusters in our laboratory, and some tips for managing files, distributed jobs, etc. 
 
 
 == Setup 
+This document assumes that you are using some Unix-like environment. To set up your machine, install the following tools:
 
-First you prepare some Unix, Mac OS X machines or Cygwin (unix emulator in Windows).
+=== Windows
+* Install Cygwin 
+** Use mintty bundled in Cygwin as a terminal for Windows
+* (Optional) Meadow - Emacs for Windows
+
+=== Mac OS X
+* Install XCode (includes gcc, make, etc.) (available from AppStore) 
+* iTerm2 is useful as a terminal.
+* (Optional) Install Mac Ports 
+* (Optional) Cocoa-Emacs 
 
 = Accessing Servers
 
@@ -54,11 +64,11 @@ It enables you to direct login to hx02:
 <code>
 $ ssh cocoa-hx02 
 </code>
-Rdirecting through netcat command is useful. Note that however it is a little bit slow compared to "ssh -t cocoa ssh hx02" method. 
+Redirecting through netcat command is useful. Note that however it is a little bit slow compared to "ssh -t cocoa ssh hx02" method. 
 
 == Browse web pages through proxy
 
-Our university has contracts to subscribe scientific journals. The web sites of nature.com, acm.org, etc. check the IP addresse (133.11.xx.xx, 157.82.xx.xx) to detect whether you belong to an organization subscribing the journal. To use an IP address of the university, you need to access journal web pages through a proxy server. 
+Our university has contracts to subscribe scientific journals. The web sites of nature.com, acm.org, etc. check the IP address (133.11.xx.xx, 157.82.xx.xx) to detect whether you belong to an organization subscribing the journal. To use an IP address of the university, you need to access journal web pages through a proxy server. 
 
 Add the local port forward setting to your "$HOME/.ssh/config" file:
 <code>
@@ -72,7 +82,7 @@ Login to the server with proxy setting:
 $ ssh cocoa-proxy
 </code>
 
-Then configure your browser's proxy settings to use the port localhost:8081.
+Then configure your browsers proxy settings to use the port localhost:8081.
 
 === Use from command-line
 <code>
@@ -88,7 +98,7 @@ $ rsync -av (source host):./src_folder (remote host):./dest_folder
 </code>
 It copies the entire {i|src_folder} into {i|dest_folder} at the remote host.
 
-See the difference with the followind command:
+See the difference with the following command:
 <code>
 $ rsync -av (source host):./src_folder/ (remote host):./dest_folder
 </code>
@@ -243,13 +253,24 @@ $ screen -D -RR
 </code>
 
 
-= Writing Workflows
+= Writing Workflows in Makefile
 
-Makefile is a notebook for bioinformatician. 
+Makefile is a notebook for bioinformatician. To ensure the reproducibility of your analysis, you SHOULD write down command scripts used in the experiment in a Makefile as if you are taking a note of wet experiments. 
 
+For syntax of Makefile, see http://www.cc.u-tokyo.ac.jp/support/kosyu/16/kosyu-20110907-make.pdf
+
+== Makefile
 <code>
-fd
+%.bam : %.sam
+	samtools view -b -S $< > $@
 </code>
 
 = Managing multi-node jobs with GXP 
+
+
+
+
+= Managing Source Codes
+
+See http://www.xerial.org/wiki/lecture/2010/Mercurial
 
