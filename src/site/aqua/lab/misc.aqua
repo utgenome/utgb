@@ -142,6 +142,18 @@ Creating files is a slow process because it needs to access the meta data of you
 $ ssh hx02 'tar cvfz - (files_to_copy)' > file_archive.tar.gz
 </code>
 
+== Find files 
+
+=== Find files whose file name ends with .orig:
+<code>
+$ find . -name "*.orig"
+</code>
+
+=== Find directories 
+<code>
+$ find . -t d 
+</code>
+
 
 = Managing jobs
 
@@ -259,18 +271,201 @@ Makefile is a notebook for bioinformatician. To ensure the reproducibility of yo
 
 For syntax of Makefile, see http://www.cc.u-tokyo.ac.jp/support/kosyu/16/kosyu-20110907-make.pdf
 
-== Makefile
+== Special symbols
 <code>
+$@                target file
+$<                first file in dependencies
+$+                all dependent files
+$(@D)			  parent directory of the target file
+(varname):=(expr) define once
+(varname)=(expr)  evaluate expr every time
+</code>
+
+
+== A Makefile Example: short-read alignment pipline 
+source code: http://cocoa.gi.k.u-tokyo.ac.jp/hg/public/leo/alignment-pipeline/
+
+===Makefile
+<code>
+BWA:=bwa
+SAMTOOLS:=samtools 
+BCFTOOLS:=bcftools
+VCFUTILS:=vcfutils.pl
+
+INPUT:=input
+TARGET:=target
+
+FASTQ_PREFIXES:=ERR006269 ERR006304
+FASTQ_FILES:=$(foreach prefix,$(FASTQ_PREFIXES),$(foreach pair,1 2,$(TARGET)/$(prefix)_$(pair).fastq.gz))
+BAM_FILES:=$(foreach prefix,$(FASTQ_PREFIXES),$(TARGET)/$(prefix).bam)
+
+REF:=$(TARGET)/hg19.fa
+CHR:=$(foreach i,$(shell seq 1 22) X Y,chr$(i).fa)
+
+.PRECIOUS: %.fa.bwt %.sai %.sam %.bam %.sorted.bam  %.raw.bcf %.flt.bcf
+
+all: bam-merge pileup 
+
+fastq: $(FASTQ_FILES)
+$(TARGET)/%.fastq.gz : $(INPUT)/%.filt.fastq.gz
+	@mkdir -p $(@D)
+	ln -s $< $@
+
+$(REF).tar.gz : 
+	@mkdir -p $(@D)
+	curl -o $@ http://hgdownload.cse.ucsc.edu/goldenPath/hg19/bigZips/chromFa.tar.gz
+
+$(REF) : $(REF).tar.gz
+	tar xvfz $< $(CHR) -O > $@
+
+$(REF).bwt: $(REF)
+	$(BWA) index -a bwtsw $<
+
+NUM_THREADS:=4
+
+bwa-align: $(FASTQ_FILES:.fastq.gz=.sai)
+%.sai : %.fastq.gz $(REF).bwt
+	$(BWA) aln -t $(NUM_THREADS) $(REF) $< -f $@
+
+bwa-sampe: $(BAM_FILES:.bam=.sam)
+%.sam : %_1.sai %_2.sai %_1.fastq.gz %_2.fastq.gz
+	$(BWA) sampe -P $(REF) $+ -f $@
+
 %.bam : %.sam
-	samtools view -b -S $< > $@
+	$(SAMTOOLS) view -b -S $< > $@
+
+%.sorted.bam : %.bam
+	$(SAMTOOLS) sort $< $(@:.bam=)
+
+bam-index:$(BAM_FILES:.bam=.bam.bai)
+%.bam.bai : %.bam
+	$(SAMTOOLS) index $<
+
+bam-merge: $(TARGET)/all.bam $(TARGET)/all.bam.bai
+$(TARGET)/all.bam : $(BAM_FILES:.bam=.sorted.bam)
+	$(SAMTOOLS) merge $@ $+ 
+
+pileup: $(TARGET)/all.flt.bcf
+%.raw.bcf : %.bam
+	$(SAMTOOLS) mpileup -uf $(REF) $+ | $(BCFTOOLS) view -bvcg - > $@
+
+%.flt.bcf : %.raw.bcf
+	$(BCFTOOLS) view $< | $(VCFUTILS) varFilter -D100 > $@
+</code>
+
+== Running pipeline in Makefile 
+
+<code>
+# Dry run to confirm the commands to be executed
+$ make -n 
+
+# Keep going even if some programs report errors
+$ make -k
+
+# -j option is for parallel build. -j 4 means using 4 processes 
+$ make -j 4
+
+# Build using another makefile
+$ make -f Makefile.alt
 </code>
 
 = Managing multi-node jobs with GXP 
 
+GXP is a utility for managing multiple nodes in a cluster. 
 
+<code>
+# Set up a connection method (ssh) from hx02 to servers whose name is beginning with "hx"
+$ gxpc use ssh hx02 hx
+
+# Establish a connection to hx52, hx53, ..., hx62
+$ gxpc explore hx"[[52-62]]"
+
+# Execute a command in every host
+$ gxpc e hostname
+hx53
+hx60
+hx54
+hx59
+hx52
+hx55
+hx58
+hx02
+hx56
+hx62
+hx61
+
+# Do parallel build using hx52, hx53, ..., hx62
+$ gxpc make -k -j 
+</code>
+
+
+= Using Sun Grid Engine
+
+See https://supcom.hgc.jp/japanese/utili_info/manual/sge.html
+
+= Running MPI jobs
+
+To run MPI jobs in our cluster, you need to generate a qsub script that specifies working directory (pwd), files to recieve standard output/error stream, commands to use, etc.
+
+== An example: finding motif sequences using MPI-MEME 
+
+=== meme.sh
+<code>
+#!/bin/bash
+#$ -S /bin/bash
+#$ -cwd
+#   pwd = /glusterfs/leo/work
+#$ -v PATH
+#$ -v LD_LIBRARY_PATH
+#$ -v PERL5LIB
+##$ -v SMPD_OPTION_NO_DYNAMIC_HOSTS=1
+#$ -o /glusterfs/leo/work/log.out
+#$ -e /glusterfs/leo/work/log.err
+#$ -N meme
+#$ -pe openmpi 64
+#$ -q blade.q
+
+MPI_EXEC=/bio/package/openmpi/mpi/bin/mpiexec
+BIN=/bio/package/meme/meme_4.5.0_openmpi_build/bin/meme_p
+DATA=input.fa
+RES_DIR=result
+
+time $MPI_EXEC -np 64   $BIN $DATA -p 64 -oc $RES_DIR -maxsize 10000000 -dna -nmotifs 30 -mod zoops -minw 3 -maxw 10 
+</code>
+
+=== Submit MPI jobs
+<code>
+$ qsub meme.sh
+</code>
+
+=== Monitor MPI jobs
+<code>
+$ qstat
+or
+$ qtop
+</code>
+
+=== Stop jobs
+<code>
+$ qdel (job name)
+</code>
+
+
+== Parallel Programming
+
+In order to fully utilize CPU cores in each cluster node, you need to learn thread programming:
+=== References
+* C++: Boost Threads, Intel Thread Building Blocks
+* Java: ThreadExecutor, etc. Book: Java Concurrency in Practice.
+** http://download.oracle.com/javase/tutorial/essential/concurrency/index.html
+* Scala: Actor
 
 
 = Managing Source Codes
 
 See http://www.xerial.org/wiki/lecture/2010/Mercurial
+
+= Creating and Querying Databases
+
+See http://www.xerial.org/wiki/lecture/2008/Java/Day4
 
