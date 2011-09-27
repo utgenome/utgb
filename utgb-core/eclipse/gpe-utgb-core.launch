@@ -23,7 +23,7 @@
 <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="com.google.gdt.eclipse.maven.mavenClasspathProvider"/>
 <booleanAttribute key="org.eclipse.jdt.launching.DEFAULT_CLASSPATH" value="false"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.google.gwt.dev.DevMode"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-remoteUI &quot;${gwt_remote_ui_server_port}:${unique_id}&quot; -logLevel INFO -codeServerPort 9997 -port 8888 -war C:\Users\leo\work\hg\utgb\utgb-core\war org.utgenome.gwt.utgb.UTGBEntry -startupUrl browser.html?view=bed org.utgenome.gwt.utgb.UTGBEntry"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-codeServerPort 9997 -war C:\Users\leo\work\hg\utgb\utgb-core\war"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="utgb-core"/>
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx512m -Dloglevel=debug -Dutgb.env=development -Dgwt-hosted-mode=true"/>
 </launchConfiguration>

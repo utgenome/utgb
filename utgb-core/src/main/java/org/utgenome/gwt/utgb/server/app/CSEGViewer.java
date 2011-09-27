@@ -238,8 +238,11 @@ public class CSEGViewer extends WebTrackBase {
 				}
 				if(has_to_draw_scale) {
 					for(int y = 0; y < DEFAULT_HEIGHT; y += DEFAULT_HEIGHT_PER_SAMPLE * param_samples_per_scale) {
+						final int font_size_in_pixel = (int)(DEFAULT_HEIGHT_PER_SAMPLE * font_size);
 						canvas.drawLine(startOffset, y + 1, endOffset, y + 1, scale_color);
-						canvas.drawText(String.format("%d", y / DEFAULT_HEIGHT_PER_SAMPLE + 1), startOffset, startOffset + (endOffset - startOffset) / param_samples_per_scale, y + 1, (float) (DEFAULT_HEIGHT_PER_SAMPLE * font_size), scale_color);
+						canvas.drawText(String.format("%d", y / DEFAULT_HEIGHT_PER_SAMPLE + 1),
+								startOffset, startOffset + (endOffset - startOffset) / param_samples_per_scale,
+								y + font_size_in_pixel, (float)font_size_in_pixel , scale_color);
 					}
 				}
 				canvas.outputImage(response, "png");
