@@ -84,7 +84,8 @@ public class TrackFactorySetup {
 		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.SAMQueryTrack",
 				org.utgenome.gwt.utgb.client.track.lib.SAMQueryTrack.factory());
 		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.ReadTrack", org.utgenome.gwt.utgb.client.track.lib.ReadTrack.factory());
-
+		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.CSEGTrack", org.utgenome.gwt.utgb.client.track.lib.CSEGTrack.factory());
+		
 		TrackFactoryHolder.addTrackGroupFactory("org.utgenome.gwt.utgb.client.track.lib.old.OldUTGBTrackGroup",
 				org.utgenome.gwt.utgb.client.track.lib.old.OldUTGBTrackGroup.factory());
 		TrackFactoryHolder.addTrackGroupFactory("org.utgenome.gwt.utgb.client.track.TrackGroup", org.utgenome.gwt.utgb.client.track.TrackGroup.factory());

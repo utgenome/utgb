@@ -1,0 +1,48 @@
+-track group
+  -id: 1
+  -class: org.utgenome.gwt.utgb.client.track.TrackGroup
+  -coordinate
+    -species: P.patens
+    -ref: JGI1.1
+    -chr: scaffold_1
+    -start: 1
+    -end: 100000
+-track
+  -name: UTGB Navigator
+  -height: 41
+  -pack: true
+  -class: NavigatorTrack
+  -property
+    -sequenceList: [{"species":"P.patens", "revision":["JGI1.1"]}]
+-track
+  -name: Sequence Overview
+  -height: 14
+  -pack: true
+  -class: SequenceRulerTrack
+-track
+  -name: Ruler
+  -height: 14
+  -pack: true
+  -class: RulerTrack
+-track
+  -name: Sequence
+  -pack: true
+  -class: refseq track
+  -property
+    -path: db/p.patens/Physcomitrella_patens.1_1.fasta.sqlite
+-track
+  -name: Alignments
+  -pack: true
+  -height: 100
+  -class: ReadTrack
+  -property
+    -path: db/p.patens/all3.sorted.bam
+-track
+  -name: Segregation
+  -class: CSEGTrack
+  -property
+    -path: db/p.patens/combined.genmap.imputed.seg.sqlite
+    -Image height: 700
+    -Color array: eeeeee,ff3366,3366ff,ffaadd,aaddff
+    -Priority indicies: 1,2
+  -height: 780

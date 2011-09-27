@@ -60,10 +60,10 @@ public class Import extends UTGBShellCommand {
 	private static Logger _logger = Logger.getLogger(Import.class);
 
 	public static enum FileType {
-		AUTO, READ, BED, SAM, FASTA, WIG, KTAB, UNKNOWN, BAM
+		AUTO, READ, BED, SAM, FASTA, WIG, KTAB, UNKNOWN, BAM, SEG
 	}
 
-	@Option(symbol = "t", longName = "type", description = "specify the input file type: (AUTO, FASTA, READ, BED, WIG)")
+	@Option(symbol = "t", longName = "type", description = "specify the input file type: (AUTO, FASTA, READ, BED, WIG, SEG)")
 	private FileType fileType = FileType.AUTO;
 
 	@Argument(index = 0, required = false)
@@ -183,7 +183,10 @@ public class Import extends UTGBShellCommand {
 			writer.close();
 
 			_logger.info("done.");
-
+		}
+			break;
+		case SEG:{
+			// TODO: 変換作業をここで行う.
 		}
 			break;
 		case UNKNOWN:
@@ -211,6 +214,8 @@ public class Import extends UTGBShellCommand {
 			return FileType.BAM;
 		else if (fileName.endsWith(".ktab"))
 			return FileType.KTAB;
+		else if (fileName.endsWith(".seg"))
+			return FileType.SEG;
 
 		return FileType.AUTO;
 	}
