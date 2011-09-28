@@ -1,21 +1,63 @@
+@title("Information for UTGB Developers")
 = Information for UTGB Developers
 
-== How to build UTGB from source code
+== News
 
-Install Mercurial (hg: 1.4.x or higher) and Maven (mvn command: 2.0.9 or higher), then checkout the source code from the repository http://utgb.googlecode.com/ hosted at the google code.
+* {b|2009 Nov 24} We migrated the source code repository from Subversion to Mercurial (hg)
+
+== How to build UTGB from the source code
+
+Install Mercurial (hg: 1.4.x or higher) and Maven (mvn command: 3.x or higher), then checkout the source code from the repository https://code.google.com/p/utgb/ hosted at the google code.
 
 <code>
-$ hg clone https://utgb.googlecode.com/hg utgb
+$ hg clone https://code.google.com/p/utgb utgb
 $ cd utgb
 
 $ make clean install
 </code>
-The utgb toolkit will be installed your "$HOME/.utgb/bin" folder. Set this path to your PATH environment variable:
+The utgb toolkit will be installed your "$HOME/.utgb/bin" folder. Add this path to your PATH environment variable:
 
 <code>
 export PATH=$HOME/.utgb/bin;$PATH
 </code>
 
+<code>
+$ utgb
+UTGB Shell: version 1.5.8-SNAPSHOT
+type --help for a list of the available sub commands.
+</code>
+
+== Using a stable version
+To use a stable release version of UTGB, 
+<code>
+$ cd utgb
+# commit changes you made to the source code
+$ hg add ... 
+$ hg commit ...
+
+# Retrieve the code of a release version
+$ hg update -C -r utgb-toolkit-1.5.7
+$ make clean install
+</code>
+
+
+
+== Developing UTGB with Eclipse
+
+Use the latest version of Eclipse, which is already bundled with a Maven plugin. 
+Import - Existing Maven Project - select the utgb folder checked out above
+
+
+== Information for UTGB committers
+
+Add the following configuration to your "$HOME/.hgrc" file. This is necessary to push your changes to the code to the google code repository.
+
+<code>
+[auth]
+gc.prefix = https://code.google.com
+gc.username = (your google account name)
+gc.password = xxxx
+</code>
 
 == Mailing List
 * [http://groups.google.com/group/utgb UTGB Developers] (only for UTGB developers)
@@ -26,27 +68,25 @@ export PATH=$HOME/.utgb/bin;$PATH
 * [http://www.utgenome.org/wiki Previous version of the UTGB specification wiki] (In Japanese)
 * [http://groups.google.com/group/utgb?hl=en UTGB Developers Discussion Group] (restricted)
 
-== Source Codes
-
-* {b|2009 Nov 24} We migrated the source code repository from Subversion to Mercurial (hg)
-
-
 
 == UTGB Components
 ===[./utgb-core UTGB Core]
 * Core library of the UTGB, which includes:
-** {b|Portable Web Server (Embedded Tomcat)}
-** {b|Embedded [http://www.sqlite.org SQLite] database}
-** {b|Smart Data Binding} !XML/JSON/Relational DB data to Java Class Object Binding Utility (!BeanUtil)
-** {b|Client-side Graphical User Interface} for genome tracks implemented with GWT (Google Web Toolkit).
+** Embedded [http://www.sqlite.org SQLite] database (sqlite-jdbc)
+** Data compression (snappy-java)
+** Smart Data Binding - !XML/JSON/Relational DB data to Java Class Object Binding Utility (!BeanUtil)
+** Client-side Graphical User Interface - for genome tracks implemented with GWT (Google Web Toolkit).
 ** etc.
+* Data format parser, DB generator
+** FASTA, BED, WIG, SAM, BAM, FASTQ, qseq, etc.
 
 ===[./utgb-shell UTGB Shell]
 * Server-side track & Client-side browser interface development toolkit
-* see [utgb-shell/quickstart.html UTGB Shell Quick Start Guide]
+* utgb command launcher
+* Portable web server (Tomcat) and launcher GUI written in Swing
+* UTGB code scaffold generator
 
-===[./utgb-widget UTGB Widgets]
-* UTGB's User Interface Package
+
 
 == Remote Debugging of UTGB  (using Eclipse)
 
@@ -69,9 +109,9 @@ if you have an installation of [http://maven.apache.org Maven] in your PC, or
 </code>
 if you have an utgb-shell installed. 
 
-Then, open http://localhost:8080/ to see this documentation on the local machine. Updates to the "src/site/aqua/**/*.aqua" files will be reflected after reloading the page in the browser. If you have to add some files to the page (image, attachments, etc.), put these files to the "src/site/resources" folder. Until the server will be restarted, these new files are not visible from the localhost:8080, so stop the Jetty server with Ctrl+C, and rerun the site:run command.
+Then, open http://localhost:8080/ to see this documentation on your local machine. Updates to files "src/site/aqua/**/*.aqua" will be reflected after reloading the page in your browser (Ctrl+r). If you have to add some files to the page (image, attachments, etc.), put these files to the "src/site/resources" folder. Your need to restart the server to make these files visible from the localhost:8080. To stop the Jetty server, press Ctrl+C, and then rerun the site:run command.
 
-Updates of the latest versions of these wiki document files are daily checked, and this site http://utgenome.org/ will be automatically updated via the Hudson continuous integration server (http://utgenome.org/hudson ). 
+Updates to these wiki document files will be checked when you pushed the updates to the google code repository. The web site http://utgenome.org/ will be automatically updated by Jenkins, a continuous integration server (http://utgenome.org/jenkins ). 
 
 = Aqua Wiki Syntax
 
