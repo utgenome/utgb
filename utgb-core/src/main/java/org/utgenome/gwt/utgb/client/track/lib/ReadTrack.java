@@ -476,7 +476,8 @@ public class ReadTrack extends TrackBase {
 
 		if (change.containsOneOf(new String[] { ReadDisplayStyle.CONFIG_SHOW_LABELS, ReadDisplayStyle.CONFIG_PE_OVERLAP,
 				ReadDisplayStyle.CONFIG_SHOW_BASE_QUALITY, ReadDisplayStyle.CONFIG_READ_HEIGHT, ReadDisplayStyle.CONFIG_MIN_READ_HEIGHT,
-				ReadDisplayStyle.CONFIG_COVERAGE_STYLE, ReadDisplayStyle.CONFIG_DRAW_SHADOW, ReadDisplayStyle.CONFIG_SHOW_STRAND })) {
+				ReadDisplayStyle.CONFIG_COVERAGE_STYLE, ReadDisplayStyle.CONFIG_DRAW_SHADOW, ReadDisplayStyle.CONFIG_SHOW_STRAND,
+				ReadDisplayStyle.CONFIG_READ_MARGIN, ReadDisplayStyle.CONFIG_REVERSE_READ_HISTOGRAM, ReadDisplayStyle.CONFIG_REVERSE_READ_TRACK })) {
 			refresh();
 		}
 

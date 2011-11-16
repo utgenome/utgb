@@ -41,12 +41,12 @@ import org.utgenome.gwt.utgb.client.bio.CIGAR;
 import org.utgenome.gwt.utgb.client.bio.Exon;
 import org.utgenome.gwt.utgb.client.bio.Gap;
 import org.utgenome.gwt.utgb.client.bio.Gene;
-import org.utgenome.gwt.utgb.client.bio.GraphData;
-import org.utgenome.gwt.utgb.client.bio.InfoSilkGenerator;
-import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.utgenome.gwt.utgb.client.bio.GenomeRange;
 import org.utgenome.gwt.utgb.client.bio.GenomeRangeVisitor;
 import org.utgenome.gwt.utgb.client.bio.GenomeRangeVisitorBase;
+import org.utgenome.gwt.utgb.client.bio.GraphData;
+import org.utgenome.gwt.utgb.client.bio.InfoSilkGenerator;
+import org.utgenome.gwt.utgb.client.bio.Interval;
 import org.utgenome.gwt.utgb.client.bio.Read;
 import org.utgenome.gwt.utgb.client.bio.ReadCoverage;
 import org.utgenome.gwt.utgb.client.bio.ReadList;
@@ -1036,7 +1036,10 @@ public class GWTGenomeCanvas extends TouchableComposite {
 					y = 1;
 				canvas.saveContext();
 				canvas.translate(x - x1 + 0.5f, 0);
-				canvas.fillRect(0, 0, 1, y - 0.5f);
+				if (style.reverseReadHistogram)
+					canvas.fillRect(0, canvas.getCoordHeight()-(y-0.5f), 1, y - 0.5f);
+				else
+					canvas.fillRect(0, 0, 1, y - 0.5f);
 				canvas.restoreContext();
 			}
 
@@ -1084,8 +1087,15 @@ public class GWTGenomeCanvas extends TouchableComposite {
 
 		GraphStyle scaleStyle = new GraphStyle();
 		scaleStyle.autoScale = false;
-		scaleStyle.minValue = hFinder.maxHeight;
-		scaleStyle.maxValue = 0;
+		if (style.reverseReadHistogram){
+			scaleStyle.minValue = 0;
+			scaleStyle.maxValue = hFinder.maxHeight;
+		}
+		else{
+			scaleStyle.minValue = hFinder.maxHeight;;
+			scaleStyle.maxValue = 0;
+		}
+			
 		scaleStyle.windowHeight = canvasHeight;
 		scaleStyle.drawScale = false;
 		scale.draw(scaleStyle, this.trackWindow);
@@ -1125,6 +1135,11 @@ public class GWTGenomeCanvas extends TouchableComposite {
 		else
 			geneHeight = style.readHeight;
 
+		if (style.readMargin > geneHeight )
+			geneMargin=geneHeight;
+		else
+			geneMargin=style.readMargin;
+		
 		int h = geneHeight + geneMargin;
 		int height = (maxOffset + 1) * h;
 

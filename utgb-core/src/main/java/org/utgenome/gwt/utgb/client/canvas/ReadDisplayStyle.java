@@ -55,12 +55,16 @@ public class ReadDisplayStyle {
 	public boolean showBaseQuality = false;
 	public boolean overlapPairedReads = true;
 	public boolean showStrand = true;
+	public boolean reverseReadTrack = false;
+	public boolean reverseReadHistogram = false;
 
 	public int numReadsMax = 500;
 	public float clippedRegionAlpha = 0.2f;
 
 	public int readHeight = 12;
 	public int minReadHeight = 2;
+	public int readMargin = 2;
+	
 	public String coverageStyle = "default";
 	public String layout = "pileup";
 
@@ -69,6 +73,9 @@ public class ReadDisplayStyle {
 	public final static String CONFIG_READ_HEIGHT = "read height";
 	public final static String CONFIG_MIN_READ_HEIGHT = "min read height";
 	public final static String CONFIG_NUM_READ_MAX = "num reads to display";
+	public final static String CONFIG_READ_MARGIN = "read margin";
+	public final static String CONFIG_REVERSE_READ_TRACK = "reverse read track color";
+	public final static String CONFIG_REVERSE_READ_HISTOGRAM = "reverse read histogram";
 	public final static String CONFIG_SHOW_BASE_QUALITY = "show base quality";
 	public final static String CONFIG_PE_OVERLAP = "overlap paired reads";
 	public final static String CONFIG_COVERAGE_STYLE = "coverage.style";
@@ -82,6 +89,9 @@ public class ReadDisplayStyle {
 		config.addConfigInteger("Read Height", CONFIG_READ_HEIGHT, readHeight);
 		config.addConfigInteger("Read Height (min)", CONFIG_MIN_READ_HEIGHT, minReadHeight);
 		config.addConfigInteger("# of Reads to Cache", CONFIG_NUM_READ_MAX, numReadsMax);
+		config.addConfigInteger("Read Margin", CONFIG_READ_MARGIN, readMargin);
+		config.addConfigBoolean("Reverse Read Track color", CONFIG_REVERSE_READ_TRACK, reverseReadTrack);
+		config.addConfigBoolean("Reverse Read Track Histogram", CONFIG_REVERSE_READ_HISTOGRAM, reverseReadHistogram);
 		config.addConfigBoolean("Overlap Paired-End Reads", CONFIG_PE_OVERLAP, overlapPairedReads);
 		config.addConfigBoolean("Show Base Quality", CONFIG_SHOW_BASE_QUALITY, showBaseQuality);
 		config.addConfigBoolean("Draw Read Shadow", CONFIG_DRAW_SHADOW, drawShadow);
@@ -98,6 +108,9 @@ public class ReadDisplayStyle {
 		showLabels = config.getBoolean(CONFIG_SHOW_LABELS, showLabels);
 		readHeight = config.getInt(CONFIG_READ_HEIGHT, readHeight);
 		minReadHeight = config.getInt(CONFIG_MIN_READ_HEIGHT, minReadHeight);
+		readMargin = config.getInt(CONFIG_READ_MARGIN, readMargin);		// added Margin parameter 20111017 hatake
+		reverseReadTrack = config.getBoolean(CONFIG_REVERSE_READ_TRACK, reverseReadTrack);
+		reverseReadHistogram = config.getBoolean(CONFIG_REVERSE_READ_HISTOGRAM, reverseReadHistogram);
 		coverageStyle = config.getString(CONFIG_COVERAGE_STYLE, coverageStyle);
 		overlapPairedReads = config.getBoolean(CONFIG_PE_OVERLAP, overlapPairedReads);
 		showBaseQuality = config.getBoolean(CONFIG_SHOW_BASE_QUALITY, showBaseQuality);
