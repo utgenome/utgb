@@ -40,7 +40,8 @@
   </menu>
   
   <menu name="Documentations">
-    <item name="UTGB Toolkit" href="toolkit"/>
+    <item name="UTGB Quick Start" href="quickstart.html"/>
+    <item name="User Manual" href="toolkit"/>
     <item name="Silk Format" href="toolkit/silk.html"/>
   </menu>
 

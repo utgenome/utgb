@@ -2,38 +2,33 @@
  
 = Create Personalized Genome Browsers with UTGB Toolkit
 
-{b|UTGB (University of Tokyo Genome Browser) Toolkit} is an open-source software for developing personalized genome browsers. The UTGB Toolkit is designed to meet the follwoing requirements:
-* {b|Easy installation}
-** No need to install other web server programs, database management sysytems, etc.
-* {b|Guaranteed data privacy}
-** Your genome browser works in your PCs (desktop, laptop, etc.)
-* {b|Object Mapping Support}
-** Various types of data mapping between objects and XML, JSON, Silk and JDBC result set, etc. is supported. 
-* {b|Sophisticated web user interface}
-** AJAX-based interactive genome browser
+{b|UTGB (University of Tokyo Genome Browser) Toolkit} is an open-source software for developing personalized genome browsers that work in web browsers.
+
+UTGB Toolkit has following features:
+* {b|Interactive web interface}. UTGB uses AJAX-based web interfaces to avoid excessive reloading of web pages.
+* {b|Easy installation}.  UTGB Toolkit is already equipped with a stand-alone web server and database management system. After installing UTGB, no need exists to set up these system programs by yourself.
+* {b|Portablility}. The generated genome browsers work in Windows, Mac and Linux, and can be used as stand-alone applications in your computers. It is also possible to deploy your genome browsers to remote web servers. 
+
+//* {b|Object Mapping Support}
+//** Various types of data mapping between objects and XML, JSON, Silk and JDBC result set, etc. is supported. 
 
 The UTGB Toolkit is licensed under an [license.html open source license], and is freely available for both commercial and personal use.
 
+== Getting Started
+
+* [quickstart.html UTGB Quick Start]
+* [./toolkit/ UTGB Toolkit Manual]
+** How to develop your own genome browser with UTGB Toolkit
+
 /*
-The advent of high-throughput DNA sequencers has increased the pace of collecting enormous amounts of genomic information. 
-
-yielding {b|billions of nucleotides} on a weekly basis. This advance represents an improvement of two orders of magnitude over traditional Sanger sequencers in terms of the number of nucleotides per unit time, allowing even small groups of researchers to obtain huge volumes of genomic data over fairly short period. Consequently, a pressing need exists for the development of personalized genome browsers for analyzing these immense amounts of private data. 
-== Why personalized genome browsers are needed? 
-
-*/
-
 == Learn More 
-
-
 
 * [feature.html UTGB Features]
 ** Learn the features UTGB Toolkit offers, and how you can quickly develop personalized genome browsers.
+*/
 
 
-== Getting Started
 
-* [./toolkit/ UTGB Toolkit Manual]
-** How to develop your own genome browser with UTGB Toolkit
 
 == Public Genome Browsers developed with UTGB Toolkit
 

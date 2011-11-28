@@ -1,0 +1,251 @@
+@title("Quick Start")
+
+= UTGB Quick Start 
+
+==Prerequisite
+In order to use UTGB, you need to install Java Development Kit (JDK) version 1.5 or higher. Visit the Oracle's Java web site http://www.oracle.com/technetwork/java/index.html, and follow the installation instruction of the JDK. 
+
+/*
+To confirm the availability of JDK, open a terminal (Command prompt or Cygwin console in Windows, or Terminal in Mac OS X and Linux), then type: 
+<code>
+$ javac -version
+</code>
+to see the installed JDK version. If no Java compiler (javac command included in JDK) is found in your OS, 
+*/
+
+==Install UTGB
+The UTGB Toolkit can be installed with a Java Web Start-based GUI installer:
+* Open the link http://utgenome.org/toolkit/utgb.jnlp with your web browser.
+** Push the Trust button if the publisher's certificate confirmation dialog is shown.
+* Push the Install button. The latest version of the UTGB Toolkit will be downloaded from our web site and installed to the specified folder. The default installation path is "$HOME/.utgb" (We call this folder UTGB_HOME)
+
+[toolkit/clip/installer.png]
+
+Installation of UTGB is now completed. Next, you need to set up some environmental variables according to your machine platform:
+
+== Set up enironmental variables
+UTGB Toolkit is a command-line tool, so you need to add the {b|utgb} command location to your PATH environment variable:
+
+===In Mac OS X 
+Set two environment variables PATH and JAVA_HOME in an appropriate file; e.g., .profile, .bash_profile (for Bash user), .zprofile (for ZSH), etc.
+<code>
+export PATH=$HOME/.utgb/bin:$PATH
+export JAVA_HOME=`/usr/libexec/java_home`
+</code>
+
+===In Linux:
+<code>
+export PATH=$HOME/.utgb/bin:$PATH
+export JAVA_HOME=/usr/java/jdk1.6.0_03
+</code>
+(Modify the above path according to your JDK location)   
+
+===In Windows
+In Windows, press Win + Pause (or open Control Panel - System - Settings) to open Environment Variable panel, and set two variables PATH and JAVA_HOME as follows:
+<code>
+PATH = (UTGB_HOME)\bin;%PATH%
+JAVA_HOME = C:\Program Files\Java\jdk1.6.0_03
+</code>
+Replace the above (UTGB_HOME) to your UTGB installation path (e.g., c:\Users\leo\.utgb ), and also the JAVA_HOME variable according to your JDK (1.5 or higher) installation. 
+
+==Running the UTGB Toolkit
+Type {b|utgb} in Command prompt, (in Windows), terminal shell (in Linux and Mac OS X), or any terminal you like. If you see the following message, you are ready to use UTGB:
+<code>
+$ utgb    
+UTGB Shell: version (1.5.7) 
+type --help for a list of the available sub commands.
+</code>
+
+
+= Create a new UTGB project
+To create your own genome browser, type {b|utgb create} (your project name): 
+<code>
+$ utgb create myapp
+[ScaffoldGenerator] create a directory: ./myapp/src/main/java
+[ScaffoldGenerator] create a directory: ./myapp/src/test/java
+[ScaffoldGenerator] output folder: ./myapp
+[ScaffoldGenerator] packageName  = myapp
+[ScaffoldGenerator] moduleName   = myapp.gwt.Browser
+[ScaffoldGenerator] utgbVersion  = 1.5.7
+[ScaffoldGenerator] clientPackageName    = myapp.gwt.client
+[ScaffoldGenerator] explodedWebappDir    = target/utgb
+...
+</code>
+The utgb create command generates a template code of the UTGB browser. In the above example, myapp is your project folder containing the web page and configuration files of the genome browser. 
+Next, move to the myapp directory, then type {b|utgb gwt} to create an web interface of the genome browser:
+<code>
+$ cd myapp
+$ utgb gwt
+[ScaffoldGenerator] output folder: .
+[ScaffoldGenerator] packageName  = myapp
+[ScaffoldGenerator] moduleName   = myapp.gwt.Browser
+[ScaffoldGenerator] utgbVersion  = 1.5.7
+[ScaffoldGenerator] clientPackageName    = myapp.gwt.client
+[ScaffoldGenerator] explodedWebappDir    = target/utgb
+[ScaffoldGenerator] serverPackageName    = myapp.gwt.server
+...
+[ScaffoldGenerator] create a file: ./src/main/java/myapp/gwt/public/browser.html
+[ScaffoldGenerator] create a directory: ./src/main/java/myapp/gwt/server
+[ScaffoldGenerator] create a file: ./src/main/java/myapp/gwt/server/RPCServiceImpl.java
+[UTGBShell] create a file: eclipse/myapp-gwt.launch
+$ 
+</code>
+
+==Build a genome browser
+The generated UTGB project consists of several Java source codes. Before launching the UTGB's web server, you need to compile these codes:
+*In the myapp folder: type {b|utgb compile} to generate the binary code of your browser. (If you failed to set JAVA_HOME environment variable properly, some errors will be prompted. Check your configuration described above).
+*For the first time when running utgb compile, the execution of the compile command would take long time in order to download several JAR files (library codes used in UTGB) into your local hard disk. Cross your fingers and wait for the completion. The long downloading time is necessary only for the first time. The next time, compilation will be much faster since it can skip this download step.
+*In one or two minutes, compilation of the server-side code and Java-to-JavaScript compilation will finish.
+
+
+==Launch a portable UTGB
+
+Now you are ready to launch the genome browser. The UTGB toolkit is bundled with a portable Tomcat web server. So, you can start your genome browser instantly on your computer.  To launch UTGB,
+* Type {b|utgb server} to launch a local Tomcat web server. If you prefer GUI interface, type utgb server -g.  A GUI interface to launch the web server will appear. 
+** The UTGB's  portable web server uses a port 8989 in default. To change the port number, use -p option. For details of the other options, type utgb server --help. 
+* After the server has started, open http://localhost:8989/myapp with your web browser (Google Chrome, Firefox, Opera, IE etc.). When using utgb server -g, a link to the above URL will be shown in the GUI interface. 
+* Open http://localhost:8989/myapp/browser.html to view the genome browser.
+* To stop the server, press Ctrl+C in the terminal (in CUI mode). When using the GUI mode, simply close the GUI interface.
+
+
+=Customizing Genome Browsers
+
+Track is a basic unit of the data display in UTGB. You can create your own tracks by importing BED, WIG, BAM files into UTGB. Advanced users can create their own tracks by writing codes (See also [toolkit/index.html UTGB Manual] for developing tracks).
+
+Here is an example of UTGB, displaying the genome sequence of {i|C. elegans} (in FASTA format), conservation track (in WIG format), and gene annotations (in BED format). 
+
+[toolkit/clip/fasta-wig.png]
+
+In UTGB you can use Left and Right cursor keys to scroll the display, and Up and Down to zoom out and in the display.
+
+==Configure track views
+You can configure the UTGB's web interface by editing {i|"config/default-view.silk"} file in your project folder. This file is called {b|track view} file, written in Silk format (http://utgenome.org/toolkit/silk.html). Silk is a text format for describing structured data at ease. Here is an example of a track view:
+<code>
+-track group
+  -coordinate
+    -species: human
+    -ref: hg19
+    -chr: chr1
+    -start: 1
+    -end: 10000
+
+-track
+ -name: Ruler
+ -class: RulerTrack
+
+-track
+  -name: BED Track
+  -class: ReadTrack
+  -property
+    -path: db/sample.bed
+</code>
+
+This view file displays two tracks (Ruler and BED Track) and specifies the default display location of the genome browser at hg19, chr1:1-10000. In Silk format, indentation via spaces represents a hierarchy of data elements.  You can edit view files using your favorite text editors. To apply the changes you made to the view, simply reload the web page in the browser.
+
+
+
+
+==FastaTrack
+To display a genome sequence as a track, you need to create a sequence database from a FASTA file. For example, download a FASTA archive available from UCSC's web site (e.g., fasta file of {i|S. cerevisiae} is available from http://hgdownload.cse.ucsc.edu/goldenPath/sacCer3/bigZips/chromeFa.tar.gz ), then do {b|utgb import}:
+<code>
+$ utgb import -t FASTA db/chromFa.tar.gz -o db/sacCer3.sqlite
+</code>
+
+It generates a compressed FASTA database (SQLite file) {i|"db/sacCer3.sqlite"}.  Next, add a track entry to your {i|"config/view/default-view.silk"} file:
+<code>
+-track
+ -name: Genome Sequence
+ -class: RefSeqTrack
+ -property
+  -path: db/sacCer3.sqlite
+</code>
+
+This will add a new track named "Genome Sequence" to your genome browser.
+
+
+==ReadTrack for displaying "BED/SAM/BAM" format data
+To display genes, annotation in genomes, read data written in [toolkit/bed.html BED], SAM and BAM (http://samtools.sourceforge.net/) formats, ReadTrack can be used.  For displaying contents in BED and SAM files, you need to import these files with {b|utgb import} command. BED is a common format for describing genes (including CDS, exon/intron regions) or a set of loci on genomes. Sample BED files can be obtained from UCSC's table browser, http://genome.ucsc.edu/cgi-bin/hgTables. For example, to retrieve a RefSeq gene set in BED format, select refGene table and switch the output format to BED.    
+
+<code>
+# create a BED database
+$ utgb import db/refGene.bed
+
+# create BAM (.bam) and BAM Index file (.bai) from the input SAM file
+$ utgb import db/shortread.sam
+</code>
+
+
+Then, edit your view file:
+<code>
+# Track for BED data
+-track
+ -name: RefSeq Genes
+ -class: ReadTrack
+ -property
+   -path: db/refGene.bed
+
+# Track for BAM data. In this example, db/shortread.bam.bai file must be present.
+-track
+ -name: Short Read
+ -class: ReadTrack
+ -property
+   -path: db/shortread.bam
+</code>
+
+Here is a screenshot of displaying a BAM file of Illumina's paired-end library data:
+[toolkit/clip/pe-read.png]
+
+//To create a BAM file from an SAM file, samtools or picard libraries are also useful.
+
+== WigTrack
+To display bar graph data (e.g., read depth coverage, GC contents percentage data for each locus on genome), use WIG format http://genome.ucsc.edu/goldenPath/help/wiggle.html and WigTrack;
+
+<code>
+ utgb import of WIG files:
+$ utgb import sample.wig
+
+# Track for WIG data
+-track
+ -name: bar graph 
+ -class: WigTrack
+ -property
+  -path: db/sample.wig
+</code>
+
+=== Creating read depth WIG data from BAM files
+You can create read depth (coverage) graph data from BAM files by using {b|utgb readdepth} command.
+
+<code>
+$ utgb readdepth (BAM file) > readdepth.wig
+</code>
+
+Wig files are large in general. To save the storage space you can directly create wig databases of read coverage as follows:
+<code>
+$ utgb readdepth (BAM file) | utgb -t WIG import -o readdepth.wig.sqlite
+</code>
+
+
+
+== Keyword Search
+To add keyword search functionality, add the following track definition to your view:
+<code>
+-track
+ -class: KeywordSearchTrack
+</code>
+
+To add keyword entries to the database from the read names in BED/SAM/BAM files, use utgb keyword command: 
+<code>
+$ utgb keyword import (BED/SAM/BAM file)
+</code>
+It is also possible to add your own keywords associated to a locus on a genome sequence. For details, see a help message in utgb keyword -help.
+
+//The other types of tracks (chromosome map, etc.) are also available in UTGB Toolkit. Visit http://utgenome.org/ to see a catalogue of available tracks. 
+
+
+== Switching Views
+To switch a set of tracks to display, create another view file in {i|"config/view"} folder (e.g., {i|"config/view/sample.silk"}). You can switch the view using a URL query parameter. For example, an URL http://localhost:8989/browser.html?view=sample will show the tracks described in {i|"config/view/sample.silk"} file. If no view parameter is specified, {i|"config/view/default-view.silk"} will be used as a default view.
+
+
+== Publishing your genome browser 
+
+If you want to publish your web browser using web servers running Apache or Tomcat, read the instruction described in http://utgenome.org/toolkit/deploy.html 
