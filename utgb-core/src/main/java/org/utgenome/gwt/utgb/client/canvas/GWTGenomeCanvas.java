@@ -617,10 +617,9 @@ public class GWTGenomeCanvas extends TouchableComposite {
 				case 't':
 					baseIndex = 7;
 					break;
+				default:
 				case 'N':
 					baseIndex = 8;
-					break;
-				default:
 					continue;
 				}
 

@@ -107,4 +107,22 @@ public class Read extends Interval {
 		visitor.visitRead(this);
 	}
 
+	public Interval upstreamRegion(int length) {
+		if (isSense()) {
+			return new Interval(start - length, start);
+		}
+		else {
+			return new Interval(end, end + length);
+		}
+	}
+
+	public Interval downstreamRegion(int length) {
+		if (isSense()) {
+			return new Interval(end, end + length);
+		}
+		else {
+			return new Interval(start - length, start);
+		}
+	}
+
 }

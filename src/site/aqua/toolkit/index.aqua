@@ -3,12 +3,12 @@
 
 = UTGB Toolkit User's Manual
 
-The UTGB Toolkit includes the UTGB Shell, a command-line client for developing your own genome browsers. With UTGB Shell, you can quickly create a your own web application, which can support database access, web actions, rich-web interfaces, etc.
+This page describes the usage of UTGB Toolkit. 
 
-=Browser Interface
+==Browser Interface
 
 === Track frames
-Drag & drop of tracks is supported in UTGB, and also you can resize the height of tracks by dragging the lower border of the tracks.
+Drag & drop of tracks is supported in UTGB, and also you can resize the height of tracks by dragging the lower frame border of the tracks.
 
 ===Icons
 
@@ -26,7 +26,7 @@ Drag & drop of tracks is supported in UTGB, and also you can resize the height o
 
 
 === Keyboard short cuts
-Keyboard shortcuts are provided for quick data browsing:
+The following keyboard shortcuts are provided for relocating the window location quickly:
 <code>
 Left		scroll left
 Right		scroll right
@@ -35,10 +35,10 @@ Down		zoom in
 </code>
 
 
-= Track Catalog
+= Customizing Tracks
 
 == Basics
-Tracks displayed in UTGB can be configured by editing {i|"config/view/default-view.silk"} file. Each track configuration enclosed in {i|track} node has common parameters, {i|class}, {i|name}, {i|pack} and {i|height}. The {i|class} parameter is mandatory to specify a type of the track. Here is an example of a {i|track} configuration:
+Tracks displayed in UTGB can be configured by editing {i|"config/view/default-view.silk"} file. Each track configuration enclosed in {i|track} node has common parameters, {i|class}, {i|name}, {i|pack} and {i|height}. The {i|class} parameter must be present to specify a type of the track. Here is an example of a {i|track} configuration:
 <code>
 -track 
  # Track types. (e.g., ReadTrack, WigTrack, RefSeqTrack, RulerTrack, etc.)
@@ -51,11 +51,11 @@ Tracks displayed in UTGB can be configured by editing {i|"config/view/default-vi
  # Pixel height of the track. If pack is set to true, this field will be ignored.
  -height: 30
  # Track-specific properties. See the track catalog for details
- -properties
+ -property
   -path: (read file name)
 </code>
 
-The other parameters are optional but tracks usually have track-specific configuration parameters. For example, "ReadTrack" requires {i|"path"} value under {i|properties} node to specify a data source to display. For details, see [trackcatalog.html Track Catalog].
+The other parameters are optional but tracks usually have track-specific configuration parameters. For example, "ReadTrack" requires {i|"path"} value under {i|property} node to specify a data source to display. For details, see [trackcatalog.html Track Catalog].
 
 == Change the default location to display
 To set the default coordinate location in genome to display, use {i|track group}:
@@ -73,6 +73,9 @@ To set the default coordinate location in genome to display, use {i|track group}
 In UTGB, you can display data written in BED, SAM, BAM, WIG, FASTA format data. See the following page to create tracks for these data formats.
 
 * [trackcatalog.html Track Catalog]
+
+== Switching Views
+
 
 = Developing Web Applications with the UTGB Toolkit
 These documents are for programmers who want to develop your own tracks.

@@ -2,21 +2,37 @@
 
 = Track Catalog in UTGB
 
+UTGB has several built-in tracks. In order to use them, specify track class name in your view file:
+<code>
+-track
+ -class: (track class name)
+</code>
 
-==ReadTrack for displaying "BED/SAM/BAM" format data
-To display genes, annotation on genome coordinates and read data written in [toolkit/bed.html BED], SAM and BAM (http://samtools.sourceforge.net/) formats, ReadTrack can be used.  For displaying contents in BED and SAM files, you need to import these files with {b|utgb import} command. BED is a common format for describing genes (including CDS, "exon/intron" regions) or a set of loci in genomes. Sample BED files can be obtained from UCSC's table browser, http://genome.ucsc.edu/cgi-bin/hgTables. For example, to retrieve a RefSeq gene set in BED format, select refGene table and switch the output format to BED.    
+== Available track class names
+* General Tracks
+** {i|"NavigatorTrack"} provides a navigation bar
+** {i|"RulerTrack"} is a ruler bar with range select support
+** {i|"KeywordSearchTrack"} for adding keyword search feature
+
+* Tracks for displaying data files
+** {i|"ReadTrack"} for visualizing BED, SAM, BAM file data
+** {i|"RefSeqTrack"}, {i|"ChromosomeMapTrack"} for showing genome sequences written in FASTA files
+** {i|"WigTrack"} for Wiggle (WIG) files for drawing bar charts on genome coordinate.
+
+= "ReadTrack" for displaying "BED/SAM/BAM" format data
+"ReadTrack" in UTGB can be used to display genes, annotation on genome coordinates and read data written in [toolkit/bed.html BED], SAM and BAM (http://samtools.sourceforge.net/) formats. To do so, first you need to import these files using {b|utgb import} command. 
+
+== Importing BED files
+BED is a common format for describing genes (including CDS, "exon/intron" regions) or locus annotations of genomes. You can obtain many useful BED files from UCSC's table browser, http://genome.ucsc.edu/cgi-bin/hgTables. For example, you can retrieve BED data of "RefSeq" gene sets by selecting refGene table and switch the output format to BED. 
 
 <code>
 # create a BED database
 $ utgb import db/refGene.bed
-
-# create BAM (.bam) and BAM Index file (.bai) from the input SAM file
-$ utgb import db/shortread.sam
 </code>
 
 
-
-Then, edit your view file:
+=== View configuration
+After BED files are imported, edit your view file:
 <code>
 # Track for BED data
 -track
@@ -24,27 +40,15 @@ Then, edit your view file:
  -class: ReadTrack
  -property
    -path: db/refGene.bed
-
-# Track for BAM data. In this example, db/shortread.bam.bai file must be present.
--track
- -name: Short Read
- -class: ReadTrack
- -property
-   -path: db/shortread.bam
 </code>
 
-For BED files, the {b|utgb import} command creates an SQLite database file (suffixed with .sqlite) to accelerate database searches. When SQLite DB files are found for BED files, ReadTrack issues database queries to reads.bed.sqlite file instead of reading raw BED files.
+When importing a BED file, the {b|utgb import} command creates an SQLite database file (suffixed with .sqlite) to accelerate database searches. When SQLite DB files corresponding to the input BED files are found, "ReadTrack" issues database queries to reads.bed.sqlite file instead of reading raw BED files.
 
-
-Here is a screenshot of displaying a BAM file of Illumina's paired-end library data: clip/pe-read.png
-
-== BED Example
+== BED example
 
 "db/sample.bed"
 <pre>
-browser position chr1:1-100000
-browser hide all
-track name="Item,RGB,Demo2" description="Item RGB demonstration2" visibility=2 itemRgb="On" useScore=1	color=0,128,0 url="http://genome.ucsc.edu/goldenPath/help/clones.html#$$"
+track name="Item,RGB,Demo2" 
 chr1 20000 70000 itemB 200 - 22000 69500 0 4 4330,1000,5500,15000 0,5000,20000,35000
 chr1 20000 60000 cloneB 900 - 20000 60000 0 2 4330,3990, 0,36010
 chr1 10000 50000 itemA 960 + 11000 47000 0,255,255 2 15670,14880, 0,25120
@@ -66,6 +70,62 @@ chr7	127472363	127473530	Pos2	200	+	127472363	127473530	255,0,0
 In BED files, the first six parameters (chr, start, end, name, score, strand) are required, and the other parameters are optional. By using RGB color fields, you can change the colors of BED entries.
 
 
+== Importing SAM files
+
+[http://samtools.sourceforge.net/ SAM format] is commonly used to describe alignment results of next-generation sequencer reads (e.g., Illumina, SOLiD, etc.). BAM format is a binary version of SAM. You can use the both formats in UTGB, but using BAM is recommended for the performance reason. To display read data in BAM files, you need .bai (BAM index) file to quickly locate file positions of the target window (chromosome name, start-end position). The bai files can be created when you import SAM files using UTGB, or {i|samtools index} command also can be used.
+
+<code>
+# create BAM (.bam) and BAM Index file (.bai) from the input SAM file
+$ utgb import db/shortread.sam
+</code>
+
+
+== Adding tracks for BED and SAM data
+
+After importing BED or SAM files, edit your view file:
+<code>
+# Track for BAM data. In this example, db/shortread.bam.bai file must be present.
+-track
+ -name: Short Read
+ -class: ReadTrack
+ -property
+   -path: db/shortread.bam
+</code>
+
+
+=== SAM example
+
+Here is a screenshot of displaying a BAM file of Illumina's paired-end library data: clip/pe-read.png
+
+
+== "ReadTrack" Properties
+
+"ReadTrack" has severl properties to customize the visualization. 
+
+<code>
+-track
+ -class: ReadTrack
+ -property
+  -path: db/sample.bam
+  -wig path: db/sample.bam.wig.sqlite
+  # pileup (draw individual reads) or coverage (shows read depth graph)
+  -layout: pileup
+  # Used when displaying read coverage
+  -window funcion: MAX
+  # pixel height of reads
+  -read height: 2
+  # horizontal margin between reads
+  -read margin: 1
+  # hide read name labels
+  -show labels: false
+  # When true, the lower the base quality, the more translucent the base color becomes
+  -show base quality: true
+  # Increase this number to show many reads (but consumes your browser memory and may slower the track drawing speed)
+  -num reads to display: 1000
+</code>
+
+The {i|wig path} specifies wig database files of read depths, created from BAM files, which can be used to draw read depths when the number of reads contained in a query window are too many to display in the track. 
+
 = WIG Data
 To display bar graph data (e.g., read depth coverage, GC contents percentage data for each locus on genome), use WIG format http://genome.ucsc.edu/goldenPath/help/wiggle.html and WigTrack. First create an SQLite database file from a WIG file:
 
@@ -81,27 +141,40 @@ Then, add the following configuration to your view file:
  -class: WigTrack
  -property
   -path: db/sample.wig
+  # Windowing function: MAX, MIN, MEDIAN or AVG
+  -window function: MAX
+  # max, min value of the y scale
+  -max value: 100
+  -min value: 0
+  # If true, adjust the y scale according to the displayed data
+  -auto scale: true 
+  # To use log scale, set this parameter to true
+  -log scale: false
+  # Graph color. red, green, blue (0-255) and alpha (0-1)
+  -color: rgba(255,128, 128, 0.7)
 </code>
 
 == Creating read depth WIG data from BAM files
 You can create read depth (coverage) graph data from BAM files by using {b|utgb readdepth} command.
 
 <code>
-$ utgb readdepth (BAM file) > readdepth.wig
+$ utgb readdepth (BAM file) > db/readdepth.wig
 </code>
 
 Wig files are large in general. To save the storage space you can directly create wig databases of read coverage as follows:
 <code>
-$ utgb readdepth (BAM file) | utgb -t WIG import -o readdepth.wig.sqlite
+$ utgb readdepth (BAM file) | utgb -t WIG import -o db/readdepth.wig.sqlite
 </code>
 
 = FASTA files
-To display a genome sequence as a track, you need to create a sequence database from a FASTA file. For example, download a FASTA archive available from UCSC's web site (e.g., fasta file of {i|S. cerevisiae} is available from http://hgdownload.cse.ucsc.edu/goldenPath/sacCer3/bigZips/chromeFa.tar.gz ), then do {b|utgb import}:
+To display a genome sequence as a track, you need to create a sequence database from a FASTA file. Commonly used FASTA files of reference genome sequences are available from UCSC's web site. For example, the fasta file of {i|S. cerevisiae} is available from http://hgdownload.cse.ucsc.edu/goldenPath/sacCer3/bigZips/chromeFa.tar.gz. 
+To create databases of FASTA files, do {b|utgb import}:
 <code>
 $ utgb import -t FASTA db/chromFa.tar.gz -o db/sacCer3.sqlite
 </code>
+The {i|-t} option specifies the input file format. The {b|utgb import} accepts both compressed archives (.tar.gz) and raw fasta files (.fa, .fasta).
 
-It generates a compressed FASTA database (SQLite file) {i|"db/sacCer3.sqlite"}.  Next, add a track entry to your {i|"config/view/default-view.silk"} file:
+The above import command generates a compressed FASTA database (SQLite file) {i|"db/sacCer3.sqlite"}.  Next, add a track entry to your {i|"config/view/default-view.silk"} file:
 <code>
 -track
  -name: Genome Sequence
@@ -138,7 +211,7 @@ DAS track is for browsing [http://www.biodas.org/ DAS] (Distributed Annotation S
  -class: DASTrack
  -name: DAS Track
  -pack: true
- -properties
+ -property
   -type: image
   -leftMargin: 100
   -dasBaseURL: http://www.ensembl.org/das/Homo_sapiens.NCBI36.transcript/
