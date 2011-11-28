@@ -249,3 +249,10 @@ To switch a set of tracks to display, create another view file in {i|"config/vie
 == Publishing your genome browser 
 
 If you want to publish your web browser using web servers running Apache or Tomcat, read the instruction described in http://utgenome.org/toolkit/deploy.html 
+
+
+= Resources
+
+See also 
+* [toolkit/ UTGB User's Manual]
+
