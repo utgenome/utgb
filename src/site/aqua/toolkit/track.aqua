@@ -122,14 +122,16 @@ This data structure corresponds to org.utgenome.gwt.utgb.client.bio.Gene class h
 
 To embed arbitrary HTML contents as a track, e.g., web pages, web action for generating HTML dat etc., the iframe track is useful. The view XML format and URL to be accessed are the same with the image track, except the type property is "frame". 
 
-=== View XML
+=== View Silk
 <code>
-<track className="org.utgenome.gwt.utgb.client.track.lib.GenomeTrack" 
-       name="RefSeq Gene Table Demo" height="100" pack="true">
-  <property key="type">frame</property>
-  <property key="leftMargin">100</property>
-  <property key="trackBaseURL">utgb-core/GeneViewer.tab</property>
-</track>
+-track 
+ -class: GenomeTrack
+ -name: RefSeq Gene Table Demo
+ -height: 100
+ -pack: true
+ -properties
+  -type: frame
+  -trackBaseURL: utgb-core/GeneViewer.tab
 </code>
 
 

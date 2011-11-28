@@ -2,11 +2,9 @@
  
 = Create Personalized Genome Browsers with UTGB Toolkit
 
-{b|UTGB (University of Tokyo Genome Browser) Toolkit} is an open-source software for developing personalized genome browsers that work in web browsers.
-
-UTGB Toolkit has following features:
+UTGB (University of Tokyo Genome Browser) Toolkit is an open-source software for developing personalized genome browsers that work in web browsers. UTGB Toolkit has following features:
 * {b|Interactive web interface}. UTGB uses AJAX-based web interfaces to avoid excessive reloading of web pages.
-* {b|Easy installation}.  UTGB Toolkit is already equipped with a stand-alone web server and database management system. After installing UTGB, no need exists to set up these system programs by yourself.
+* {b|Easy installation}.  UTGB Toolkit is already equipped with a stand-alone web server and database management system, which will be used for querying genome databases. No need exists to set up these complicated system programs after installing UTGB.
 * {b|Portablility}. The generated genome browsers work in Windows, Mac and Linux, and can be used as stand-alone applications in your computers. It is also possible to deploy your genome browsers to remote web servers. 
 
 //* {b|Object Mapping Support}
@@ -15,19 +13,11 @@ UTGB Toolkit has following features:
 The UTGB Toolkit is licensed under an [license.html open source license], and is freely available for both commercial and personal use.
 
 == Getting Started
-
+	
 * [quickstart.html UTGB Quick Start]
-* [./toolkit/ UTGB Toolkit Manual]
-** How to develop your own genome browser with UTGB Toolkit
-
-/*
-== Learn More 
-
-* [feature.html UTGB Features]
-** Learn the features UTGB Toolkit offers, and how you can quickly develop personalized genome browsers.
-*/
-
-
+** Create a your own genome browser
+* [./toolkit/ UTGB Toolkit User's Manual]
+** How to develop your own custom tracks 
 
 
 == Public Genome Browsers developed with UTGB Toolkit
@@ -36,10 +26,14 @@ The UTGB Toolkit is licensed under an [license.html open source license], and is
 
 clip/browser-half.gif clip/machibase.png clip/repeatscape.png
 
-== Mailing List & Public Discussion Forum
+== Problem Report & Public Discussion Forum
 
 Future releases of UTGB will be announced in the following mailing list. Join now, and please post questions, additional feature requests, or bug reports to the mailing list:
 
+=== Issue Tracker for reporting bugs and feature requests
+* [http://code.google.com/p/utgb/issues/list Issue Tracker]
+
+=== General Discussion Forum
 * [http://groups.google.com/group/utgb-users?hl=en UTGB Users Public Discussion Group]
 * [http://groups.google.com/group/utgb-users-jp UTGB Users JP] (for Japanese people)
 
