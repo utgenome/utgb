@@ -74,8 +74,6 @@ In UTGB, you can display data written in BED, SAM, BAM, WIG, FASTA format data. 
 
 * [trackcatalog.html Track Catalog]
 
-== Switching Views
-
 
 = Developing Web Applications with the UTGB Toolkit
 These documents are for programmers who want to develop your own tracks.

@@ -186,6 +186,12 @@ The above import command generates a compressed FASTA database (SQLite file) {i|
 This will add a new track named "Genome Sequence" to your genome browser.
 
 
+/*
+= Chromosome Map Track
+
+(to be written)
+*/
+
 
 = Keyword Search Track
 To add keyword search functionality, add the following track definition to your view:
@@ -222,8 +228,4 @@ DAS track is for browsing [http://www.biodas.org/ DAS] (Distributed Annotation S
 [../clip/beddas.png]
 
 [../clip/dasconfig.png]
-
-= Chromosome Map Track
-
-(to be written)
 
