@@ -67,12 +67,14 @@ In BED files, the first six parameters (chr, start, end, name, score, strand) ar
 
 
 = WIG Data
-To display bar graph data (e.g., read depth coverage, GC contents percentage data for each locus on genome), use WIG format http://genome.ucsc.edu/goldenPath/help/wiggle.html and WigTrack;
+To display bar graph data (e.g., read depth coverage, GC contents percentage data for each locus on genome), use WIG format http://genome.ucsc.edu/goldenPath/help/wiggle.html and WigTrack. First create an SQLite database file from a WIG file:
 
 <code>
- utgb import of WIG files:
-$ utgb import sample.wig
+$ utgb import db/sample.wig
+</code>
 
+Then, add the following configuration to your view file:
+<code>
 # Track for WIG data
 -track
  -name: bar graph 
@@ -129,7 +131,26 @@ $ utgb keyword import -r ce6 (BED/SAM/BAM file)
 
 
 = DAS Data
-* [das.html DAS Track] 
+DAS track is for browsing [http://www.biodas.org/ DAS] (Distributed Annotation System) data. Currently (utgb-shell version 1.2.3), browsing feature data is supported. Add the following Silk fragment to your view file, and edit the {b|dasBaseURL} property to specify the DAS server URL:
+
+<code>
+-track
+ -class: DASTrack
+ -name: DAS Track
+ -pack: true
+ -properties
+  -type: image
+  -leftMargin: 100
+  -dasBaseURL: http://www.ensembl.org/das/Homo_sapiens.NCBI36.transcript/
+  -dasType: refGene
+</code>
+
+== Screnshots
+[../clip/beddas.png]
+
+[../clip/dasconfig.png]
 
 = Chromosome Map Track
+
+(to be written)
 

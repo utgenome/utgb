@@ -57,7 +57,7 @@ Tracks displayed in UTGB can be configured by editing {i|"config/view/default-vi
 
 The other parameters are optional but tracks usually have track-specific configuration parameters. For example, "ReadTrack" requires {i|"path"} value under {i|properties} node to specify a data source to display. For details, see [trackcatalog.html Track Catalog].
 
-== Default Location to display
+== Change the default location to display
 To set the default coordinate location in genome to display, use {i|track group}:
 <code>
 -track group
@@ -69,7 +69,7 @@ To set the default coordinate location in genome to display, use {i|track group}
     -end: 10000
 </code>
 
-== List of Available Tracks 
+== List of available tracks 
 In UTGB, you can display data written in BED, SAM, BAM, WIG, FASTA format data. See the following page to create tracks for these data formats.
 
 * [trackcatalog.html Track Catalog]
