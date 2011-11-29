@@ -12,6 +12,7 @@ UTGB has several built-in tracks. In order to use them, specify track class name
 * General Tracks
 ** {i|"NavigatorTrack"} provides a navigation bar
 ** {i|"RulerTrack"} is a ruler bar with range select support
+** {i|"ScaleBarTrack"} is a measure for seeing genome sequence length.
 ** {i|"KeywordSearchTrack"} for adding keyword search feature
 
 * Tracks for displaying data files
@@ -140,7 +141,7 @@ Then, add the following configuration to your view file:
  -name: bar graph 
  -class: WigTrack
  -property
-  -path: db/sample.wig
+  -path: db/sample.wig.sqlite
   # Windowing function: MAX, MIN, MEDIAN or AVG
   -window function: MAX
   # max, min value of the y scale

@@ -209,7 +209,7 @@ $ utgb import sample.wig
  -name: bar graph 
  -class: WigTrack
  -property
-  -path: db/sample.wig
+  -path: db/sample.wig.sqlite
 </code>
 
 === Creating read depth WIG data from BAM files
