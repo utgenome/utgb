@@ -1,11 +1,11 @@
 = Download
 
+* [quickstart.html UTGB Toolkit Quick Start]
 * [toolkit/index.html UTGB Toolkit Documentation]
-* [toolkit/quickstart.html UTGB Toolkit Installation Guide]
 
 {b|New!} UTGB Shell installer using Java Web Start is available.
 * Open http://utgenome.org/toolkit/utgb.jnlp to install UTGB Toolkit
-** Downloadable archive for manual installation is also available from here: http://maven.utgenome.org/repository/artifact/org/utgenome/utgb-shell/
+* Downloadable archive for manual installation is also available from here: http://maven.utgenome.org/repository/artifact/org/utgenome/utgb-shell/
 
 == Release Notes
 
