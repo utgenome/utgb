@@ -63,7 +63,7 @@ gwt-dev-linux-$(VERSION).jar: gwt-linux-$(VERSION)
 clean:
 	rm -rf gwt-dev-*-$(VERSION).jar gwt-windows* gwt-$(MAC_TIGER)* gwt-$(MAC_LEOPARD)* gwt-linux* work
 
-GWTDND_VERSION=2.6.5
+GWTDND_VERSION=3.1.2
 
 gwtdnd:
 	mvn deploy:deploy-file -DgroupId=com.allen_sauer.gwt -DartifactId=gwt-dnd -Dversion=$(GWTDND_VERSION) -Dpackaging=jar -DrepositoryId=utgb -Durl=dav:http://maven.utgenome.org/repository/artifact -Dmaven.test.skip=true -DrepositoryId=utgb.dav -Dfile=lib/gwt-dnd-$(GWTDND_VERSION).jar

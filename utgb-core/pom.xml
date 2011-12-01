@@ -208,13 +208,13 @@
     <dependency>
       <groupId>org.utgenome.thirdparty</groupId>
       <artifactId>sam</artifactId>
-      <version>1.35</version>
+      <version>1.56</version>
     </dependency>
 
     <dependency>
       <groupId>org.utgenome.thirdparty</groupId>
       <artifactId>picard</artifactId>
-      <version>1.35</version>
+      <version>1.56</version>
     </dependency>
 
     <dependency>
@@ -238,7 +238,7 @@
     <dependency>
       <groupId>com.allen_sauer.gwt</groupId>
       <artifactId>gwt-dnd</artifactId>
-      <version>2.6.5</version>
+      <version>3.1.2</version>
     </dependency>
 
     <dependency>
@@ -289,7 +289,7 @@
     <dependency>
       <groupId>org.xerial.snappy</groupId>
       <artifactId>snappy-java</artifactId>
-      <version>1.0.3.3</version>
+      <version>1.0.4.1</version>
       <type>jar</type>
       <scope>compile</scope>
     </dependency>
