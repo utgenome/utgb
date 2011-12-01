@@ -10,7 +10,7 @@ DEPLOY_CMD = mvn deploy:deploy-file  $(DEPLOY_GROUP)
 
 deploy: sam gwt-incubator picard
 
-PICARD_VERSION=1.35
+PICARD_VERSION=1.56
 
 sam:
 	$(DEPLOY_CMD) -DartifactId=sam -Dversion=$(PICARD_VERSION) -Dfile=lib/sam-$(PICARD_VERSION).jar
