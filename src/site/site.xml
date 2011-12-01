@@ -23,7 +23,6 @@
      <item name="Download" href="download.html"/>
      <item name="Discussion Forum" href="http://groups.google.com/group/utgb-users?hl=en"/>
      <item name="Issue Tracker" href="http://code.google.com/p/utgb/issues/list"/>
-     <item name="Trac" href="http://trac.utgenome.org/project/UTGB"/>
   </links>
 
 <!--  <menu name="UTGB Project" ref="parent"/> -->
@@ -32,11 +31,13 @@
     <item name="Publications" href="publication.html"/>
     <item name="Members" href="members.html"/>
     <item name="Issue Tracker" href="http://code.google.com/p/utgb/issues/list"/>
+    <item name="Source Code" href="http://code.google.com/p/utgb/"/>
   </menu>
 
   <menu name="Get UTGB Toolkit">
     <item name="Download" href="download.html"/>
     <item name="Release Notes" href="download.html#releasenotes"/>
+    <item name="Source Code" href="http://code.google.com/p/utgb/"/>
   </menu>
   
   <menu name="Documentations">
