@@ -23,6 +23,7 @@
      <item name="Download" href="download.html"/>
      <item name="Discussion Forum" href="http://groups.google.com/group/utgb-users?hl=en"/>
      <item name="Issue Tracker" href="http://code.google.com/p/utgb/issues/list"/>
+     <item name="Source Code" href="http://code.google.com/p/utgb/"/>
   </links>
 
 <!--  <menu name="UTGB Project" ref="parent"/> -->
@@ -37,7 +38,6 @@
   <menu name="Get UTGB Toolkit">
     <item name="Download" href="download.html"/>
     <item name="Release Notes" href="download.html#releasenotes"/>
-    <item name="Source Code" href="http://code.google.com/p/utgb/"/>
   </menu>
   
   <menu name="Documentations">
