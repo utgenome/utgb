@@ -91,10 +91,10 @@ If you have four server machines (e.g., 192.168.1.(1-4)), add the following conf
 ProxyPass / balancer://utgb/ nofailover=Off
 
 <Proxy balancer://utgb/>
-   BalancerMember ajp://192.168.1.1:8009/ loadfactor=10
-   BalancerMember ajp://192.168.1.2:8009/ loadfactor=10
-   BalancerMember ajp://192.168.1.3:8009/ loadfactor=10
-   BalancerMember ajp://192.168.1.4:8009/ loadfactor=10
+   BalancerMember ajp://192.168.1.1:8990/ loadfactor=10
+   BalancerMember ajp://192.168.1.2:8990/ loadfactor=10
+   BalancerMember ajp://192.168.1.3:8990/ loadfactor=10
+   BalancerMember ajp://192.168.1.4:8990/ loadfactor=10
 </Proxy>
 
 </code>
@@ -102,7 +102,7 @@ ProxyPass / balancer://utgb/ nofailover=Off
 
 == Load Balancing without Installing Tomcat 
 
-The {b|utgb server} command launches a proxy engine at port 8009 as well as a Tomcat engine (port 8989). Therefore, to simply test the load balancing, installation of Tomcat is not necessary; Login to each server which has a replica of your UTGB application folder, then run {b|utgb server}. The same Apache configuration described above works. 
+The {b|utgb server} command launches a proxy server at port 8990 as well as a Tomcat engine (port 8989). Therefore, to simply test the load balancing, installation of Tomcat is not necessary; Login to each server which has a replica of your UTGB application folder, then run {b|utgb server}. The same Apache configuration described above works. 
 
 "A" drawback of this approach is that you have to redo {b|utgb server} command every time after restarting the servers. 
 
