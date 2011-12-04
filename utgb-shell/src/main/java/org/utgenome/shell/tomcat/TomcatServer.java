@@ -29,7 +29,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.channels.FileChannel;
@@ -37,15 +36,11 @@ import java.util.List;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.Engine;
-import org.apache.catalina.Host;
 import org.apache.catalina.LifecycleException;
-import org.apache.catalina.Realm;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.core.AprLifecycleListener;
 import org.apache.catalina.core.StandardContext;
-import org.apache.catalina.core.StandardHost;
 import org.apache.catalina.core.StandardServer;
-import org.apache.catalina.startup.Constants;
 import org.apache.catalina.startup.ContextConfig;
 import org.apache.catalina.startup.HostConfig;
 import org.apache.catalina.startup.Tomcat;
@@ -194,13 +189,15 @@ public class TomcatServer {
 		}
 
 		// configure a logger
-		String logConfigPath = new File(configuration.getCatalinaBase(), "conf/logging.properties").getPath();
-		System.setProperty("catalina.base", configuration.getCatalinaBase());
-		System.setProperty("java.util.logging.manager", "org.apache.juli.ClassLoaderLogManager");
-		System.setProperty("java.util.logging.config.file", logConfigPath);
 
-		for (String p : new String[] { "catalina.base", "java.util.logging.manager", "java.util.logging.config.file" })
+		System.setProperty("catalina.base", configuration.getCatalinaBase());
+		String logConfigPath = new File(configuration.getCatalinaBase(), "conf/logging.properties").getPath();
+		// System.setProperty("java.util.logging.manager", "org.apache.juli.ClassLoaderLogManager");
+		// System.setProperty("java.util.logging.config.file", logConfigPath);
+
+		for (String p : new String[] { "catalina.base", "java.util.logging.manager", "java.util.logging.config.file" }) {
 			_logger.info(String.format("%s = %s", p, System.getProperty(p)));
+		}
 
 		if (_logger.isDebugEnabled())
 			_logger.debug("juli log config file: " + logConfigPath);
@@ -237,6 +234,10 @@ public class TomcatServer {
 		tomcat.setPort(configuration.getPort());
 		tomcat.enableNaming();
 
+		// Add users for authentication
+		// tomcat.addRole(user, role);
+		// tomcat.addUser(user, pass);
+
 		// Create an engine
 		engine = tomcat.getEngine();
 		ClassLoader cl = Thread.currentThread().getContextClassLoader();
@@ -269,6 +270,20 @@ public class TomcatServer {
 		// Create a server
 		StandardServer server = (StandardServer) tomcat.getServer();
 		server.addLifecycleListener(new AprLifecycleListener());
+
+		// load tomcat-users.xml
+		/**
+		 * <Resource name="UserDatabase" auth="Container" type="org.apache.catalina.UserDatabase"
+		 * description="User database that can be updated and saved"
+		 * factory="org.apache.catalina.users.MemoryUserDatabaseFactory" pathname="conf/tomcat-users.xml" />
+		 */
+		// ContextResource resource = new ContextResource();
+		// resource.setName("UserDatabase");
+		// resource.setAuth("Container");
+		// resource.setType("org.apache.catalina.UserDatabase");
+		// resource.setProperty(name, value)
+
+		// server.getGlobalNamingResources().addResource(resource);
 
 		try {
 			// Prepare ajp13 connector
