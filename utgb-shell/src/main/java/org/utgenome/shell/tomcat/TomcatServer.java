@@ -231,7 +231,7 @@ public class TomcatServer {
 		// Create an embedded Tomcat server
 		tomcat = new Tomcat();
 		tomcat.setBaseDir(configuration.getCatalinaBase());
-		tomcat.setPort(configuration.getPort());
+		// tomcat.setPort(configuration.getPort());
 		tomcat.enableNaming();
 
 		// Add users for authentication
@@ -261,11 +261,13 @@ public class TomcatServer {
 		tomcat.getHost().addLifecycleListener(hostConfig);
 
 		// Tell the embedded server about the connector
-		// Connector conn = tomcat.getConnector();
-		// conn.setPort(configuration.getPort());
-		// conn.setRedirectPort(8443);
+		Connector conn = tomcat.getConnector();
+		conn.setProtocol("HTTP/1.1");
+		conn.setPort(configuration.getPort());
+		conn.setProperty("connectionTimeout", "20000");
+		conn.setRedirectPort(8443);
 		// conn.setEnableLookups(true);
-		// tomcat.getService().addConnector(conn);
+		tomcat.setConnector(conn);
 
 		// Create a server
 		StandardServer server = (StandardServer) tomcat.getServer();
@@ -291,10 +293,10 @@ public class TomcatServer {
 			org.apache.catalina.connector.Connector ajp13connector = new Connector("AJP/1.3");
 			ajp13connector.setPort(configuration.getAjp13port());
 			ajp13connector.setRedirectPort(8443);
-			ajp13connector.setProperty("connectionTimeout", "600000");
-			ajp13connector.setProperty("maxThreads", "200");
-			ajp13connector.setProperty("minSpareThreadsreads", "25");
-			ajp13connector.setProperty("maxSpareThreads", "200");
+			// ajp13connector.setProperty("connectionTimeout", "600000");
+			// ajp13connector.setProperty("maxThreads", "200");
+			// ajp13connector.setProperty("minSpareThreadsreads", "25");
+			// ajp13connector.setProperty("maxSpareThreads", "200");
 			// Add AJP13 connector
 			tomcat.getService().addConnector(ajp13connector);
 		}
