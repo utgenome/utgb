@@ -291,6 +291,7 @@ public class TomcatServer {
 			org.apache.catalina.connector.Connector ajp13connector = new Connector("AJP/1.3");
 			ajp13connector.setPort(configuration.getAjp13port());
 			ajp13connector.setRedirectPort(8443);
+			ajp13connector.setProperty("connectionTimeout", "600000");
 			ajp13connector.setProperty("maxThreads", "200");
 			ajp13connector.setProperty("minSpareThreadsreads", "25");
 			ajp13connector.setProperty("maxSpareThreads", "200");
