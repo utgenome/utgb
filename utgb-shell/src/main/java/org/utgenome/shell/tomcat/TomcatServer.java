@@ -39,8 +39,12 @@ import org.apache.catalina.Engine;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.core.AprLifecycleListener;
+import org.apache.catalina.core.JasperListener;
+import org.apache.catalina.core.JreMemoryLeakPreventionListener;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.core.StandardServer;
+import org.apache.catalina.core.ThreadLocalLeakPreventionListener;
+import org.apache.catalina.mbeans.GlobalResourcesLifecycleListener;
 import org.apache.catalina.startup.ContextConfig;
 import org.apache.catalina.startup.HostConfig;
 import org.apache.catalina.startup.Tomcat;
@@ -272,6 +276,10 @@ public class TomcatServer {
 		// Create a server
 		StandardServer server = (StandardServer) tomcat.getServer();
 		server.addLifecycleListener(new AprLifecycleListener());
+		server.addLifecycleListener(new JasperListener());
+		server.addLifecycleListener(new JreMemoryLeakPreventionListener());
+		server.addLifecycleListener(new GlobalResourcesLifecycleListener());
+		server.addLifecycleListener(new ThreadLocalLeakPreventionListener());
 
 		// load tomcat-users.xml
 		/**
