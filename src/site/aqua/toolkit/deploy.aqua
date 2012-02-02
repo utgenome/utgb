@@ -74,17 +74,17 @@ ProxyPassReverseCookiePath / /
 
 </code>
 
-This configuration redirects web accesses to "http://(your hostname)/myapp" to the Tomcat server ("http://localhost:8080/myapp" through ajp port 8990), but the web user still sees the address "http://(your hostname)/myapp" without noticing such redirections.
+This configuration redirects web accesses to "http://(your hostname)/myapp" to the Tomcat server ("http://localhost:8989/myapp" through ajp port 8990), but the web user still sees the address "http://(your hostname)/myapp" without noticing such redirections.
 
-After editing the configuration files, restart the apache server to reload the configuration:
+After editing the configuration file, restart the apache server to reload the configuration:
 <code>
 # /etc/init.d/httpd restart
 </code>
 
 == Load Balancing
 
-When you need to manage many tracks and the performance of UTGB matters, replicate the UTGB instances. This is a simple way to distribute the workload of your UTGB application. 
-First, create replicas of your UTGB project folder (e.g., myapp) on several machines. You need to copy the entire UTGB folder complied by {i|utgb compile} command. To synchronize the myapp folder contents, {i|rsync} command would be useful:
+When the performance of UTGB server matters, replicate the UTGB instances. This is a simple way to distribute the workload of your UTGB application. 
+First, create replicas of your UTGB project folder (e.g., myapp) on several machines. You need to copy the entire UTGB folder (myapp) complied by {i|utgb compile} command. To synchronize the myapp folder contents, {i|rsync} command would be useful:
 <code>
 $ cd /somewhere/myapp
 $ for i in $(seq -w 02 05); do rsync -av . hx$i:/somewhere/; done
@@ -110,7 +110,9 @@ ProxyPass / balancer://utgb/ nofailover=Off
 
 Then restart your Apache server. That's all. Done!
 
-You can browse your UTGB thorough the Apache web server, the same as before. But in this configuration, accesses to tracks and databases are distributed to four machines. It is much faster than the single server configuration. And no installation of Tomcat to the server machines is necessary.
+You can browse your UTGB thorough the Apache web server as the same as before. But in this configuration, accesses to tracks and databases are distributed to four machines. It is much faster than the single server configuration. 
+
+Since no installation of Tomcat is necessary (although you can use locally installed Tomcat servers as explained below), you can quickly improve the performance of the UTGB browser.
 
 //; Login to each server which has a replica of your UTGB application folder, then run {b|utgb server}. The same Apache configuration described above works. 
 
