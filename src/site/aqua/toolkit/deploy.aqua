@@ -86,12 +86,12 @@ When the performance of UTGB server matters, replicate the UTGB instances. That 
 First, create replicas of your UTGB project folder (e.g., myapp) on several machines. To do this, you need to copy the entire UTGB folder (myapp) complied by {i|utgb compile} command. To synchronize the myapp folder contents, {i|rsync} command would be useful:
 <code>
 $ cd /somewhere/myapp
-$ for i in $(seq -w 02 05); do rsync -av . hx$i:/somewhere/; done
+$ for i in $(seq -w 10 14); do rsync -av . hx$i:/somewhere/; done
 </code>
 
 Then login and {i|cd} to each of the copied folders to start {i|utgb server}. For example, you can start utgb server in 4 machines (e.g., hx10-hx14) as follows:
 <code>
-$ for i in $(seq -w 02 05); do ssh hx$i "cd /somewhere/myapp; ./start-utgb.sh"; done
+$ for i in $(seq -w 10 14); do ssh hx$i "cd /somewhere/myapp; ./start-utgb.sh"; done
 </code>
 
 If hx10-hx14 have IP addresses 192.168.1.(111-114), add the following configuration to your Apache2 server to bypass the web requests across the Tomcat servers. (Modify the configuration below according to your system): 
