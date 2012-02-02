@@ -3,8 +3,7 @@
 [index.html Top Page]
 = How to Deploy Your Web Application 
 
-UTGB uses the embedded Tomcat web server, so you don't have to read this page for simply browsing UTGB (via utgb server command) in your desktop PC. This page is written for system administrators, who have to publish UTGB applications on the Web by using Apache or Tomcat web servers.  
-
+UTGB uses the embedded Tomcat web server, so you don't have to read this page for simply browsing UTGB launched by utgb server command. This page is written for system administrators, who have to publish UTGB servers on the Web by using Apache or Tomcat web servers.  
 
 = Launching UTGB in Standalone Mode
 
