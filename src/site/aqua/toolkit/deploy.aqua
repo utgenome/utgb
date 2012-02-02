@@ -39,24 +39,24 @@ $ kill -9 20599
 
 == Browsing UTGB behind Firewall
 
-If you need to browse UTGB started behind firewall (but accessible through ssh), use {i|dynamic proxy}. Suppose that you have a server machine ({i|hx}) that runs utgb server, and a gate way machine ({i|gate}). Common firewall settings prohibit accesses to port 8989 of utgb server running at {i|hx}, unless you are connecting through {i|gate}:
+If you need to browse UTGB started behind firewall (but accessible through ssh), use {i|dynamic proxy}. Suppose that you have a server machine {i|hx} that runs utgb server, and a gate way machine {i|gate}. Common firewall settings prohibit accesses to port 8989 of the utgb server running at {i|hx}. To access {i|hx}, you need to bypass {i|gate} server:
 <code>
 hx <- gate <- (your machine)
 </code>
 
-To browse UTGB running in {i|hx} using your machine, use the dynamic proxy support of ssh:
+To browse UTGB running in {i|hx} from your machine, use the dynamic proxy support of ssh:
 <code>
 $ ssh -D localhost:1080 gate
 </code>
 This command creates a network tunnel to {i|hx} through {i|gate}. You can access arbitrary ports of {i|hx} through the port 1080 of your machine.
 
-Next, in your web browser, open network settings and set SOCK Host to use port 1080:
+Next, in your web browser, open network settings and set SOCK Host to use port 1080 at localhost:
 <code>
 SOCK Host = localhost   port = 1080
 </code>
 If you are using Google Chrome, [https://chrome.google.com/webstore/detail/caehdcpeofiiigpdhbabniblemipncjj Proxy Switchy!] extension would be useful to switch the configurations quickly. 
 
-If the address of {i|hx} is 192.168.1.100, you can browse the UTGB (e.g., myapp project) at http://192.168.1.100:8989/myapp. This configuration is useful when you want to share the data only within laboratory members.
+When the address of {i|hx} is 192.168.1.100, you can browse the UTGB (e.g., myapp project) at http://192.168.1.100:8989/myapp. This configuration is useful when you want to share the data within laboratory members.
 
 = Publishing UTGB 
 == How to Use Both Apache and Tomcat Servers Simultaneously 
