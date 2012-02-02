@@ -73,7 +73,7 @@ ProxyPassReverseCookiePath / /
 
 </code>
 
-This configuration redirects web accesses to "http://(your hostname)/myapp" to the Tomcat server ("http://localhost:8989/myapp" through ajp port 8990), but the web user still sees the address "http://(your hostname)/myapp" without noticing such redirections.
+This configuration redirects web accesses to "http://(your hostname)/myapp" to the UTGB server ("http://localhost:8989/myapp" through ajp port 8990), but the web user still sees the address "http://(your hostname)/myapp" without noticing such redirections.
 
 After editing the configuration file, restart the apache server to reload the configuration:
 <code>
@@ -94,7 +94,7 @@ Then login and {i|cd} to each of the copied folders to start {i|utgb server}. Fo
 $ for i in $(seq -w 10 14); do ssh hx$i "cd /somewhere/myapp; ./start-utgb.sh"; done
 </code>
 
-If hx10-hx14 have IP addresses 192.168.1.(111-114), add the following configuration to your Apache2 server to bypass the web requests across the Tomcat servers. (Modify the configuration below according to your system): 
+If hx10-hx14 have IP addresses 192.168.1.(111-114), add the following configuration to your Apache2 server to redirect the web requests to the UTGB servers. (Modify the configuration below according to your system): 
 
 <code>
 ProxyPass / balancer://utgb/ nofailover=Off
