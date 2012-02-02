@@ -55,7 +55,7 @@ SOCK Host = localhost   port = 1080
 </code>
 If you are using Google Chrome, [https://chrome.google.com/webstore/detail/caehdcpeofiiigpdhbabniblemipncjj Proxy Switchy!] extension would be useful to switch the configurations quickly. 
 
-When the address of {i|hx} is 192.168.1.100, you can browse the UTGB (e.g., myapp project) at http://192.168.1.100:8989/myapp. This configuration is useful when you want to share the data within laboratory members.
+When the address of {i|hx} is 192.168.1.100, you can browse the UTGB (e.g., myapp project) at http://192.168.1.100:8989/myapp. This configuration is useful when you want to share the UTGB data only within laboratory members.
 
 = Publishing UTGB 
 == How to Use Both Apache and Tomcat Servers Simultaneously 
