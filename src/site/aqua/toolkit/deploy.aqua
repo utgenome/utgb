@@ -83,8 +83,8 @@ After editing the configuration file, restart the apache server to reload the co
 
 == Load Balancing
 
-When the performance of UTGB server matters, replicate the UTGB instances. This is a simple way to distribute the workload of your UTGB application. 
-First, create replicas of your UTGB project folder (e.g., myapp) on several machines. You need to copy the entire UTGB folder (myapp) complied by {i|utgb compile} command. To synchronize the myapp folder contents, {i|rsync} command would be useful:
+When the performance of UTGB server matters, replicate the UTGB instances. That is one of the simple ways to distribute the workload of your UTGB server.
+First, create replicas of your UTGB project folder (e.g., myapp) on several machines. To do this, you need to copy the entire UTGB folder (myapp) complied by {i|utgb compile} command. To synchronize the myapp folder contents, {i|rsync} command would be useful:
 <code>
 $ cd /somewhere/myapp
 $ for i in $(seq -w 02 05); do rsync -av . hx$i:/somewhere/; done
