@@ -7,7 +7,7 @@ UTGB uses the embedded Tomcat web server, so you don't have to read this page fo
 
 = Launching UTGB in Standalone Mode
 
-You can start UTGB at any machines. The {b|utgb server} command launches a stand-alone proxy server (AJP) using port 8990 as well as a Tomcat engine listening port 8989. To start utgb as a background process, prepare the following script under your UTGB project:
+You can start UTGB at any machines. The {b|utgb server} command launches a stand-alone proxy server (AJP) using port 8990, and a Tomcat engine listening port 8989 at the same time. To start utgb as a background process, prepare the following script under your UTGB project:
 {i|start-utgb.sh}
 <code>
 #!/bin/zsh
