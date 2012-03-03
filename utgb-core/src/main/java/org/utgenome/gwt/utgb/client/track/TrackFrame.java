@@ -343,7 +343,7 @@ public class TrackFrame extends SimplePanel {
 			frameWithResizeBar.setSize((INFOPANEL_WIDTH - DRAGBAR_WIDTH) + "px", "100%");
 			frameWithResizeBar.setVerticalAlignment(VerticalPanel.ALIGN_BOTTOM);
 			frameWithResizeBar.add(_labelFrame);
-			frameWithResizeBar.add(_resizeBar);
+			//frameWithResizeBar.add(_resizeBar);
 			basePanel.add(frameWithResizeBar, DRAGBAR_WIDTH, 0);
 			// icon
 			drawIcon();

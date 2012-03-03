@@ -6,13 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-
     <!-- Le styles -->
     <link href="css/bootstrap.css" rel="stylesheet">
-    <link href="theme/style/utgb.css" rel="stylesheet">
     <style type="text/css">
       body {
-        padding-top: 60px;
+        padding-top: 30px;
         padding-bottom: 40px;
       }
       .sidebar-nav {
@@ -20,17 +18,22 @@
       }
     </style>
     <link href="css/bootstrap-responsive.css" rel="stylesheet">
-
+    <link href="theme/style/utgb.css" rel="stylesheet">
+    
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+    <noscript>
+<p>JavaScript must be enabled in order for you to use this web site. However, it seems JavaScript is either disabled or not supported by your browser. 
+Please enable JavaScript by changing your browser options, then <a href="">try again</a>.
+</noscript>
 
   </head>
 
-  <body>
+  <body class="utgb">
 
-    <div class="navbar navbar-fixed-top">
+    <div class="navbar navbar-fixed-top" style="margin-bottom: 0;">
       <div class="navbar-inner">
         <div class="container-fluid">
           <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -49,20 +52,17 @@
       </div>
     </div>
 
-    <div class="container">
-        <div class="hero-unit">
-        <h2>Welcome to $projectName$</h2>
-        <p><a class="btn btn-primary" href="browser.html">Browse &raquo;</a></p>
-        <p>Run "utgb gwt" and "utgb compile" to generate the browser page. </p>
-        </div>
+       <div class="utgb" style="width=98%; vertical-alitn:center;">
+         <script language="javascript" src="utgb.nocache.js"></script>
+        <iframe id="__gwt_historyFrame" style="width:0;height:0;border:0"></iframe>
+        <span id="loading">Loading... </span>
+        <div id="utgb-main"></div>
 
-
-      <hr>
-
-      <footer>
-        <p>Powered by <a href="http://utgenome.org">UTGB Toolkit</a>. University of Tokyo</p>
-      </footer>
-    </div> <!--/.container-->
+        <hr>
+        <footer>
+          <p>Powered by <a href="http://utgenome.org">UTGB Toolkit</a>. University of Tokyo</p>
+        </footer>
+       </div>
     
     <!-- Le javascript
     ================================================== -->

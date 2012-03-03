@@ -469,7 +469,7 @@ public class RequestDispatcher implements Filter {
 
 		// last modified time
 		long lastModified = resourceFile.lastModified();
-		String lastModifiedStr = toInternetDateFormat(resourceFile.lastModified());
+		String lastModifiedStr = toInternetDateFormat(lastModified);
 		resp.setHeader("Last-Modified", lastModifiedStr);
 
 		// content length
