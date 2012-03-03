@@ -40,6 +40,9 @@ public class UTGBPortableConfig {
 	@Option(symbol = "p", longName = "port", varName = "PORT_NUMBER", description = "specify the port number of the local web server (default = 8989)")
 	int portNumber = 8989;
 
+	@Option(symbol = "P", description = "Run mvn war:explode upon file change")
+	boolean pollingFileChange = false;
+
 	@Option(symbol = "c", longName = "contextPath", varName = "PATH", description = "context path. default=/utgb")
 	String contextPath = null;
 

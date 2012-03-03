@@ -30,6 +30,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.TreeMap;
 
 import org.utgenome.config.UTGBConfig;
 import org.xerial.util.FileUtil;
@@ -76,6 +77,69 @@ public class Server extends UTGBShellCommand {
 
 		if (_logger.isDebugEnabled())
 			_logger.debug(option);
+
+		// File change polling
+		if (option.pollingFileChange) {
+			Thread pollingThread = new Thread(new Runnable() {
+
+				private TreeMap<File, Long> table = new TreeMap<File, Long>();
+
+				public void run() {
+					File[] watchFolder = new File[] { new File("src/main/webapp"), new File("target/classes") };
+
+					while (true) {
+						try {
+							if (watch(watchFolder)) {
+								Maven.runMaven("war:exploded", new File(option.projectRoot));
+								Thread.sleep(1000);
+							}
+						}
+						catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}
+
+				public boolean watch(File[] files) {
+					for (File each : files) {
+						if (watch(each))
+							return true;
+					}
+					return false;
+				}
+
+				public boolean watch(File f) {
+					if (!f.isDirectory()) {
+						if (!table.containsKey(f)) {
+							table.put(f, f.lastModified());
+							return false;
+						}
+						else {
+							long lastModified = table.get(f);
+							if (lastModified < f.lastModified()) {
+								table.put(f, f.lastModified());
+								return true;
+							}
+							else
+								return false;
+						}
+					}
+					else {
+						File[] files = f.listFiles();
+						if (files == null)
+							return false;
+						for (File each : files) {
+							boolean updated = watch(each);
+							if (updated)
+								return true;
+						}
+						return false;
+					}
+				}
+			});
+			pollingThread.setDaemon(true);
+			pollingThread.start();
+		}
 
 		UTGBPortable server = new UTGBPortable(option);
 
