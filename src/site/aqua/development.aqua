@@ -47,6 +47,13 @@ $ make clean install
 Use the latest version of Eclipse, which is already bundled with a Maven plugin. 
 Import - Existing Maven Project - select the utgb folder checked out above
 
+== Developing Web Pages
+
+To continuously develop web action codes or web pages in your UTGB project, use polling option of utgb server:
+<code>
+$ utgb server -P
+</code>
+which updates the running server when your source code is modified.
 
 == Information for UTGB committers
 
