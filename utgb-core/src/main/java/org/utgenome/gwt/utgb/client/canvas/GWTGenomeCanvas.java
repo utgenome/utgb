@@ -991,7 +991,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 			canvas.restoreContext();
 
 			canvas.restoreContext();
-		}
+		}	
 	}
 
 	private class RoughCoveragePainter extends GenomeRangeVisitorBase {
@@ -1036,7 +1036,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 				canvas.saveContext();
 				canvas.translate(x - x1 + 0.5f, 0);
 				if (style.reverseReadHistogram)
-					canvas.fillRect(0, canvas.getCoordHeight()-(y-0.5f), 1, y - 0.5f);
+					canvas.fillRect(0, canvas.getCoordHeight() - (y - 0.5f), 1, y - 0.5f);
 				else
 					canvas.fillRect(0, 0, 1, y - 0.5f);
 				canvas.restoreContext();
@@ -1135,9 +1135,9 @@ public class GWTGenomeCanvas extends TouchableComposite {
 			geneHeight = style.readHeight;
 
 		if (style.readMargin > geneHeight )
-			geneMargin=geneHeight;
+			geneMargin = geneHeight;
 		else
-			geneMargin=style.readMargin;
+			geneMargin = style.readMargin;
 		
 		int h = geneHeight + geneMargin;
 		int height = (maxOffset + 1) * h;
