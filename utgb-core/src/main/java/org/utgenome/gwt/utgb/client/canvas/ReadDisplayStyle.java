@@ -57,6 +57,7 @@ public class ReadDisplayStyle {
 	public boolean showStrand = true;
 	public boolean reverseReadTrack = false;
 	public boolean reverseReadHistogram = false;
+	public boolean unmatchHighlight = false;
 
 	public int numReadsMax = 500;
 	public float clippedRegionAlpha = 0.2f;
@@ -81,6 +82,7 @@ public class ReadDisplayStyle {
 	public final static String CONFIG_COVERAGE_STYLE = "coverage.style";
 	public final static String CONFIG_DRAW_SHADOW = "draw shadow";
 	public final static String CONFIG_SHOW_STRAND = "show strand";
+	public final static String CONFIG_HIDE_MATCHED_BASE = "gray matches";
 
 	public void setup(TrackConfig config) {
 		ValueDomain layoutTypes = ValueDomain.createNewValueDomain(new String[] { "pileup", "coverage" });
@@ -92,6 +94,7 @@ public class ReadDisplayStyle {
 		config.addConfigInteger("Read Margin", CONFIG_READ_MARGIN, readMargin);
 		config.addConfigBoolean("Reverse Read Track color", CONFIG_REVERSE_READ_TRACK, reverseReadTrack);
 		config.addConfigBoolean("Reverse Read Track Histogram", CONFIG_REVERSE_READ_HISTOGRAM, reverseReadHistogram);
+		config.addConfigBoolean("Do not show matches", CONFIG_HIDE_MATCHED_BASE, unmatchHighlight);
 		config.addConfigBoolean("Overlap Paired-End Reads", CONFIG_PE_OVERLAP, overlapPairedReads);
 		config.addConfigBoolean("Show Base Quality", CONFIG_SHOW_BASE_QUALITY, showBaseQuality);
 		config.addConfigBoolean("Draw Read Shadow", CONFIG_DRAW_SHADOW, drawShadow);
@@ -108,9 +111,10 @@ public class ReadDisplayStyle {
 		showLabels = config.getBoolean(CONFIG_SHOW_LABELS, showLabels);
 		readHeight = config.getInt(CONFIG_READ_HEIGHT, readHeight);
 		minReadHeight = config.getInt(CONFIG_MIN_READ_HEIGHT, minReadHeight);
-		readMargin = config.getInt(CONFIG_READ_MARGIN, readMargin);		// added Margin parameter 20111017 hatake
+		readMargin = config.getInt(CONFIG_READ_MARGIN, readMargin);
 		reverseReadTrack = config.getBoolean(CONFIG_REVERSE_READ_TRACK, reverseReadTrack);
 		reverseReadHistogram = config.getBoolean(CONFIG_REVERSE_READ_HISTOGRAM, reverseReadHistogram);
+		unmatchHighlight = config.getBoolean(CONFIG_HIDE_MATCHED_BASE, unmatchHighlight);
 		coverageStyle = config.getString(CONFIG_COVERAGE_STYLE, coverageStyle);
 		overlapPairedReads = config.getBoolean(CONFIG_PE_OVERLAP, overlapPairedReads);
 		showBaseQuality = config.getBoolean(CONFIG_SHOW_BASE_QUALITY, showBaseQuality);

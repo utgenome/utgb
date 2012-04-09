@@ -530,12 +530,20 @@ public class GWTGenomeCanvas extends TouchableComposite {
 	private static final String DEFAULT_COLOR_C = "#E7846E";
 	private static final String DEFAULT_COLOR_G = "#84AB51";
 	private static final String DEFAULT_COLOR_T = "#FFA930";
-	private static final String DEFAULT_COLOR_N = "#FFFFFF";
+	private static final String DEFAULT_COLOR_N = "#999999";
 
 	private static final float repeatColorAlpha = 0.3f;
-	private static final Color[] colors = { getColor(DEFAULT_COLOR_A, 1.0f), getColor(DEFAULT_COLOR_C, 1.0f), getColor(DEFAULT_COLOR_G, 1.0f),
-			getColor(DEFAULT_COLOR_T, 1.0f), getColor(DEFAULT_COLOR_A, repeatColorAlpha), getColor(DEFAULT_COLOR_C, repeatColorAlpha),
-			getColor(DEFAULT_COLOR_G, repeatColorAlpha), getColor(DEFAULT_COLOR_T, repeatColorAlpha), getColor(DEFAULT_COLOR_N, 1.0f) };
+	private static final Color[] colors = {
+		getColor(DEFAULT_COLOR_A, 1.0f),
+		getColor(DEFAULT_COLOR_C, 1.0f),
+		getColor(DEFAULT_COLOR_G, 1.0f),
+		getColor(DEFAULT_COLOR_T, 1.0f),
+		getColor(DEFAULT_COLOR_A, repeatColorAlpha),
+		getColor(DEFAULT_COLOR_C, repeatColorAlpha),
+		getColor(DEFAULT_COLOR_G, repeatColorAlpha),
+		getColor(DEFAULT_COLOR_T, repeatColorAlpha),
+		getColor(DEFAULT_COLOR_N, 1.0f)
+	};
 
 	private int getReadHeight() {
 		return geneHeight + geneMargin;
@@ -551,11 +559,16 @@ public class GWTGenomeCanvas extends TouchableComposite {
 
 		private LocusLayout gl;
 		private int h = getReadHeight();
+		private char[] seqtxt;
 
 		public void setLayoutInfo(LocusLayout layout) {
 			this.gl = layout;
 		}
 
+		public void setSeqtxt(char[] sequence) {
+			this.seqtxt = sequence;
+		}
+		
 		public int getYPos() {
 			return gl.scaledHeight(h);
 		}
@@ -582,7 +595,9 @@ public class GWTGenomeCanvas extends TouchableComposite {
 		}
 
 		public void drawBases(int startOnGenome, int y, String seq, String qual) {
-
+			char[] seqarr = chrSeq;
+			int startSeq = intStartSeq;
+			
 			int pixelWidthOfBase = (int) (trackWindow.getPixelLengthPerBase() + 0.1d);
 
 			if (imageACGT == null) {
@@ -617,14 +632,26 @@ public class GWTGenomeCanvas extends TouchableComposite {
 				case 't':
 					baseIndex = 7;
 					break;
-				default:
 				case 'N':
 					baseIndex = 8;
+					break;
+				default:
 					continue;
 				}
+				if (style.unmatchHighlight) {
+					if (i + startOnGenome >= startSeq && i + (startOnGenome - startSeq) < seqarr.length) { 
+						if (seqarr[i + startOnGenome - startSeq] == seq.charAt(i)) {
+							baseIndex = 9;
+						}
+						else if (baseIndex > 3 && baseIndex < 8) {
+							baseIndex = 10;	
+						}
+					} 
+				}
 
-				double x1 = trackWindow.convertToPixelXDouble(startOnGenome + i);
-				double x2 = trackWindow.convertToPixelXDouble(startOnGenome + i + 1);
+				final double x1 = trackWindow.convertToPixelXDouble(startOnGenome + i);
+				final double x2 = trackWindow.convertToPixelXDouble(startOnGenome + i + 1);
+				final int actualBaseWidth = (int)x2 - (int)x1;
 
 				int h = imageACGT.getHeight();
 				if (h >= geneHeight)
@@ -632,6 +659,9 @@ public class GWTGenomeCanvas extends TouchableComposite {
 
 				if (qual == null || h < 5 || !style.showBaseQuality) {
 					canvas.drawImage(imageACGT, pixelWidthOfBase * baseIndex, 0, pixelWidthOfBase, h, (int) x1, y, pixelWidthOfBase, h);
+					if(actualBaseWidth != pixelWidthOfBase) {
+						canvas.drawImage(imageACGT, pixelWidthOfBase * baseIndex, 0, 1, h, (int)x2 - 1, y, 1, h);							
+					}
 				}
 				else {
 					canvas.saveContext();
@@ -643,15 +673,16 @@ public class GWTGenomeCanvas extends TouchableComposite {
 						if (qv < 0)
 							qv = 0;
 						float ratio = (float) qv / threshold;
-						float height = h * ratio;
 
 						canvas.setFillStyle(colors[baseIndex]);
-						canvas.fillRect(x1, y, x2 - x1, geneHeight);
-
+						canvas.fillRect((int)x1, y, actualBaseWidth, geneHeight);
 						canvas.setFillStyle(new Color(255, 255, 255, 0.7f));
-						canvas.fillRect((int) x1, y, pixelWidthOfBase, h * (1 - ratio));
+						canvas.fillRect((int)x1, y, actualBaseWidth, h * (1 - ratio));
 
-						canvas.drawImage(imageACGT, pixelWidthOfBase * baseIndex, h, pixelWidthOfBase, h, (int) x1, y, pixelWidthOfBase, h);
+						canvas.drawImage(imageACGT, pixelWidthOfBase * baseIndex, h, pixelWidthOfBase, h, (int)x1, y, pixelWidthOfBase, h);
+						if(actualBaseWidth != pixelWidthOfBase) {
+							canvas.drawImage(imageACGT, pixelWidthOfBase * baseIndex, h, 1, h, (int)x2 - 1, y, 1, h);						
+						}
 					}
 					canvas.restoreContext();
 				}
@@ -1107,6 +1138,21 @@ public class GWTGenomeCanvas extends TouchableComposite {
 	}
 
 	private ImageElement imageACGT = null;
+	public char[] chrSeq;
+	public String strSeq;
+	public int intStartSeq;
+	
+	public void setSequencetxt (char[] chrSequence){
+		chrSeq = chrSequence; 
+		this.chrSeq=chrSequence;		
+	}
+	public void setSequencetxt (String strSequence){
+		strSeq = strSequence;
+	}
+	public void setStartSeq (int startSeq){
+		intStartSeq = startSeq;
+		this.intStartSeq=startSeq;
+	}
 
 	public void draw() {
 

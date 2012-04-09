@@ -24,12 +24,15 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.track.lib;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.List;
 
 import org.utgenome.gwt.utgb.client.UTGBEntryPointBase;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.client.bio.GenomeDB;
 import org.utgenome.gwt.utgb.client.bio.GenomeDB.DBType;
+import org.utgenome.gwt.utgb.client.bio.Coordinate;
 import org.utgenome.gwt.utgb.client.bio.GraphWindow;
 import org.utgenome.gwt.utgb.client.bio.GenomeRange;
 import org.utgenome.gwt.utgb.client.bio.GenomeRangeVisitorBase;
@@ -55,6 +58,11 @@ import org.utgenome.gwt.utgb.client.util.CanonicalProperties;
 import org.utgenome.gwt.utgb.client.util.Properties;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.Response;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -178,6 +186,7 @@ public class ReadTrack extends TrackBase {
 	private final String CONFIG_ONCLICK_ACTION = "onclick.action";
 	private final String CONFIG_ONCLICK_URL = "onclick.url";
 	private final String CONFIG_ONCLICK_P_KEY = "onclick.set";
+	private final String CONFIG_GENOME_DB_PATH = "genome path";
 
 	private ReadDisplayStyle style = new ReadDisplayStyle();
 
@@ -316,6 +325,7 @@ public class ReadTrack extends TrackBase {
 		config.addConfig("On Click Action", new StringType(CONFIG_ONCLICK_ACTION, actionTypes), "none");
 		config.addConfig("On Click URL", new StringType(CONFIG_ONCLICK_URL), "http://www.google.com/search?q=%q");
 		config.addConfig("On Click Set (key:value, ...)", new StringType(CONFIG_ONCLICK_P_KEY), "read:%q");
+		config.addConfig("Genome DB Path", new StringType(CONFIG_GENOME_DB_PATH), "");
 
 		updateClickAction();
 	}
@@ -333,14 +343,69 @@ public class ReadTrack extends TrackBase {
 
 	@Override
 	public void draw() {
+		String path = getConfig().getString(CONFIG_GENOME_DB_PATH, "");
+		String trackBaseURL = "utgb-core/Sequence.txt?path=" + path + "&%q";
+		
+		String newURL = getTrackURL(trackBaseURL);
+		// replace track group properties
+		TrackWindow w = getTrackWindow();
+		final int startSeq = w.getStartOnGenome();
 
-		// set up drawing options
+		final RequestBuilder rb = new RequestBuilder(RequestBuilder.GET, newURL);
+		
+		try {
+			rb.sendRequest(null,  new RequestCallback() {
+				public void onResponseReceived(Request request, Response response) {
+					String strSeqarr = response.getText();
+					geneCanvas.setSequencetxt(strSeqarr);
+					geneCanvas.setStartSeq(startSeq);
+					
+					char[] chrSeqarr = strSeqarr.toCharArray();
+					if (!chrSeqarr.equals(null)){
+						geneCanvas.setSequencetxt(chrSeqarr);
+						geneCanvas.setReadStyle(style);
+	
+						geneCanvas.draw();
+						getFrame().loadingDone();
+					}
+				}
+				public void onError(Request request, Throwable exception) {
+					// NOTE: we should output an error message to user
+				}				
+			});
+		} catch (Exception e) {
+			//
+		}
+	}
+	
+	
+	protected String getTrackURL(String trackBaseURL) {
+		final Set<String> queryParams = new HashSet<String>();
+		Coordinate c = getCoordinate();
 
-		geneCanvas.setReadStyle(style);
+		Properties properties = new Properties();
+	
+		queryParams.clear();
+		String q = properties.get("queryParams");
+		if (q != null) {
+			String[] params = q.split(",");
+			if (params != null) {
+				for (String each : params)
+					queryParams.add(each);
+			}
+		}		
+		
+		for (String key : queryParams) {
+			// override the group property using the corresponding config parameter 
+			String v = getConfig().getParameter(key);
+			if (v == null) {
+				v = getTrackGroup().getProperty(key);
+			}
+			if (v != null)
+				properties.add(key, v);
+		}
 
-		geneCanvas.draw();
-		getFrame().loadingDone();
-
+		return resolvePropertyValues(c.getTrackURL(trackBaseURL, properties));
 	}
 
 	public static int calcXPositionOnWindow(long indexOnGenome, long startIndexOnGenome, long endIndexOnGenome, int windowWidth) {
@@ -477,7 +542,8 @@ public class ReadTrack extends TrackBase {
 		if (change.containsOneOf(new String[] { ReadDisplayStyle.CONFIG_SHOW_LABELS, ReadDisplayStyle.CONFIG_PE_OVERLAP,
 				ReadDisplayStyle.CONFIG_SHOW_BASE_QUALITY, ReadDisplayStyle.CONFIG_READ_HEIGHT, ReadDisplayStyle.CONFIG_MIN_READ_HEIGHT,
 				ReadDisplayStyle.CONFIG_COVERAGE_STYLE, ReadDisplayStyle.CONFIG_DRAW_SHADOW, ReadDisplayStyle.CONFIG_SHOW_STRAND,
-				ReadDisplayStyle.CONFIG_READ_MARGIN, ReadDisplayStyle.CONFIG_REVERSE_READ_HISTOGRAM, ReadDisplayStyle.CONFIG_REVERSE_READ_TRACK })) {
+				ReadDisplayStyle.CONFIG_READ_MARGIN, ReadDisplayStyle.CONFIG_REVERSE_READ_HISTOGRAM, ReadDisplayStyle.CONFIG_REVERSE_READ_TRACK,
+				ReadDisplayStyle.CONFIG_HIDE_MATCHED_BASE })) {
 			refresh();
 		}
 

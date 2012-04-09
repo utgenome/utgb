@@ -33,10 +33,15 @@
 -track
   -name: Alignments
   -pack: true
-  -height: 100
+  -height: 150
   -class: ReadTrack
   -property
     -path: db/p.patens/all3.sorted.bam
+    -read height: 12
+    -min read height: 12
+    -read margin: 0
+    -gray matches: true
+    -genome path: db/p.patens/Physcomitrella_patens.1_1.fasta.sqlite
 -track
   -name: Segregation
   -class: CSEGTrack
