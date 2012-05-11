@@ -40,6 +40,7 @@ import net.sf.samtools.SAMFileWriterFactory;
 import net.sf.samtools.SAMRecord;
 
 import org.utgenome.format.bed.BEDDatabase;
+import org.utgenome.format.cseg.CSEGDatabase;
 import org.utgenome.format.fasta.FASTADatabase;
 import org.utgenome.format.silk.read.ReadDBBuilder;
 import org.utgenome.format.wig.WIGDatabaseGenerator;
@@ -60,10 +61,10 @@ public class Import extends UTGBShellCommand {
 	private static Logger _logger = Logger.getLogger(Import.class);
 
 	public static enum FileType {
-		AUTO, READ, BED, SAM, FASTA, WIG, KTAB, UNKNOWN, BAM, SEG
+		AUTO, READ, BED, SAM, FASTA, WIG, KTAB, UNKNOWN, BAM, SEG, CSEG
 	}
 
-	@Option(symbol = "t", longName = "type", description = "specify the input file type: (AUTO, FASTA, READ, BED, WIG, SEG)")
+	@Option(symbol = "t", longName = "type", description = "specify the input file type: (AUTO, FASTA, READ, BED, WIG, SEG, CSEG)")
 	private FileType fileType = FileType.AUTO;
 
 	@Argument(index = 0, required = false)
@@ -187,7 +188,14 @@ public class Import extends UTGBShellCommand {
 			break;
 		case SEG:{
 			// TODO: 変換作業をここで行う.
+			break;
 		}
+		case CSEG:
+			if(input != null) {
+				CSEGDatabase.main(new String[] { inputFilePath, "-o", outputFileName });
+			} else {
+				CSEGDatabase.main(new String[] { "-o", outputFileName });
+			}
 			break;
 		case UNKNOWN:
 		default: {
@@ -216,6 +224,8 @@ public class Import extends UTGBShellCommand {
 			return FileType.KTAB;
 		else if (fileName.endsWith(".seg"))
 			return FileType.SEG;
+		else if (fileName.endsWith(".cseg"))
+			return FileType.CSEG;
 
 		return FileType.AUTO;
 	}

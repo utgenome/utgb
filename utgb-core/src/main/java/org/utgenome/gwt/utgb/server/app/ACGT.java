@@ -39,18 +39,20 @@ public class ACGT extends WebTrackBase {
 	private static final String DEFAULT_COLOR_G = "84AB51";
 	private static final String DEFAULT_COLOR_T = "FFA930";
 	private static final String DEFAULT_COLOR_N = "FFFFFF";
+	private static final String DEFAULT_COLOR_O = "DDDDDD";
+	private static final String DEFAULT_COLOR_o = "EEEEEE";
 
 	public String colorA = DEFAULT_COLOR_A;
 	public String colorC = DEFAULT_COLOR_C;
 	public String colorG = DEFAULT_COLOR_G;
 	public String colorT = DEFAULT_COLOR_T;
 	public String colorN = DEFAULT_COLOR_N;
+	public String colorO = DEFAULT_COLOR_O;
+	public String coloro = DEFAULT_COLOR_o;
 
 	public int fontWidth = 12;
 	public int height = DEFAULT_HEIGHT;
 	private static float fontSize = 10.5f;
-
-	private HashMap<Character, Color> colorTable = new HashMap<Character, Color>();
 
 	public ACGT() {
 	}
@@ -62,7 +64,7 @@ public class ACGT extends WebTrackBase {
 			return;
 		}
 
-		final int letterSize = 9; // ACGTacgtN
+		final String letters = "ACGTacgtN _";
 
 		boolean drawLetter = height >= DEFAULT_HEIGHT - 2;
 
@@ -72,9 +74,11 @@ public class ACGT extends WebTrackBase {
 		colorTable.put('G', colorG);
 		colorTable.put('T', colorT);
 		colorTable.put('N', colorN);
-		GenomeCanvas canvas = new GenomeCanvas(fontWidth * letterSize, height * 2, new GenomeWindow(1, letterSize));
+		colorTable.put(' ', colorO);
+		colorTable.put('_', coloro);
 
-		final String letters = "ACGTacgtN";
+		GenomeCanvas canvas = new GenomeCanvas(fontWidth * letters.length(), height * 2, new GenomeWindow(1, letters.length()));
+
 
 		final int repeatColorAlpha = 70;
 		final Color defaultTextColor = new Color(255, 255, 255);
@@ -95,13 +99,8 @@ public class ACGT extends WebTrackBase {
 					Color color = isRepeatChar ? GraphicUtil.parseColor(colorStr, repeatColorAlpha) : GraphicUtil.parseColor(colorStr);
 					canvas.drawGeneRect(offset, offset + 1L, 0, height, color);
 				}
-				//				else {
-				//					textColor = defaultTextColor;
-				//				}
-
 				if (drawLetter)
 					canvas.drawBase(letters.substring(i, i + 1), offset, offset + 1L, baseYPos, fontSize, textColor);
-
 				offset++;
 			}
 		}
