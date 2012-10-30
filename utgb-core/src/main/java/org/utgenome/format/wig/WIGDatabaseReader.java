@@ -529,7 +529,7 @@ public class WIGDatabaseReader {
 
 			int x1 = window.getXPosOnWindow(xOnGenome, windowWidth);
 			int x2 = window.getXPosOnWindow(xOnGenome + span, windowWidth);
-			if (x1 == x2)
+			if (x1 >= x2)
 				x2 = x1 + 1;
 
 			if (x1 < 0)
@@ -538,7 +538,7 @@ public class WIGDatabaseReader {
 			for (int i = x1; i < x2 && i < windowWidth + span; ++i) {
 				float current = pixelWiseGraphData[i];
 				float abs = Math.abs(val);
-				if (current < abs) {
+				if (current < val) {
 					pixelWiseGraphData[i] = val; // take the max (or min for negative value)
 				}
 			}
