@@ -186,14 +186,15 @@ public class Import extends UTGBShellCommand {
 			_logger.info("done.");
 		}
 			break;
-		case SEG:{
-			// TODO: 変換作業をここで行う.
+		case SEG: {
+			// TODO: format conversion
 			break;
 		}
 		case CSEG:
-			if(input != null) {
+			if (input != null) {
 				CSEGDatabase.main(new String[] { inputFilePath, "-o", outputFileName });
-			} else {
+			}
+			else {
 				CSEGDatabase.main(new String[] { "-o", outputFileName });
 			}
 			break;

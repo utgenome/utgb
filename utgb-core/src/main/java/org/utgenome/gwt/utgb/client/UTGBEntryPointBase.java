@@ -323,7 +323,6 @@ public class UTGBEntryPointBase implements EntryPoint {
 
 	public void main() {
 		displayTrackView();
-		trackGroup.redrawAll();
 	}
 
 	private static RoundCornerFrame errorFrame;
