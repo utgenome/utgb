@@ -55,9 +55,9 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -172,7 +172,9 @@ public class UTGBEntryPointBase implements EntryPoint {
 	}
 
 	public static int computeTrackWidth() {
-		int newBrowserWidth = Window.getClientWidth();
+		RootPanel rootPanel = RootPanel.get("utgb-main");
+
+		int newBrowserWidth = rootPanel.getOffsetWidth(); // Window.getClientWidth();
 		return Math.max((int) (newBrowserWidth * 0.95) - TrackFrame.INFOPANEL_WIDTH, 150);
 	}
 
