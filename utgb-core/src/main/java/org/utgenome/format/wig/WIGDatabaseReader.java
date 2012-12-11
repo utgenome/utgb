@@ -529,7 +529,7 @@ public class WIGDatabaseReader {
 
 			int x1 = window.getXPosOnWindow(xOnGenome, windowWidth);
 			int x2 = window.getXPosOnWindow(xOnGenome + span, windowWidth);
-			if (x1 == x2)
+			if (x2 <= x1)
 				x2 = x1 + 1;
 
 			if (x1 < 0)
