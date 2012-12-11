@@ -8,9 +8,11 @@
     <!-- Le styles -->
     <link href="css/bootstrap.css" rel="stylesheet">
     <style type="text/css">
-      body {
+      body .utgb {
         padding-top: 40px;
-        padding-bottom: 40px;
+      }
+      .navbar-fixed-top {
+        margin-bottom: 0px
       }
       .sidebar-nav {
         padding: 9px 0;
@@ -29,8 +31,6 @@ Please enable JavaScript by changing your browser options, then <a href="">try a
 </noscript>
 
   </head>
-
-  <body class="utgb">
 
     <div class="navbar navbar-fixed-top" style="margin-bottom: 0;">
       <div class="navbar-inner">
@@ -51,6 +51,7 @@ Please enable JavaScript by changing your browser options, then <a href="">try a
       </div>
     </div>
 
+    <body>     
        <div class="utgb" style="width=98%; vertical-alitn:center;">
          <script language="javascript" src="utgb.nocache.js"></script>
         <iframe id="__gwt_historyFrame" style="width:0;height:0;border:0"></iframe>
