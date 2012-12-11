@@ -33,7 +33,6 @@ import java.util.List;
  * 
  */
 public class StringUtil {
-
 	/**
 	 * Non constractable
 	 */

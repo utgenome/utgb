@@ -5,6 +5,14 @@ body .utgb
 	line-height: normal;
 }
 
+button,
+input,
+select,
+textarea {
+  font-size: auto;
+}
+
+
 #loading
 {
 	font-size: 12px;
