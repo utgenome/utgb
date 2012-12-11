@@ -26,7 +26,8 @@ MKDIR:=/bin/mkdir
 VERSION:=$(shell java -jar lib/silk-weaver.jar find "project(artifactId, version)" pom.xml | grep utgb-shell | cut -f 2)
 ARCHIVE = target/utgb-toolkit-$(VERSION)-bin.tar.gz
 
-SRC=$(shell /bin/find src)
+FIND=/usr/bin/find
+SRC=$(shell $(FIND) src)
 
 .phony: all install clean package test
 
