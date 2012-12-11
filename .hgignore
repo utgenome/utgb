@@ -8,6 +8,7 @@ utgb-core/src/main/webapp/theme
 utgb-core/db/genome
 utgb-core/db/tmp
 war/WEB-INF/deploy
+gwt-unitCache
 
 syntax: glob
 *~

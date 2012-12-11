@@ -227,15 +227,15 @@ public class TrackGroup implements TrackEntry, Comparable<TrackGroup>, HasFactor
 	public void addTrackGroup(TrackGroup trackGroup) {
 		_trackGroupList.add(trackGroup);
 		trackGroup.setParentTrackGroup(this);
-		this.setResizeNotification(false);
-		// notify to the listners
+		//this.setResizeNotification(false);
+		// Also notify to the child listeners
 		for (Iterator<TrackUpdateListener> it = _trackEventListenerList.iterator(); it.hasNext();) {
 			TrackUpdateListener listener = it.next();
 			listener.onAddTrackGroup(trackGroup);
-			// propagates the listners of this group
+			// propagates to the listeners of this group
 			// trackGroup.addTrackUpdateListener(listener);
 		}
-		this.setResizeNotification(true);
+		//this.setResizeNotification(true);
 		notifyResize();
 	}
 

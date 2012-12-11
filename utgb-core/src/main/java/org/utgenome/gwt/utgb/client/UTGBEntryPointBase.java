@@ -198,8 +198,6 @@ public class UTGBEntryPointBase implements EntryPoint {
 		RootPanel rootPanel = RootPanel.get("utgb-main");
 		if (rootPanel != null) {
 			rootPanel.add(basePanel);
-			if (mainGroup != null)
-				mainGroup.notifyResize();
 		}
 		else {
 			RootPanel.get().add(new Label("Error: <div id=\"utgb-main\"></div> tag is not found in this HTML file."));
@@ -325,6 +323,7 @@ public class UTGBEntryPointBase implements EntryPoint {
 
 	public void main() {
 		displayTrackView();
+		trackGroup.redrawAll();
 	}
 
 	private static RoundCornerFrame errorFrame;
