@@ -227,7 +227,7 @@ public class UTGBEntryPointBase implements EntryPoint {
 					setQueryParam(mainGroup, hash);
 					trackGroup.addTrackGroup(mainGroup);
 					mainGroup.addTrackGroupPropertyChangeListener(new URLRewriter(mainGroup));
-					mainGroup.notifyResize();
+					mainGroup.redrawAll();
 				}
 				catch (UTGBClientException e) {
 					showErrorMessage("failed to load view: " + e.getMessage());
