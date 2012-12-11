@@ -366,37 +366,38 @@ public class Sequence extends WebTrackBase {
 
 	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
 		try {
 
 			File dbFile = null;
-			if (path == null) {
+			if (path == null || path.trim().length() == 0) {
 				String dbFolder = getTrackConfigProperty("utgb.db.folder", getProjectRootPath() + "/db");
 				dbFile = new File(dbFolder, String.format("%s/%s/%s.sqlite", dbGroup, species, revision));
 			}
 			else
 				dbFile = new File(getProjectRootPath(), path);
+			if (dbFile.exists()) {
 
-			ChrLoc queryTarget = new ChrLoc(name, start, end);
-			int range = queryTarget.length();
-			boolean isReverseStrand = queryTarget.isAntiSense();
+				ChrLoc queryTarget = new ChrLoc(name, start, end);
+				int range = queryTarget.length();
+				boolean isReverseStrand = queryTarget.isAntiSense();
 
-			String actionString = getActionSuffix(request);
-			BeanResultHandler<NSeq> handler = null;
-			if (actionString.equals("json"))
-				handler = new JSONOutput(response.getWriter(), start, end, isReverseStrand);
-			else if (actionString.equals("xml"))
-				handler = new XMLOutput(response.getWriter(), start, end, isReverseStrand);
-			else if (actionString.equals("png")) {
-				if (range > width)
-					handler = new RoughGraphicalOutput(response, start, end, width, isReverseStrand);
+				String actionString = getActionSuffix(request);
+				BeanResultHandler<NSeq> handler = null;
+				if (actionString.equals("json"))
+					handler = new JSONOutput(response.getWriter(), start, end, isReverseStrand);
+				else if (actionString.equals("xml"))
+					handler = new XMLOutput(response.getWriter(), start, end, isReverseStrand);
+				else if (actionString.equals("png")) {
+					if (range > width)
+						handler = new RoughGraphicalOutput(response, start, end, width, isReverseStrand);
+					else
+						handler = new GraphicalOutput(response, start, end, width, isReverseStrand);
+				}
 				else
-					handler = new GraphicalOutput(response, start, end, width, isReverseStrand);
-			}
-			else
-				handler = new TextOutput(response.getWriter(), start, end, isReverseStrand);
+					handler = new TextOutput(response.getWriter(), start, end, isReverseStrand);
 
-			FASTADatabase.querySequence(dbFile, new ChrLoc(name, start, end), handler);
+				FASTADatabase.querySequence(dbFile, new ChrLoc(name, start, end), handler);
+			}
 
 		}
 		catch (UTGBException e) {

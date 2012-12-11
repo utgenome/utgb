@@ -289,6 +289,7 @@ public class NavigatorTrack extends TrackBase {
 	}
 
 	private final HorizontalPanel hp = new HorizontalPanel();
+	private final HorizontalPanel hp2 = new HorizontalPanel();
 	private final Track _self = this;
 	private boolean isPlusStrand = true;
 
@@ -319,7 +320,7 @@ public class NavigatorTrack extends TrackBase {
 		hp.add(targetBox);
 		// window locator
 		regionBox.setWidth("160px");
-		HorizontalPanel hp2 = new HorizontalPanel();
+
 		hp2.setVerticalAlignment(HorizontalPanel.ALIGN_MIDDLE);
 		hp2.add(new FormLabel("Region"));
 		hp2.add(regionBox);
@@ -378,10 +379,15 @@ public class NavigatorTrack extends TrackBase {
 			}
 		});
 		hp.add(loadButton);
+
+	}
+
+	@Override
+	public void draw() {
+		panel.clear();
 		// layout widgets
 		panel.add(hp);
 		panel.add(hp2);
-
 	}
 
 	public Widget getWidget() {
