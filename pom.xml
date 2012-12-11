@@ -4,7 +4,7 @@
   <groupId>org.utgenome</groupId>
   <artifactId>utgb-toolkit</artifactId>
   <name>UTGB Toolkit</name>
-  <version>1.5.9</version>
+  <version>1.5.10-SNAPSHOT</version>
   <description>The University of Tokyo Genome Browser (UTGB) Toolkit</description>
   <packaging>pom</packaging>
 
