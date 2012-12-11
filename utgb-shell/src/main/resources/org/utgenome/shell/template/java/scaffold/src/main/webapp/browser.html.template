@@ -43,8 +43,8 @@ Please enable JavaScript by changing your browser options, then <a href="">try a
           <a class="brand" href="./">UTGB</a>
           <div class="nav-collapse">
             <ul class="nav">
-              <li class="active"><a href="./"><i class="icon-home icon-white"></i> Home</a></li>
-              <li><a href="browser.html"><i class="icon-eye-open icon-white"></i> Browse</a></li>
+              <li><a href="./"><i class="icon-home icon-white"></i> Home</a></li>
+              <li class="active"><a href="browser.html"><i class="icon-eye-open icon-white"></i> Browse</a></li>
             </ul>
           </div><!--/.nav-collapse -->
         </div>
