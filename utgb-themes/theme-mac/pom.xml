@@ -3,14 +3,14 @@
   <parent>
     <groupId>org.utgenome.theme</groupId>
     <artifactId>utgb-themes</artifactId>
-    <version>1.5.9-SNAPSHOT</version>
+    <version>1.5.9</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.utgenome.theme</groupId>
   <artifactId>theme-mac</artifactId>
   <name>UTGB Mac Theme</name>
-  <version>1.5.9-SNAPSHOT</version>
+  <version>1.5.9</version>
   <description>UTGB Mac Theme</description>
   <packaging>jar</packaging>
 
