@@ -198,6 +198,8 @@ public class UTGBEntryPointBase implements EntryPoint {
 		RootPanel rootPanel = RootPanel.get("utgb-main");
 		if (rootPanel != null) {
 			rootPanel.add(basePanel);
+			if (mainGroup != null)
+				mainGroup.notifyResize();
 		}
 		else {
 			RootPanel.get().add(new Label("Error: <div id=\"utgb-main\"></div> tag is not found in this HTML file."));
@@ -227,7 +229,6 @@ public class UTGBEntryPointBase implements EntryPoint {
 					setQueryParam(mainGroup, hash);
 					trackGroup.addTrackGroup(mainGroup);
 					mainGroup.addTrackGroupPropertyChangeListener(new URLRewriter(mainGroup));
-					mainGroup.redrawAll();
 				}
 				catch (UTGBClientException e) {
 					showErrorMessage("failed to load view: " + e.getMessage());
