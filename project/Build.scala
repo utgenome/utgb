@@ -37,8 +37,8 @@ object Build extends sbt.Build {
     pomIncludeRepository := {
       _ => false
     },              
-    resolvers ++= Seq(
-      "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/",
+  resolvers ++= Seq(
+//      "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/",
       "UTGB Repository" at "http://maven.utgenome.org/repository/artifact"),
     parallelExecution := true,
     parallelExecution in Test := false,
