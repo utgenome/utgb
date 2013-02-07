@@ -30,6 +30,7 @@ object Build extends sbt.Build {
       organizationHomepage := Some(new URL("http://utgenome.org/")),
     description := "University of Tokyo Genome Browser",
     scalaVersion := SCALA_VERSION,
+    javacOptions ++= Seq("-target" , "1.6", "-Xlint:unchecked", "-Xlint:deprecation", "-encoding", "UTF-8"),
     scalacOptions ++= Seq("-encoding", "UTF-8", "-unchecked", "-deprecation", "-feature", "-target:jvm-1.6"),
     publishMavenStyle := true,
     publishArtifact in Test := false,
@@ -80,7 +81,6 @@ object Build extends sbt.Build {
       // Mapping from program name -> Main class
       packMain := Map("utgb" -> "org.utgenome.shell.UTGBShell"),
       packExclude := Seq("utgb"),
-      packMain := Map("silk" -> "xerial.silk.SilkMain"),
       publish := {},
       publishLocal := {}
     )

@@ -41,6 +41,7 @@ public class WebBrowser {
 
 	private static Logger _logger = Logger.getLogger(WebBrowser.class);
 
+    @SuppressWarnings("unchecked")
 	public static void openURL(String url) {
 		try {
 			OSType osType = OSType.getOSType();
