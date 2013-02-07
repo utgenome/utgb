@@ -4,6 +4,7 @@
 
 # sbt specific
 bin/.lib
+dist/*
 target/
 lib_managed/
 src_managed/
