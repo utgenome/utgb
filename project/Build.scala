@@ -1,6 +1,8 @@
+import com.github.siasia.Container
 import sbt._
 import sbt.Keys._
 import xerial.sbt.Pack._
+import net.thunderklaus.GwtPlugin._
 
 object Build extends sbt.Build {
 
@@ -33,6 +35,7 @@ object Build extends sbt.Build {
     scalaVersion := SCALA_VERSION,
     javacOptions ++= Seq("-source", "1.6", "-target", "1.6", "-Xlint:unchecked", "-Xlint:deprecation", "-encoding", "UTF-8"),
     scalacOptions ++= Seq("-encoding", "UTF-8", "-unchecked", "-deprecation", "-feature", "-target:jvm-1.6"),
+    crossPaths := false,
     publishMavenStyle := true,
     publishArtifact in Test := false,
     publishTo <<= version {
@@ -76,6 +79,24 @@ object Build extends sbt.Build {
   )
 
 
+  lazy val container = Container("container")
+
+
+
+  object Dependency {
+    private val jettyVer = "6.1.22"
+    val jetty = Seq(
+      "org.mortbay.jetty" % "jetty" % jettyVer % "container",
+      "org.mortbay.jetty" % "jsp-2.0" % jettyVer % "container",
+      "org.mortbay.jetty" % "jetty-naming" % jettyVer % "container",
+      "org.mortbay.jetty" % "jetty-plus" % jettyVer % "container",
+      "javax.servlet" % "servlet-api" % "2.5" % "provided"
+    )
+  }
+
+
+  import Dependency._
+
   lazy val root = Project(
     id = "utgb",
     base = file("."),
@@ -86,25 +107,38 @@ object Build extends sbt.Build {
       packExclude := Seq("utgb"),
       publish := {},
       publishLocal := {},
-      libraryDependencies += "com.novocode" % "junit-interface" % "0.10-M1" % "test"
-    )
+      libraryDependencies ++= jetty ++ Seq(
+        "com.novocode" % "junit-interface" % "0.10-M1" % "test"
+      )
+    ) ++ container.deploy("/utgb-core" -> core.project)
   ) aggregate(core, shell)
 
-  val gwtVersion = "2.4.0"
+  val gwtVer = "2.4.0"
+
+  private val cpuToUse : Int = {
+    math.max((java.lang.Runtime.getRuntime.availableProcessors() * 0.8).toInt, 1)
+  }
 
   lazy val core = Project(
     id = "utgb-core",
     base = file("utgb-core"),
-    settings = buildSettings ++ Seq(
-      libraryDependencies ++= Seq(
+    settings = buildSettings ++ gwtSettings ++ com.github.siasia.WebPlugin.webSettings ++ Seq(
+      gwtVersion := gwtVer,
+      gwtModules := List("org.utgenome.gwt.utgb.UTGBEntry"),
+      gwtTemporaryPath <<= (target) { (target) => target / "gwt" },
+      com.github.siasia.PluginKeys.webappResources in Compile <+= (target) { (target) => target / "gwt" / "utgb" },
+      javaOptions in Gwt in Compile ++= Seq(
+        "-localWorkers", cpuToUse.toString
+      ),
+      libraryDependencies ++= jetty ++ Seq(
         // Add dependent jars here
         //"org.xerial" % "xerial-core" % "3.1",
         "org.xerial" % "xerial-lens" % "2.0.6",
         "junit" % "junit" % "4.8.1" % "test",
         "org.scalatest" %% "scalatest" % "2.0.M5b" % "test",
-        "com.google.gwt" % "gwt-user" % gwtVersion % "provided",
-        "com.google.gwt" % "gwt-dev" % gwtVersion % "provided",
-        "com.google.gwt" % "gwt-servlet" % gwtVersion % "provided",
+        "com.google.gwt" % "gwt-user" % gwtVer % "provided",
+        "com.google.gwt" % "gwt-dev" % gwtVer % "provided",
+        "com.google.gwt" % "gwt-servlet" % gwtVer % "provided",
         "org.xerial.snappy" % "snappy-java" % "1.0.5-M3",
         "org.utgenome.thirdparty" % "gwt-incubator" % "20101117-r1766",
         "commons-fileupload" % "commons-fileupload" % "1.2",

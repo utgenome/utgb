@@ -2,5 +2,5 @@
     <Environment description="absolute path to the project root folder" 
 	        name="projectRoot" 
 	        type="java.lang.String" 
-	        value="F:\workspace\utgb\utgb-core"/>
+	        value="utgb-core"/>
 </Context>

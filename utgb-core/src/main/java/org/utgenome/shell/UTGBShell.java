@@ -24,20 +24,17 @@
 //--------------------------------------
 package org.utgenome.shell;
 
+import org.xerial.util.log.LogLevel;
+import org.xerial.util.log.Logger;
+import org.xerial.util.log.SimpleLogWriter;
+import org.xerial.util.opt.*;
+
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.Set;
-
-import org.xerial.util.log.LogLevel;
-import org.xerial.util.log.Logger;
-import org.xerial.util.log.SimpleLogWriter;
-import org.xerial.util.opt.CommandHelpMessage;
-import org.xerial.util.opt.CommandLauncher;
-import org.xerial.util.opt.CommandLauncherEventHandler;
-import org.xerial.util.opt.GlobalCommandOption;
-import org.xerial.util.opt.Option;
-import org.xerial.util.opt.OptionParserException;
 
 /**
  * A command line client entry point
@@ -73,7 +70,7 @@ public class UTGBShell {
 	/**
 	 * Run UTGB Shell commands
 	 * 
-	 * @param args
+	 * @param argLine
 	 * @throws Exception
 	 */
 	public static void runCommand(String argLine) throws Exception {
@@ -170,20 +167,20 @@ public class UTGBShell {
 		String version = "(unknown)";
 		try {
 			// load the pom.xml file copied as a resource in utgb-core.jar
-			String propertyName = "version";
+
 			InputStream pomIn = UTGBShell.class.getResourceAsStream("/META-INF/maven/org.utgenome/utgb-core/pom.properties");
 			try {
 				if (pomIn == null) {
 					// If utgb-core is referenced in the workspace scope, use the
 					// utgb-core/src/main/resources/utgb-core.properties, which is created when utgb-core is
 					// compiled
-					pomIn = UTGBShell.class.getResourceAsStream("/org/utgenome/utgb-core.properties");
-					propertyName = "utgb-core-version";
+					pomIn = new FileInputStream(new File(System.getProperty("prog.home", ""), "VERSION"));
 				}
 				if (pomIn != null) {
 					Properties prop = new Properties();
 					prop.load(pomIn);
-					version = prop.getProperty(propertyName, version);
+                    String propertyName = "version";
+					version = prop.getProperty(propertyName, version).replaceAll("[=:]", "");
 				}
 			}
 			finally {
