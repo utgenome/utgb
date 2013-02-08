@@ -24,14 +24,11 @@
 //--------------------------------------
 package org.utgenome.format.bed;
 
-import java.io.File;
-import java.util.ArrayList;
-
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
 import org.xerial.util.log.Logger;
+
+import java.util.ArrayList;
 
 public class BEDLexerTest
 {
@@ -92,12 +89,6 @@ public class BEDLexerTest
 
     }
 
-    @Ignore
-    @Test
-    public void testLexer() throws Exception
-    {
-        BED2Silk bed2silk = new BED2Silk(new File("C:/Documents and Settings/jun/デスクトップ/bed/ct_example5.bed"));
-        //		bed2silk.toSilk();
-    }
+
 
 }

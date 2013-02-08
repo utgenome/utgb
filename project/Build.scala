@@ -5,6 +5,7 @@ import xerial.sbt.Pack._
 object Build extends sbt.Build {
 
   val SCALA_VERSION = "2.10.0"
+
   private def profile = System.getProperty("profile", "default")
 
   def releaseResolver(v: String): Option[Resolver] = {
@@ -24,22 +25,24 @@ object Build extends sbt.Build {
   }
 
 
-  lazy val buildSettings = Defaults.defaultSettings ++ seq(
-      organization := "org.utgenome",
-      organizationName := "utgenome.org",
-      organizationHomepage := Some(new URL("http://utgenome.org/")),
+  lazy val buildSettings = Defaults.defaultSettings ++ Seq(
+    organization := "org.utgenome",
+    organizationName := "utgenome.org",
+    organizationHomepage := Some(new URL("http://utgenome.org/")),
     description := "University of Tokyo Genome Browser",
     scalaVersion := SCALA_VERSION,
-      javacOptions ++= Seq("-source", "1.6", "-target", "1.6", "-Xlint:unchecked", "-Xlint:deprecation", "-encoding", "UTF-8"),
+    javacOptions ++= Seq("-source", "1.6", "-target", "1.6", "-Xlint:unchecked", "-Xlint:deprecation", "-encoding", "UTF-8"),
     scalacOptions ++= Seq("-encoding", "UTF-8", "-unchecked", "-deprecation", "-feature", "-target:jvm-1.6"),
     publishMavenStyle := true,
     publishArtifact in Test := false,
-    publishTo <<= version { v => releaseResolver(v) },
+    publishTo <<= version {
+      v => releaseResolver(v)
+    },
     pomIncludeRepository := {
       _ => false
-    },              
-  resolvers ++= Seq(
-//      "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/",
+    },
+    resolvers ++= Seq(
+      //      "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/",
       "UTGB Repository" at "http://maven.utgenome.org/repository/artifact"),
     parallelExecution := true,
     parallelExecution in Test := false,
@@ -69,20 +72,21 @@ object Build extends sbt.Build {
             <url>http://xerial.org/leo</url>
           </developer>
         </developers>
-    }	
-  )		
+    }
+  )
 
 
   lazy val root = Project(
     id = "utgb",
     base = file("."),
-    settings = buildSettings ++ packSettings ++ seq(
+    settings = buildSettings ++ packSettings ++ Seq(
       description := "UTGB Project",
       // Mapping from program name -> Main class
       packMain := Map("utgb" -> "org.utgenome.shell.UTGBShell"),
       packExclude := Seq("utgb"),
       publish := {},
-      publishLocal := {}
+      publishLocal := {},
+      libraryDependencies += "com.novocode" % "junit-interface" % "0.10-M1" % "test"
     )
   ) aggregate(core, shell)
 
@@ -91,33 +95,33 @@ object Build extends sbt.Build {
   lazy val core = Project(
     id = "utgb-core",
     base = file("utgb-core"),
-    settings = buildSettings ++ seq(
-        libraryDependencies ++= Seq(
-       	// Add dependent jars here	
-       	//"org.xerial" % "xerial-core" % "3.1",
-	"org.xerial" % "xerial-lens" % "2.0.6",
-	"junit" % "junit" % "4.8.1" % "test",
-       	"org.scalatest" %% "scalatest" % "2.0.M5b" % "test",
-	"com.google.gwt" % "gwt-user" % gwtVersion % "provided",
-	"com.google.gwt" % "gwt-dev" % gwtVersion % "provided",
-	"com.google.gwt" % "gwt-servlet" % gwtVersion % "provided",
-	"org.xerial.snappy" % "snappy-java" % "1.0.5-M3",
-	"org.utgenome.thirdparty" % "gwt-incubator" % "20101117-r1766",
-	"commons-fileupload" % "commons-fileupload" % "1.2",
-	"org.apache.velocity" % "velocity" % "1.7",
-	"org.codehaus.plexus" % "plexus-archiver" % "2.2",
-	"org.codehaus.plexus" % "plexus-classworlds" % "2.4",
-	"org.utgenome.thirdparty" % "sam" % "1.56",
-	"org.utgenome.thirdparty" % "picard" % "1.56",
-	"org.xerial" % "sqlite-jdbc" % "3.7.2",
-	"org.xerial" % "xerial-storage" % "2.0",
-	"com.google.gwt.gears" % "gwt-google-apis" % "1.0.0",
-	"com.allen_sauer.gwt" % "gwt-dnd" % "3.1.2",
-	"log4j" % "log4j" % "1.2.17",
-	"jfree" % "jfreechart" % "1.0.12"
-       )
+    settings = buildSettings ++ Seq(
+      libraryDependencies ++= Seq(
+        // Add dependent jars here
+        //"org.xerial" % "xerial-core" % "3.1",
+        "org.xerial" % "xerial-lens" % "2.0.6",
+        "junit" % "junit" % "4.8.1" % "test",
+        "org.scalatest" %% "scalatest" % "2.0.M5b" % "test",
+        "com.google.gwt" % "gwt-user" % gwtVersion % "provided",
+        "com.google.gwt" % "gwt-dev" % gwtVersion % "provided",
+        "com.google.gwt" % "gwt-servlet" % gwtVersion % "provided",
+        "org.xerial.snappy" % "snappy-java" % "1.0.5-M3",
+        "org.utgenome.thirdparty" % "gwt-incubator" % "20101117-r1766",
+        "commons-fileupload" % "commons-fileupload" % "1.2",
+        "org.apache.velocity" % "velocity" % "1.7",
+        "org.codehaus.plexus" % "plexus-archiver" % "2.2",
+        "org.codehaus.plexus" % "plexus-classworlds" % "2.4",
+        "org.utgenome.thirdparty" % "sam" % "1.56",
+        "org.utgenome.thirdparty" % "picard" % "1.56",
+        "org.xerial" % "sqlite-jdbc" % "3.7.2",
+        "org.xerial" % "xerial-storage" % "2.0",
+        "com.google.gwt.gears" % "gwt-google-apis" % "1.0.0",
+        "com.allen_sauer.gwt" % "gwt-dnd" % "3.1.2",
+        "log4j" % "log4j" % "1.2.17",
+        "jfree" % "jfreechart" % "1.0.12"
+      )
     )
-  ) 
+  )
 
   private val dependentScope = "test->test;compile->compile"
 
@@ -126,25 +130,25 @@ object Build extends sbt.Build {
   lazy val shell = Project(
     id = "utgb-shell",
     base = file("utgb-shell"),
-    settings = buildSettings ++ seq(
+    settings = buildSettings ++ Seq(
       libraryDependencies ++= Seq(
         "org.apache.tomcat.embed" % "tomcat-embed-core" % tomcatVersion,
-	"org.apache.tomcat.embed" % "tomcat-embed-jasper" % tomcatVersion,
-	"org.apache.tomcat.embed" % "tomcat-embed-logging-juli" % tomcatVersion,
-	"org.apache.tomcat" % "tomcat-catalina" % tomcatVersion,
-	"org.apache.tomcat" % "tomcat-jasper" % tomcatVersion excludeAll(
-          ExclusionRule(organization="org.eclipse.jdt.core.compiler")
-	),
-	"org.apache.tomcat" % "tomcat-el-api" % tomcatVersion,
-	"org.apache.tomcat" % "tomcat-juli" % tomcatVersion,
-	"org.xerial" % "sqlite-jdbc" % "3.7.2",
-	"org.apache.maven" % "maven-embedder" % "3.0.3",
-	"org.sonatype.aether" % "aether-connector-wagon" % "1.11",
-	"org.apache.maven.wagon" % "wagon-http" % "1.0-beta-7",
-	"org.eclipse.jdt.core.compiler" % "ecj" % "3.5.1"
+        "org.apache.tomcat.embed" % "tomcat-embed-jasper" % tomcatVersion,
+        "org.apache.tomcat.embed" % "tomcat-embed-logging-juli" % tomcatVersion,
+        "org.apache.tomcat" % "tomcat-catalina" % tomcatVersion,
+        "org.apache.tomcat" % "tomcat-jasper" % tomcatVersion excludeAll (
+          ExclusionRule(organization = "org.eclipse.jdt.core.compiler")
+          ),
+        "org.apache.tomcat" % "tomcat-el-api" % tomcatVersion,
+        "org.apache.tomcat" % "tomcat-juli" % tomcatVersion,
+        "org.xerial" % "sqlite-jdbc" % "3.7.2",
+        "org.apache.maven" % "maven-embedder" % "3.0.3",
+        "org.sonatype.aether" % "aether-connector-wagon" % "1.11",
+        "org.apache.maven.wagon" % "wagon-http" % "1.0-beta-7",
+        "org.eclipse.jdt.core.compiler" % "ecj" % "3.5.1"
       )
     )
-   ) dependsOn(core % dependentScope)
+  ) dependsOn (core % dependentScope)
 
 
 }
