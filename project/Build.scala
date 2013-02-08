@@ -105,7 +105,6 @@ object Build extends sbt.Build {
       packExclude := Seq("utgb"),
       publish := {},
       publishLocal := {},
-//      com.github.siasia.PluginKeys.env in Compile := Some(file(".") / "src" / "conf" / "jetty-env.xml" asFile),
       libraryDependencies ++= jetty
     ) ++ container.deploy(
         "/utgb-core" -> core.project
@@ -115,14 +114,18 @@ object Build extends sbt.Build {
 
   val gwtVer = "2.4.0"
 
+  private val cpuToUse : Int = {
+    math.max((java.lang.Runtime.getRuntime.availableProcessors() * 0.8).toInt, 1)
+  }
+
   lazy val core = Project(
     id = "utgb-core",
     base = file("utgb-core"),
     settings = buildSettings ++ gwtSettings ++ com.github.siasia.WebPlugin.webSettings ++ Seq(
       gwtVersion := gwtVer,
-      gwtModules := List("org.utgenome.gwt.utgb.UTGBEntry", "org.utgenome.gwt.widget.UTGBWidget"),
+      gwtModules := List("org.utgenome.gwt.utgb.UTGBEntry"),
       javaOptions in Gwt in Compile ++= Seq(
-        "-localWorkers", "4"
+        "-localWorkers", cpuToUse.toString, "-war", "src/main/webapp"
       ),
       libraryDependencies ++= jetty ++ Seq(
         // Add dependent jars here
