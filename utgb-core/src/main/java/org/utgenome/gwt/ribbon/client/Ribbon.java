@@ -22,7 +22,7 @@
 // $URL$ 
 // $Author$
 //--------------------------------------
-package org.utgenome.gwt.utgb.client.ribbon;
+package org.utgenome.gwt.ribbon.client;
 
 import java.util.ArrayList;
 import java.util.List;

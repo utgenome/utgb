@@ -24,17 +24,12 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.track.lib;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-
-import org.utgenome.gwt.utgb.client.track.Track;
-import org.utgenome.gwt.utgb.client.track.TrackBase;
-import org.utgenome.gwt.utgb.client.track.TrackFrame;
-import org.utgenome.gwt.utgb.client.track.TrackGroup;
-import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChange;
-import org.utgenome.gwt.utgb.client.track.TrackWindow;
-import org.utgenome.gwt.utgb.client.track.UTGBProperty;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.*;
+import com.google.gwt.json.client.*;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.*;
+import org.utgenome.gwt.utgb.client.track.*;
 import org.utgenome.gwt.utgb.client.track.bean.SequenceInfo;
 import org.utgenome.gwt.utgb.client.ui.FormLabel;
 import org.utgenome.gwt.utgb.client.util.CanonicalProperties;
@@ -43,29 +38,9 @@ import org.utgenome.gwt.utgb.client.util.StringUtil;
 import org.utgenome.gwt.utgb.client.util.xml.XMLWriter;
 import org.utgenome.gwt.widget.client.Style;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.json.client.JSONArray;
-import com.google.gwt.json.client.JSONException;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONParser;
-import com.google.gwt.json.client.JSONValue;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.Hidden;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
 
 /**
  * Navigator of the UTGB
@@ -497,7 +472,7 @@ public class NavigatorTrack extends TrackBase {
 	public void restoreProperties(CanonicalProperties properties) {
 
 		try {
-			JSONValue v = JSONParser.parse(properties.get("sequenceList", "[]"));
+			JSONValue v = JSONParser.parseStrict(properties.get("sequenceList", "[]"));
 			sequenceInfoList.clear();
 			JSONArray list = v.isArray();
 			if (list != null) {

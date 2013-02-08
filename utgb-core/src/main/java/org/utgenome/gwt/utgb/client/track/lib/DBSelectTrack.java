@@ -24,33 +24,22 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.track.lib;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.utgenome.gwt.utgb.client.bean.DatabaseEntry;
-import org.utgenome.gwt.utgb.client.track.Track;
-import org.utgenome.gwt.utgb.client.track.TrackBase;
-import org.utgenome.gwt.utgb.client.track.TrackConfig;
-import org.utgenome.gwt.utgb.client.track.TrackFrame;
-import org.utgenome.gwt.utgb.client.track.TrackGroup;
-import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChange;
-import org.utgenome.gwt.utgb.client.track.UTGBProperty;
-import org.utgenome.gwt.utgb.client.ui.FormLabel;
-import org.utgenome.gwt.utgb.client.util.CanonicalProperties;
-import org.utgenome.gwt.utgb.client.util.JSONUtil;
-import org.utgenome.gwt.widget.client.Style;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
+import org.utgenome.gwt.utgb.client.bean.DatabaseEntry;
+import org.utgenome.gwt.utgb.client.track.*;
+import org.utgenome.gwt.utgb.client.ui.FormLabel;
+import org.utgenome.gwt.utgb.client.util.CanonicalProperties;
+import org.utgenome.gwt.utgb.client.util.JSONUtil;
+import org.utgenome.gwt.widget.client.Style;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DBSelectTrack extends TrackBase {
 

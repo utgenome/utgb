@@ -24,33 +24,26 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.track.lib;
 
-import java.util.List;
-
-import org.utgenome.gwt.utgb.client.bio.SAMRead;
-import org.utgenome.gwt.utgb.client.canvas.SAMCanvas;
-import org.utgenome.gwt.utgb.client.db.Value;
-import org.utgenome.gwt.utgb.client.db.ValueDomain;
-import org.utgenome.gwt.utgb.client.db.datatype.StringType;
-import org.utgenome.gwt.utgb.client.track.Track;
-import org.utgenome.gwt.utgb.client.track.TrackBase;
-import org.utgenome.gwt.utgb.client.track.TrackConfig;
-import org.utgenome.gwt.utgb.client.track.TrackConfigChange;
-import org.utgenome.gwt.utgb.client.track.TrackFrame;
-import org.utgenome.gwt.utgb.client.track.TrackGroup;
-import org.utgenome.gwt.utgb.client.track.TrackWindow;
-import org.utgenome.gwt.utgb.client.ui.FormLabel;
-import org.utgenome.gwt.utgb.client.util.CanonicalProperties;
-
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
+import org.utgenome.gwt.utgb.client.bio.SAMRead;
+import org.utgenome.gwt.utgb.client.canvas.SAMCanvas;
+import org.utgenome.gwt.utgb.client.db.Value;
+import org.utgenome.gwt.utgb.client.db.ValueDomain;
+import org.utgenome.gwt.utgb.client.db.datatype.StringType;
+import org.utgenome.gwt.utgb.client.track.*;
+import org.utgenome.gwt.utgb.client.ui.FormLabel;
+import org.utgenome.gwt.utgb.client.util.CanonicalProperties;
+
+import java.util.List;
 
 /**
  * Track for displaying SAM information
@@ -96,7 +89,7 @@ public class SAMTrack extends TrackBase {
 		layoutTable.setWidth("100%");
 		//		layoutTable.getCellFormatter().setWidth(0, 0, leftMargin + "px");
 		layoutTable.setWidget(1, 0, labelPanel);
-		//		layoutTable.setWidget(0, 1, readListBox);
+		//		layoutTable.setWidgetPanel(0, 1, readListBox);
 		layoutTable.setWidget(1, 1, samCanvas);
 
 		// Set the value in the text box when the user selects a date
@@ -104,7 +97,7 @@ public class SAMTrack extends TrackBase {
 			public void onChange(ChangeEvent e) {
 				choosedReadName = readDataList.get(readListBox.getSelectedIndex()).qname;
 				getFrame().setNowLoading();
-				DeferredCommand.addCommand(new UpdateCommand(readDataList));
+				Scheduler.get().scheduleDeferred(new UpdateCommand(readDataList));
 			}
 		});
 	}
@@ -206,7 +199,7 @@ public class SAMTrack extends TrackBase {
 						choosedReadName = read.qname;
 				}
 				readListBox.setVisibleItemCount(1);
-				DeferredCommand.addCommand(new UpdateCommand(readDataList));
+				Scheduler.get().scheduleDeferred(new UpdateCommand(readDataList));
 			}
 		});
 	}
@@ -246,7 +239,7 @@ public class SAMTrack extends TrackBase {
 		}
 		else {
 			getFrame().setNowLoading();
-			DeferredCommand.addCommand(new UpdateCommand(readDataList));
+            Scheduler.get().scheduleDeferred(new UpdateCommand(readDataList));
 		}
 	}
 

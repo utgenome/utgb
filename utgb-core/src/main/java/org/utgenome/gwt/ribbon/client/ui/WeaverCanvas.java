@@ -91,8 +91,8 @@ public class WeaverCanvas extends Composite {
 		Style.bold(tl2);
 		Style.nowrap(tl2);
 
-		tab1.setWidget(tl);
-		tab2.setWidget(tl2);
+		tab1.setWidgetPanel(tl);
+		tab2.setWidgetPanel(tl2);
 		tabPanel.add(new SimplePanel(), tab1);
 		tabPanel.add(new SimplePanel(), tab2);
 
@@ -103,7 +103,7 @@ public class WeaverCanvas extends Composite {
 		Style.fontSize(l, 12);
 		Style.fontColor(l, "white");
 		//Style.semiTransparentBackground(l, "3E5A77", 0.8f);
-		f.setWidget(l);
+		f.setWidgetPanel(l);
 
 		//		l.setPixelSize(200, 19);
 		//		//l.setStyleName("label");

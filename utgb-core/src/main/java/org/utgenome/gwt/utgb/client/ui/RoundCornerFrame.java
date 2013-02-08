@@ -34,7 +34,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.HTMLTable.CellFormatter;
 
 /**
- * A frame with round corners. You can set arbitrary widgets to this frame by using {@link #setWidget(Widget)}.
+ * A frame with round corners. You can set arbitrary widgets to this frame by using {@link #setWidgetPanel(Widget)}.
  * 
  * @author leo
  * 
@@ -80,8 +80,7 @@ public class RoundCornerFrame extends Composite {
 		initWidget(layoutFrame);
 	}
 
-	@Override
-	public void setWidget(Widget w) {
+	public void setWidgetPanel(Widget w) {
 		panel.setWidget(w);
 	}
 

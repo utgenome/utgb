@@ -24,29 +24,22 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.track.lib;
 
-import java.util.List;
-
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.AbsolutePanel;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.Widget;
 import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.utgenome.gwt.utgb.client.canvas.SAMCanvas;
 import org.utgenome.gwt.utgb.client.db.Value;
 import org.utgenome.gwt.utgb.client.db.ValueDomain;
 import org.utgenome.gwt.utgb.client.db.datatype.StringType;
-import org.utgenome.gwt.utgb.client.track.Track;
-import org.utgenome.gwt.utgb.client.track.TrackBase;
-import org.utgenome.gwt.utgb.client.track.TrackConfig;
-import org.utgenome.gwt.utgb.client.track.TrackConfigChange;
-import org.utgenome.gwt.utgb.client.track.TrackFrame;
-import org.utgenome.gwt.utgb.client.track.TrackGroup;
-import org.utgenome.gwt.utgb.client.track.TrackWindow;
+import org.utgenome.gwt.utgb.client.track.*;
 import org.utgenome.gwt.utgb.client.util.CanonicalProperties;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.Widget;
+import java.util.List;
 
 /**
  * Track for displaying SAM/BAM query result
@@ -202,7 +195,7 @@ public class SAMQueryTrack extends TrackBase {
 				//						if (isDebug) 
 				//							GWT.log("refSeq : " + refSeq , null);
 
-				DeferredCommand.addCommand(new UpdateCommand(readDataList, refSeq));
+				Scheduler.get().scheduleDeferred(new UpdateCommand(readDataList, refSeq));
 				//					}
 				//				});
 			}
@@ -262,7 +255,7 @@ public class SAMQueryTrack extends TrackBase {
 		}
 		else {
 			getFrame().setNowLoading();
-			DeferredCommand.addCommand(new UpdateCommand(readDataList, refSeq));
+			Scheduler.get().scheduleDeferred(new UpdateCommand(readDataList, refSeq));
 		}
 	}
 

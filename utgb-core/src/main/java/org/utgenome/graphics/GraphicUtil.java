@@ -22,19 +22,16 @@
 // $URL$ 
 // $Author$
 //--------------------------------------
-package org.utgenome.gwt.utgb.server.util.graphic;
+package org.utgenome.graphics;
 
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
+import org.xerial.util.log.Logger;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
-
-import org.xerial.util.log.Logger;
+import java.awt.*;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 /**
  * Utilities for manipulating Graphics in Java

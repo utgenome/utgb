@@ -24,10 +24,10 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.util;
 
-import java.util.ArrayList;
-
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
+
+import java.util.ArrayList;
 
 public class WorkQueue implements Command {
 
@@ -41,8 +41,8 @@ public class WorkQueue implements Command {
 	public void execute() {
 		if(_workerQueue.isEmpty())
 			return;
-		
-		DeferredCommand.addCommand(nextWorker());
+
+        Scheduler.get().scheduleDeferred(nextWorker());
 		
 	}
 	

@@ -36,7 +36,7 @@ import org.utgenome.UTGBException;
 import org.utgenome.graphics.GenomeCanvas;
 import org.utgenome.graphics.GenomeWindow;
 import org.utgenome.gwt.utgb.server.WebTrackBase;
-import org.utgenome.gwt.utgb.server.util.graphic.GraphicUtil;
+import org.utgenome.graphics.GraphicUtil;
 import org.xerial.db.sql.BeanResultHandler;
 import org.xerial.db.sql.SQLExpression;
 import org.xerial.db.sql.sqlite.SQLiteAccess;

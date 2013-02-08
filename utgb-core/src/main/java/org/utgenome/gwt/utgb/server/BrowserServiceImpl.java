@@ -77,7 +77,7 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 	static Logger _logger = Logger.getLogger(BrowserServiceImpl.class);
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 

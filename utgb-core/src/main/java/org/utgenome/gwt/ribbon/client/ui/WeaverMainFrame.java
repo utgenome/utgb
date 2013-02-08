@@ -56,7 +56,7 @@ public class WeaverMainFrame extends Composite {
 		mainPanel.add(trackListPanel, DockPanel.EAST);
 
 		RoundCornerFrame f = new RoundCornerFrame("#6699CC", 0.8f, 4);
-		f.setWidget(trackPanel);
+		f.setWidgetPanel(trackPanel);
 		mainPanel.add(f, DockPanel.CENTER);
 
 		initWidget(mainPanel);
