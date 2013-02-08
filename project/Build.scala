@@ -88,8 +88,18 @@ object Build extends sbt.Build {
       "org.mortbay.jetty" % "jetty" % jettyVer % "container",
       "org.mortbay.jetty" % "jsp-2.0" % jettyVer % "container",
       "org.mortbay.jetty" % "jetty-naming" % jettyVer % "container",
-      "org.mortbay.jetty" % "jetty-plus" % jettyVer % "container",
-      "javax.servlet" % "servlet-api" % "2.5" % "provided"
+      "org.mortbay.jetty" % "jetty-plus" % jettyVer % "container"
+    )
+    val servletLib = Seq("javax.servlet" % "servlet-api" % "2.5" % "provided")
+
+    val gwtVer = "2.4.0"
+    val gwtLib = Seq(
+      "com.google.gwt" % "gwt-user" % gwtVer % "provided",
+      "com.google.gwt" % "gwt-dev" % gwtVer % "provided",
+      "com.google.gwt" % "gwt-servlet" % gwtVer % "provided",
+      "org.utgenome.thirdparty" % "gwt-incubator" % "20101117-r1766",
+      "com.google.gwt.gears" % "gwt-google-apis" % "1.0.0",
+      "com.allen_sauer.gwt" % "gwt-dnd" % "3.1.2"
     )
   }
 
@@ -112,7 +122,7 @@ object Build extends sbt.Build {
 
   ) aggregate(core, web, shell)
 
-  val gwtVer = "2.4.0"
+
 
   private val cpuToUse : Int = {
     math.max((java.lang.Runtime.getRuntime.availableProcessors() * 0.8).toInt, 1)
@@ -121,8 +131,8 @@ object Build extends sbt.Build {
   lazy val core = Project(
     id = "utgb-core",
     base = file("utgb-core"),
-    settings = buildSettings ++ gwtSettings ++ Seq(
-      libraryDependencies ++= jetty ++ Seq(
+    settings = buildSettings ++ Seq(
+      libraryDependencies ++= gwtLib ++ servletLib ++ Seq(
         // Add dependent jars here
         //"org.xerial" % "xerial-core" % "3.1",
         "org.xerial" % "xerial-lens" % "2.0.6",
@@ -137,7 +147,9 @@ object Build extends sbt.Build {
         "org.xerial" % "sqlite-jdbc" % "3.7.2",
         "org.xerial" % "xerial-storage" % "2.0",
         "log4j" % "log4j" % "1.2.17",
-        "jfree" % "jfreechart" % "1.0.12"
+        "jfree" % "jfreechart" % "1.0.12",
+        "commons-fileupload" % "commons-fileupload" % "1.2",
+        "org.apache.velocity" % "velocity" % "1.7"
       )
     )
   )
@@ -154,19 +166,8 @@ object Build extends sbt.Build {
         "-localWorkers", cpuToUse.toString
       ),
       libraryDependencies ++= jetty ++ Seq(
-        // Add dependent jars here
-        "com.google.gwt" % "gwt-user" % gwtVer % "provided",
-        "com.google.gwt" % "gwt-dev" % gwtVer % "provided",
-        "com.google.gwt" % "gwt-servlet" % gwtVer % "provided",
-        "org.utgenome.thirdparty" % "gwt-incubator" % "20101117-r1766",
-        "commons-fileupload" % "commons-fileupload" % "1.2",
-        "org.apache.velocity" % "velocity" % "1.7",
-        "com.google.gwt.gears" % "gwt-google-apis" % "1.0.0",
-        "com.allen_sauer.gwt" % "gwt-dnd" % "3.1.2"
       )
     )
-
-
   ) dependsOn(core % dependentScope)
 
 
