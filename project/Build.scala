@@ -107,10 +107,10 @@ object Build extends sbt.Build {
       publishLocal := {},
       libraryDependencies ++= jetty
     ) ++ container.deploy(
-        "/utgb-core" -> core.project
+        "/" -> web.project
       )
 
-  ) aggregate(core, shell)
+  ) aggregate(core, web, shell)
 
   val gwtVer = "2.4.0"
 
@@ -121,6 +121,30 @@ object Build extends sbt.Build {
   lazy val core = Project(
     id = "utgb-core",
     base = file("utgb-core"),
+    settings = buildSettings ++ gwtSettings ++ Seq(
+      libraryDependencies ++= jetty ++ Seq(
+        // Add dependent jars here
+        //"org.xerial" % "xerial-core" % "3.1",
+        "org.xerial" % "xerial-lens" % "2.0.6",
+        "junit" % "junit" % "4.8.1" % "test",
+        "org.scalatest" %% "scalatest" % "2.0.M5b" % "test",
+        "org.xerial.snappy" % "snappy-java" % "1.0.5-M3",
+        "org.apache.velocity" % "velocity" % "1.7",
+        "org.codehaus.plexus" % "plexus-archiver" % "2.2",
+        "org.codehaus.plexus" % "plexus-classworlds" % "2.4",
+        "org.utgenome.thirdparty" % "sam" % "1.56",
+        "org.utgenome.thirdparty" % "picard" % "1.56",
+        "org.xerial" % "sqlite-jdbc" % "3.7.2",
+        "org.xerial" % "xerial-storage" % "2.0",
+        "log4j" % "log4j" % "1.2.17",
+        "jfree" % "jfreechart" % "1.0.12"
+      )
+    )
+  )
+
+  lazy val web = Project(
+    id = "utgb-web",
+    base = file("utgb-web"),
     settings = buildSettings ++ gwtSettings ++ com.github.siasia.WebPlugin.webSettings ++ Seq(
       gwtVersion := gwtVer,
       gwtModules := List("org.utgenome.gwt.utgb.UTGBEntry"),
@@ -131,30 +155,20 @@ object Build extends sbt.Build {
       ),
       libraryDependencies ++= jetty ++ Seq(
         // Add dependent jars here
-        //"org.xerial" % "xerial-core" % "3.1",
-        "org.xerial" % "xerial-lens" % "2.0.6",
-        "junit" % "junit" % "4.8.1" % "test",
-        "org.scalatest" %% "scalatest" % "2.0.M5b" % "test",
         "com.google.gwt" % "gwt-user" % gwtVer % "provided",
         "com.google.gwt" % "gwt-dev" % gwtVer % "provided",
         "com.google.gwt" % "gwt-servlet" % gwtVer % "provided",
-        "org.xerial.snappy" % "snappy-java" % "1.0.5-M3",
         "org.utgenome.thirdparty" % "gwt-incubator" % "20101117-r1766",
         "commons-fileupload" % "commons-fileupload" % "1.2",
         "org.apache.velocity" % "velocity" % "1.7",
-        "org.codehaus.plexus" % "plexus-archiver" % "2.2",
-        "org.codehaus.plexus" % "plexus-classworlds" % "2.4",
-        "org.utgenome.thirdparty" % "sam" % "1.56",
-        "org.utgenome.thirdparty" % "picard" % "1.56",
-        "org.xerial" % "sqlite-jdbc" % "3.7.2",
-        "org.xerial" % "xerial-storage" % "2.0",
         "com.google.gwt.gears" % "gwt-google-apis" % "1.0.0",
-        "com.allen_sauer.gwt" % "gwt-dnd" % "3.1.2",
-        "log4j" % "log4j" % "1.2.17",
-        "jfree" % "jfreechart" % "1.0.12"
+        "com.allen_sauer.gwt" % "gwt-dnd" % "3.1.2"
       )
     )
-  )
+
+
+  ) dependsOn(core % dependentScope)
+
 
   private val dependentScope = "test->test;compile->compile"
 
@@ -174,7 +188,6 @@ object Build extends sbt.Build {
           ),
         "org.apache.tomcat" % "tomcat-el-api" % tomcatVersion,
         "org.apache.tomcat" % "tomcat-juli" % tomcatVersion,
-        "org.xerial" % "sqlite-jdbc" % "3.7.2",
         "org.apache.maven" % "maven-embedder" % "3.0.3",
         "org.sonatype.aether" % "aether-connector-wagon" % "1.11",
         "org.apache.maven.wagon" % "wagon-http" % "1.0-beta-7",
