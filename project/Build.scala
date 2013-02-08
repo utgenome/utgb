@@ -163,7 +163,7 @@ object Build extends sbt.Build {
       gwtTemporaryPath <<= (target) { (target) => target / "gwt" },
       com.github.siasia.PluginKeys.webappResources in Compile <+= (target) { (target) => target / "gwt" / "utgb" },
       javaOptions in Gwt in Compile ++= Seq(
-        "-localWorkers", cpuToUse.toString
+        "-localWorkers", cpuToUse.toString, "-strict"
       ),
       libraryDependencies ++= jetty ++ Seq(
       )
