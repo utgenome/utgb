@@ -88,6 +88,7 @@ object Build extends sbt.Build {
       "org.mortbay.jetty" % "jetty" % jettyVer % "container",
       "org.mortbay.jetty" % "jsp-2.0" % jettyVer % "container",
       "org.mortbay.jetty" % "jetty-naming" % jettyVer % "container",
+      "org.mortbay.jetty" % "jetty-plus" % jettyVer % "container",
       "javax.servlet" % "servlet-api" % "2.5" % "provided"
     )
   }
@@ -104,10 +105,12 @@ object Build extends sbt.Build {
       packExclude := Seq("utgb"),
       publish := {},
       publishLocal := {},
+//      com.github.siasia.PluginKeys.env in Compile := Some(file(".") / "src" / "conf" / "jetty-env.xml" asFile),
       libraryDependencies ++= jetty
     ) ++ container.deploy(
         "/utgb-core" -> core.project
       )
+
   ) aggregate(core, shell)
 
   val gwtVer = "2.4.0"
@@ -118,7 +121,9 @@ object Build extends sbt.Build {
     settings = buildSettings ++ gwtSettings ++ com.github.siasia.WebPlugin.webSettings ++ Seq(
       gwtVersion := gwtVer,
       gwtModules := List("org.utgenome.gwt.utgb.UTGBEntry", "org.utgenome.gwt.widget.UTGBWidget"),
-      javaOptions in Gwt ++= Seq(),
+      javaOptions in Gwt in Compile ++= Seq(
+        "-localWorkers", "4"
+      ),
       libraryDependencies ++= jetty ++ Seq(
         // Add dependent jars here
         //"org.xerial" % "xerial-core" % "3.1",
