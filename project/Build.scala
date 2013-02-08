@@ -125,13 +125,14 @@ object Build extends sbt.Build {
 
 
   private val cpuToUse : Int = {
-    math.max((java.lang.Runtime.getRuntime.availableProcessors() * 0.8).toInt, 1)
+    math.max((java.lang.Runtime.getRuntime.availableProcessors() * 0.9).toInt, 1)
   }
 
   lazy val core = Project(
     id = "utgb-core",
     base = file("utgb-core"),
     settings = buildSettings ++ Seq(
+      description := "UTGB Core library",
       libraryDependencies ++= gwtLib ++ servletLib ++ Seq(
         // Add dependent jars here
         //"org.xerial" % "xerial-core" % "3.1",
@@ -154,19 +155,21 @@ object Build extends sbt.Build {
     )
   )
 
+
   lazy val web = Project(
     id = "utgb-web",
     base = file("utgb-web"),
-    settings = buildSettings ++ gwtSettings ++ com.github.siasia.WebPlugin.webSettings ++ Seq(
+    settings = buildSettings ++ com.github.siasia.WebPlugin.webSettings ++ gwtSettings ++ Seq(
+      description := "Pre-compiled UTGB war",
       gwtVersion := gwtVer,
       gwtModules := List("org.utgenome.gwt.utgb.UTGBEntry"),
       gwtTemporaryPath <<= (target) { (target) => target / "gwt" },
       com.github.siasia.PluginKeys.webappResources in Compile <+= (target) { (target) => target / "gwt" / "utgb" },
+      packageBin in Compile <<= (packageBin in Compile).dependsOn(gwtCompile),
       javaOptions in Gwt in Compile ++= Seq(
         "-localWorkers", cpuToUse.toString, "-strict"
       ),
-      libraryDependencies ++= jetty ++ Seq(
-      )
+      libraryDependencies ++= jetty
     )
   ) dependsOn(core % dependentScope)
 
@@ -179,6 +182,7 @@ object Build extends sbt.Build {
     id = "utgb-shell",
     base = file("utgb-shell"),
     settings = buildSettings ++ Seq(
+      description := "UTGB command-line tools",
       libraryDependencies ++= Seq(
         "org.apache.tomcat.embed" % "tomcat-embed-core" % tomcatVersion,
         "org.apache.tomcat.embed" % "tomcat-embed-jasper" % tomcatVersion,
