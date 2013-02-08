@@ -124,8 +124,10 @@ object Build extends sbt.Build {
     settings = buildSettings ++ gwtSettings ++ com.github.siasia.WebPlugin.webSettings ++ Seq(
       gwtVersion := gwtVer,
       gwtModules := List("org.utgenome.gwt.utgb.UTGBEntry"),
+      gwtTemporaryPath <<= (target) { (target) => target / "gwt" },
+      com.github.siasia.PluginKeys.webappResources in Compile <+= (target) { (target) => target / "gwt" / "utgb" },
       javaOptions in Gwt in Compile ++= Seq(
-        "-localWorkers", cpuToUse.toString, "-war", "src/main/webapp"
+        "-localWorkers", cpuToUse.toString
       ),
       libraryDependencies ++= jetty ++ Seq(
         // Add dependent jars here

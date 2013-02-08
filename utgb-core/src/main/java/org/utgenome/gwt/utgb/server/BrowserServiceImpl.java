@@ -24,25 +24,9 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.server;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import net.sf.samtools.SAMFileReader;
 import net.sf.samtools.SAMRecord;
-
 import org.utgenome.UTGBException;
 import org.utgenome.format.fasta.CompactFASTA;
 import org.utgenome.format.keyword.KeywordDB;
@@ -52,18 +36,7 @@ import org.utgenome.gwt.utgb.client.BrowserService;
 import org.utgenome.gwt.utgb.client.UTGBClientErrorCode;
 import org.utgenome.gwt.utgb.client.UTGBClientException;
 import org.utgenome.gwt.utgb.client.bean.DatabaseEntry;
-import org.utgenome.gwt.utgb.client.bio.ChrLoc;
-import org.utgenome.gwt.utgb.client.bio.ChrRange;
-import org.utgenome.gwt.utgb.client.bio.CompactWIGData;
-import org.utgenome.gwt.utgb.client.bio.Gene;
-import org.utgenome.gwt.utgb.client.bio.GenomeDB;
-import org.utgenome.gwt.utgb.client.bio.GraphWindow;
-import org.utgenome.gwt.utgb.client.bio.Interval;
-import org.utgenome.gwt.utgb.client.bio.KeywordSearchResult;
-import org.utgenome.gwt.utgb.client.bio.GenomeRange;
-import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig;
-import org.utgenome.gwt.utgb.client.bio.SAMRead;
-import org.utgenome.gwt.utgb.client.bio.WigGraphData;
+import org.utgenome.gwt.utgb.client.bio.*;
 import org.utgenome.gwt.utgb.client.track.bean.TrackBean;
 import org.utgenome.gwt.utgb.client.view.TrackView;
 import org.utgenome.gwt.utgb.server.app.ChromosomeMap;
@@ -83,7 +56,13 @@ import org.xerial.util.ObjectHandlerBase;
 import org.xerial.util.StopWatch;
 import org.xerial.util.log.Logger;
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.io.*;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * 
@@ -143,7 +122,7 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 				FileReader f = null;
 				try {
 					File viewFilePath = new File(UTGBMaster.getProjectRootFolder(), viewFile.getPath());
-					_logger.info(String.format("loading view:" + viewFile));
+					_logger.info(String.format("loading view: " + viewFile));
 					if (!viewFilePath.exists())
 						throw new UTGBClientException(UTGBClientErrorCode.MISSING_FILES, String.format("%s is not found", viewFile));
 
