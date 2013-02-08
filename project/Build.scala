@@ -1,3 +1,4 @@
+import com.github.siasia.Container
 import sbt._
 import sbt.Keys._
 import xerial.sbt.Pack._
@@ -77,6 +78,21 @@ object Build extends sbt.Build {
     }
   )
 
+  lazy val container = Container("container")
+
+
+
+  object Dependency {
+    private val jettyVer = "6.1.22"
+    val jetty = Seq(
+      "org.mortbay.jetty" % "jetty" % jettyVer % "container",
+      "org.mortbay.jetty" % "jsp-2.0" % jettyVer % "container",
+      "org.mortbay.jetty" % "jetty-naming" % jettyVer % "container",
+      "javax.servlet" % "servlet-api" % "2.5" % "provided"
+    )
+  }
+
+  import Dependency._
 
   lazy val root = Project(
     id = "utgb",
@@ -88,9 +104,10 @@ object Build extends sbt.Build {
       packExclude := Seq("utgb"),
       publish := {},
       publishLocal := {},
-      libraryDependencies ++= Seq(
+      libraryDependencies ++= jetty
+    ) ++ container.deploy(
+        "/utgb-core" -> core.project
       )
-    )
   ) aggregate(core, shell)
 
   val gwtVer = "2.4.0"
@@ -102,9 +119,8 @@ object Build extends sbt.Build {
       gwtVersion := gwtVer,
       gwtModules := List("org.utgenome.gwt.utgb.UTGBEntry", "org.utgenome.gwt.widget.UTGBWidget"),
       javaOptions in Gwt ++= Seq(),
-      libraryDependencies ++= Seq(
+      libraryDependencies ++= jetty ++ Seq(
         // Add dependent jars here
-        "org.mortbay.jetty" % "jetty" % "6.1.22" % "container",
         //"org.xerial" % "xerial-core" % "3.1",
         "org.xerial" % "xerial-lens" % "2.0.6",
         "junit" % "junit" % "4.8.1" % "test",

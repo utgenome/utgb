@@ -24,22 +24,6 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.server;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.HashMap;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.log4j.BasicConfigurator;
 import org.utgenome.UTGBErrorCode;
 import org.utgenome.UTGBException;
@@ -51,6 +35,21 @@ import org.xerial.db.DBException;
 import org.xerial.db.sql.DatabaseAccess;
 import org.xerial.lens.SilkLens;
 import org.xerial.util.log.Logger;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashMap;
 
 /**
  * UTGB Master loads the configuration files, and set up shared variables, database access, etc.
