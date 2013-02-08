@@ -45,7 +45,6 @@ object Build extends sbt.Build {
       _ => false
     },
     resolvers ++= Seq(
-      //      "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/",
       "UTGB Repository" at "http://maven.utgenome.org/repository/artifact"),
     parallelExecution := true,
     parallelExecution in Test := false,
@@ -163,6 +162,7 @@ object Build extends sbt.Build {
       description := "Pre-compiled UTGB war",
       gwtVersion := gwtVer,
       gwtModules := List("org.utgenome.gwt.utgb.UTGBEntry"),
+      gwtForceCompile := true,
       gwtTemporaryPath <<= (target) { (target) => target / "gwt" },
       com.github.siasia.PluginKeys.webappResources in Compile <+= (target) { (target) => target / "gwt" / "utgb" },
       packageBin in Compile <<= (packageBin in Compile).dependsOn(gwtCompile),
