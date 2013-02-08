@@ -65,7 +65,7 @@ public class TrackFrame extends Composite implements Frame {
 	{
 		frameBorder.setPixelSize(150, 20);
 		titleFrame.setSize("100%", "100%");
-		frameBorder.setWidget(titleFrame);
+		frameBorder.setWidgetPanel(titleFrame);
 		
 		iconFrame.setSpacing(0);
 		iconFrame.setVerticalAlignment(VerticalPanel.ALIGN_MIDDLE);

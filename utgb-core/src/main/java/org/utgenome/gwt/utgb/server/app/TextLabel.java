@@ -35,7 +35,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.utgenome.gwt.utgb.server.RequestHandlerBase;
-import org.utgenome.gwt.utgb.server.util.graphic.GraphicUtil;
+import org.utgenome.graphics.GraphicUtil;
 
 /**
  * Generates a TextLabel graphic

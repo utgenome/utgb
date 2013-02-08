@@ -132,7 +132,7 @@ public class GWTGenomeCanvas extends TouchableComposite {
 			super(true);
 
 			RoundCornerFrame infoFrame = new RoundCornerFrame("336699", 0.7f, 4);
-			infoFrame.setWidget(infoTable);
+			infoFrame.setWidgetPanel(infoTable);
 			this.setWidget(infoFrame);
 		}
 

@@ -204,7 +204,7 @@ public class UTGBMaster implements ServletContextListener {
 
 		setVariable("query", new HashMap<String, DatabaseAccess>());
 		// scan resource folder
-		String configFolderName = getContextProperty("projectRoot", new File("utgb-core").getAbsolutePath()); //new File(".").getAbsolutePath());
+		String configFolderName = getContextProperty("projectRoot", new File("utgb-web").getAbsolutePath()); //new File(".").getAbsolutePath());
 		setVariable("projectRoot", configFolderName);
 		_logger.info("project root folder: " + configFolderName);
 

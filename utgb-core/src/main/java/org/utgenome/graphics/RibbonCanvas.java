@@ -24,21 +24,15 @@
 //--------------------------------------
 package org.utgenome.graphics;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import org.utgenome.format.silk.read.Read;
+import org.utgenome.format.silk.read.Reference;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
-
-import javax.imageio.ImageIO;
-
-import org.utgenome.format.silk.read.Read;
-import org.utgenome.format.silk.read.Reference;
-import org.utgenome.gwt.utgb.server.util.graphic.GraphicUtil;
 
 /**
  * genome drawing canvas supporting indel display

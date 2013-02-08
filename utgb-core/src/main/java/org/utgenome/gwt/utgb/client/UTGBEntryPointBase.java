@@ -24,26 +24,9 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import org.utgenome.gwt.utgb.client.track.TrackFrame;
-import org.utgenome.gwt.utgb.client.track.TrackGroup;
-import org.utgenome.gwt.utgb.client.track.TrackGroupProperty;
-import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChange;
-import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChangeListener;
-import org.utgenome.gwt.utgb.client.track.TrackQueue;
-import org.utgenome.gwt.utgb.client.track.TrackWindow;
-import org.utgenome.gwt.utgb.client.track.UTGBProperty;
-import org.utgenome.gwt.utgb.client.ui.RoundCornerFrame;
-import org.utgenome.gwt.utgb.client.util.BrowserInfo;
-import org.utgenome.gwt.utgb.client.util.Properties;
-import org.utgenome.gwt.utgb.client.util.StringUtil;
-import org.utgenome.gwt.utgb.client.view.TrackView;
-import org.utgenome.gwt.widget.client.Style;
-
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -51,18 +34,23 @@ import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.DeferredCommand;
-import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.*;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
-import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
+import org.utgenome.gwt.utgb.client.track.*;
+import org.utgenome.gwt.utgb.client.ui.RoundCornerFrame;
+import org.utgenome.gwt.utgb.client.util.BrowserInfo;
+import org.utgenome.gwt.utgb.client.util.Properties;
+import org.utgenome.gwt.utgb.client.util.StringUtil;
+import org.utgenome.gwt.utgb.client.view.TrackView;
+import org.utgenome.gwt.widget.client.Style;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class UTGBEntryPointBase implements EntryPoint {
 	// widgets
@@ -207,7 +195,7 @@ public class UTGBEntryPointBase implements EntryPoint {
 	/**
 	 * load the view XML file from the public/view folder.
 	 * 
-	 * @param viewXMLPath
+	 * @param viewName
 	 */
 	public void loadView(String viewName) {
 
@@ -331,15 +319,14 @@ public class UTGBEntryPointBase implements EntryPoint {
 	{
 		errorFrame = new RoundCornerFrame("FF6699", 0.7f, 2);
 		errorFrame.setWidth("400px");
-		errorFrame.setWidget(errorLabel);
+		errorFrame.setWidgetPanel(errorLabel);
 		Style.fontColor(errorLabel, "white");
 		errorPopup.setWidget(errorFrame);
 	}
 
 	public static void showErrorMessage(final String message) {
 
-		DeferredCommand.addCommand(new Command() {
-
+        Scheduler.get().scheduleDeferred( new Command() {
 			public void execute() {
 				errorLabel.setText(message);
 				int x = Window.getClientWidth() / 2 - 200;

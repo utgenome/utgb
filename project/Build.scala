@@ -45,7 +45,6 @@ object Build extends sbt.Build {
       _ => false
     },
     resolvers ++= Seq(
-      //      "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/",
       "UTGB Repository" at "http://maven.utgenome.org/repository/artifact"),
     parallelExecution := true,
     parallelExecution in Test := false,
@@ -78,6 +77,7 @@ object Build extends sbt.Build {
     }
   )
 
+
   lazy val container = Container("container")
 
 
@@ -88,10 +88,21 @@ object Build extends sbt.Build {
       "org.mortbay.jetty" % "jetty" % jettyVer % "container",
       "org.mortbay.jetty" % "jsp-2.0" % jettyVer % "container",
       "org.mortbay.jetty" % "jetty-naming" % jettyVer % "container",
-      "org.mortbay.jetty" % "jetty-plus" % jettyVer % "container",
-      "javax.servlet" % "servlet-api" % "2.5" % "provided"
+      "org.mortbay.jetty" % "jetty-plus" % jettyVer % "container"
+    )
+    val servletLib = Seq("javax.servlet" % "servlet-api" % "2.5" % "provided")
+
+    val gwtVer = "2.4.0"
+    val gwtLib = Seq(
+      "com.google.gwt" % "gwt-user" % gwtVer % "provided",
+      "com.google.gwt" % "gwt-dev" % gwtVer % "provided",
+      "com.google.gwt" % "gwt-servlet" % gwtVer % "provided",
+      "org.utgenome.thirdparty" % "gwt-incubator" % "20101117-r1766",
+      "com.google.gwt.gears" % "gwt-google-apis" % "1.0.0",
+      "com.allen_sauer.gwt" % "gwt-dnd" % "3.1.2"
     )
   }
+
 
   import Dependency._
 
@@ -105,42 +116,28 @@ object Build extends sbt.Build {
       packExclude := Seq("utgb"),
       publish := {},
       publishLocal := {},
-      libraryDependencies ++= jetty
-    ) ++ container.deploy(
-        "/utgb-core" -> core.project
+      libraryDependencies ++= jetty ++ Seq(
+        "com.novocode" % "junit-interface" % "0.10-M1" % "test"
       )
-
+    ) ++ container.deploy("/utgb-core" -> core.project)
   ) aggregate(core, shell)
 
-  val gwtVer = "2.4.0"
-
   private val cpuToUse : Int = {
-    math.max((java.lang.Runtime.getRuntime.availableProcessors() * 0.8).toInt, 1)
+    math.max((java.lang.Runtime.getRuntime.availableProcessors() * 0.9).toInt, 1)
   }
 
   lazy val core = Project(
     id = "utgb-core",
     base = file("utgb-core"),
-    settings = buildSettings ++ gwtSettings ++ com.github.siasia.WebPlugin.webSettings ++ Seq(
-      gwtVersion := gwtVer,
-      gwtModules := List("org.utgenome.gwt.utgb.UTGBEntry"),
-      gwtTemporaryPath <<= (target) { (target) => target / "gwt" },
-      com.github.siasia.PluginKeys.webappResources in Compile <+= (target) { (target) => target / "gwt" / "utgb" },
-      javaOptions in Gwt in Compile ++= Seq(
-        "-localWorkers", cpuToUse.toString
-      ),
-      libraryDependencies ++= jetty ++ Seq(
+    settings = buildSettings ++ Seq(
+      description := "UTGB Core library",
+      libraryDependencies ++= gwtLib ++ servletLib ++ Seq(
         // Add dependent jars here
         //"org.xerial" % "xerial-core" % "3.1",
         "org.xerial" % "xerial-lens" % "2.0.6",
         "junit" % "junit" % "4.8.1" % "test",
         "org.scalatest" %% "scalatest" % "2.0.M5b" % "test",
-        "com.google.gwt" % "gwt-user" % gwtVer % "provided",
-        "com.google.gwt" % "gwt-dev" % gwtVer % "provided",
-        "com.google.gwt" % "gwt-servlet" % gwtVer % "provided",
         "org.xerial.snappy" % "snappy-java" % "1.0.5-M3",
-        "org.utgenome.thirdparty" % "gwt-incubator" % "20101117-r1766",
-        "commons-fileupload" % "commons-fileupload" % "1.2",
         "org.apache.velocity" % "velocity" % "1.7",
         "org.codehaus.plexus" % "plexus-archiver" % "2.2",
         "org.codehaus.plexus" % "plexus-classworlds" % "2.4",
@@ -148,13 +145,33 @@ object Build extends sbt.Build {
         "org.utgenome.thirdparty" % "picard" % "1.56",
         "org.xerial" % "sqlite-jdbc" % "3.7.2",
         "org.xerial" % "xerial-storage" % "2.0",
-        "com.google.gwt.gears" % "gwt-google-apis" % "1.0.0",
-        "com.allen_sauer.gwt" % "gwt-dnd" % "3.1.2",
         "log4j" % "log4j" % "1.2.17",
-        "jfree" % "jfreechart" % "1.0.12"
+        "jfree" % "jfreechart" % "1.0.12",
+        "commons-fileupload" % "commons-fileupload" % "1.2",
+        "org.apache.velocity" % "velocity" % "1.7"
       )
     )
   )
+
+
+  lazy val web = Project(
+    id = "utgb-web",
+    base = file("utgb-web"),
+    settings = buildSettings ++ com.github.siasia.WebPlugin.webSettings ++ gwtSettings ++ Seq(
+      description := "Pre-compiled UTGB war",
+      gwtVersion := gwtVer,
+      gwtModules := List("org.utgenome.gwt.utgb.UTGBEntry"),
+      gwtForceCompile := true,
+      gwtTemporaryPath <<= (target) { (target) => target / "gwt" },
+      com.github.siasia.PluginKeys.webappResources in Compile <+= (target) { (target) => target / "gwt" / "utgb" },
+      packageBin in Compile <<= (packageBin in Compile).dependsOn(gwtCompile),
+      javaOptions in Gwt in Compile ++= Seq(
+        "-localWorkers", cpuToUse.toString, "-strict"
+      ),
+      libraryDependencies ++= jetty
+    )
+  ) dependsOn(core % dependentScope)
+
 
   private val dependentScope = "test->test;compile->compile"
 
@@ -164,6 +181,7 @@ object Build extends sbt.Build {
     id = "utgb-shell",
     base = file("utgb-shell"),
     settings = buildSettings ++ Seq(
+      description := "UTGB command-line tools",
       libraryDependencies ++= Seq(
         "org.apache.tomcat.embed" % "tomcat-embed-core" % tomcatVersion,
         "org.apache.tomcat.embed" % "tomcat-embed-jasper" % tomcatVersion,
@@ -174,7 +192,6 @@ object Build extends sbt.Build {
           ),
         "org.apache.tomcat" % "tomcat-el-api" % tomcatVersion,
         "org.apache.tomcat" % "tomcat-juli" % tomcatVersion,
-        "org.xerial" % "sqlite-jdbc" % "3.7.2",
         "org.apache.maven" % "maven-embedder" % "3.0.3",
         "org.sonatype.aether" % "aether-connector-wagon" % "1.11",
         "org.apache.maven.wagon" % "wagon-http" % "1.0-beta-7",

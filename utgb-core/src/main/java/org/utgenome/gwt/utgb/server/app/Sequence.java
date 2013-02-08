@@ -24,7 +24,7 @@ import org.utgenome.graphics.GenomeCanvas;
 import org.utgenome.graphics.GenomeWindow;
 import org.utgenome.gwt.utgb.client.bio.ChrLoc;
 import org.utgenome.gwt.utgb.server.WebTrackBase;
-import org.utgenome.gwt.utgb.server.util.graphic.GraphicUtil;
+import org.utgenome.graphics.GraphicUtil;
 import org.xerial.db.sql.BeanResultHandler;
 import org.xerial.json.JSONWriter;
 import org.xerial.util.log.Logger;

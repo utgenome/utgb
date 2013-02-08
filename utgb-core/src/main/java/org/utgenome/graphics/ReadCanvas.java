@@ -22,13 +22,17 @@
 //--------------------------------------
 package org.utgenome.graphics;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
-import java.awt.LinearGradientPaint;
-import java.awt.RenderingHints;
+import org.utgenome.gwt.utgb.client.UTGBClientException;
+import org.utgenome.gwt.utgb.client.bio.*;
+import org.utgenome.gwt.utgb.client.canvas.IntervalLayout;
+import org.utgenome.gwt.utgb.client.canvas.IntervalLayout.LocusLayout;
+import org.utgenome.gwt.utgb.client.canvas.PrioritySearchTree.Visitor;
+import org.utgenome.gwt.utgb.client.track.TrackWindow;
+import org.xerial.lens.SilkLens;
+import org.xerial.util.log.Logger;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
@@ -39,29 +43,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-
-import javax.imageio.ImageIO;
-
-import org.utgenome.gwt.utgb.client.UTGBClientException;
-import org.utgenome.gwt.utgb.client.bio.CDS;
-import org.utgenome.gwt.utgb.client.bio.CIGAR;
-import org.utgenome.gwt.utgb.client.bio.Exon;
-import org.utgenome.gwt.utgb.client.bio.Gap;
-import org.utgenome.gwt.utgb.client.bio.Gene;
-import org.utgenome.gwt.utgb.client.bio.Interval;
-import org.utgenome.gwt.utgb.client.bio.GenomeRange;
-import org.utgenome.gwt.utgb.client.bio.GenomeRangeVisitorBase;
-import org.utgenome.gwt.utgb.client.bio.ReferenceSequence;
-import org.utgenome.gwt.utgb.client.bio.SAMReadLight;
-import org.utgenome.gwt.utgb.client.bio.SAMReadPair;
-import org.utgenome.gwt.utgb.client.bio.SAMReadPairFragment;
-import org.utgenome.gwt.utgb.client.canvas.IntervalLayout;
-import org.utgenome.gwt.utgb.client.canvas.IntervalLayout.LocusLayout;
-import org.utgenome.gwt.utgb.client.canvas.PrioritySearchTree.Visitor;
-import org.utgenome.gwt.utgb.client.track.TrackWindow;
-import org.utgenome.gwt.utgb.server.util.graphic.GraphicUtil;
-import org.xerial.lens.SilkLens;
-import org.xerial.util.log.Logger;
 
 /**
  * For generating {@link BufferedImage} instance of a read layout
