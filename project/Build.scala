@@ -166,7 +166,7 @@ object Build extends sbt.Build {
       com.github.siasia.PluginKeys.webappResources in Compile <+= (target) { (target) => target / "gwt" / "utgb" },
       packageBin in Compile <<= (packageBin in Compile).dependsOn(gwtCompile),
       javaOptions in Gwt in Compile ++= Seq(
-        "-localWorkers", cpuToUse.toString, "-strict"
+        "-localWorkers", cpuToUse.toString, "-strict", "-Xmx2g"
       ),
       libraryDependencies ++= jetty
     )
