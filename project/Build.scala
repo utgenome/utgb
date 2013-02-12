@@ -161,7 +161,7 @@ object Build extends sbt.Build {
       description := "Pre-compiled UTGB war",
       gwtVersion := gwtVer,
       gwtModules := List("org.utgenome.gwt.utgb.UTGBEntry"),
-      gwtForceCompile := true,
+      gwtForceCompile := false,
       gwtTemporaryPath <<= (target) { (target) => target / "gwt" },
       com.github.siasia.PluginKeys.webappResources in Compile <+= (target) { (target) => target / "gwt" / "utgb" },
       packageBin in Compile <<= (packageBin in Compile).dependsOn(gwtCompile),
