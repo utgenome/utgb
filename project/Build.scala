@@ -98,7 +98,7 @@ object Build extends sbt.Build {
     )
     val servletLib = Seq("javax.servlet" % "servlet-api" % "2.5" % "provided")
 
-    val gwtVer = "2.4.0"
+    val gwtVer = "2.5.0"
     val gwtLib = Seq(
       "com.google.gwt" % "gwt-user" % gwtVer % "provided",
       "com.google.gwt" % "gwt-dev" % gwtVer % "provided",
