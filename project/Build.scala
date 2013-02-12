@@ -116,11 +116,11 @@ object Build extends sbt.Build {
       packExclude := Seq("utgb"),
       publish := {},
       publishLocal := {},
-      libraryDependencies ++= jetty ++ Seq(
-        "com.novocode" % "junit-interface" % "0.10-M1" % "test"
-      )
-    ) ++ container.deploy("/utgb-core" -> core.project)
-  ) aggregate(core, shell)
+      libraryDependencies ++= jetty
+    ) ++ container.deploy(
+      "/" -> web.project
+    )
+  ) aggregate(core, shell, web)
 
   private val cpuToUse : Int = {
     math.max((java.lang.Runtime.getRuntime.availableProcessors() * 0.9).toInt, 1)
