@@ -1,6 +1,10 @@
 import com.github.siasia.Container
+import com.github.siasia.Container
+import com.github.siasia.PluginKeys._
 import sbt._
+import sbt.ExclusionRule
 import sbt.Keys._
+import scala.Some
 import xerial.sbt.Pack._
 import net.thunderklaus.GwtPlugin._
 
@@ -26,6 +30,7 @@ object Build extends sbt.Build {
     }
   }
 
+  lazy val defaultJavacOptions = Seq("-encoding", "UTF-8", "-source", "1.6")
 
   lazy val buildSettings = Defaults.defaultSettings ++ Seq(
     organization := "org.utgenome",
@@ -33,7 +38,8 @@ object Build extends sbt.Build {
     organizationHomepage := Some(new URL("http://utgenome.org/")),
     description := "University of Tokyo Genome Browser",
     scalaVersion := SCALA_VERSION,
-    javacOptions ++= Seq("-source", "1.6", "-target", "1.6", "-Xlint:unchecked", "-Xlint:deprecation", "-encoding", "UTF-8"),
+    javacOptions in Compile ++= defaultJavacOptions ++ Seq("-Xlint:unchecked", "-Xlint:deprecation", "-encoding", "UTF-8", "-target", "1.6"),
+    javacOptions in Compile in doc := defaultJavacOptions ++ Seq("-windowtitle", "utgb API", "-linkoffline", "http://docs.oracle.com/javase/6/docs/api/", "http://docs.oracle.com/javase/6/docs/api/"),
     scalacOptions ++= Seq("-encoding", "UTF-8", "-unchecked", "-deprecation", "-feature", "-target:jvm-1.6"),
     crossPaths := false,
     publishMavenStyle := true,
@@ -166,7 +172,7 @@ object Build extends sbt.Build {
       com.github.siasia.PluginKeys.webappResources in Compile <+= (target) { (target) => target / "gwt" / "utgb" },
       packageBin in Compile <<= (packageBin in Compile).dependsOn(gwtCompile),
       javaOptions in Gwt in Compile ++= Seq(
-        "-localWorkers", cpuToUse.toString, "-strict", "-Xmx2g"
+        "-localWorkers", cpuToUse.toString, "-strict", "-Xmx3g"
       ),
       libraryDependencies ++= jetty
     )

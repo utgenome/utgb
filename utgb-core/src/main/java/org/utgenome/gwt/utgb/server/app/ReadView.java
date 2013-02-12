@@ -6,19 +6,6 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.server.app;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.utgenome.UTGBErrorCode;
 import org.utgenome.UTGBException;
 import org.utgenome.format.bed.BEDDatabase;
@@ -26,15 +13,9 @@ import org.utgenome.format.fasta.FASTADatabase;
 import org.utgenome.format.sam.SAMReader;
 import org.utgenome.graphics.GenomeWindow;
 import org.utgenome.graphics.ReadCanvas;
-import org.utgenome.gwt.utgb.client.bio.ChrLoc;
-import org.utgenome.gwt.utgb.client.bio.DASLocation;
-import org.utgenome.gwt.utgb.client.bio.DASResult;
+import org.utgenome.gwt.utgb.client.bio.*;
 import org.utgenome.gwt.utgb.client.bio.DASResult.DASFeature;
-import org.utgenome.gwt.utgb.client.bio.GenomeDB;
 import org.utgenome.gwt.utgb.client.bio.GenomeDB.DBType;
-import org.utgenome.gwt.utgb.client.bio.GenomeRange;
-import org.utgenome.gwt.utgb.client.bio.ReadCoverage;
-import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig;
 import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig.Layout;
 import org.utgenome.gwt.utgb.server.WebTrackBase;
 import org.utgenome.gwt.utgb.server.util.WebApplicationResource;
@@ -42,6 +23,18 @@ import org.xerial.silk.SilkWriter;
 import org.xerial.util.ObjectHandlerBase;
 import org.xerial.util.StopWatch;
 import org.xerial.util.log.Logger;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Web action for querying data in a specified window in a genome
