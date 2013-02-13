@@ -258,57 +258,59 @@ public class TomcatServer {
 		// host.setName("localhost");
 		// host.setAppBase(appBase);
 
-		// Hook up a host config to search for and pull in webapps.
-		HostConfig hostConfig = new HostConfig();
-		hostConfig.setUnpackWARs(true);
-		hostConfig.setDeployXML(true);
-		tomcat.getHost().addLifecycleListener(hostConfig);
+        try {
+            // Hook up a host config to search for and pull in webapps.
+            HostConfig hostConfig = new HostConfig();
+            hostConfig.setUnpackWARs(true);
+            hostConfig.setDeployXML(true);
+            tomcat.getHost().addLifecycleListener(hostConfig);
 
-		// Tell the embedded server about the connector
-		Connector conn = tomcat.getConnector();
-		conn.setProtocol("HTTP/1.1");
-		conn.setPort(configuration.getPort());
-		conn.setProperty("connectionTimeout", "20000");
-		conn.setRedirectPort(8443);
-		// conn.setEnableLookups(true);
-		tomcat.setConnector(conn);
+            // Tell the embedded server about the connector
+            Connector conn = tomcat.getConnector();
+            conn.setProtocol("HTTP/1.1");
+            conn.setPort(configuration.getPort());
+            conn.setProperty("connectionTimeout", "20000");
+            conn.setRedirectPort(8443);
+            // conn.setEnableLookups(true);
+            tomcat.setConnector(conn);
 
-		// Create a server
-		StandardServer server = (StandardServer) tomcat.getServer();
-		server.addLifecycleListener(new AprLifecycleListener());
-		server.addLifecycleListener(new JasperListener());
-		server.addLifecycleListener(new JreMemoryLeakPreventionListener());
-		server.addLifecycleListener(new GlobalResourcesLifecycleListener());
-		server.addLifecycleListener(new ThreadLocalLeakPreventionListener());
+            // Create a server
+            StandardServer server = (StandardServer) tomcat.getServer();
+            server.addLifecycleListener(new AprLifecycleListener());
+            server.addLifecycleListener(new JasperListener());
+            server.addLifecycleListener(new JreMemoryLeakPreventionListener());
+            server.addLifecycleListener(new GlobalResourcesLifecycleListener());
+            server.addLifecycleListener(new ThreadLocalLeakPreventionListener());
 
-		// load tomcat-users.xml
-		/**
-		 * <Resource name="UserDatabase" auth="Container" type="org.apache.catalina.UserDatabase"
-		 * description="User database that can be updated and saved"
-		 * factory="org.apache.catalina.users.MemoryUserDatabaseFactory" pathname="conf/tomcat-users.xml" />
-		 */
-		// ContextResource resource = new ContextResource();
-		// resource.setName("UserDatabase");
-		// resource.setAuth("Container");
-		// resource.setType("org.apache.catalina.UserDatabase");
-		// resource.setProperty(name, value)
+            // load tomcat-users.xml
+            /**
+             * <Resource name="UserDatabase" auth="Container" type="org.apache.catalina.UserDatabase"
+             * description="User database that can be updated and saved"
+             * factory="org.apache.catalina.users.MemoryUserDatabaseFactory" pathname="conf/tomcat-users.xml" />
+             */
+            // ContextResource resource = new ContextResource();
+            // resource.setName("UserDatabase");
+            // resource.setAuth("Container");
+            // resource.setType("org.apache.catalina.UserDatabase");
+            // resource.setProperty(name, value)
 
-		// server.getGlobalNamingResources().addResource(resource);
+            // server.getGlobalNamingResources().addResource(resource);
 
-		try {
-			// Prepare ajp13 connector
-			// <Connector port="8009" protocol="AJP/1.3" redirectPort="8443" />
-			org.apache.catalina.connector.Connector ajp13connector = new Connector("AJP/1.3");
-			ajp13connector.setPort(configuration.getAjp13port());
-			ajp13connector.setRedirectPort(8443);
-			// ajp13connector.setProperty("connectionTimeout", "60000");
-			// ajp13connector.setProperty("maxThreads", "200");
-			// ajp13connector.setProperty("minSpareThreadsreads", "25");
-			// ajp13connector.setProperty("maxSpareThreads", "200");
+
+            // Prepare ajp13 connector
+            // <Connector port="8009" protocol="AJP/1.3" redirectPort="8443" />
+            org.apache.catalina.connector.Connector ajp13connector = new Connector("AJP/1.3");
+            ajp13connector.setPort(configuration.getAjp13port());
+            ajp13connector.setRedirectPort(8443);
+            // ajp13connector.setProperty("connectionTimeout", "60000");
+            // ajp13connector.setProperty("maxThreads", "200");
+            // ajp13connector.setProperty("minSpareThreadsreads", "25");
+            // ajp13connector.setProperty("maxSpareThreads", "200");
 			// Add AJP13 connector
 			tomcat.getService().addConnector(ajp13connector);
 		}
 		catch (Exception e1) {
+            e1.printStackTrace();
 			throw new XerialException(XerialErrorCode.INVALID_STATE, e1);
 		}
 
