@@ -81,25 +81,31 @@ object GwtPlugin extends Plugin {
     },
 
     gwtSuperDevMode <<= (dependencyClasspath in Gwt, thisProject in Gwt,  state in Gwt, javaSource in Compile, javaOptions in Gwt,
-      gwtModules, gaeSdkPath, gwtWebappPath, streams) map {
-      (dependencyClasspath, thisProject, pstate, javaSource, javaOpts, gwtModules, gaeSdkPath, warPath, s) => {
+      gwtModules, gaeSdkPath, gwtWebappPath, streams, gwtTemporaryPath) map {
+      (dependencyClasspath, thisProject, pstate, javaSource, javaOpts, gwtModules, gaeSdkPath, warPath, s, gwtTmp) => {
         def gaeFile (path :String*) = gaeSdkPath.map(_ +: path mkString(File.separator))
         val module = gwtModule.getOrElse(gwtModules.headOption.getOrElse(error("Found no .gwt.xml files.")))
-        val cp = dependencyClasspath.map(_.data.absolutePath) ++ getDepSources(thisProject.dependencies, pstate) ++
+        val srcs = getDepSources(thisProject.dependencies, pstate)
+        val cp = dependencyClasspath.map(_.data.absolutePath) ++ srcs ++
           gaeFile("lib", "appengine-tools-api.jar").toList :+ javaSource.absolutePath
         val javaArgs = javaOpts ++ (gaeFile("lib", "agent", "appengine-agent.jar") match {
           case None => Nil
           case Some(path) => List("-javaagent:" + path)
         })
-        val gwtArgs = gaeSdkPath match {
-          case None => Nil
-          case Some(path) => List(
-            "-server", "com.google.appengine.tools.development.gwt.AppEngineLauncher")
+        def mkGwtSuperDevCmd = {
+          val b = Seq.newBuilder[String]
+          b += "java"
+          b ++= Seq("-cp", cp.mkString(File.pathSeparator))
+          b ++= javaArgs
+          b += "com.google.gwt.dev.codeserver.CodeServer"
+          b ++= srcs.flatMap(d => Seq("-src", d))
+          b ++= Seq("-workDir", gwtTmp.getAbsolutePath)
+          b += module
+          b.result.mkString(" ")
         }
-        val command = mkGwtCommand(
-          cp, javaArgs, "com.google.gwt.dev.DevMode", warPath, gwtArgs, module)
-        s.log.info("Running GWT devmode on: " + module)
-        s.log.debug("Running GWT devmode command: " + command)
+
+        val command = mkGwtSuperDevCmd
+        s.log.info("Running GWT super dev mode: " + command)
         command !
       }
     },
@@ -167,6 +173,8 @@ object GwtPlugin extends Plugin {
                            gwtArgs: Seq[String], modules: String) =
     (List("java", "-cp", cp.mkString(File.pathSeparator)) ++ javaArgs ++
      List(clazz, "-war", warPath.absolutePath) ++ gwtArgs :+ modules).mkString(" ")
+
+
 
   private def findGwtModules(srcRoot: File): Seq[String] = {
     import Path.relativeTo
