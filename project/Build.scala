@@ -163,7 +163,7 @@ object Build extends sbt.Build {
   lazy val web = Project(
     id = "utgb-web",
     base = file("utgb-web"),
-    settings = buildSettings ++ com.github.siasia.WebPlugin.webSettings ++ gwtSettings ++ Seq(
+    settings = buildSettings  ++ gwtSettings ++ Seq(
       description := "Pre-compiled UTGB war",
       gwtVersion := gwtVer,
       gwtModules := List("org.utgenome.gwt.utgb.UTGBEntry"),
@@ -172,7 +172,7 @@ object Build extends sbt.Build {
       com.github.siasia.PluginKeys.webappResources in Compile <+= (target) { (target) => target / "gwt" / "utgb" },
       packageBin in Compile <<= (packageBin in Compile).dependsOn(gwtCompile),
       javaOptions in Gwt in Compile ++= Seq(
-        "-localWorkers", cpuToUse.toString, "-strict", "-Xmx3g"
+        "-localWorkers", cpuToUse.toString, "-strict", "-Xmx4g"
       ),
       libraryDependencies ++= jetty
     )

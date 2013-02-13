@@ -17,6 +17,7 @@ object GwtPlugin extends Plugin {
   val gwtSuperDevMode = TaskKey[Unit]("gwt-super-devmode", "Runs the GWT super devmode code server")
   val gwtVersion = SettingKey[String]("gwt-version")
   val gwtTemporaryPath = SettingKey[File]("gwt-temporary-path")
+  val gwtDevTemporaryPath = SettingKey[File]("gwt-dev-temporary-path")
   val gwtWebappPath = SettingKey[File]("gwt-webapp-path")
   val gaeSdkPath = SettingKey[Option[String]]("gae-sdk-path")
 
@@ -43,6 +44,11 @@ object GwtPlugin extends Plugin {
     },
     unmanagedClasspath in Gwt <<= (unmanagedClasspath in Compile).identity,
     gwtTemporaryPath <<= (target) { (target) => target / "gwt" },
+    gwtDevTemporaryPath <<= (target) { (target) =>
+      val t = target / "gwt-dev"
+      t.mkdirs()
+      t
+    },
     gwtWebappPath <<= (target) { (target) => target / "webapp" },
     gwtVersion := "2.3.0",
     gwtForceCompile := false,
@@ -75,14 +81,19 @@ object GwtPlugin extends Plugin {
         val command = mkGwtCommand(
           cp, javaArgs, "com.google.gwt.dev.DevMode", warPath, gwtArgs, module)
         s.log.info("Running GWT devmode on: " + module)
-        s.log.debug("Running GWT devmode command: " + command)
+        s.log.info("Running GWT devmode command: " + command)
         command !
       }
     },
 
     gwtSuperDevMode <<= (dependencyClasspath in Gwt, thisProject in Gwt,  state in Gwt, javaSource in Compile, javaOptions in Gwt,
-      gwtModules, gaeSdkPath, gwtWebappPath, streams, gwtTemporaryPath) map {
-      (dependencyClasspath, thisProject, pstate, javaSource, javaOpts, gwtModules, gaeSdkPath, warPath, s, gwtTmp) => {
+      gwtModules, gaeSdkPath, gwtWebappPath, streams, gwtDevTemporaryPath) map {
+      (dependencyClasspath, thisProject, pstate, javaSource, javaOpts,  gwtModules, gaeSdkPath, warPath, s, gwtTmp) => {
+
+        val srcDirs =
+          for(d <- (Seq(javaSource.absolutePath, "utgb-web/src/main/webapp") ++ getDepSources(thisProject.dependencies, pstate)) map(new File(_)) if d.isDirectory)
+          yield d.getAbsolutePath
+        s.log.info("src dirs:" + srcDirs.mkString(", "))
         def gaeFile (path :String*) = gaeSdkPath.map(_ +: path mkString(File.separator))
         val module = gwtModule.getOrElse(gwtModules.headOption.getOrElse(error("Found no .gwt.xml files.")))
         val srcs = getDepSources(thisProject.dependencies, pstate)
@@ -92,13 +103,14 @@ object GwtPlugin extends Plugin {
           case None => Nil
           case Some(path) => List("-javaagent:" + path)
         })
+
         def mkGwtSuperDevCmd = {
           val b = Seq.newBuilder[String]
           b += "java"
           b ++= Seq("-cp", cp.mkString(File.pathSeparator))
           b ++= javaArgs
           b += "com.google.gwt.dev.codeserver.CodeServer"
-          b ++= srcs.flatMap(d => Seq("-src", d))
+          b ++= srcDirs.flatMap(Seq("-src", _))
           b ++= Seq("-workDir", gwtTmp.getAbsolutePath)
           b += module
           b.result.mkString(" ")
