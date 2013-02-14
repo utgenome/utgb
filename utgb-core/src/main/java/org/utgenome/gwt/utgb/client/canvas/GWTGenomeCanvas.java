@@ -22,38 +22,21 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.canvas;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.ImageElement;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.*;
+import com.google.gwt.widgetideas.graphics.client.Color;
+import com.google.gwt.widgetideas.graphics.client.GWTCanvas;
+import com.google.gwt.widgetideas.graphics.client.ImageLoader;
+import com.google.gwt.widgetideas.graphics.client.ImageLoader.CallBack;
 import org.utgenome.gwt.ipad.client.TouchableComposite;
-import org.utgenome.gwt.ipad.event.Touch;
-import org.utgenome.gwt.ipad.event.TouchCancelEvent;
-import org.utgenome.gwt.ipad.event.TouchCancelHandler;
-import org.utgenome.gwt.ipad.event.TouchEndEvent;
-import org.utgenome.gwt.ipad.event.TouchEndHandler;
-import org.utgenome.gwt.ipad.event.TouchMoveEvent;
-import org.utgenome.gwt.ipad.event.TouchMoveHandler;
-import org.utgenome.gwt.ipad.event.TouchStartEvent;
-import org.utgenome.gwt.ipad.event.TouchStartHandler;
+import org.utgenome.gwt.ipad.event.*;
 import org.utgenome.gwt.utgb.client.UTGBClientException;
-import org.utgenome.gwt.utgb.client.bio.CDS;
-import org.utgenome.gwt.utgb.client.bio.CIGAR;
-import org.utgenome.gwt.utgb.client.bio.Exon;
-import org.utgenome.gwt.utgb.client.bio.Gap;
-import org.utgenome.gwt.utgb.client.bio.Gene;
-import org.utgenome.gwt.utgb.client.bio.GenomeRange;
-import org.utgenome.gwt.utgb.client.bio.GenomeRangeVisitor;
-import org.utgenome.gwt.utgb.client.bio.GenomeRangeVisitorBase;
-import org.utgenome.gwt.utgb.client.bio.GraphData;
-import org.utgenome.gwt.utgb.client.bio.InfoSilkGenerator;
-import org.utgenome.gwt.utgb.client.bio.Interval;
-import org.utgenome.gwt.utgb.client.bio.Read;
-import org.utgenome.gwt.utgb.client.bio.ReadCoverage;
-import org.utgenome.gwt.utgb.client.bio.ReadList;
-import org.utgenome.gwt.utgb.client.bio.ReferenceSequence;
-import org.utgenome.gwt.utgb.client.bio.SAMReadLight;
-import org.utgenome.gwt.utgb.client.bio.SAMReadPair;
-import org.utgenome.gwt.utgb.client.bio.SAMReadPairFragment;
+import org.utgenome.gwt.utgb.client.bio.*;
 import org.utgenome.gwt.utgb.client.canvas.GWTGraphCanvas.GraphStyle;
 import org.utgenome.gwt.utgb.client.canvas.IntervalLayout.IntervalRetriever;
 import org.utgenome.gwt.utgb.client.canvas.IntervalLayout.LocusLayout;
@@ -64,22 +47,8 @@ import org.utgenome.gwt.utgb.client.ui.RoundCornerFrame;
 import org.utgenome.gwt.utgb.client.util.Optional;
 import org.utgenome.gwt.widget.client.Style;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.ImageElement;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.widgetideas.graphics.client.Color;
-import com.google.gwt.widgetideas.graphics.client.GWTCanvas;
-import com.google.gwt.widgetideas.graphics.client.ImageLoader;
-import com.google.gwt.widgetideas.graphics.client.ImageLoader.CallBack;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Browser-side graphic canvas for drawing gene objects
@@ -1171,6 +1140,8 @@ public class GWTGenomeCanvas extends TouchableComposite {
 		}
 	}
 
+    private float lineOffset = (float) (0.5f * getDevicePixelRatio());
+
 	private void layout() {
 
 		int maxOffset = intervalLayout.createLocalLayout(geneHeight);
@@ -1201,11 +1172,19 @@ public class GWTGenomeCanvas extends TouchableComposite {
 		});
 	}
 
-	@Override
+    public final native double getDevicePixelRatio()/*-{
+	    return window.devicePixelRatio;
+	  }-*/;
+
+    @Override
 	public void setPixelSize(int width, int height) {
-		canvas.setCoordSize(width, height);
-		canvas.setPixelWidth(width);
-		canvas.setPixelHeight(height);
+        double pixelRatio = getDevicePixelRatio();
+        canvas.scale(pixelRatio, pixelRatio);
+        int w = (int) (width * pixelRatio);
+        int h = (int) (height * pixelRatio);
+        canvas.setCoordSize(w, h);
+		canvas.setPixelWidth(w);
+		canvas.setPixelHeight(h);
 		Style.scaleX(canvas, 1);
 		panel.setPixelSize(width, height);
 		basePanel.setPixelSize(width, height);
@@ -1251,6 +1230,8 @@ public class GWTGenomeCanvas extends TouchableComposite {
 	public Color getCDSColor(Interval g) {
 		return getGeneColor(g);
 	}
+
+
 
 	public void draw(Gene gene, List<Exon> exonList, CDS cds, int yPosition) {
 		// assume that exonList are sorted
@@ -1306,17 +1287,19 @@ public class GWTGenomeCanvas extends TouchableComposite {
 
 	}
 
+
+
 	public void drawPadding(int x1, int x2, int y, Color c, boolean drawShadow) {
 
 		canvas.saveContext();
 		canvas.setFillStyle(c);
 		canvas.setStrokeStyle(c);
 		canvas.setLineWidth(0.5f);
-		float yPos = y + (geneHeight / 2) + 0.5f;
+		float yPos = y + (geneHeight / 2) + lineOffset;
 
 		canvas.beginPath();
-		canvas.moveTo(drawPosition(x1) + 0.5f, yPos);
-		canvas.lineTo(drawPosition(x2) - 0.5f, yPos);
+		canvas.moveTo(drawPosition(x1) + lineOffset, yPos);
+		canvas.lineTo(drawPosition(x2) - lineOffset, yPos);
 		canvas.stroke();
 
 		canvas.restoreContext();
@@ -1370,7 +1353,9 @@ public class GWTGenomeCanvas extends TouchableComposite {
 
 	public void drawGeneRect(int x1, int x2, int y, Color c, boolean drawShadow) {
 
-		float boxWidth = x2 - x1 - 0.5f;
+
+
+		float boxWidth = x2 - x1 - lineOffset;
 		if (boxWidth <= 0)
 			boxWidth = 1f;
 
@@ -1398,9 +1383,9 @@ public class GWTGenomeCanvas extends TouchableComposite {
 			double shadowStart = drawPosition(reverse ? x2 : x1);
 			canvas.translate(shadowStart, y);
 			canvas.beginPath();
-			canvas.moveTo(1.5f, geneHeight + 0.5f);
-			canvas.lineTo(boxWidth + 0.5f, geneHeight + 0.5f);
-			canvas.lineTo(boxWidth + 0.5f, 0.5f);
+			canvas.moveTo(1f + lineOffset, geneHeight + lineOffset);
+			canvas.lineTo(boxWidth + lineOffset, geneHeight + lineOffset);
+			canvas.lineTo(boxWidth + lineOffset, lineOffset);
 			canvas.stroke();
 			canvas.restoreContext();
 		}
