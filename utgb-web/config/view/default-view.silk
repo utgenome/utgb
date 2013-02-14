@@ -1,0 +1,52 @@
+%silk(version:1.0)
+-track group
+  -id: 1
+  -class: org.utgenome.gwt.utgb.client.track.TrackGroup
+  -coordinate
+    -species: human
+    -ref: hg17
+    -chr: chr1
+    -start: 10000
+    -end: 100000
+-track
+  -name: UTGB Navigator
+  -height: 41
+  -pack: true
+  -class: NavigatorTrack
+  -property
+    -sequenceList: [{"species":"human", "revision":["hg18","hg17"]},{"species":"mouse", "revision":["mm9"]},{"species":"drosophila", "revision":["dm3"]},{"species":"c.elegance", "revision":["ce6"]}]
+-track
+  -name: Keyword Search
+  -height: 0
+  -pack: true
+  -class: KeywordSearchTrack
+  -property
+    -keyword.examples: ["Scaffold number (e.g. scaffold123)","GenBank accession number (e.g. BJ013363)","UniGene cluster identifier (e.g. Ola.5710)","Clone number (e.g. MF01SSA159G06)"]
+    -species.scope: any
+-track
+  -name: Sequence Overview
+  -height: 14
+  -pack: true
+  -class: SequenceRulerTrack
+-track
+  -name: Ruler
+  -height: 14
+  -pack: true
+  -class: RulerTrack
+-track
+  -name: BED Track
+  -pack: true
+  -class: BEDTrack
+  -property
+    -trackBaseURL: utgb-core/BEDViewer
+    -fileName: db/sample.bed
+    -type: image
+-track
+  -name: BED Canvas
+  -pack: true
+  -height: 0
+  -class: ReadTrack
+  -property
+    -path: db/sample.bed
+    -onclick.action: info
+    -onclick.url: http://www.ncbi.nlm.nih.gov/entrez/viewer.fcgi?val=%q
