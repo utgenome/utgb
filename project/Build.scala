@@ -102,7 +102,7 @@ object Build extends sbt.Build {
     val gwtLib = Seq(
       "com.google.gwt" % "gwt-user" % gwtVer % "provided",
       "com.google.gwt" % "gwt-dev" % gwtVer % "provided",
-      "com.google.gwt" % "gwt-servlet" % gwtVer % "provided",
+      "com.google.gwt" % "gwt-servlet" % gwtVer % "runtime",
       "org.utgenome.thirdparty" % "gwt-incubator" % "20101117-r1766",
       "com.google.gwt.gears" % "gwt-google-apis" % "1.0.0",
       "com.allen_sauer.gwt" % "gwt-dnd" % "3.1.2"
@@ -145,7 +145,8 @@ object Build extends sbt.Build {
         "org.scalatest" %% "scalatest" % "2.0.M5b" % "test",
         "org.xerial.snappy" % "snappy-java" % "1.0.5-M3",
         "org.apache.velocity" % "velocity" % "1.7",
-        "org.codehaus.plexus" % "plexus-archiver" % "2.2",
+        //"org.codehaus.plexus" % "plexus-archiver" % "2.2",
+        "org.codehaus.plexus" % "plexus-archiver" % "2.0.1",
         "org.codehaus.plexus" % "plexus-classworlds" % "2.4",
         "org.utgenome.thirdparty" % "sam" % "1.56",
         "org.utgenome.thirdparty" % "picard" % "1.56",
@@ -163,7 +164,7 @@ object Build extends sbt.Build {
   lazy val web = Project(
     id = "utgb-web",
     base = file("utgb-web"),
-    settings = buildSettings  ++ gwtSettings ++ Seq(
+    settings = buildSettings  ++ com.github.siasia.WebappPlugin.webappSettings ++ gwtSettings ++ Seq(
       description := "Pre-compiled UTGB war",
       gwtVersion := gwtVer,
       gwtModules := List("org.utgenome.gwt.utgb.UTGBEntry"),
@@ -172,7 +173,10 @@ object Build extends sbt.Build {
       com.github.siasia.PluginKeys.webappResources in Compile <+= (target) { (target) => target / "gwt" / "utgb" },
       packageBin in Compile <<= (packageBin in Compile).dependsOn(gwtCompile),
       javaOptions in Gwt in Compile ++= Seq(
-        "-localWorkers", cpuToUse.toString, "-strict", "-Xmx4g"
+        "-localWorkers", cpuToUse.toString, "-strict", "-Xmx3g"
+      ),
+      javaOptions in Gwt ++= Seq(
+        "-Xmx1g", "-Dloglevel=debug"
       ),
       libraryDependencies ++= jetty
     )
@@ -198,6 +202,7 @@ object Build extends sbt.Build {
           ),
         "org.apache.tomcat" % "tomcat-el-api" % tomcatVersion,
         "org.apache.tomcat" % "tomcat-juli" % tomcatVersion,
+        "org.codehaus.plexus" % "plexus-classworlds" % "2.4",
         "org.apache.maven" % "maven-embedder" % "3.0.3",
         "org.sonatype.aether" % "aether-connector-wagon" % "1.11",
         "org.apache.maven.wagon" % "wagon-http" % "1.0-beta-7",

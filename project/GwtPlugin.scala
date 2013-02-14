@@ -53,12 +53,17 @@ object GwtPlugin extends Plugin {
     gwtVersion := "2.3.0",
     gwtForceCompile := false,
     gaeSdkPath := None,
-    libraryDependencies <++= gwtVersion(gwtVersion => Seq(
-      "com.google.gwt" % "gwt-user" % gwtVersion % "provided",
-      "com.google.gwt" % "gwt-dev" % gwtVersion % "provided",
-      "com.google.gwt" % "gwt-codeserver" % gwtVersion % "provided",
-      "javax.validation" % "validation-api" % "1.0.0.GA" % "provided" withSources (),
-      "com.google.gwt" % "gwt-servlet" % gwtVersion)),
+    libraryDependencies <++= gwtVersion{ gwtVersion =>
+      val s = Seq(
+        "com.google.gwt" % "gwt-user" % gwtVersion % "provided",
+        "com.google.gwt" % "gwt-dev" % gwtVersion % "provided",
+        "javax.validation" % "validation-api" % "1.0.0.GA" % "provided" withSources (),
+        "com.google.gwt" % "gwt-servlet" % gwtVersion)
+      if(gwtVersion.startsWith("2.5."))
+        s :+ "com.google.gwt" % "gwt-codeserver" % gwtVersion % "provided"
+      else
+        s
+    },
     gwtModules <<= (javaSource in Compile, resourceDirectory in Compile) map {
       (javaSource, resources) => findGwtModules(javaSource) ++ findGwtModules(resources)
     },
@@ -81,7 +86,7 @@ object GwtPlugin extends Plugin {
         val command = mkGwtCommand(
           cp, javaArgs, "com.google.gwt.dev.DevMode", warPath, gwtArgs, module)
         s.log.info("Running GWT devmode on: " + module)
-        s.log.info("Running GWT devmode command: " + command)
+        s.log.debug("Running GWT devmode command: " + command)
         command !
       }
     },

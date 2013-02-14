@@ -60,7 +60,7 @@ public class Server extends UTGBShellCommand {
 		// copy resources
 		Properties prop = new Properties();
 		prop.setProperty("gwt.module", option.gwtModule);
-		//maven("war:exploded", prop);
+		maven("war:exploded", prop);
 
 		UTGBConfig config = loadUTGBConfig();
 		String projectName = config.projectName;
