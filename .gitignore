@@ -2,6 +2,10 @@
 *.log
 *~
 
+# gwt
+utgb-web/war/WEB-INF/deploy
+utgb-web/war/utgb
+
 # Eclipse project files
 .classpath
 .project

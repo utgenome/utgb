@@ -440,9 +440,18 @@ public class RequestDispatcher implements Filter {
 			return false;
 
 		// search the resource
-		File resourceFile = new File("src/main/webapp/", requestURI);
-		if (!resourceFile.exists())
-			return false;
+        File resourceFile;
+        try {
+            resourceFile = new File(new File(UTGBMaster.getProjectRootFolder(), "src/main/webapp"), requestURI);
+            if (!resourceFile.exists()) {
+                //_logger.debug("resource file: " + resourceFile +" is not found");
+                return false;
+            }
+        }
+        catch(UTGBException e) {
+            _logger.error(e);
+            return false;
+        }
 
 		// Get the MIME type.
 		String mimeType = mimeTypes.get(getExtension(requestURI));

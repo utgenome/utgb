@@ -49,7 +49,7 @@ object GwtPlugin extends Plugin {
       t.mkdirs()
       t
     },
-    gwtWebappPath <<= (target) { (target) => target / "webapp" },
+    gwtWebappPath <<= (baseDirectory) { (bd) => bd / "war" },
     gwtVersion := "2.3.0",
     gwtForceCompile := false,
     gaeSdkPath := None,

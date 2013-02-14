@@ -177,7 +177,7 @@ object Build extends sbt.Build {
         "-localWorkers", cpuToUse.toString, "-strict", "-Xmx3g"
       ),
       javaOptions in Gwt ++= Seq(
-        "-Xmx1g", "-Dloglevel=debug"
+        "-Xmx1g", "-Dloglevel=debug", "-Dgwt-hosted-mode=true"
       ),
       libraryDependencies ++= jetty
     )
