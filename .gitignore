@@ -5,6 +5,7 @@
 # gwt
 utgb-web/war/WEB-INF/deploy
 utgb-web/war/utgb
+gwt-unitCache
 
 # Eclipse project files
 .classpath

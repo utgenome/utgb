@@ -125,7 +125,7 @@ public class ReadDisplayStyle {
 
 	public Color getSAMReadColor(SAMReadLight r) {
 		if (r.isPairedRead()) {
-			if (r.isMappedInProperPair())
+			if (!showStrand || r.isMappedInProperPair())
 				return getReadColor(r);
 			else
 				return ColorUtil.toColor(r.isSense() ? WEIRED_READ_COLOR_F : WEIRED_READ_COLOR_R);
