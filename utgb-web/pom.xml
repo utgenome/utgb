@@ -6,7 +6,7 @@
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
   <name>utgb-web</name>
-  <description>utgb-core created by UTGB Toolkit</description>
+  <description>UTGB web interface</description>
 
   <issueManagement>
     <system>Google Code</system>
