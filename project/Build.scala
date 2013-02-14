@@ -32,7 +32,8 @@ object Build extends sbt.Build {
 
   lazy val defaultJavacOptions = Seq("-encoding", "UTF-8", "-source", "1.6")
 
-  lazy val buildSettings = Defaults.defaultSettings ++ Seq(
+  lazy val buildSettings = Defaults.defaultSettings ++ net.virtualvoid.sbt.graph.Plugin.graphSettings ++
+    Seq(
     organization := "org.utgenome",
     organizationName := "utgenome.org",
     organizationHomepage := Some(new URL("http://utgenome.org/")),
@@ -98,11 +99,11 @@ object Build extends sbt.Build {
     )
     val servletLib = Seq("javax.servlet" % "servlet-api" % "2.5" % "provided")
 
-    val gwtVer = "2.4.0"
+    val gwtVer = "2.5.0"
     val gwtLib = Seq(
       "com.google.gwt" % "gwt-user" % gwtVer % "provided",
       "com.google.gwt" % "gwt-dev" % gwtVer % "provided",
-      "com.google.gwt" % "gwt-servlet" % gwtVer % "provided",
+      "com.google.gwt" % "gwt-servlet" % gwtVer % "runtime",
       "org.utgenome.thirdparty" % "gwt-incubator" % "20101117-r1766",
       "com.google.gwt.gears" % "gwt-google-apis" % "1.0.0",
       "com.allen_sauer.gwt" % "gwt-dnd" % "3.1.2"
@@ -145,8 +146,9 @@ object Build extends sbt.Build {
         "org.scalatest" %% "scalatest" % "2.0.M5b" % "test",
         "org.xerial.snappy" % "snappy-java" % "1.0.5-M3",
         "org.apache.velocity" % "velocity" % "1.7",
-        "org.codehaus.plexus" % "plexus-archiver" % "2.2",
-        "org.codehaus.plexus" % "plexus-classworlds" % "2.4",
+        //"org.codehaus.plexus" % "plexus-archiver" % "1.2",
+        "org.codehaus.plexus" % "plexus-utils" % "2.0.6" force(),
+        //"org.codehaus.plexus" % "plexus-classworlds" % "2.4",
         "org.utgenome.thirdparty" % "sam" % "1.56",
         "org.utgenome.thirdparty" % "picard" % "1.56",
         "org.xerial" % "sqlite-jdbc" % "3.7.2",
@@ -163,7 +165,7 @@ object Build extends sbt.Build {
   lazy val web = Project(
     id = "utgb-web",
     base = file("utgb-web"),
-    settings = buildSettings ++ com.github.siasia.WebPlugin.webSettings ++ gwtSettings ++ Seq(
+    settings = buildSettings  ++ com.github.siasia.WebappPlugin.webappSettings ++ gwtSettings ++ Seq(
       description := "Pre-compiled UTGB war",
       gwtVersion := gwtVer,
       gwtModules := List("org.utgenome.gwt.utgb.UTGBEntry"),
@@ -173,6 +175,9 @@ object Build extends sbt.Build {
       packageBin in Compile <<= (packageBin in Compile).dependsOn(gwtCompile),
       javaOptions in Gwt in Compile ++= Seq(
         "-localWorkers", cpuToUse.toString, "-strict", "-Xmx3g"
+      ),
+      javaOptions in Gwt ++= Seq(
+        "-Xmx1g", "-Dloglevel=debug"
       ),
       libraryDependencies ++= jetty
     )
@@ -198,9 +203,10 @@ object Build extends sbt.Build {
           ),
         "org.apache.tomcat" % "tomcat-el-api" % tomcatVersion,
         "org.apache.tomcat" % "tomcat-juli" % tomcatVersion,
-        "org.apache.maven" % "maven-embedder" % "3.0.3",
-        "org.sonatype.aether" % "aether-connector-wagon" % "1.11",
-        "org.apache.maven.wagon" % "wagon-http" % "1.0-beta-7",
+        "org.codehaus.plexus" % "plexus-classworlds" % "2.4",
+        "org.apache.maven" % "maven-embedder" % "3.0.4",
+        //"org.sonatype.aether" % "aether-connector-wagon" % "1.11",
+        //"org.apache.maven.wagon" % "wagon-http" % "1.0-beta-7",
         "org.eclipse.jdt.core.compiler" % "ecj" % "3.5.1"
       )
     )

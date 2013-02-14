@@ -24,17 +24,13 @@
 //--------------------------------------
 package org.utgenome.shell;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Properties;
-import java.util.TreeMap;
-
 import org.utgenome.config.UTGBConfig;
 import org.xerial.util.FileUtil;
 import org.xerial.util.log.Logger;
+
+import java.io.*;
+import java.util.Properties;
+import java.util.TreeMap;
 
 /**
  * A UTGB sub command for starting up a UTGB portable server
@@ -152,6 +148,7 @@ public class Server extends UTGBShellCommand {
 				}
 				catch (Exception e) {
 					_logger.error(e);
+
 				}
 
 			}
