@@ -24,25 +24,18 @@
 //--------------------------------------
 package org.utgenome.shell;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-
 import org.utgenome.shell.tomcat.TomcatServer;
 import org.utgenome.shell.tomcat.TomcatServerConfiguration;
 import org.xerial.core.XerialException;
 import org.xerial.util.log.Logger;
 import org.xerial.util.opt.OptionParser;
 import org.xerial.util.opt.OptionParserException;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.concurrent.*;
 
 /**
  * The stand-alone UTGB server launcher
@@ -167,6 +160,7 @@ public class UTGBPortable implements TomcatServerLauncher {
 		}
 		catch (Exception e) {
 			_logger.error(e);
+            e.printStackTrace();
 		}
 
 	}
@@ -243,6 +237,7 @@ public class UTGBPortable implements TomcatServerLauncher {
 			}
 			catch (Exception e) {
 				_logger.error(e);
+                e.printStackTrace();
 				serverStatus = ServerStatus.ERROR;
 				if (!config.useGUI) {
 					threadPool.shutdownNow();
