@@ -22,8 +22,9 @@ MVN=mvn $(MVN_OPT)
 
 
 install:
-	$(MVN) install -Dmaven.test.skip=true
-	cd utgb-shell; $(MAKE) PREFIX="$(PREFIX)" MVN_OPTS="-Dmaven.test.skip=true" install 
+	bin/sbt pack && cd target/pack && $(MAKE) install
+#	$(MVN) install -Dmaven.test.skip=true
+#	cd utgb-shell; $(MAKE) PREFIX="$(PREFIX)" MVN_OPTS="-Dmaven.test.skip=true" install 
 
 test: install
 	$(MVN) test
