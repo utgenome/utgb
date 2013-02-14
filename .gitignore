@@ -2,6 +2,11 @@
 *.log
 *~
 
+# Eclipse project files
+.classpath
+.project
+.settings
+
 # sbt specific
 bin/.lib
 dist/*

@@ -13,3 +13,4 @@ resolvers += "GWT plugin repo" at "http://thunderklaus.github.com/maven"
 libraryDependencies += "com.github.siasia" % "xsbt-web-plugin_2.9.2" % "0.12.0-0.2.11.1"
 
 
+addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.7.0")

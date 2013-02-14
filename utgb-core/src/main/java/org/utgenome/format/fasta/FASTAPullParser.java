@@ -24,23 +24,16 @@
 //--------------------------------------
 package org.utgenome.format.fasta;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.LinkedList;
-import java.util.zip.GZIPInputStream;
-
 import org.utgenome.UTGBErrorCode;
 import org.utgenome.UTGBException;
 import org.xerial.util.FileType;
 import org.xerial.util.log.Logger;
-import org.codehaus.plexus.archiver.tar.TarInputStream;
-import org.codehaus.plexus.archiver.tar.TarEntry;
+
+import java.io.*;
+import java.util.LinkedList;
+import java.util.zip.GZIPInputStream;
+//import org.codehaus.plexus.archiver.tar.TarInputStream;
+//import org.codehaus.plexus.archiver.tar.TarEntry;
 
 /**
  * A pull parser for FASTA format files
@@ -88,13 +81,13 @@ public class FASTAPullParser {
 		fastaReader = new DefaultFASTAReader(new BufferedReader(reader));
 	}
 
-	public static FASTAPullParser newTARFileReader(InputStream tarFileInput) throws IOException {
-		return new FASTAPullParser(new TarFASTAReader(new BufferedInputStream(tarFileInput, DEFAULT_BUFFER_SIZE), DEFAULT_BUFFER_SIZE));
-	}
-
-	public static FASTAPullParser newTARGZFileReader(InputStream targzInput) throws IOException {
-		return new FASTAPullParser(new TarFASTAReader(new GZIPInputStream(new BufferedInputStream(targzInput)), DEFAULT_BUFFER_SIZE));
-	}
+//	public static FASTAPullParser newTARFileReader(InputStream tarFileInput) throws IOException {
+//		return new FASTAPullParser(new TarFASTAReader(new BufferedInputStream(tarFileInput, DEFAULT_BUFFER_SIZE), DEFAULT_BUFFER_SIZE));
+//	}
+//
+//	public static FASTAPullParser newTARGZFileReader(InputStream targzInput) throws IOException {
+//		return new FASTAPullParser(new TarFASTAReader(new GZIPInputStream(new BufferedInputStream(targzInput)), DEFAULT_BUFFER_SIZE));
+//	}
 
 	public static FASTAPullParser newGZIPFileReader(InputStream gzInput) throws IOException {
 		return new FASTAPullParser(new DefaultFASTAReader(new GZIPInputStream(new BufferedInputStream(gzInput)), DEFAULT_BUFFER_SIZE));
@@ -123,12 +116,12 @@ public class FASTAPullParser {
 
 		FileType fileType = FileType.getFileType(fastaFile);
 		switch (fileType) {
-		case TAR:
-			fastaReader = new TarFASTAReader(new BufferedInputStream(in, BUFFER_SIZE), BUFFER_SIZE);
-			break;
-		case TAR_GZ:
-			fastaReader = new TarFASTAReader(new GZIPInputStream(new BufferedInputStream(in)), BUFFER_SIZE);
-			break;
+//		case TAR:
+//			fastaReader = new TarFASTAReader(new BufferedInputStream(in, BUFFER_SIZE), BUFFER_SIZE);
+//			break;
+//		case TAR_GZ:
+//			fastaReader = new TarFASTAReader(new GZIPInputStream(new BufferedInputStream(in)), BUFFER_SIZE);
+//			break;
 		case GZIP:
 			fastaReader = new DefaultFASTAReader(new GZIPInputStream(new BufferedInputStream(in)), BUFFER_SIZE);
 			break;
@@ -167,55 +160,55 @@ public class FASTAPullParser {
 		}
 	}
 
-	private static class TarFASTAReader implements FASTAReader {
-
-		TarInputStream tarIn;
-		BufferedReader reader = null;
-		int bufferSize;
-
-		public TarFASTAReader(InputStream in, int bufferSize) throws IOException {
-			this.tarIn = new TarInputStream(in);
-			this.bufferSize = bufferSize;
-		}
-
-		public String nextLine() throws IOException {
-
-			if (reader != null) {
-				String line = reader.readLine();
-				if (line == null) {
-					reader = null;
-					return nextLine();
-				}
-				else
-					return line;
-			}
-
-			while (true) {
-				TarEntry currentEntry = tarIn.getNextEntry();
-				if (currentEntry == null)
-					return null;
-
-				if (currentEntry.isDirectory()) {
-					continue;
-				}
-
-				FileType fileType = FileType.getFileType(currentEntry.getName());
-				if (fileType != FileType.FASTA)
-					continue;
-
-				reader = new BufferedReader(new InputStreamReader(tarIn), bufferSize);
-				break;
-			}
-
-			return nextLine();
-		}
-
-		public void close() throws IOException {
-			if (reader != null)
-				reader.close();
-		}
-
-	}
+//	private static class TarFASTAReader implements FASTAReader {
+//
+//		TarInputStream tarIn;
+//		BufferedReader reader = null;
+//		int bufferSize;
+//
+//		public TarFASTAReader(InputStream in, int bufferSize) throws IOException {
+//			this.tarIn = new TarInputStream(in);
+//			this.bufferSize = bufferSize;
+//		}
+//
+//		public String nextLine() throws IOException {
+//
+//			if (reader != null) {
+//				String line = reader.readLine();
+//				if (line == null) {
+//					reader = null;
+//					return nextLine();
+//				}
+//				else
+//					return line;
+//			}
+//
+//			while (true) {
+//				TarEntry currentEntry = tarIn.getNextEntry();
+//				if (currentEntry == null)
+//					return null;
+//
+//				if (currentEntry.isDirectory()) {
+//					continue;
+//				}
+//
+//				FileType fileType = FileType.getFileType(currentEntry.getName());
+//				if (fileType != FileType.FASTA)
+//					continue;
+//
+//				reader = new BufferedReader(new InputStreamReader(tarIn), bufferSize);
+//				break;
+//			}
+//
+//			return nextLine();
+//		}
+//
+//		public void close() throws IOException {
+//			if (reader != null)
+//				reader.close();
+//		}
+//
+//	}
 
 	private boolean hasStackedToken() {
 		return !tokenStack.isEmpty();
@@ -245,8 +238,6 @@ public class FASTAPullParser {
 	 * read the next fasta sequence;
 	 * 
 	 * @return the next fasta sequence, or null when there is no more sequence to read.
-	 * @throws InvalidFormatException
-	 *             when the input fasta data format is invalid
 	 * @throws IOException
 	 */
 	public FASTASequence nextSequence() throws UTGBException, IOException {

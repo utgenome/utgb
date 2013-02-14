@@ -32,7 +32,8 @@ object Build extends sbt.Build {
 
   lazy val defaultJavacOptions = Seq("-encoding", "UTF-8", "-source", "1.6")
 
-  lazy val buildSettings = Defaults.defaultSettings ++ Seq(
+  lazy val buildSettings = Defaults.defaultSettings ++ net.virtualvoid.sbt.graph.Plugin.graphSettings ++
+    Seq(
     organization := "org.utgenome",
     organizationName := "utgenome.org",
     organizationHomepage := Some(new URL("http://utgenome.org/")),
@@ -145,9 +146,9 @@ object Build extends sbt.Build {
         "org.scalatest" %% "scalatest" % "2.0.M5b" % "test",
         "org.xerial.snappy" % "snappy-java" % "1.0.5-M3",
         "org.apache.velocity" % "velocity" % "1.7",
-        //"org.codehaus.plexus" % "plexus-archiver" % "2.2",
-        "org.codehaus.plexus" % "plexus-archiver" % "2.0.1",
-        "org.codehaus.plexus" % "plexus-classworlds" % "2.4",
+        //"org.codehaus.plexus" % "plexus-archiver" % "1.2",
+        "org.codehaus.plexus" % "plexus-utils" % "2.0.6" force(),
+        //"org.codehaus.plexus" % "plexus-classworlds" % "2.4",
         "org.utgenome.thirdparty" % "sam" % "1.56",
         "org.utgenome.thirdparty" % "picard" % "1.56",
         "org.xerial" % "sqlite-jdbc" % "3.7.2",
@@ -203,9 +204,9 @@ object Build extends sbt.Build {
         "org.apache.tomcat" % "tomcat-el-api" % tomcatVersion,
         "org.apache.tomcat" % "tomcat-juli" % tomcatVersion,
         "org.codehaus.plexus" % "plexus-classworlds" % "2.4",
-        "org.apache.maven" % "maven-embedder" % "3.0.3",
-        "org.sonatype.aether" % "aether-connector-wagon" % "1.11",
-        "org.apache.maven.wagon" % "wagon-http" % "1.0-beta-7",
+        "org.apache.maven" % "maven-embedder" % "3.0.4",
+        //"org.sonatype.aether" % "aether-connector-wagon" % "1.11",
+        //"org.apache.maven.wagon" % "wagon-http" % "1.0-beta-7",
         "org.eclipse.jdt.core.compiler" % "ecj" % "3.5.1"
       )
     )
