@@ -148,35 +148,11 @@
       </plugin>
 
 
-	
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <version>2.0</version>
         <executions>
-          
-          <!-- Copy UTGB Themes -->
-          <execution>
-            <id>unpack-theme</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>unpack</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.utgenome.theme</groupId>
-                  <artifactId>theme-default</artifactId>
-                  <version>${utgb.version}</version>
-                  <type>jar</type>
-                </artifactItem>
-              </artifactItems>
-              <overWriteIfNewer>false</overWriteIfNewer>
-              <outputDirectory>${basedir}/src/main/webapp/theme</outputDirectory>
-            </configuration>
-          </execution>
-    	  
-    	  <!-- copy SQLite JDBC jar file to the root project -->     
           <execution>
             <id>copy-sqlite</id>
             <phase>generate-sources</phase>
