@@ -1173,12 +1173,18 @@ public class GWTGenomeCanvas extends TouchableComposite {
 	}
 
     public final native double getDevicePixelRatio()/*-{
-	    return window.devicePixelRatio;
+	    var x = window.devicePixelRatio;
+	    if(typeof x == "undefined")
+	      return 1;
+	    else
+	      return x;
 	  }-*/;
 
     @Override
 	public void setPixelSize(int width, int height) {
         double pixelRatio = getDevicePixelRatio();
+        if(pixelRatio <= 0.0)
+            pixelRatio = 1.0;
         canvas.scale(pixelRatio, pixelRatio);
         int w = (int) (width * pixelRatio);
         int h = (int) (height * pixelRatio);

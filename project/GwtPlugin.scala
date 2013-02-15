@@ -20,6 +20,7 @@ object GwtPlugin extends Plugin {
   val gwtDevTemporaryPath = SettingKey[File]("gwt-dev-temporary-path")
   val gwtWebappPath = SettingKey[File]("gwt-webapp-path")
   val gaeSdkPath = SettingKey[Option[String]]("gae-sdk-path")
+  val gwtBindAddress = SettingKey[Option[String]]("gwt-bind-address")
 
   var gwtModule: Option[String] = None
   val gwtSetModule = Command.single("gwt-set-module") { (state, arg) =>
@@ -49,20 +50,25 @@ object GwtPlugin extends Plugin {
       t.mkdirs()
       t
     },
+    gwtBindAddress := None,
     gwtWebappPath <<= (baseDirectory) { (bd) => bd / "war" },
     gwtVersion := "2.3.0",
     gwtForceCompile := false,
     gaeSdkPath := None,
-    libraryDependencies <++= gwtVersion{ gwtVersion =>
+    libraryDependencies <++= gwtVersion{ v =>
       val s = Seq(
-        "com.google.gwt" % "gwt-user" % gwtVersion % "provided",
-        "com.google.gwt" % "gwt-dev" % gwtVersion % "provided",
+        "com.google.gwt" % "gwt-user" % v % "provided",
+        "com.google.gwt" % "gwt-dev" % v % "provided",
         "javax.validation" % "validation-api" % "1.0.0.GA" % "provided" withSources (),
-        "com.google.gwt" % "gwt-servlet" % gwtVersion)
-      if(gwtVersion.startsWith("2.5."))
-        s :+ "com.google.gwt" % "gwt-codeserver" % gwtVersion % "provided"
-      else
-        s
+        "com.google.gwt" % "gwt-servlet" % v)
+
+      import Version._
+      v match {
+        case Version(VersionInfo(major, minor, _)) if major >=2 && minor >= 5 =>
+          s :+ "com.google.gwt" % "gwt-codeserver" % v % "provided"
+        case _ =>
+          s
+      }
     },
     gwtModules <<= (javaSource in Compile, resourceDirectory in Compile) map {
       (javaSource, resources) => findGwtModules(javaSource) ++ findGwtModules(resources)
@@ -92,8 +98,8 @@ object GwtPlugin extends Plugin {
     },
 
     gwtSuperDevMode <<= (dependencyClasspath in Gwt, thisProject in Gwt,  state in Gwt, javaSource in Compile, javaOptions in Gwt,
-      gwtModules, gaeSdkPath, gwtWebappPath, streams, gwtDevTemporaryPath) map {
-      (dependencyClasspath, thisProject, pstate, javaSource, javaOpts,  gwtModules, gaeSdkPath, warPath, s, gwtTmp) => {
+      gwtModules, gaeSdkPath, gwtWebappPath, streams, gwtDevTemporaryPath, gwtBindAddress) map {
+      (dependencyClasspath, thisProject, pstate, javaSource, javaOpts,  gwtModules, gaeSdkPath, warPath, s, gwtTmp, bindAddress) => {
 
         val srcDirs =
           for(d <- (Seq(javaSource.absolutePath, "utgb-web/src/main/webapp") ++ getDepSources(thisProject.dependencies, pstate)) map(new File(_)) if d.isDirectory)
@@ -115,6 +121,7 @@ object GwtPlugin extends Plugin {
           b ++= Seq("-cp", cp.mkString(File.pathSeparator))
           b ++= javaArgs
           b += "com.google.gwt.dev.codeserver.CodeServer"
+          bindAddress map(b ++= Seq("-bindAddress", _))
           b ++= srcDirs.flatMap(Seq("-src", _))
           b ++= Seq("-workDir", gwtTmp.getAbsolutePath)
           b += module
@@ -202,4 +209,24 @@ object GwtPlugin extends Plugin {
 
 
 
+}
+
+
+
+object Version {
+
+  case class VersionInfo(major:Int, minor:Int, remaining:String)
+
+  def unapply(s:String) : Option[VersionInfo] = {
+    try {
+      val c = s.split("\\.")
+      if(c.length >= 2)
+        Some(VersionInfo(c(0).toInt, c(1).toInt, c.takeRight(2).mkString(".")))
+      else
+        None
+    }
+    catch {
+      case e:NumberFormatException => None
+    }
+  }
 }

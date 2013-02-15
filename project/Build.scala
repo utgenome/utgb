@@ -1,6 +1,7 @@
 import com.github.siasia.Container
 import com.github.siasia.Container
 import com.github.siasia.PluginKeys._
+import java.net.InetAddress
 import sbt._
 import sbt.ExclusionRule
 import sbt.Keys._
@@ -199,6 +200,9 @@ object Build extends sbt.Build {
       gwtVersion := gwtVer,
       gwtModules := List("org.utgenome.gwt.utgb.UTGBEntry"),
       gwtForceCompile := false,
+      gwtBindAddress := {
+        if(sys.props.contains("gwt.expose")) Some(InetAddress.getLocalHost.getHostAddress) else None
+      },
       gwtTemporaryPath <<= (target) { (target) => target / "gwt" },
       com.github.siasia.PluginKeys.webappResources in Compile <+= (target) { (target) => target / "gwt" / "utgb" },
       packageBin in Compile <<= (packageBin in Compile).dependsOn(gwtCompile),
