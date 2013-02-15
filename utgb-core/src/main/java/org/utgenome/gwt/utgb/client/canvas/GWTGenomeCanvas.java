@@ -1248,11 +1248,11 @@ public class GWTGenomeCanvas extends TouchableComposite {
 		canvas.saveContext();
 		canvas.setFillStyle(getGeneColor(gene, 0.7f));
 		canvas.setStrokeStyle(getGeneColor(gene, 0.7f));
-		canvas.setLineWidth(0.5f);
+		canvas.setLineWidth(lineOffset);
 
 		// draw the arrow between exons
 		boolean isSense = gene.isSense() ? !reverse : reverse;
-		double arrowHeight = geneHeight / 2.0 + 0.5;
+		double arrowHeight = geneHeight / 2.0 + lineOffset;
 
 		for (int i = 0; i < exonList.size() - 1; i++) {
 			Exon prev = exonList.get(i);
@@ -1260,12 +1260,12 @@ public class GWTGenomeCanvas extends TouchableComposite {
 
 			int x1 = pixelPositionOnWindow(prev.getEnd());
 			int x2 = pixelPositionOnWindow(next.getStart());
-			float yAxis = yPosition + (geneHeight / 2) + 0.5f;
+			float yAxis = yPosition + (geneHeight / 2) + lineOffset;
 
 			canvas.saveContext();
 			canvas.beginPath();
-			canvas.moveTo(drawPosition(x1) + 0.5f, yAxis);
-			canvas.lineTo(drawPosition(x2) - 0.5f, yAxis);
+			canvas.moveTo(drawPosition(x1) + lineOffset, yAxis);
+			canvas.lineTo(drawPosition(x2) - lineOffset, yAxis);
 			canvas.stroke();
 			canvas.restoreContext();
 
@@ -1275,9 +1275,9 @@ public class GWTGenomeCanvas extends TouchableComposite {
 				if (!isSense)
 					canvas.rotate(Math.PI);
 				canvas.beginPath();
-				canvas.moveTo(-2.0f, -arrowHeight + 1.5f);
-				canvas.lineTo(1.5f, 0);
-				canvas.lineTo(-2.0f, arrowHeight - 1.5f);
+				canvas.moveTo(-2.0f, -arrowHeight + (1.0f + lineOffset));
+				canvas.lineTo((1.0f + lineOffset), 0);
+				canvas.lineTo(-2.0f, arrowHeight - (1.0 + lineOffset));
 				canvas.stroke();
 				canvas.restoreContext();
 			}
