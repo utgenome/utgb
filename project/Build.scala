@@ -43,7 +43,7 @@ object Build extends sbt.Build {
     javacOptions in Compile in doc := defaultJavacOptions ++ Seq("-windowtitle", "utgb API", "-linkoffline", "http://docs.oracle.com/javase/6/docs/api/", "http://docs.oracle.com/javase/6/docs/api/"),
     scalacOptions ++= Seq("-encoding", "UTF-8", "-unchecked", "-deprecation", "-feature", "-target:jvm-1.6"),
     crossPaths := false,
-    publishMavenStyle := true,
+//    publishMavenStyle := true,
     publishArtifact in Test := false,
     publishTo <<= version {
       v => releaseResolver(v)
@@ -51,8 +51,8 @@ object Build extends sbt.Build {
     pomIncludeRepository := {
       _ => false
     },
-    resolvers ++= Seq(
-      "UTGB Repository" at "http://maven.utgenome.org/repository/artifact"),
+    //resolvers ++= Seq(
+    //  "UTGB Repository" at "http://maven.utgenome.org/repository/artifact"),
     parallelExecution := true,
     parallelExecution in Test := false,
     pomExtra := {
@@ -108,6 +108,20 @@ object Build extends sbt.Build {
       "com.google.gwt.gears" % "gwt-google-apis" % "1.0.0",
       "com.allen_sauer.gwt" % "gwt-dnd" % "3.1.2"
     )
+
+    val tomcatVersion = "7.0.21"
+    val tomcatLib = Seq(
+      "org.apache.tomcat.embed" % "tomcat-embed-core" % tomcatVersion,
+      "org.apache.tomcat.embed" % "tomcat-embed-jasper" % tomcatVersion,
+      "org.apache.tomcat.embed" % "tomcat-embed-logging-juli" % tomcatVersion,
+      "org.apache.tomcat" % "tomcat-catalina" % tomcatVersion,
+      "org.apache.tomcat" % "tomcat-jasper" % tomcatVersion excludeAll (
+        ExclusionRule(organization = "org.eclipse.jdt.core.compiler")
+        ),
+      "org.apache.tomcat" % "tomcat-el-api" % tomcatVersion,
+      "org.apache.tomcat" % "tomcat-juli" % tomcatVersion
+    )
+
   }
 
 
@@ -140,8 +154,9 @@ object Build extends sbt.Build {
       description := "UTGB Core library",
       libraryDependencies ++= gwtLib ++ servletLib ++ Seq(
         // Add dependent jars here
-        //"org.xerial" % "xerial-core" % "3.1",
-        "org.xerial" % "xerial-lens" % "2.0.6",
+        "org.xerial.java" % "xerial-lens" % "2.1",
+        "org.xerial.java" % "xerial-storage" % "2.1",
+        "org.xerial" % "xerial-lens" % "3.1",
         "junit" % "junit" % "4.8.1" % "test",
         "org.scalatest" %% "scalatest" % "2.0.M5b" % "test",
         "org.xerial.snappy" % "snappy-java" % "1.0.5-M3",
@@ -150,7 +165,6 @@ object Build extends sbt.Build {
         //"org.utgenome.thirdparty" % "sam" % "1.56",
         //"org.utgenome.thirdparty" % "picard" % "1.56",
         "org.xerial" % "sqlite-jdbc" % "3.7.2",
-        "org.xerial" % "xerial-storage" % "2.0",
         "log4j" % "log4j" % "1.2.17",
         "jfree" % "jfreechart" % "1.0.12",
         "commons-fileupload" % "commons-fileupload" % "1.2",
@@ -158,6 +172,23 @@ object Build extends sbt.Build {
       )
     )
   )
+
+
+
+  lazy val shell = Project(
+    id = "utgb-shell",
+    base = file("utgb-shell"),
+    settings = buildSettings ++ Seq(
+      description := "UTGB command-line tools",
+      libraryDependencies ++= tomcatLib ++ Seq(
+        "org.codehaus.plexus" % "plexus-classworlds" % "2.4",
+        "org.apache.maven" % "maven-embedder" % "3.0.4",
+        "org.sonatype.aether" % "aether-connector-wagon" % "1.11",
+        "org.apache.maven.wagon" % "wagon-http" % "1.0-beta-7",
+        "org.eclipse.jdt.core.compiler" % "ecj" % "3.5.1"
+      )
+    )
+  ) dependsOn (core % dependentScope)
 
 
   lazy val web = Project(
@@ -183,32 +214,6 @@ object Build extends sbt.Build {
 
 
   private val dependentScope = "test->test;compile->compile"
-
-  val tomcatVersion = "7.0.21"
-
-  lazy val shell = Project(
-    id = "utgb-shell",
-    base = file("utgb-shell"),
-    settings = buildSettings ++ Seq(
-      description := "UTGB command-line tools",
-      libraryDependencies ++= Seq(
-        "org.apache.tomcat.embed" % "tomcat-embed-core" % tomcatVersion,
-        "org.apache.tomcat.embed" % "tomcat-embed-jasper" % tomcatVersion,
-        "org.apache.tomcat.embed" % "tomcat-embed-logging-juli" % tomcatVersion,
-        "org.apache.tomcat" % "tomcat-catalina" % tomcatVersion,
-        "org.apache.tomcat" % "tomcat-jasper" % tomcatVersion excludeAll (
-          ExclusionRule(organization = "org.eclipse.jdt.core.compiler")
-          ),
-        "org.apache.tomcat" % "tomcat-el-api" % tomcatVersion,
-        "org.apache.tomcat" % "tomcat-juli" % tomcatVersion,
-        "org.codehaus.plexus" % "plexus-classworlds" % "2.4",
-        "org.apache.maven" % "maven-embedder" % "3.0.4",
-        //"org.sonatype.aether" % "aether-connector-wagon" % "1.11",
-        //"org.apache.maven.wagon" % "wagon-http" % "1.0-beta-7",
-        "org.eclipse.jdt.core.compiler" % "ecj" % "3.5.1"
-      )
-    )
-  ) dependsOn (core % dependentScope)
 
 
 }

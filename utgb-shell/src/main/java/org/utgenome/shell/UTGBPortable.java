@@ -147,16 +147,16 @@ public class UTGBPortable implements TomcatServerLauncher {
 	protected void runInGUIMode() {
 		try {
 			SwingUtilities.invokeAndWait(new Runnable() {
-				public void run() {
-					UTGBPortableWidget portableWidget = new UTGBPortableWidget(config);
-					portableWidget.setTomcatServerLauncher(UTGBPortable.this);
-					portableWidget.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-					Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-					portableWidget.setLocation((int) d.getWidth() / 4, (int) d.getHeight() / 4);
-					portableWidget.setVisible(true);
-					portableWidget.pushStart();
-				}
-			});
+                public void run() {
+                    UTGBPortableWidget portableWidget = new UTGBPortableWidget(config);
+                    portableWidget.setTomcatServerLauncher(UTGBPortable.this);
+                    portableWidget.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+                    portableWidget.setLocation((int) d.getWidth() / 4, (int) d.getHeight() / 4);
+                    portableWidget.setVisible(true);
+                    portableWidget.pushStart();
+                }
+            });
 		}
 		catch (Exception e) {
 			_logger.error(e);
