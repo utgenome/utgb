@@ -153,7 +153,7 @@ object Build extends sbt.Build {
       publish := {},
       publishLocal := {},
       libraryDependencies ++= jettyContainer
-    ) ++ container.deploy("/" -> web.project)
+    ) ++ container.deploy("/utgb" -> web.project)
   ) aggregate(core, shell, web)
 
   private val cpuToUse : Int = {
@@ -215,7 +215,8 @@ object Build extends sbt.Build {
         if(sys.props.contains("gwt.expose")) Some(InetAddress.getLocalHost.getHostAddress) else None
       },
       gwtTemporaryPath <<= (target) { (target) => target / "gwt" },
-      webappResources in Compile <+= (target) { (target) => target / "gwt" / "utgb" },
+      webappResources in Compile ++= Seq(target.value / "gwt" / "utgb", baseDirectory.value / "src/main/webapp"),
+      //webappResources in Compile <+= (resourceDirectory in Compile)(d => d / "xerial/silk/webui/webapp"),
       packageBin in Compile <<= (packageBin in Compile).dependsOn(gwtCompile),
       javaOptions in Gwt in Compile ++= Seq(
         "-localWorkers", cpuToUse.toString, "-strict", "-Xmx3g"
