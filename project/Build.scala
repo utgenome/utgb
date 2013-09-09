@@ -131,6 +131,11 @@ object Build extends sbt.Build {
       "org.apache.tomcat" % "tomcat-juli" % tomcatVersion
     )
 
+    val xerialVersion = "3.2.1"
+
+    val xerialLib = Seq(
+      "org.xerial" % "xerial-lens" % xerialVersion
+    )
   }
 
 
@@ -147,9 +152,7 @@ object Build extends sbt.Build {
       publish := {},
       publishLocal := {},
       libraryDependencies ++= jettyContainer
-    ) ++ container.deploy(
-      "/" -> web.project
-    )
+    ) ++ container.deploy("/" -> web.project)
   ) aggregate(core, shell, web)
 
   private val cpuToUse : Int = {
@@ -161,11 +164,10 @@ object Build extends sbt.Build {
     base = file("utgb-core"),
     settings = buildSettings ++ Seq(
       description := "UTGB Core library",
-      libraryDependencies ++= gwtLib ++ servletLib ++ Seq(
+      libraryDependencies ++= gwtLib ++ servletLib ++ xerialLib ++ Seq(
         // Add dependent jars here
         "org.xerial.java" % "xerial-lens" % "2.1",
         "org.xerial.java" % "xerial-storage" % "2.1",
-        "org.xerial" % "xerial-lens" % "3.1",
         "junit" % "junit" % "4.8.1" % "test",
         "org.scalatest" % "scalatest_2.10" % "2.0.M5b" % "test",
         "org.xerial.snappy" % "snappy-java" % "1.1.0-M4",
@@ -182,6 +184,7 @@ object Build extends sbt.Build {
   )
 
 
+  private val dependentScope = "test->test;compile->compile"
 
   lazy val shell = Project(
     id = "utgb-shell",
@@ -224,7 +227,7 @@ object Build extends sbt.Build {
   ) dependsOn(core % dependentScope)
 
 
-  private val dependentScope = "test->test;compile->compile"
+
 
 
 }
