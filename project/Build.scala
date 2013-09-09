@@ -113,7 +113,8 @@ object Build extends sbt.Build {
       "com.google.gwt" % "gwt-user" % GWT_VERSION % "provided",
       "com.google.gwt" % "gwt-dev" % GWT_VERSION % "provided",
       "com.google.gwt" % "gwt-servlet" % GWT_VERSION % "runtime",
-      "org.utgenome.thirdparty" % "gwt-incubator" % "20101117-r1766",
+      "com.google.gwt" % "gwt-incubator" % "2.0.1" % "runtime",
+      //"org.utgenome.thirdparty" % "gwt-incubator" % "20101117-r1766",
       "com.google.gwt.gears" % "gwt-google-apis" % "1.0.0",
       "com.allen_sauer.gwt" % "gwt-dnd" % "3.1.2"
     )
