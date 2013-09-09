@@ -1,6 +1,4 @@
-import com.github.siasia.Container
-import com.github.siasia.Container
-import com.github.siasia.PluginKeys._
+
 import java.net.InetAddress
 import sbt._
 import sbt.ExclusionRule
@@ -8,10 +6,12 @@ import sbt.Keys._
 import scala.Some
 import xerial.sbt.Pack._
 import net.thunderklaus.GwtPlugin._
+import com.earldouglas.xsbtwebplugin.PluginKeys._
+import com.earldouglas.xsbtwebplugin.Container
 
 object Build extends sbt.Build {
 
-  val SCALA_VERSION = "2.10.0"
+  val SCALA_VERSION = "2.10.2"
 
   private def profile = System.getProperty("profile", "default")
 
@@ -91,13 +91,22 @@ object Build extends sbt.Build {
 
 
   object Dependency {
-    private val jettyVer = "6.1.22"
-    val jetty = Seq(
-      "org.mortbay.jetty" % "jetty" % jettyVer % "container",
-      "org.mortbay.jetty" % "jsp-2.0" % jettyVer % "container",
-      "org.mortbay.jetty" % "jetty-naming" % jettyVer % "container",
-      "org.mortbay.jetty" % "jetty-plus" % jettyVer % "container"
-    )
+    val JETTY_VERSION = "7.0.2.v20100331"
+    val jetty = "org.mortbay.jetty" % "jetty-runner" % JETTY_VERSION excludeAll (
+      // Exclude JSP modules if necessary
+      ExclusionRule(organization="org.mortbay.jetty", name="jsp-2.1-glassfish"),
+      ExclusionRule(organization="org.eclipse.jdtj"),
+      ExclusionRule(organization = "org.slf4j")
+      )
+
+
+    val GWT_VERSION = "2.5.1"
+
+    // We need to use an older version of jetty because newer version of jetty embeds ASM3 library,
+    // which conflicts with ASM4 used in ClosureSerializer
+    val jettyContainer = Seq("org.mortbay.jetty" % "jetty-runner" % JETTY_VERSION % "container" )
+
+
     val servletLib = Seq("javax.servlet" % "servlet-api" % "2.5" % "provided")
 
     val gwtVer = "2.5.0"
@@ -138,7 +147,7 @@ object Build extends sbt.Build {
       packExclude := Seq("utgb"),
       publish := {},
       publishLocal := {},
-      libraryDependencies ++= jetty
+      libraryDependencies ++= jettyContainer
     ) ++ container.deploy(
       "/" -> web.project
     )
@@ -157,13 +166,13 @@ object Build extends sbt.Build {
         // Add dependent jars here
         "org.xerial.java" % "xerial-lens" % "2.1",
         "org.xerial.java" % "xerial-storage" % "2.1",
-        "org.xerial" % "xerial-lens" % "3.1",
+        "org.xerial" % "xerial-lens" % "3.2.1",
         "junit" % "junit" % "4.8.1" % "test",
         "org.scalatest" %% "scalatest" % "2.0.M5b" % "test",
-        "org.xerial.snappy" % "snappy-java" % "1.0.5-M3",
+        "org.xerial.snappy" % "snappy-java" % "1.1.0-M4",
         "org.apache.velocity" % "velocity" % "1.7",
         "org.codehaus.plexus" % "plexus-utils" % "2.0.6" force(),
-        "org.utgenome.thirdparty" % "picard" % "1.86p",
+        "org.utgenome.thirdparty" % "picard" % "1.86.0",
         "org.xerial" % "sqlite-jdbc" % "3.7.2",
         "log4j" % "log4j" % "1.2.17",
         "jfree" % "jfreechart" % "1.0.12",
@@ -194,7 +203,7 @@ object Build extends sbt.Build {
   lazy val web = Project(
     id = "utgb-web",
     base = file("utgb-web"),
-    settings = buildSettings  ++ com.github.siasia.WebappPlugin.webappSettings ++ gwtSettings ++ Seq(
+    settings = buildSettings ++ gwtSettings ++ Seq(
       description := "Pre-compiled UTGB war",
       gwtVersion := gwtVer,
       gwtModules := List("org.utgenome.gwt.utgb.UTGBEntry"),
@@ -203,7 +212,7 @@ object Build extends sbt.Build {
         if(sys.props.contains("gwt.expose")) Some(InetAddress.getLocalHost.getHostAddress) else None
       },
       gwtTemporaryPath <<= (target) { (target) => target / "gwt" },
-      com.github.siasia.PluginKeys.webappResources in Compile <+= (target) { (target) => target / "gwt" / "utgb" },
+      webappResources in Compile <+= (target) { (target) => target / "gwt" / "utgb" },
       packageBin in Compile <<= (packageBin in Compile).dependsOn(gwtCompile),
       javaOptions in Gwt in Compile ++= Seq(
         "-localWorkers", cpuToUse.toString, "-strict", "-Xmx3g"
@@ -211,7 +220,7 @@ object Build extends sbt.Build {
       javaOptions in Gwt ++= Seq(
         "-Xmx1g", "-Dloglevel=debug", "-Dgwt-hosted-mode=true"
       ),
-      libraryDependencies ++= jetty
+      libraryDependencies ++= jettyContainer
     )
   ) dependsOn(core % dependentScope)
 

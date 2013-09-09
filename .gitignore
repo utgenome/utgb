@@ -13,7 +13,7 @@ gwt-unitCache
 .settings
 
 # sbt specific
-bin/.lib
+.lib
 dist/*
 target/
 lib_managed/
