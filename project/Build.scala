@@ -3,7 +3,7 @@ import java.net.InetAddress
 import sbt._
 import sbt.ExclusionRule
 import sbt.Keys._
-import scala.Some
+
 import xerial.sbt.Pack._
 import net.thunderklaus.GwtPlugin._
 import com.earldouglas.xsbtwebplugin.PluginKeys._
@@ -31,7 +31,7 @@ object Build extends sbt.Build {
     }
   }
 
-  lazy val defaultJavacOptions = Seq("-encoding", "UTF-8", "-source", "1.6")
+  lazy val defaultJavacOptions = Seq("-encoding", "UTF-8")
 
   lazy val buildSettings = Defaults.defaultSettings ++ net.virtualvoid.sbt.graph.Plugin.graphSettings ++
     Seq(
@@ -40,7 +40,7 @@ object Build extends sbt.Build {
     organizationHomepage := Some(new URL("http://utgenome.org/")),
     description := "University of Tokyo Genome Browser",
     scalaVersion := SCALA_VERSION,
-    javacOptions in Compile ++= defaultJavacOptions ++ Seq("-Xlint:unchecked", "-Xlint:deprecation", "-encoding", "UTF-8", "-target", "1.6"),
+    javacOptions in Compile ++= defaultJavacOptions ++ Seq("-Xlint:unchecked", "-Xlint:deprecation", "-encoding", "UTF-8"),
     javacOptions in Compile in doc := defaultJavacOptions ++ Seq("-windowtitle", "utgb API", "-linkoffline", "http://docs.oracle.com/javase/6/docs/api/", "http://docs.oracle.com/javase/6/docs/api/"),
     scalacOptions ++= Seq("-encoding", "UTF-8", "-unchecked", "-deprecation", "-feature", "-target:jvm-1.6"),
     crossPaths := false,
@@ -109,11 +109,10 @@ object Build extends sbt.Build {
 
     val servletLib = Seq("javax.servlet" % "servlet-api" % "2.5" % "provided")
 
-    val gwtVer = "2.5.0"
     val gwtLib = Seq(
-      "com.google.gwt" % "gwt-user" % gwtVer % "provided",
-      "com.google.gwt" % "gwt-dev" % gwtVer % "provided",
-      "com.google.gwt" % "gwt-servlet" % gwtVer % "runtime",
+      "com.google.gwt" % "gwt-user" % GWT_VERSION % "provided",
+      "com.google.gwt" % "gwt-dev" % GWT_VERSION % "provided",
+      "com.google.gwt" % "gwt-servlet" % GWT_VERSION % "runtime",
       "org.utgenome.thirdparty" % "gwt-incubator" % "20101117-r1766",
       "com.google.gwt.gears" % "gwt-google-apis" % "1.0.0",
       "com.allen_sauer.gwt" % "gwt-dnd" % "3.1.2"
@@ -166,9 +165,9 @@ object Build extends sbt.Build {
         // Add dependent jars here
         "org.xerial.java" % "xerial-lens" % "2.1",
         "org.xerial.java" % "xerial-storage" % "2.1",
-        "org.xerial" % "xerial-lens" % "3.2.1",
+        "org.xerial" % "xerial-lens" % "3.1",
         "junit" % "junit" % "4.8.1" % "test",
-        "org.scalatest" %% "scalatest" % "2.0.M5b" % "test",
+        "org.scalatest" % "scalatest_2.10" % "2.0.M5b" % "test",
         "org.xerial.snappy" % "snappy-java" % "1.1.0-M4",
         "org.apache.velocity" % "velocity" % "1.7",
         "org.codehaus.plexus" % "plexus-utils" % "2.0.6" force(),
@@ -205,7 +204,7 @@ object Build extends sbt.Build {
     base = file("utgb-web"),
     settings = buildSettings ++ gwtSettings ++ Seq(
       description := "Pre-compiled UTGB war",
-      gwtVersion := gwtVer,
+      gwtVersion := GWT_VERSION,
       gwtModules := List("org.utgenome.gwt.utgb.UTGBEntry"),
       gwtForceCompile := false,
       gwtBindAddress := {
