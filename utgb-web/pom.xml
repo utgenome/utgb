@@ -184,7 +184,7 @@
           <!-- this is relative to the pom.xml directory -->
           <webResources>
             <resource>
-              <directory>${basedir}/war/utgb</directory>
+              <directory>${project.build.directory}/gwt/utgb</directory>
               <targetPath></targetPath>
             </resource>
           </webResources>

@@ -29,7 +29,7 @@ import com.google.gwt.user.client.Element;
  *
  * @author amoffat Alex Moffat
  */
-class DOMImplMobileSafari extends DOMImplSafari {
+class DOMImplMobileSafari extends DOMImplWebkit {
 
   public native int eventGetTypeInt(String eventType) /*-{
     switch (eventType) {

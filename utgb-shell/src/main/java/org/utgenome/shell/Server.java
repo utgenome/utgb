@@ -81,7 +81,7 @@ public class Server extends UTGBShellCommand {
 				private TreeMap<File, Long> table = new TreeMap<File, Long>();
 
 				public void run() {
-					File[] watchFolder = new File[] { new File("src/main/webapp"), new File("src/main/template"), new File("target/classes") };
+					File[] watchFolder = new File[] { new File(option.projectRoot, "src/main/webapp"), new File(option.projectRoot, "src/main/template"), new File(option.projectRoot, "target/classes") };
 
 					while (true) {
 						try {

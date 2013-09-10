@@ -16,35 +16,44 @@
 
 PREFIX=${HOME}/local
 MVN_OPT=
-MVN=mvn $(MVN_OPT)
+SBT=./sbt
+PERL=perl
+SED=sed
 
-.PHONY: install test release-prepare release-perform clean update-version
+.PHONY: compile archive pack install test release-sonatype clean superdev container
 
+version:=$(shell $(PERL) -npe "s/version in ThisBuild\s+:=\s+\"(.*)\"/\1/" version.sbt | $(SED) -e "/^$$/d")
 
-install:
-	bin/sbt pack && cd target/pack && $(MAKE) install
-#	$(MVN) install -Dmaven.test.skip=true
-#	cd utgb-shell; $(MAKE) PREFIX="$(PREFIX)" MVN_OPTS="-Dmaven.test.skip=true" install 
+pack:
+	$(SBT) pack
+
+compile: 
+	$(SBT) compile
+
+archive: target/utgb-$(version).tgz
+
+target/utgb-$(version).tgz: 
+	$(SBT) pack-archive
+
+install: pack
+	cd target/pack && $(MAKE) PREFIX=$(PREFIX) install
 
 test: install
-	$(MVN) test
+	$(SBT) test
 
 
-RELEASE_OPT="-DlocalCheckout=true"
+release-sonatype:
+	$(SBT) publish-signed
 
-release-prepare:
-	$(MVN) release:prepare $(RELEASE_OPT) 
-
-release-perform:
-	$(MVN) release:perform $(RELEASE_OPT)
-
-release-rollback:
-	$(MVN) release:rollback
 
 clean:
-	$(MVN) clean
+	$(SBT) clean
 
-update-version:
-	$(MVN) release:update-versions -DautoVersionSubmodules=true
+# Run GWT super-dev mode
+superdev:
+	$(SBT) gwt-superdev
 
+# Run web container for debugging UTGB
+container:
+	$(SBT) "~; container:start; container:reload /"
 
