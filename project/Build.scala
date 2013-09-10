@@ -112,11 +112,11 @@ object Build extends sbt.Build {
     val gwtLib = Seq(
       "com.google.gwt" % "gwt-user" % GWT_VERSION % "provided",
       "com.google.gwt" % "gwt-dev" % GWT_VERSION % "provided",
-      "com.google.gwt" % "gwt-servlet" % GWT_VERSION,
+      "com.google.gwt" % "gwt-servlet" % GWT_VERSION % "runtime",
       "com.google.gwt" % "gwt-incubator" % "2.0.1",
       //"org.utgenome.thirdparty" % "gwt-incubator" % "20101117-r1766",
       //"com.google.gwt.gears" % "gwt-google-apis" % "1.0.0",
-      "com.allen-sauer.gwt.dnd" % "gwt-dnd" % "3.1.2"
+      "com.allen-sauer.gwt.dnd" % "gwt-dnd" % "3.2.3"
     )
 
     val tomcatVersion = "7.0.21"
@@ -154,7 +154,7 @@ object Build extends sbt.Build {
       publishLocal := {},
       libraryDependencies ++= jettyContainer
     ) ++ container.deploy("/" -> web.project)
-  ) aggregate(core, shell, web)
+  ) aggregate(core, shell, web) settings(addArtifact(Artifact("utgb", "arch", "tar.gz"), packArchive).settings:_*)
 
   private val cpuToUse : Int = {
     math.max((java.lang.Runtime.getRuntime.availableProcessors() * 0.9).toInt, 1)
