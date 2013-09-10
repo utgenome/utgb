@@ -46,7 +46,7 @@ public class TrackFactorySetup {
 				org.utgenome.gwt.utgb.client.track.lib.MiniBrowserTrack.factory());
 		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.GenomeTrack", org.utgenome.gwt.utgb.client.track.lib.GenomeTrack.factory());
 		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.DASTrack", org.utgenome.gwt.utgb.client.track.lib.DASTrack.factory());
-		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.BEDTrack", org.utgenome.gwt.utgb.client.track.lib.BEDTrack.factory());
+		//TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.BEDTrack", org.utgenome.gwt.utgb.client.track.lib.BEDTrack.factory());
 
 		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.RulerTrack", org.utgenome.gwt.utgb.client.track.lib.RulerTrack.factory());
 		TrackFactoryHolder.addTrackFactory("org.utgenome.gwt.utgb.client.track.lib.ScaleBarTrack",

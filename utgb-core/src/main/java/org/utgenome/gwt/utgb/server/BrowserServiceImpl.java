@@ -539,7 +539,7 @@ public class BrowserServiceImpl extends RemoteServiceServlet implements BrowserS
 
 			while (iterator.hasNext()) {
 				SAMRecord record = iterator.next();
-				_logger.info(record.format());
+				_logger.info(record.getSAMString());
 
 				// convert SAMRecord to SAMRead
 
