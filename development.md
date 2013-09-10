@@ -42,7 +42,24 @@
  You also need to copy bookmarklet from http://192.xx.xx.xx:9876 since it becomes different from when using http://localhost:9876
 
 
-* Install utgb command
+### Install utgb command
 
     $ make install
+
+### Run tests
+
+    $ ./sbt test -Dloglevel=debug
+
+### Run tests when updates of source codes are detected
+
+    $ ./sbt "~test" -Dloglevel=debug
+
+### Run specific tests matching a pattern
+
+    $ ./sbt "~test-only *HelloTest" -Dloglevel=debug
+
+### Run tagged test only
+
+    $ ./sbt "~test -- -n test1" -Dloglevel=debug
+
 
