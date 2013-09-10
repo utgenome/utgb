@@ -24,14 +24,14 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.util;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class JSONUtil {
 
@@ -64,7 +64,7 @@ public class JSONUtil {
 			throw new IllegalArgumentException("invalid json array data");
 
 		ArrayList<String> elementList = new ArrayList<String>();
-		JSONValue v = JSONParser.parse(jsonArray);
+		JSONValue v = JSONParser.parseLenient(jsonArray);
 		JSONArray array = v.isArray();
 		if (array != null) {
 			for (int i = 0; i < array.size(); i++)

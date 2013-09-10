@@ -13,7 +13,7 @@ gwt-unitCache
 .settings
 
 # sbt specific
-bin/.lib
+.lib
 dist/*
 target/
 lib_managed/
@@ -26,3 +26,6 @@ project/plugins/project/
 
 # IntelliJ specific
 .idea*
+
+# for Mac
+.DS_Store

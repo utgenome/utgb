@@ -24,13 +24,12 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.db;
 
-import java.util.ArrayList;
-
-import org.utgenome.gwt.utgb.client.UTGBClientException;
-
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
+import org.utgenome.gwt.utgb.client.UTGBClientException;
+
+import java.util.ArrayList;
 
 /**
  * 
@@ -80,7 +79,7 @@ public class DatabaseCatalog
         _relationList.clear();
         _tableNameList.clear();
 
-        JSONValue json = JSONParser.parse(jsonData);
+        JSONValue json = JSONParser.parseLenient(jsonData);
         JSONObject jsonObj = json.isObject();
         if (jsonObj == null)
             throw new UTGBClientException("invalid json data:" + jsonData);

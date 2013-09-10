@@ -24,15 +24,15 @@
 //--------------------------------------
 package org.utgenome.format.sam;
 
-import static org.junit.Assert.assertEquals;
 import net.sf.samtools.SAMFileReader;
 import net.sf.samtools.SAMRecord;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.xerial.util.FileResource;
 import org.xerial.util.log.Logger;
+
+import static org.junit.Assert.assertEquals;
 
 public class SAMReaderTest {
 	private static Logger _logger = Logger.getLogger(SAMReaderTest.class);
@@ -49,7 +49,7 @@ public class SAMReaderTest {
 	public void testRead() throws Exception {
 		SAMFileReader reader = new SAMFileReader(FileResource.find(SAMReaderTest.class, "chr21.sam").openStream());
 		for (SAMRecord each : reader)
-			_logger.info(each.format());
+			_logger.info(each.getSAMString());
 	}
 
 	@Test

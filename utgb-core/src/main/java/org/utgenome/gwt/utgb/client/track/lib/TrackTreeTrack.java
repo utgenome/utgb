@@ -24,19 +24,14 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.track.lib;
 
-import java.util.List;
-
-import org.utgenome.gwt.utgb.client.track.Track;
-import org.utgenome.gwt.utgb.client.track.TrackBase;
-import org.utgenome.gwt.utgb.client.track.TrackFrame;
-import org.utgenome.gwt.utgb.client.track.TrackGroup;
-import org.utgenome.gwt.utgb.client.track.TrackInfo;
-import org.utgenome.gwt.utgb.client.track.TrackUpdateListener;
-import org.utgenome.gwt.utgb.client.util.CanonicalProperties;
-
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.Widget;
+import org.utgenome.gwt.utgb.client.track.*;
+import org.utgenome.gwt.utgb.client.util.CanonicalProperties;
+
+import java.util.List;
 
 public class TrackTreeTrack extends TrackBase implements TrackUpdateListener {
 
@@ -78,7 +73,7 @@ public class TrackTreeTrack extends TrackBase implements TrackUpdateListener {
 	}
 
 	private TreeItem getTreeItem(final TrackGroup trackGroup) {
-		final TreeItem item = new TreeItem(trackGroup.getTrackGroupName());
+		final TreeItem item = new TreeItem(SafeHtmlUtils.fromString(trackGroup.getTrackGroupName()));
 
 		{
 			final List<TrackGroup> trackGroups = trackGroup.getTrackGroupList();
@@ -110,7 +105,7 @@ public class TrackTreeTrack extends TrackBase implements TrackUpdateListener {
 	}
 
 	private TreeItem getTreeItem(final Track track) {
-		return new TreeItem(track.getTrackInfo().getTrackName());
+		return new TreeItem(SafeHtmlUtils.fromString(track.getTrackInfo().getTrackName()));
 	}
 
 	public void onAddTrackGroup(TrackGroup trackGroup) {

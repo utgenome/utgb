@@ -24,49 +24,32 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.track.lib;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.List;
-
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.Response;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.Widget;
 import org.utgenome.gwt.utgb.client.UTGBEntryPointBase;
-import org.utgenome.gwt.utgb.client.bio.ChrLoc;
-import org.utgenome.gwt.utgb.client.bio.GenomeDB;
+import org.utgenome.gwt.utgb.client.bio.*;
 import org.utgenome.gwt.utgb.client.bio.GenomeDB.DBType;
-import org.utgenome.gwt.utgb.client.bio.Coordinate;
-import org.utgenome.gwt.utgb.client.bio.GraphWindow;
-import org.utgenome.gwt.utgb.client.bio.GenomeRange;
-import org.utgenome.gwt.utgb.client.bio.GenomeRangeVisitorBase;
-import org.utgenome.gwt.utgb.client.bio.ReadCoverage;
-import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig;
 import org.utgenome.gwt.utgb.client.bio.ReadQueryConfig.Layout;
 import org.utgenome.gwt.utgb.client.canvas.GWTGenomeCanvas;
 import org.utgenome.gwt.utgb.client.canvas.LocusClickHandler;
 import org.utgenome.gwt.utgb.client.canvas.ReadDisplayStyle;
 import org.utgenome.gwt.utgb.client.db.ValueDomain;
 import org.utgenome.gwt.utgb.client.db.datatype.StringType;
-import org.utgenome.gwt.utgb.client.track.Track;
-import org.utgenome.gwt.utgb.client.track.TrackBase;
-import org.utgenome.gwt.utgb.client.track.TrackConfig;
-import org.utgenome.gwt.utgb.client.track.TrackConfigChange;
-import org.utgenome.gwt.utgb.client.track.TrackFrame;
-import org.utgenome.gwt.utgb.client.track.TrackGroup;
-import org.utgenome.gwt.utgb.client.track.TrackGroupPropertyChange;
-import org.utgenome.gwt.utgb.client.track.TrackWindow;
-import org.utgenome.gwt.utgb.client.track.UTGBProperty;
+import org.utgenome.gwt.utgb.client.track.*;
 import org.utgenome.gwt.utgb.client.util.BrowserInfo;
 import org.utgenome.gwt.utgb.client.util.CanonicalProperties;
 import org.utgenome.gwt.utgb.client.util.Properties;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.http.client.Request;
-import com.google.gwt.http.client.RequestBuilder;
-import com.google.gwt.http.client.RequestCallback;
-import com.google.gwt.http.client.Response;
-import com.google.gwt.http.client.URL;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.Widget;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Track for displaying read data in BED,SAM,BAM formats.
@@ -242,7 +225,6 @@ public class ReadTrack extends TrackBase {
 				url = url.replaceAll("%qlen", Integer.toString(locus.length()));
 
 		}
-
 		// replace track group properties
 		return resolvePropertyValues(url);
 	}

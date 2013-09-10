@@ -24,14 +24,14 @@
 //--------------------------------------
 package org.utgenome.gwt.utgb.client.ui;
 
-import java.util.Iterator;
-
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
-import com.allen_sauer.gwt.dnd.client.drop.IndexedDropController;
+import com.allen_sauer.gwt.dnd.client.drop.VerticalPanelDropController;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+
+import java.util.Iterator;
 
 /**
  * DraggabeleTable supports drag & drop replacement of internal widgets.
@@ -48,7 +48,7 @@ public class DraggableTable extends Composite {
 	private VerticalPanel _verticalPanel = new VerticalPanel();
 
 	private PickupDragController widgetDragController;
-	private IndexedDropController widgetDropController;
+	private VerticalPanelDropController widgetDropController;
 
 	public DraggableTable() {
 		_boundaryPanel.setSize("100%", "100%");
@@ -57,7 +57,7 @@ public class DraggableTable extends Composite {
 
 		// do not allow drop for _boundaryPanel
 		widgetDragController = new PickupDragController(_boundaryPanel, false);
-		widgetDropController = new IndexedDropController(_verticalPanel);
+		widgetDropController = new VerticalPanelDropController(_verticalPanel);
 
 		widgetDragController.setBehaviorConstrainedToBoundaryPanel(false);
 		widgetDragController.registerDropController(widgetDropController);
