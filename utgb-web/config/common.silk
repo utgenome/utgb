@@ -6,7 +6,7 @@
 # project group name (for Maven repository)
 -group:        org.utgenome
 # Name of the project. This name will be used for the web application's context path
--project name: utgb-core
+-project name: utgb
 # java package to add/search Web Action codes
 -java package:      org.utgenome.gwt.utgb.server
 

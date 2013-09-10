@@ -94,7 +94,7 @@ public class DatabaseTable extends Composite {
 			_table.removeRow(_table.getRowCount() - 1);
 
 		try {
-			JSONValue json = JSONParser.parse(jsonData);
+			JSONValue json = JSONParser.parseStrict(jsonData);
 			JSONObject root;
 			if ((root = json.isObject()) != null) {
 				JSONValue array = root.get("data");
@@ -115,7 +115,7 @@ public class DatabaseTable extends Composite {
 
 	public void addRow(String jsonData) {
 		try {
-			JSONValue json = JSONParser.parse(jsonData);
+			JSONValue json = JSONParser.parseStrict(jsonData);
 			addRow(json);
 		}
 		catch (JSONException e) {

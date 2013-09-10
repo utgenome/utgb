@@ -24,13 +24,8 @@
 //--------------------------------------
 package org.utgenome.format.sam;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import net.sf.samtools.SAMFileReader;
 import net.sf.samtools.SAMRecord;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,6 +33,10 @@ import org.utgenome.gwt.utgb.client.bio.SAMRead;
 import org.xerial.util.FileResource;
 import org.xerial.util.FileUtil;
 import org.xerial.util.log.Logger;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class BAMReaderTest {
 	private static Logger _logger = Logger.getLogger(BAMReaderTest.class);
@@ -55,7 +54,7 @@ public class BAMReaderTest {
 		_logger.info("read test");
 		SAMFileReader reader = new SAMFileReader(FileResource.find(BAMReaderTest.class, "bss-align-sorted.bam").openStream());
 		for (SAMRecord each : reader)
-			_logger.info(each.format());
+			_logger.info(each.getSAMString());
 	}
 
 	@Test
@@ -74,7 +73,7 @@ public class BAMReaderTest {
 		Iterator<SAMRecord> iterator = new SAMFileReader(temp_bam, temp_bam_bai).query("chr13", 0, 0, true);
 		while (iterator.hasNext()) {
 			SAMRecord each = iterator.next();
-			_logger.info(each.format());
+			_logger.info(each.getSAMString());
 
 			SAMRead read = SAM2SilkReader.convertToSAMRead(each);
 			_logger.info(read);

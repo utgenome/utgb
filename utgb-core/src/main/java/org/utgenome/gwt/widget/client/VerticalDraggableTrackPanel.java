@@ -24,14 +24,14 @@
 //--------------------------------------
 package org.utgenome.gwt.widget.client;
 
-import java.util.Iterator;
-
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
-import com.allen_sauer.gwt.dnd.client.drop.IndexedDropController;
+import com.allen_sauer.gwt.dnd.client.drop.VerticalPanelDropController;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+
+import java.util.Iterator;
 
 /**
  * VerticalPanel with Drag & Drop support
@@ -65,7 +65,7 @@ public class VerticalDraggableTrackPanel extends Composite implements TrackPanel
 	private VerticalPanel verticalPanel = new VerticalPanel();
 
 	private MyDragController widgetDragController;
-	private IndexedDropController widgetDropController;
+	private VerticalPanelDropController widgetDropController;
 
 	public VerticalDraggableTrackPanel() {
 
@@ -73,7 +73,7 @@ public class VerticalDraggableTrackPanel extends Composite implements TrackPanel
 		drawWidget();
 
 		widgetDragController = new MyDragController(absolutePanel, false);
-		widgetDropController = new IndexedDropController(verticalPanel);
+		widgetDropController = new VerticalPanelDropController(verticalPanel);
 
 		widgetDragController.setBehaviorConstrainedToBoundaryPanel(false);
 		widgetDragController.registerDropController(widgetDropController);
