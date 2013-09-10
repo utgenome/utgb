@@ -153,7 +153,7 @@ object Build extends sbt.Build {
       publish := {},
       publishLocal := {},
       libraryDependencies ++= jettyContainer
-    ) ++ container.deploy("/utgb" -> web.project)
+    ) ++ container.deploy("/" -> web.project)
   ) aggregate(core, shell, web)
 
   private val cpuToUse : Int = {
