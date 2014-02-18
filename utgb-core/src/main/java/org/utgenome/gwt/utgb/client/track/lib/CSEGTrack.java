@@ -122,7 +122,7 @@ public class CSEGTrack extends GenomeTrack {
 	public void draw() {
 		loadConfig();
 		TrackConfig config = getConfig();
-		String path = config.getString(CONFIG_PATH, "file not found");
+		String path = config.getString(CONFIG_PATH, "");
 		StringBuilder sb = new StringBuilder(256);
 		sb.append("utgb-core/CSEGViewer?%%q&ih=");
 		sb.append(param_total_height);

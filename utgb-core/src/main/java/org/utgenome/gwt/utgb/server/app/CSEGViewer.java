@@ -276,7 +276,12 @@ public class CSEGViewer extends WebTrackBase {
 		try {
 			// this will load database file specified in config/development.silk file 
 			String dbFolder = getTrackConfigProperty("utgb.db.folder", getProjectRootPath() + "/db");
-			File dbFile = new File(dbFolder, String.format("p.patens/combined.genmap.imputed.seg.sqlite"));
+			File dbFile = null;
+			if (fileName == "") {
+				dbFile = new File(dbFolder, String.format("p.patens/combined.genmap.imputed.seg.sqlite"));
+			}
+			else
+				dbFile = new File(getProjectRootPath(), fileName);
 			if (!dbFile.exists())
 				throw new UTGBException(UTGBErrorCode.MISSING_FILES, "DB file doesn't exist: " + dbFile);
 			SQLiteAccess db = null;
